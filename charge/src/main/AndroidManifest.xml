@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name=".features.adhoc_charging.ui.AdHocChargingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_ad_hoc_charging"
+            android:theme="@style/Theme.ElvahChargeAndroid" />
+    </application>
+
+</manifest>
