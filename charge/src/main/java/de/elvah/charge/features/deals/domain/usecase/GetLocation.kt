@@ -5,7 +5,6 @@ import de.elvah.charge.features.deals.domain.repository.LocationRepository
 import kotlinx.coroutines.flow.Flow
 
 
-
 internal class GetLocation(
     private val locationRepository: LocationRepository,
 ) {

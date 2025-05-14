@@ -16,9 +16,9 @@ import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSessio
 import de.elvah.charge.features.adhoc_charging.ui.screens.activecharging.ActiveChargingViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingStartViewModel
-import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewViewModel
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
 import de.elvah.charge.features.deals.data.DefaultDealsRepository
 import de.elvah.charge.features.deals.data.DefaultLocationRepository
 import de.elvah.charge.features.deals.data.di.DealsApiModule
@@ -36,6 +36,8 @@ import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentSummary
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentToken
+import de.elvah.charge.features.payments.domain.usecase.GetSessionDetails
+import de.elvah.charge.features.payments.domain.usecase.ResetSession
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.platform.bindings.features.adhoc.SharedPreferencesModule
 import de.elvah.charge.platform.config.ChargeConfig
@@ -65,6 +67,8 @@ object Elvah {
         singleOf(::StartChargingSession)
         singleOf(::StopChargingSession)
         singleOf(::FetchChargingSession)
+        singleOf(::ResetSession)
+        singleOf(::GetSessionDetails)
     }
 
     private val viewModelsModule = module {

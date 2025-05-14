@@ -79,7 +79,7 @@ private fun ReviewScreen_Content(
             BasicCard(modifier = Modifier.fillMaxWidth()) {
                 TitleSmall(state.summary.cpoName, fontWeight = FontWeight.W700)
                 CopyMedium(state.summary.address)
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     CopyMedium(stringResource(R.string.code_label))
                     CopyMedium(state.summary.evseId)
                 }
@@ -103,9 +103,16 @@ private fun ReviewScreen_Content(
             Spacer(modifier = Modifier.size(8.dp))
 
             BasicCard(modifier = Modifier.fillMaxWidth()) {
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     CopyMedium(text = stringResource(R.string.total_cost_label))
-                    CopyLarge(text = state.summary.totalCost.toString(), fontWeight = FontWeight.W700)
+                    CopyLarge(
+                        text = state.summary.totalCost.toString() + " €",
+                        fontWeight = FontWeight.W700
+                    )
                 }
             }
 

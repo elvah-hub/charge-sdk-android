@@ -10,18 +10,14 @@ import de.elvah.charge.features.deals.domain.usecase.UpdateLocation
 internal class UseCaseModule {
 
 
-
     fun providesGetDeals(dealsRepository: DealsRepository): GetDeals = GetDeals(dealsRepository)
-
 
 
     fun providesGetDeal(getDeals: GetDeals): GetDeal = GetDeal(getDeals)
 
 
-
     fun providesGetLocation(locationRepository: LocationRepository): GetLocation =
         GetLocation(locationRepository)
-
 
 
     fun providesUpdateLocation(locationRepository: LocationRepository): UpdateLocation =

@@ -133,10 +133,15 @@ private fun SiteDetailScreen_Content(
                 ]
             } ?: emptyList()
 
-            if (itemsShown.isNotEmpty()){
+            if (itemsShown.isNotEmpty()) {
                 ChargePointsList(itemsShown, onItemClick, Modifier.fillMaxWidth())
             } else {
-                Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center){
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     CopyLarge(stringResource(R.string.no_charge_points_available))
                 }
             }
@@ -145,7 +150,7 @@ private fun SiteDetailScreen_Content(
 }
 
 @Composable
-private fun OfferBanner(modifier : Modifier = Modifier){
+private fun OfferBanner(modifier: Modifier = Modifier) {
     BasicCard {
         Row(
             modifier = modifier
@@ -166,7 +171,11 @@ private fun OfferBanner(modifier : Modifier = Modifier){
 }
 
 @Composable
-private fun ChargingTabs(selectedTab: Int, onSelectedTab: (Int) -> Unit, modifier: Modifier = Modifier){
+private fun ChargingTabs(
+    selectedTab: Int,
+    onSelectedTab: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val tabs = listOf(
         stringResource(R.string.ac_label),
         stringResource(R.string.dc_label)
@@ -187,14 +196,18 @@ private fun ChargingTabs(selectedTab: Int, onSelectedTab: (Int) -> Unit, modifie
             Tab(
                 text = { Text(title, color = MaterialTheme.colorScheme.primary) },
                 selected = selectedTab == index,
-                onClick =  { onSelectedTab(index) },
+                onClick = { onSelectedTab(index) },
             )
         }
     }
 }
 
 @Composable
-private fun ChargePointsList(itemsShown: List<ChargePointUI>, onItemClick: (String, String) -> Unit, modifier: Modifier = Modifier){
+private fun ChargePointsList(
+    itemsShown: List<ChargePointUI>,
+    onItemClick: (String, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surface)

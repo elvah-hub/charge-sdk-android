@@ -1,6 +1,7 @@
 package de.elvah.charge.features.deals.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -127,7 +128,7 @@ fun DealBanner_Error(modifier: Modifier = Modifier) {
 @Composable
 internal fun DealBanner_ActiveSession(
     deal: DealUI,
-    onBannerClick: () -> Unit,
+    onBannerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier) {
@@ -139,7 +140,8 @@ internal fun DealBanner_ActiveSession(
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.tertiary)
                     .padding(vertical = 16.dp)
-                    .padding(start = 16.dp),
+                    .padding(start = 16.dp)
+                    .clickable { onBannerClick(deal.id) },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -148,7 +150,7 @@ internal fun DealBanner_ActiveSession(
                     modifier = Modifier.weight(1f)
                 )
 
-                Chevron(onBannerClick)
+                Chevron()
             }
         }
     }

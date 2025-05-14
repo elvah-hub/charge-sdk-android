@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "de.elvah.charge.features.adhoc_charging";
+option java_multiple_files = true;
+
+message ChargingSessionPrefs {
+  string token = 1;
+  string paymentId = 2;
+  string cpoName = 3;
+  string privacyUrl = 4;
+  string termsOfConditionUrl = 5;
+  string logoUrl = 6;
+  optional string email = 7;
+  optional string whatsapp = 8;
+  optional string phone = 9;
+  optional string agent = 10;
+  string evseId = 11;
+}

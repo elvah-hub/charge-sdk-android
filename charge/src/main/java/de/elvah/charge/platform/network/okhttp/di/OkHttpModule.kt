@@ -23,10 +23,8 @@ internal object OkHttpModule {
     }
 
 
-
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor(
     ).apply { level = HttpLoggingInterceptor.Level.BODY }
-
 
 
     fun provideApiKeyInterceptor(): ApiKeyInterceptor {

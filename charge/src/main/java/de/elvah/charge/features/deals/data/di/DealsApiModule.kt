@@ -7,7 +7,6 @@ import de.elvah.charge.platform.network.retrofit.RetrofitFactory
 internal object DealsApiModule {
 
 
-
     fun provideApi(
         apiUrlBuilder: ApiUrlBuilder,
         retrofitFactory: RetrofitFactory,

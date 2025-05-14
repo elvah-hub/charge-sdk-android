@@ -196,7 +196,7 @@ private fun ChargingPointLockedModal(
 @Preview
 @Composable
 private fun ChargingPointLockedModal_Preview() {
-    ChargingPointLockedModal() {}
+    ChargingPointLockedModal {}
 }
 
 @Composable

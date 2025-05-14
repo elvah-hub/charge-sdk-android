@@ -6,7 +6,11 @@
             android:name=".features.adhoc_charging.ui.AdHocChargingActivity"
             android:exported="false"
             android:label="@string/title_activity_ad_hoc_charging"
-            android:theme="@style/Theme.ElvahChargeAndroid" />
+            android:theme="@style/Theme.ElvahChargeAndroid">
+            <intent-filter>
+                <data android:scheme="https" android:host="www.elvah.de" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -8,11 +8,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 internal object RetrofitModule {
 
 
-
     fun provideMoshi(): Moshi = Moshi.Builder()
         .addLast(KotlinJsonAdapterFactory())
         .build()
-
 
 
     fun provideRetrofitFactory(

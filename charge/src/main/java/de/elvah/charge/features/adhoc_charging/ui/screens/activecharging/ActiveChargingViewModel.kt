@@ -1,6 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
-import androidx.lifecycle.SavedStateHandle
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
@@ -20,7 +20,6 @@ internal class ActiveChargingViewModel(
     private val stopChargingSession: StopChargingSession,
     private val fetchChargingSession: FetchChargingSession,
     private val getOrganisationDetails: GetOrganisationDetails,
-    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<ActiveChargingState>(ActiveChargingState.Loading)
@@ -29,6 +28,7 @@ internal class ActiveChargingViewModel(
     init {
         viewModelScope.launch {
             startChargingSession()
+
             val organisationDetails = getOrganisationDetails()
             organisationDetails?.let {
                 _state.value = ActiveChargingState.Waiting(organisationDetails)
@@ -36,6 +36,7 @@ internal class ActiveChargingViewModel(
 
                 observeChargingSession().collect {
 
+                    Log.d("HOLA", it.toString())
                     val organisationDetails = getOrganisationDetails()
 
                     when (state.value) {

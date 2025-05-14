@@ -3,9 +3,9 @@ package de.elvah.charge.features.payments.data.mapper
 import de.elvah.charge.features.payments.data.remote.model.response.PaymentSummaryDto
 import de.elvah.charge.features.payments.domain.model.PaymentSummary
 
-internal fun PaymentSummaryDto.toDomain(cpoName: String): PaymentSummary {
+internal fun PaymentSummaryDto.toDomain(evseId: String, cpoName: String): PaymentSummary {
     return PaymentSummary(
-        evseId = this.data.address.locality,
+        evseId = evseId,
         cpoName = cpoName,
         address = this.data.address.streetAddress,
         totalTime = this.data.totalTime,
