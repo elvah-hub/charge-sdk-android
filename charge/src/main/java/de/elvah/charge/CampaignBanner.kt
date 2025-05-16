@@ -24,7 +24,6 @@ import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinContext
-import org.koin.core.context.KoinContext
 
 
 @Composable

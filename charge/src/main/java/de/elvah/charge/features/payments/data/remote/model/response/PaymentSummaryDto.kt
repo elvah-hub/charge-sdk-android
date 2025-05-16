@@ -19,8 +19,8 @@ data class PaymentSummaryDto(
         @Json(name = "address")
         val address: Address,
 
-        @Json(name = "totalTime")
-        val totalTime: String,
+        @Json(name = "totalTimeInSeconds")
+        val totalTimeInSeconds: Int,
 
         @Json(name = "sessionStartedAt")
         val sessionStartedAt: String,

@@ -8,7 +8,7 @@ internal fun PaymentSummaryDto.toDomain(evseId: String, cpoName: String): Paymen
         evseId = evseId,
         cpoName = cpoName,
         address = this.data.address.streetAddress,
-        totalTime = this.data.totalTime,
+        totalTime = this.data.totalTimeInSeconds,
         consumedKWh = this.data.consumedKWh,
         totalCost = this.data.totalCost.amount,
     )

@@ -4,7 +4,7 @@ internal class PaymentSummary(
     val evseId: String,
     val cpoName: String,
     val address: String,
-    val totalTime: String,
+    val totalTime: Int,
     val consumedKWh: Double,
     val totalCost: Int,
 )

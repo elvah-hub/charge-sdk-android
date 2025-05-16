@@ -37,6 +37,7 @@ import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentSummary
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentToken
 import de.elvah.charge.features.payments.domain.usecase.GetSessionDetails
+import de.elvah.charge.features.payments.domain.usecase.GetSummaryInfo
 import de.elvah.charge.features.payments.domain.usecase.ResetSession
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.platform.bindings.features.adhoc.SharedPreferencesModule
@@ -69,6 +70,7 @@ object Elvah {
         singleOf(::FetchChargingSession)
         singleOf(::ResetSession)
         singleOf(::GetSessionDetails)
+        singleOf(::GetSummaryInfo)
     }
 
     private val viewModelsModule = module {
