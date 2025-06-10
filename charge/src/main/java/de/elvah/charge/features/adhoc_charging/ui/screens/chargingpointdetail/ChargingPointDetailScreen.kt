@@ -30,6 +30,7 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.rememberPaymentSheet
@@ -57,7 +58,7 @@ internal fun ChargingPointDetailScreen(
     onPaymentSuccess: (String, String) -> Unit,
 ) {
 
-    val state by chargingPointDetailViewModel.state.collectAsState()
+    val state by chargingPointDetailViewModel.state.collectAsStateWithLifecycle()
 
     when (state) {
         is ChargingPointDetailState.Loading -> ChargingPointDetail_Loading(state as ChargingPointDetailState.Loading)

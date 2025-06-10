@@ -3,7 +3,6 @@ package de.elvah.charge.features.adhoc_charging.ui
 import kotlinx.serialization.Serializable
 
 internal sealed class AdHocChargingScreens {
-    val baseRoute = "https://www.elvah.de/"
 
     @Serializable
     data class SiteDetailRoute(
@@ -27,7 +26,14 @@ internal sealed class AdHocChargingScreens {
         val dealId: String,
         val evseId: String,
         val signedOffer: String,
-    ) : AdHocChargingScreens()
+    ) : AdHocChargingScreens(), Deeplink {
+        override val route: String
+            get() = Companion.route
+
+        companion object {
+            const val route = baseRoute +  "chargingPointDetail"
+        }
+    }
 
     @Serializable
     data object HelpAndSupportRoute : AdHocChargingScreens()
@@ -39,3 +45,5 @@ internal sealed class AdHocChargingScreens {
 internal interface Deeplink {
     val route: String
 }
+
+private const val baseRoute = "https://www.elvah.de/"

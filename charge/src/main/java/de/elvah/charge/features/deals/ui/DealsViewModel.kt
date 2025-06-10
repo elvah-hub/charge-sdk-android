@@ -7,7 +7,6 @@ import de.elvah.charge.features.deals.domain.usecase.GetDeal
 import de.elvah.charge.features.deals.domain.usecase.GetLocation
 import de.elvah.charge.features.deals.ui.mapper.toUI
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
@@ -17,7 +16,7 @@ internal class DealsViewModel(
     getLocation: GetLocation,
 ) : ViewModel() {
 
-    private val _state = getLocation()
+    val state = getLocation()
         .map {
             getDeal(GetDeal.Params(it.minLat, it.minLng, it.maxLat, it.maxLng))
         }
@@ -39,6 +38,4 @@ internal class DealsViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = DealsState.Loading
         )
-
-    val state: StateFlow<DealsState> = _state
 }

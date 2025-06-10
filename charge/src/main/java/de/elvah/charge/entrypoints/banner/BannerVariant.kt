@@ -1,4 +1,4 @@
-package de.elvah.charge
+package de.elvah.charge.entrypoints.banner
 
 enum class BannerVariant {
     DEFAULT, COMPACT

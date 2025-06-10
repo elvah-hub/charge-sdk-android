@@ -15,6 +15,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -26,9 +36,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 import de.elvah.charge.features.deals.ui.model.DealUI
 import de.elvah.charge.features.deals.ui.utils.MockData
+import de.elvah.charge.features.deals.ui.utils.getSecondsTillDealEnd
 import de.elvah.charge.features.deals.ui.utils.parseDate
 import de.elvah.charge.platform.ui.components.ButtonPrimary
 import de.elvah.charge.platform.ui.components.Chevron
@@ -36,6 +48,15 @@ import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.secondary
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.isActive
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 internal fun DealBanner_Content(
@@ -255,7 +276,6 @@ private fun DealButton(onBannerClick: () -> Unit, modifier: Modifier = Modifier)
     )
 }
 
-
 @PreviewLightDark
 @Composable
 private fun DealBanner_Preview() {
@@ -273,7 +293,6 @@ private fun DealBanner_Preview() {
             ), onDealClick = {})
     }
 }
-
 
 @PreviewLightDark
 @Composable
@@ -298,7 +317,6 @@ private fun DealBannerCollapsed_Preview() {
 private fun DealBanner_Loading_Preview() {
     ElvahChargeTheme {
         DealBanner_Loading()
-
     }
 }
 

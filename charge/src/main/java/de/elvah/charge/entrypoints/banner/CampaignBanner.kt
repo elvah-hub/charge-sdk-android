@@ -1,4 +1,4 @@
-package de.elvah.charge
+package de.elvah.charge.entrypoints.banner
 
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
@@ -6,11 +6,12 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.elvah.charge.entrypoints.DisplayBehavior
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
 import de.elvah.charge.features.deals.ui.DealsState
@@ -35,7 +36,7 @@ fun CampaignBanner(
     KoinContext {
         val dealsViewModel: DealsViewModel = koinViewModel()
 
-        val state by dealsViewModel.state.collectAsState()
+        val state by dealsViewModel.state.collectAsStateWithLifecycle()
         val context = LocalContext.current
 
         ElvahChargeTheme(darkTheme = shouldUseDarkColors(ChargeConfig.config.darkTheme)) {

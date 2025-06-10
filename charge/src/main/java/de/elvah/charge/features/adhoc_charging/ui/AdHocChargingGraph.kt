@@ -38,10 +38,13 @@ internal fun AdHocChargingGraph(dealId: String, onFinishClicked: () -> Unit) {
             }
         }
 
-        composable<ChargingPointDetailRoute> {
+        composable<ChargingPointDetailRoute>(
+            deepLinks = listOf(
+                navDeepLink<ChargingPointDetailRoute>(basePath = ChargingPointDetailRoute.route)
+            )
+        ) {
             ChargingPointDetailScreen(koinViewModel(), onBackClick = {
                 navController.navigateUp()
-
             }, onPaymentSuccess = { evseId, paymentId ->
                 navController.navigate(ChargingStartRoute(evseId, paymentId))
             })
