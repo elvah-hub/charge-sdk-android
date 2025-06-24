@@ -46,7 +46,7 @@ dependencyResolutionManagement {
 Add the following line to the dependencies in your `build.gradle` file:
 
 ```kotlin
-implementation("com.github.elvah-hub:charge-sdk-android:0.1.0")
+implementation("com.github.elvah-hub:charge-sdk-android:0.1.1")
 ```
 
 Alternatively, you can download the source code and place it in your project. Everything yoy need is
