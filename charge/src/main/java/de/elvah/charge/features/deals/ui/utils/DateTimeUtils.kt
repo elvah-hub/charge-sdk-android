@@ -1,6 +1,7 @@
 package de.elvah.charge.features.deals.ui.utils
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import de.elvah.charge.R
@@ -38,6 +39,17 @@ fun parseDate(date: String): String {
 
         else -> stringResource(R.string.ends_in_days_placeholder, timeDifference / SECONDS_IN_DAY)
     }
+}
+
+fun getSecondsTillDealEnd(date: String): Long {
+    val dateTimeFormat = DateTimeFormatter.ofPattern(DATE_FORMAT)
+
+    val currentDateTime = LocalDateTime.now()
+    val dealDateTime = LocalDateTime.parse(date, dateTimeFormat)
+
+    val timeDifference = ChronoUnit.SECONDS.between(currentDateTime, dealDateTime)
+
+    return timeDifference
 }
 
 private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"

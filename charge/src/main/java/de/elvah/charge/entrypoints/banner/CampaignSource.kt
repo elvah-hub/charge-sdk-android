@@ -1,4 +1,4 @@
-package de.elvah.charge
+package de.elvah.charge.entrypoints.banner
 
 import de.elvah.charge.features.deals.domain.usecase.UpdateLocation
 import org.koin.java.KoinJavaComponent
@@ -9,10 +9,10 @@ class CampaignSource() {
 
     suspend fun dealsAt(coordinates: Coordinates) {
         dealsAt(
-            coordinates.minLat,
-            coordinates.minLng,
-            coordinates.maxLat,
-            coordinates.maxLng
+            minLat = coordinates.minLat,
+            minLng = coordinates.minLng,
+            maxLat = coordinates.maxLat,
+            maxLng = coordinates.maxLng
         )
     }
 

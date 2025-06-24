@@ -4,7 +4,6 @@ import android.content.Context
 import com.stripe.android.PaymentConfiguration
 
 
-
 internal class InitStripeConfig(private val context: Context) {
 
     operator fun invoke(publishableKey: String, accountId: String) {

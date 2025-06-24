@@ -1,13 +1,10 @@
 package de.elvah.charge.features.payments.domain.repository
 
 import arrow.core.Either
-import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.PaymentIntent
 import de.elvah.charge.features.payments.domain.model.PaymentSummary
 
 internal interface PaymentsRepository {
-
-    val organisationDetails: OrganisationDetails?
 
     suspend fun createPaymentIntent(signedOffer: String): Either<Exception, PaymentIntent>
 

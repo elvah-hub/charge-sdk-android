@@ -25,7 +25,6 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 import de.elvah.charge.features.deals.ui.model.ChargePointUI
 import de.elvah.charge.features.deals.ui.utils.MockData
@@ -53,6 +53,7 @@ import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
+import kotlin.collections.isNotEmpty
 
 
 @Composable
@@ -60,7 +61,7 @@ internal fun SiteDetailScreen(
     viewModel: SiteDetailViewModel,
     onItemClick: (String, String) -> Unit,
 ) {
-    val uiState by viewModel.state.collectAsState()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     when (val state = uiState) {
         is SiteDetailState.Loading -> SiteDetailScreen_Loading()
@@ -115,37 +116,13 @@ private fun SiteDetailScreen_Content(
                 OfferBanner(modifier = Modifier.fillMaxWidth())
             }
 
-            var tabIndex by remember { mutableIntStateOf(0) }
-
-            ChargingTabs(tabIndex, onSelectedTab = { tabIndex = it }, Modifier.fillMaxWidth())
-
-            val items = state.dealUI.chargePoints
-
-            val filteredItems = items.groupBy { it.energyType }
-
-            val itemsShown = if (tabIndex == 0) {
-                filteredItems[
-                    stringResource(R.string.ac_label)
-                ]
-            } else {
-                filteredItems[
-                    stringResource(R.string.dc_label)
-                ]
-            } ?: emptyList()
-
-            if (itemsShown.isNotEmpty()){
-                ChargePointsList(itemsShown, onItemClick, Modifier.fillMaxWidth())
-            } else {
-                Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center){
-                    CopyLarge(stringResource(R.string.no_charge_points_available))
-                }
-            }
+            ChargePointsList(state.dealUI.chargePoints, onItemClick = onItemClick)
         }
     }
 }
 
 @Composable
-private fun OfferBanner(modifier : Modifier = Modifier){
+private fun OfferBanner(modifier: Modifier = Modifier) {
     BasicCard {
         Row(
             modifier = modifier
@@ -166,7 +143,49 @@ private fun OfferBanner(modifier : Modifier = Modifier){
 }
 
 @Composable
-private fun ChargingTabs(selectedTab: Int, onSelectedTab: (Int) -> Unit, modifier: Modifier = Modifier){
+internal fun ChargePointsList(
+    chargePoints: List<ChargePointUI>,
+    modifier: Modifier = Modifier,
+    onItemClick: (String, String) -> Unit
+) {
+    Column(modifier = modifier) {
+        var tabIndex by remember { mutableIntStateOf(0) }
+
+        ChargingTabs(tabIndex, onSelectedTab = { tabIndex = it }, Modifier.fillMaxWidth())
+
+        val filteredItems = chargePoints.groupBy { it.energyType }
+
+        val itemsShown = if (tabIndex == 0) {
+            filteredItems[
+                stringResource(R.string.ac_label)
+            ]
+        } else {
+            filteredItems[
+                stringResource(R.string.dc_label)
+            ]
+        } ?: emptyList()
+
+        if (itemsShown.isNotEmpty()) {
+            ChargePointsListContent(itemsShown, onItemClick, Modifier.fillMaxWidth())
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CopyLarge(stringResource(R.string.no_charge_points_available))
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChargingTabs(
+    selectedTab: Int,
+    onSelectedTab: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val tabs = listOf(
         stringResource(R.string.ac_label),
         stringResource(R.string.dc_label)
@@ -187,19 +206,23 @@ private fun ChargingTabs(selectedTab: Int, onSelectedTab: (Int) -> Unit, modifie
             Tab(
                 text = { Text(title, color = MaterialTheme.colorScheme.primary) },
                 selected = selectedTab == index,
-                onClick =  { onSelectedTab(index) },
+                onClick = { onSelectedTab(index) },
             )
         }
     }
 }
 
 @Composable
-private fun ChargePointsList(itemsShown: List<ChargePointUI>, onItemClick: (String, String) -> Unit, modifier: Modifier = Modifier){
+private fun ChargePointsListContent(
+    items: List<ChargePointUI>,
+    onItemClick: (String, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surface)
     ) {
-        itemsIndexed(itemsShown) { index, item ->
+        itemsIndexed(items) { index, item ->
             ChargePointItem(
                 chargePoint = item,
                 modifier = Modifier
@@ -208,7 +231,7 @@ private fun ChargePointsList(itemsShown: List<ChargePointUI>, onItemClick: (Stri
                         onItemClick(item.evseId, item.signedDeal)
                     }
             )
-            if (index != itemsShown.lastIndex) {
+            if (index != items.lastIndex) {
                 HorizontalDivider()
             }
         }

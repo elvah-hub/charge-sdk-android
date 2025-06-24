@@ -9,6 +9,7 @@ coilCompose = "3.1.0"
 composeBom = "2025.04.00"
 coreKtx = "1.16.0"
 dagger-hilt = "2.55"
+datastore = "1.1.6"
 datastorePreferences = "1.1.5"
 espressoCore = "3.6.1"
 google-services = "4.4.2"
@@ -30,6 +31,7 @@ navigationCompose = "2.8.9"
 navigationComposeVersion = "2.8.9"
 okhttp3 = "4.12.0"
 playServicesLocation = "21.3.0"
+protobufJavalite = "3.25.5"
 retrofit2 = "2.11.0"
 stripe = "21.10.0"
 test-rules = "1.6.1"
@@ -37,6 +39,7 @@ test-extensions = "1.2.1"
 timber = "5.0.1"
 turbine = "1.2.0"
 version-catalog-linter = "1.0.3"
+protobuf = "0.9.1"
 
 [libraries]
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -45,6 +48,7 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastorePreferences" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferences" }
@@ -91,11 +95,13 @@ moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.re
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp3" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
 retrofit-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit2" }
 stripe-android = { module = "com.stripe:stripe-android", version.ref = "stripe" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+
 
 
 [bundles]
@@ -124,3 +130,4 @@ parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotli
 serializable = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 version-catalog-linter = { id = "io.github.pemistahl.version-catalog-linter", version.ref = "version-catalog-linter" }
 maven-publish = { id = "maven-publish" }
+protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }

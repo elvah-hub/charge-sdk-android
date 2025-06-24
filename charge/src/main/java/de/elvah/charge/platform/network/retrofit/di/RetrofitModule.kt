@@ -1,4 +1,4 @@
-package de.elvah.charge.di
+package de.elvah.charge.platform.network.retrofit.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -8,12 +8,11 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 
-internal fun provideMoshi(): Moshi = Moshi.Builder()
+private fun provideMoshi(): Moshi = Moshi.Builder()
     .addLast(KotlinJsonAdapterFactory())
     .build()
 
-
-internal fun provideRetrofitFactory(
+private fun provideRetrofitFactory(
     okHttpClient: OkHttpClient,
     moshi: Moshi,
     httpLoggingInterceptor: HttpLoggingInterceptor,

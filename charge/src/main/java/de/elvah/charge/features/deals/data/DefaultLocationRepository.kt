@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 
-
 internal class DefaultLocationRepository(
 ) : LocationRepository {
 

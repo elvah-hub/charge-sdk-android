@@ -1,9 +1,6 @@
 package de.elvah.charge.platform.network
 
 
-
-
-
 internal class ApiUrlBuilder() {
 
     fun url(

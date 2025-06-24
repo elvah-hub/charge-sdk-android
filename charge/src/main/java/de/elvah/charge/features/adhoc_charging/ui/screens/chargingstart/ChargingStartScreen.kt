@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
@@ -57,7 +58,7 @@ internal fun ChargingStartScreen(
     viewModel: ChargingStartViewModel,
     onStartCharging: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     when (state) {
         is ChargingStartState.Loading -> ChargingStart_Loading()
         is ChargingStartState.Error -> ChargingStart_Error()
@@ -196,7 +197,7 @@ private fun ChargingPointLockedModal(
 @Preview
 @Composable
 private fun ChargingPointLockedModal_Preview() {
-    ChargingPointLockedModal() {}
+    ChargingPointLockedModal {}
 }
 
 @Composable
