@@ -13,6 +13,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import de.elvah.charge.entrypoints.banner.CampaignBanner
+import de.elvah.charge.entrypoints.banner.CampaignSource
 
 class MainActivity : ComponentActivity() {
 
@@ -39,10 +41,10 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 campaignSource.dealsAt(
                     CampaignSource.Coordinates(
-                        minLat = 14.0,
-                        minLng = -87.0,
-                        maxLat = 15.0,
-                        maxLng = -88.0
+                        minLat = 50.0,
+                        minLng = 40.0,
+                        maxLat = 51.0,
+                        maxLng = 41.0
                     )
                 )
             }

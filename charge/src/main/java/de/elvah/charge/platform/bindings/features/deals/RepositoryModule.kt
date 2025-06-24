@@ -10,11 +10,9 @@ internal abstract class RepositoryModule {
     companion object {
 
 
-
         fun providesDefaultDealsRepository(dealsApi: DealsApi): DefaultDealsRepository {
             return DefaultDealsRepository(dealsApi)
         }
-
 
 
         fun providesDefaultLocationRepository(): DefaultLocationRepository {

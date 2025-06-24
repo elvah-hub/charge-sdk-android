@@ -4,7 +4,6 @@ import arrow.core.Either
 import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
 
 
-
 internal class GetPaymentToken(
     private val paymentsRepository: PaymentsRepository,
 ) {

@@ -1,11 +1,9 @@
 package de.elvah.charge
 
 import android.content.Context
-import de.elvah.charge.di.okHttpModule
-import de.elvah.charge.di.retrofitModule
-import de.elvah.charge.features.adhoc_charging.data.di.AdHocChargingApiModule
 import de.elvah.charge.features.adhoc_charging.data.local.DefaultChargingStore
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
+import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
@@ -16,12 +14,12 @@ import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSessio
 import de.elvah.charge.features.adhoc_charging.ui.screens.activecharging.ActiveChargingViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingStartViewModel
-import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewViewModel
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
 import de.elvah.charge.features.deals.data.DefaultDealsRepository
 import de.elvah.charge.features.deals.data.DefaultLocationRepository
-import de.elvah.charge.features.deals.data.di.DealsApiModule
+import de.elvah.charge.features.deals.di.provideApi
 import de.elvah.charge.features.deals.domain.repository.DealsRepository
 import de.elvah.charge.features.deals.domain.repository.LocationRepository
 import de.elvah.charge.features.deals.domain.usecase.GetDeal
@@ -29,17 +27,23 @@ import de.elvah.charge.features.deals.domain.usecase.GetDeals
 import de.elvah.charge.features.deals.domain.usecase.GetLocation
 import de.elvah.charge.features.deals.domain.usecase.UpdateLocation
 import de.elvah.charge.features.deals.ui.DealsViewModel
-import de.elvah.charge.features.payments.data.di.PaymentsApiModule
 import de.elvah.charge.features.payments.data.repository.DefaultPaymentsRepository
+import de.elvah.charge.features.payments.di.provideChargeSettlementApi
+import de.elvah.charge.features.payments.di.provideIntegrateApi
 import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentSummary
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentToken
+import de.elvah.charge.features.payments.domain.usecase.GetSessionDetails
+import de.elvah.charge.features.payments.domain.usecase.GetSummaryInfo
+import de.elvah.charge.features.payments.domain.usecase.ResetSession
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.platform.bindings.features.adhoc.SharedPreferencesModule
 import de.elvah.charge.platform.config.ChargeConfig
 import de.elvah.charge.platform.network.ApiUrlBuilder
+import de.elvah.charge.platform.network.okhttp.di.okHttpModule
+import de.elvah.charge.platform.network.retrofit.di.retrofitModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -65,6 +69,9 @@ object Elvah {
         singleOf(::StartChargingSession)
         singleOf(::StopChargingSession)
         singleOf(::FetchChargingSession)
+        singleOf(::ResetSession)
+        singleOf(::GetSessionDetails)
+        singleOf(::GetSummaryInfo)
     }
 
     private val viewModelsModule = module {
@@ -88,16 +95,16 @@ object Elvah {
     val networkModule = module {
         singleOf(::ApiUrlBuilder)
         single {
-            AdHocChargingApiModule.provideChargingApi(get(), get())
+            provideChargingApi(get(), get())
         }
         single {
-            PaymentsApiModule.provideIntegrateApi(get(), get())
+            provideIntegrateApi(get(), get())
         }
 
         single {
-            PaymentsApiModule.provideChargeSettlementApi(get(), get())
+            provideChargeSettlementApi(get(), get())
         }
-        single { DealsApiModule.provideApi(get(), get()) }
+        single { provideApi(get(), get()) }
     }
 
     val localModule = module {

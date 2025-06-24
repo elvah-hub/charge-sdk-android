@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +6,7 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.serializable)
     alias(libs.plugins.maven.publish)
+    alias(libs.plugins.protobuf)
 }
 
 android {
@@ -45,13 +47,28 @@ android {
 publishing {
     publications {
         register<MavenPublication>("release") {
+            artifactId = "charge-sdk-android"
+            groupId = "com.github.elvah-hub"
+            version = "0.1.1"
+
             afterEvaluate {
                 from(components["release"])
             }
+        }
+    }
+}
 
-            artifactId = "charge-sdk-android"
-            groupId = "com.github.elvah-hub"
-            version = "0.1.0"
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:21.0-rc-1"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
         }
     }
 }
@@ -73,6 +90,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.stripe.android)
     implementation(libs.coil3.coil.compose)
+
+    implementation(libs.androidx.datastore)
+    implementation(libs.protobuf.javalite)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

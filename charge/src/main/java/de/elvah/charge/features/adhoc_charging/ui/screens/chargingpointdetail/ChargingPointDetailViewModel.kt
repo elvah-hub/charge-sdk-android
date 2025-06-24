@@ -18,6 +18,7 @@ import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.platform.core.mvi.MVIBaseViewModel
 import de.elvah.charge.platform.core.mvi.Reducer
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 internal class ChargingPointDetailViewModel(
     private val getPaymentConfiguration: GetPaymentConfiguration,
@@ -47,7 +48,7 @@ internal class ChargingPointDetailViewModel(
                 val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
                 val deal = dealsRepository.getDeal(route.dealId)
                 val chargePoint = deal.chargePoints.first { route.evseId == it.evseId }
-                val organisationDetails = getOrganisationDetails()
+                val organisationDetails = runBlocking { getOrganisationDetails() }
 
                 Reducer.Result(
                     Success(
@@ -84,12 +85,12 @@ internal class ChargingPointDetailViewModel(
     init {
         viewModelScope.launch {
             val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
-            executeInitializeStripe(route.signedOffer)
+            executeInitializeStripe(route.evseId, route.signedOffer)
         }
     }
 
-    private suspend fun executeInitializeStripe(evseId: String) {
-        val result: Either<Exception, PaymentConfiguration> = getPaymentConfiguration(evseId)
+    private suspend fun executeInitializeStripe(evseId: String, signedOffer: String) {
+        val result: Either<Exception, PaymentConfiguration> = getPaymentConfiguration(evseId, signedOffer)
         val logoUrl = getOrganisationDetails()?.logoUrl.orEmpty()
 
         result.fold(

@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SupportContacts
@@ -54,7 +55,7 @@ internal fun ActiveChargingScreen(
     onSupportClick: () -> Unit,
     onStopClick: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     when (state) {
         is ActiveChargingState.Loading -> ActiveCharging_Loading()

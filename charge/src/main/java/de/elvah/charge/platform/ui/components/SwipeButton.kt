@@ -181,7 +181,7 @@ fun SwipeButton(
     }
 }
 
-enum internal class DragAnchors {
+internal enum class DragAnchors {
     Start,
     End,
 }
