@@ -1,6 +1,9 @@
 package de.elvah.charge.features.deals.domain.usecase
 
 import arrow.core.Either
+import arrow.core.flatMap
+import arrow.core.left
+import arrow.core.right
 import de.elvah.charge.features.deals.domain.model.Deal
 
 
@@ -17,7 +20,13 @@ internal class GetDeal(
                     maxLng = maxLng,
                 )
             }
-        ).map { it.first() }
+        ).flatMap {
+            if (it.isNotEmpty()) {
+                it.first().right()
+            } else {
+                Exception("No deals found").left()
+            }
+        }
     }
 
     internal class Params(
