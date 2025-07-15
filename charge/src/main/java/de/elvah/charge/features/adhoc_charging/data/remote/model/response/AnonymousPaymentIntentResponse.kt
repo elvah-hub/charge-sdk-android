@@ -6,28 +6,28 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 class AnonymousPaymentIntentResponse(
 
-    @Json(name = "data")
+    @param:Json(name = "data")
     val data: Data,
 
-    @Json(name = "meta")
+    @param:Json(name = "meta")
     val meta: Any?,
 )
 
 @JsonClass(generateAdapter = true)
 class Data(
 
-    @Json(name = "paymentIntentId")
+    @param:Json(name = "paymentIntentId")
     val paymentIntentId: String,
 
-    @Json(name = "accountId")
+    @param:Json(name = "accountId")
     val accountId: String,
 
-    @Json(name = "ephemeralKey")
+    @param:Json(name = "ephemeralKey")
     val ephemeralKey: String,
 
-    @Json(name = "customerId")
+    @param:Json(name = "customerId")
     val customerId: String,
 
-    @Json(name = "clientSecret")
+    @param:Json(name = "clientSecret")
     val clientSecret: String,
 )

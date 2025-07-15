@@ -6,80 +6,80 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 class TariffInfoResponse(
 
-    @Json(name = "data")
+    @param:Json(name = "data")
     val data: List<DataItem>,
 
-    @Json(name = "meta")
+    @param:Json(name = "meta")
     val meta: Any?,
 )
 
 @JsonClass(generateAdapter = true)
 class DataItem(
 
-    @Json(name = "evseId")
+    @param:Json(name = "evseId")
     val evseId: String,
 
-    @Json(name = "energyTariff")
+    @param:Json(name = "energyTariff")
     val energyTariff: EnergyTariff,
 
-    @Json(name = "timeTariff")
+    @param:Json(name = "timeTariff")
     val timeTariff: TimeTariff?,
 
-    @Json(name = "createdAt")
+    @param:Json(name = "createdAt")
     val createdAt: String,
 
-    @Json(name = "authorizationAmount")
+    @param:Json(name = "authorizationAmount")
     val authorizationAmount: AuthorizationAmount,
 
-    @Json(name = "signedOffer")
+    @param:Json(name = "signedOffer")
     val signedOffer: String,
 
-    @Json(name = "currency")
+    @param:Json(name = "currency")
     val currency: String,
 
-    @Json(name = "tariffRuleId")
+    @param:Json(name = "tariffRuleId")
     val tariffRuleId: String,
 
-    @Json(name = "baseTariff")
+    @param:Json(name = "baseTariff")
     val baseTariff: BaseTariff?,
 
-    @Json(name = "expiresAt")
+    @param:Json(name = "expiresAt")
     val expiresAt: String,
 )
 
 @JsonClass(generateAdapter = true)
 class EnergyTariff(
 
-    @Json(name = "pricePerKWH")
+    @param:Json(name = "pricePerKWH")
     val pricePerKWH: Int,
 )
 
 @JsonClass(generateAdapter = true)
 class AuthorizationAmount(
 
-    @Json(name = "amount")
+    @param:Json(name = "amount")
     val amount: Int,
 )
 
 @JsonClass(generateAdapter = true)
 class BaseTariff(
 
-    @Json(name = "activeHours")
+    @param:Json(name = "activeHours")
     val activeHours: Any?,
 
-    @Json(name = "basePrice")
+    @param:Json(name = "basePrice")
     val basePrice: Int,
 )
 
 @JsonClass(generateAdapter = true)
 class TimeTariff(
 
-    @Json(name = "pricePerMinute")
+    @param:Json(name = "pricePerMinute")
     val pricePerMinute: Int,
 
-    @Json(name = "freeMinutesPerSession")
+    @param:Json(name = "freeMinutesPerSession")
     val freeMinutesPerSession: Int,
 
-    @Json(name = "activeHours")
+    @param:Json(name = "activeHours")
     val activeHours: Any?,
 )

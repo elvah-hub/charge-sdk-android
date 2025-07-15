@@ -4,91 +4,91 @@ import com.squareup.moshi.Json
 
 data class SitesDto(
 
-	@Json(name="data")
+	@param:Json(name="data")
 	val data: List<DataItemDto>,
 
-	@Json(name="meta")
+	@param:Json(name="meta")
 	val meta: MetaDto
 )
 
 data class BlockingFeeDto(
 
-	@Json(name="pricePerMinute")
+	@param:Json(name="pricePerMinute")
 	val pricePerMinute: Int,
 
-	@Json(name="startsAfterMinutes")
+	@param:Json(name="startsAfterMinutes")
 	val startsAfterMinutes: Int
 )
 
 data class PowerSpecificationDto(
 
-	@Json(name="maxPowerInKW")
+	@param:Json(name="maxPowerInKW")
 	val maxPowerInKW: Int,
 
-	@Json(name="type")
+	@param:Json(name="type")
 	val type: String
 )
 
 data class OfferDto(
 
-	@Json(name="price")
+	@param:Json(name="price")
 	val price: PriceDto,
 
-	@Json(name="type")
+	@param:Json(name="type")
 	val type: String,
 
-	@Json(name="expiresAt")
+	@param:Json(name="expiresAt")
 	val expiresAt: String
 )
 
 data class EvsesItemDto(
 
-	@Json(name="evseId")
+	@param:Json(name="evseId")
 	val evseId: String,
 
-	@Json(name="offer")
+	@param:Json(name="offer")
 	val offer: OfferDto,
 
-	@Json(name="powerSpecification")
+	@param:Json(name="powerSpecification")
 	val powerSpecification: PowerSpecificationDto,
 
-	@Json(name="normalizedEvseId")
+	@param:Json(name="normalizedEvseId")
 	val normalizedEvseId: String
 )
 
 data class DataItemDto(
 
-	@Json(name="address")
+	@param:Json(name="address")
 	val address: AddressDto,
 
-	@Json(name="evses")
+	@param:Json(name="evses")
 	val evses: List<EvsesItemDto>,
 
-	@Json(name="location")
+	@param:Json(name="location")
 	val location: List<Int>,
 
-	@Json(name="id")
+	@param:Json(name="id")
 	val id: String,
 
-	@Json(name="operatorName")
+	@param:Json(name="operatorName")
 	val operatorName: String,
 
-	@Json(name="prevalentPowerType")
+	@param:Json(name="prevalentPowerType")
 	val prevalentPowerType: String
 )
 
 data class PriceDto(
 
-	@Json(name="energyPricePerKWh")
+	@param:Json(name="energyPricePerKWh")
 	val energyPricePerKWh: Int,
 
-	@Json(name="baseFee")
+	@param:Json(name="baseFee")
 	val baseFee: Int,
 
-	@Json(name="currency")
+	@param:Json(name="currency")
 	val currency: String,
 
-	@Json(name="blockingFee")
+	@param:Json(name="blockingFee")
 	val blockingFee: BlockingFeeDto
 )
 
@@ -98,12 +98,12 @@ data class MetaDto(
 
 data class AddressDto(
 
-	@Json(name="streetAddress")
+	@param:Json(name="streetAddress")
 	val streetAddress: List<String>,
 
-	@Json(name="postalCode")
+	@param:Json(name="postalCode")
 	val postalCode: String,
 
-	@Json(name="locality")
+	@param:Json(name="locality")
 	val locality: String
 )

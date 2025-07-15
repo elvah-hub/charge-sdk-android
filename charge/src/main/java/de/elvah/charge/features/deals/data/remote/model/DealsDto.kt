@@ -6,72 +6,72 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 internal class DealsDto(
 
-    @Json(name = "data")
+    @param:Json(name = "data")
     val data: List<CPOItem>,
 
-    @Json(name = "meta")
+    @param:Json(name = "meta")
     val meta: Meta?,
 )
 
 @JsonClass(generateAdapter = true)
 internal class CPOItem(
 
-    @Json(name = "deals")
+    @param:Json(name = "deals")
     val deals: List<DealsItem>,
 
-    @Json(name = "location")
+    @param:Json(name = "location")
     val location: List<Double>,
 
-    @Json(name = "id")
+    @param:Json(name = "id")
     val id: String,
 
-    @Json(name = "operatorName")
+    @param:Json(name = "operatorName")
     val operatorName: String,
 
-    @Json(name = "address")
+    @param:Json(name = "address")
     val address: AddressDto
 )
 
 @JsonClass(generateAdapter = true)
 internal class DealsItem(
 
-    @Json(name = "evseId")
+    @param:Json(name = "evseId")
     val evseId: String,
 
-    @Json(name = "campaignEndDate")
+    @param:Json(name = "campaignEndDate")
     val campaignEndDate: String,
 
-    @Json(name = "powerSpecification")
+    @param:Json(name = "powerSpecification")
     val powerSpecification: PowerSpecification,
 
-    @Json(name = "signedDeal")
+    @param:Json(name = "signedDeal")
     val signedDeal: String,
 
-    @Json(name = "currency")
+    @param:Json(name = "currency")
     val currency: String,
 
-    @Json(name = "id")
+    @param:Json(name = "id")
     val id: String,
 
-    @Json(name = "normalizedEvseId")
+    @param:Json(name = "normalizedEvseId")
     val normalizedEvseId: String,
 
-    @Json(name = "pricePerKWh")
+    @param:Json(name = "pricePerKWh")
     val pricePerKWh: Double,
 
-    @Json(name = "expiresAt")
+    @param:Json(name = "expiresAt")
     val expiresAt: String,
 )
 
 @JsonClass(generateAdapter = true)
 internal class AddressDto(
-    @Json(name = "streetAddress")
+    @param:Json(name = "streetAddress")
     val streetAddress: List<String>,
 
-    @Json(name = "postalCode")
+    @param:Json(name = "postalCode")
     val postalCode: String,
 
-    @Json(name = "locality")
+    @param:Json(name = "locality")
     val locality: String,
 )
 
@@ -79,21 +79,21 @@ internal class AddressDto(
 @JsonClass(generateAdapter = true)
 internal class Currency(
 
-    @Json(name = "symbol")
+    @param:Json(name = "symbol")
     val symbol: String,
 
-    @Json(name = "displayName")
+    @param:Json(name = "displayName")
     val displayName: String,
 
-    @Json(name = "numericCodeAsString")
+    @param:Json(name = "numericCodeAsString")
     val numericCodeAsString: String,
 
-    @Json(name = "currencyCode")
+    @param:Json(name = "currencyCode")
     val currencyCode: String,
 
-    @Json(name = "defaultFractionDigits")
+    @param:Json(name = "defaultFractionDigits")
     val defaultFractionDigits: Int,
 
-    @Json(name = "numericCode")
+    @param:Json(name = "numericCode")
     val numericCode: Int,
 )

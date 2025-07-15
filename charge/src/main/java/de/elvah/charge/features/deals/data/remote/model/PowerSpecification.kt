@@ -6,9 +6,9 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 internal class PowerSpecification(
 
-    @Json(name = "maxPowerInKW")
+    @param:Json(name = "maxPowerInKW")
     val maxPowerInKW: Int,
 
-    @Json(name = "type")
+    @param:Json(name = "type")
     val type: String, // AC/DC
 )
