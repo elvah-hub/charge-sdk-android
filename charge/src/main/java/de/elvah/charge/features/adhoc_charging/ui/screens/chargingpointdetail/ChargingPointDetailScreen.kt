@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,12 +56,11 @@ internal fun ChargingPointDetailScreen(
     onBackClick: () -> Unit,
     onPaymentSuccess: (String, String) -> Unit,
 ) {
-
     val state by chargingPointDetailViewModel.state.collectAsStateWithLifecycle()
 
     when (state) {
-        is ChargingPointDetailState.Loading -> ChargingPointDetail_Loading(state as ChargingPointDetailState.Loading)
-        is ChargingPointDetailState.Error -> ChargingPointDetail_Error(state as ChargingPointDetailState.Error)
+        is ChargingPointDetailState.Loading -> ChargingPointDetail_Loading()
+        is ChargingPointDetailState.Error -> ChargingPointDetail_Error()
         is ChargingPointDetailState.Success -> {
 
             val paymentSheet = rememberPaymentSheet {
@@ -300,16 +298,12 @@ private fun ChargingPointDetailActions(
 }
 
 @Composable
-private fun ChargingPointDetail_Error(
-    state: ChargingPointDetailState.Error,
-) {
+private fun ChargingPointDetail_Error() {
     FullScreenError()
 }
 
 @Composable
-private fun ChargingPointDetail_Loading(
-    state: ChargingPointDetailState.Loading,
-) {
+private fun ChargingPointDetail_Loading() {
     FullScreenLoading()
 }
 

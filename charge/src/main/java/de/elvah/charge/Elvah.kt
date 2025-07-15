@@ -4,6 +4,7 @@ import android.content.Context
 import de.elvah.charge.features.adhoc_charging.data.local.DefaultChargingStore
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
 import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
+import de.elvah.charge.features.adhoc_charging.di.adHocChargingUseCasesModule
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
@@ -39,7 +40,8 @@ import de.elvah.charge.features.payments.domain.usecase.GetSessionDetails
 import de.elvah.charge.features.payments.domain.usecase.GetSummaryInfo
 import de.elvah.charge.features.payments.domain.usecase.ResetSession
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
-import de.elvah.charge.platform.bindings.features.adhoc.SharedPreferencesModule
+import de.elvah.charge.features.sites.data.DefaultSitesRepository
+import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.platform.config.ChargeConfig
 import de.elvah.charge.platform.network.ApiUrlBuilder
 import de.elvah.charge.platform.network.okhttp.di.okHttpModule
@@ -59,16 +61,11 @@ object Elvah {
         singleOf(::GetDeals)
         singleOf(::UpdateLocation)
         singleOf(::GetLocation)
-        singleOf(::HasActiveChargingSession)
         singleOf(::GetPaymentConfiguration)
         singleOf(::InitStripeConfig)
         singleOf(::GetOrganisationDetails)
         singleOf(::GetPaymentToken)
         singleOf(::GetPaymentSummary)
-        singleOf(::ObserveChargingSession)
-        singleOf(::StartChargingSession)
-        singleOf(::StopChargingSession)
-        singleOf(::FetchChargingSession)
         singleOf(::ResetSession)
         singleOf(::GetSessionDetails)
         singleOf(::GetSummaryInfo)
@@ -90,6 +87,7 @@ object Elvah {
         singleOf(::DefaultChargingStore) { bind<ChargingStore>() }
         singleOf(::DefaultLocationRepository) { bind<LocationRepository>() }
         singleOf(::DefaultDealsRepository) { bind<DealsRepository>() }
+        singleOf(::DefaultSitesRepository) { bind<SitesRepository>() }
     }
 
     val networkModule = module {
@@ -105,12 +103,11 @@ object Elvah {
             provideChargeSettlementApi(get(), get())
         }
         single { provideApi(get(), get()) }
+        single { de.elvah.charge.features.sites.di.provideApi(get(), get()) }
     }
 
     val localModule = module {
-        single {
-            SharedPreferencesModule.providesSharedPreferences(get())
-        }
+
     }
 
     fun initialize(context: Context, config: Config) {
@@ -124,7 +121,8 @@ object Elvah {
                 localModule,
                 repositoriesModule,
                 okHttpModule,
-                retrofitModule
+                retrofitModule,
+                adHocChargingUseCasesModule,
             )
         }
 

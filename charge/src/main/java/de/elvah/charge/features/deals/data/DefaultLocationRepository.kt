@@ -11,25 +11,10 @@ internal class DefaultLocationRepository(
 ) : LocationRepository {
 
     private val _location: MutableSharedFlow<DealLocation> =
-        MutableSharedFlow<DealLocation>(replay = 1)
+        MutableSharedFlow(replay = 1)
     override val location: Flow<DealLocation> = _location.asSharedFlow()
 
     override suspend fun updateLocation(location: DealLocation) {
         _location.emit(location)
     }
-
-    /*
-    init {
-        startLocationUpdates()
-    }
-
-    private fun startLocationUpdates() {
-        runBlocking {
-            delay(1000)
-            Log.d("LocationRepository", "startLocationUpdates")
-            updateLocation(DealLocation(minLat = 5.0, minLng = 4.0, maxLat = 52.0, maxLng = 50.0))
-        }
-    }
-
-     */
 }

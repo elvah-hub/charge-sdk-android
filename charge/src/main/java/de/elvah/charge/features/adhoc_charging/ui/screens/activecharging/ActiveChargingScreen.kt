@@ -239,9 +239,7 @@ internal fun ActiveCharging_Stopping(
             }
             Spacer(Modifier.weight(1f))
 
-
             StopChargingActions(onSupportClick)
-
 
             Spacer(Modifier.size(20.dp))
             ElvahLogo()
@@ -270,12 +268,12 @@ fun TickIcon(modifier: Modifier = Modifier) {
 @Composable
 private fun KilowattsText(kilowatts: Double, modifier: Modifier = Modifier) {
     val kilowattsText = buildAnnotatedString {
-        withStyle(titleXLargeBold.toSpanStyle()) {
+        withStyle(titleXLargeBold.copy(color = MaterialTheme.colorScheme.primary).toSpanStyle()) {
             append(kilowatts.toString())
         }
         appendLine()
 
-        withStyle(copyMedium.toSpanStyle()) {
+        withStyle(copyMedium.copy(color = MaterialTheme.colorScheme.primary).toSpanStyle()) {
             append(stringResource(R.string.kilowatts_charged_label))
         }
     }
@@ -290,12 +288,12 @@ private fun KilowattsText(kilowatts: Double, modifier: Modifier = Modifier) {
 @Composable
 private fun ChargingTimeText(time: String, modifier: Modifier = Modifier) {
     val chargingTimeText = buildAnnotatedString {
-        withStyle(titleMediumBold.toSpanStyle()) {
+        withStyle(titleMediumBold.copy(color = MaterialTheme.colorScheme.primary).toSpanStyle()) {
             append(time)
         }
         appendLine()
 
-        withStyle(copyMedium.toSpanStyle()) {
+        withStyle(copyMedium.copy(color = MaterialTheme.colorScheme.primary).toSpanStyle()) {
             append(stringResource(R.string.charging_duration_label))
         }
     }

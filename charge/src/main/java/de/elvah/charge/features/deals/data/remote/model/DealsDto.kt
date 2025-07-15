@@ -48,7 +48,6 @@ internal class DealsItem(
     val signedDeal: String,
 
     @Json(name = "currency")
-    //val currency: Currency, // TODO(Backend): Change return type
     val currency: String,
 
     @Json(name = "id")
