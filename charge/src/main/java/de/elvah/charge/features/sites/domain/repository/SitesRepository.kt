@@ -1,13 +1,9 @@
 package de.elvah.charge.features.sites.domain.repository
 
 import arrow.core.Either
-import de.elvah.charge.entrypoints.banner.EvseId
-import de.elvah.charge.features.deals.domain.model.Deal
-import de.elvah.charge.features.deals.ui.model.SignedChargePointUI
-import de.elvah.charge.features.sites.data.DefaultSitesRepository
-import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
+import de.elvah.charge.features.sites.domain.model.filters.OfferType
 
 internal interface SitesRepository {
 

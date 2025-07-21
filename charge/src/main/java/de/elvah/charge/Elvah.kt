@@ -13,16 +13,6 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.Charging
 import de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
-import de.elvah.charge.features.deals.data.DefaultDealsRepository
-import de.elvah.charge.features.deals.data.DefaultLocationRepository
-import de.elvah.charge.features.deals.di.provideApi
-import de.elvah.charge.features.deals.domain.repository.DealsRepository
-import de.elvah.charge.features.deals.domain.repository.LocationRepository
-import de.elvah.charge.features.deals.domain.usecase.GetDeal
-import de.elvah.charge.features.deals.domain.usecase.GetDeals
-import de.elvah.charge.features.deals.domain.usecase.GetLocation
-import de.elvah.charge.features.deals.domain.usecase.UpdateLocation
-import de.elvah.charge.features.deals.ui.DealsViewModel
 import de.elvah.charge.features.payments.data.repository.DefaultPaymentsRepository
 import de.elvah.charge.features.payments.di.provideChargeSettlementApi
 import de.elvah.charge.features.payments.di.provideIntegrateApi
@@ -53,10 +43,6 @@ import org.koin.dsl.module
 object Elvah {
 
     private val useCaseModule = module {
-        singleOf(::GetDeal)
-        singleOf(::GetDeals)
-        singleOf(::UpdateLocation)
-        singleOf(::GetLocation)
         singleOf(::GetPaymentConfiguration)
         singleOf(::InitStripeConfig)
         singleOf(::GetOrganisationDetails)
@@ -68,7 +54,6 @@ object Elvah {
     }
 
     private val viewModelsModule = module {
-        viewModelOf(::DealsViewModel)
         viewModelOf(::SiteDetailViewModel)
         viewModelOf(::ChargingPointDetailViewModel)
         viewModelOf(::ChargingStartViewModel)
@@ -81,8 +66,6 @@ object Elvah {
         singleOf(::DefaultChargingRepository) { bind<ChargingRepository>() }
         singleOf(::DefaultPaymentsRepository) { bind<PaymentsRepository>() }
         singleOf(::DefaultChargingStore) { bind<ChargingStore>() }
-        singleOf(::DefaultLocationRepository) { bind<LocationRepository>() }
-        singleOf(::DefaultDealsRepository) { bind<DealsRepository>() }
     }
 
     val networkModule = module {
@@ -97,7 +80,6 @@ object Elvah {
         single {
             provideChargeSettlementApi(get(), get())
         }
-        single { provideApi(get(), get()) }
         single { de.elvah.charge.features.sites.di.provideApi(get(), get()) }
     }
 

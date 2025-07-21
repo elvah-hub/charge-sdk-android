@@ -14,9 +14,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.entrypoints.DisplayBehavior
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
-import de.elvah.charge.features.deals.ui.components.DealBanner_ActiveSession
-import de.elvah.charge.features.deals.ui.components.DealBanner_Content
-import de.elvah.charge.features.deals.ui.components.DealBanner_Error
+import de.elvah.charge.features.deals.ui.components.ChargeBanner_ActiveSession
+import de.elvah.charge.features.deals.ui.components.ChargeBanner_Content
+import de.elvah.charge.features.deals.ui.components.ChargeBanner_Error
 import de.elvah.charge.features.deals.ui.components.DealBanner_Loading
 import de.elvah.charge.features.sites.ui.SitesState
 import de.elvah.charge.features.sites.ui.SitesViewModel
@@ -41,7 +41,7 @@ fun ChargeBanner(
         when (val state = state) {
             SitesState.Error -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
-                    DealBanner_Error(modifier)
+                    ChargeBanner_Error(modifier)
                 }
             }
 
@@ -53,7 +53,7 @@ fun ChargeBanner(
                 }
             }
 
-            is SitesState.Success -> DealBanner_Content(
+            is SitesState.Success -> ChargeBanner_Content(
                 site = state.site,
                 compact = variant == BannerVariant.COMPACT,
                 modifier = modifier
@@ -61,7 +61,7 @@ fun ChargeBanner(
                 context.openDeal(dealId = it.id)
             }
 
-            is SitesState.ActiveSession -> DealBanner_ActiveSession(
+            is SitesState.ActiveSession -> ChargeBanner_ActiveSession(
                 site = state.site,
                 modifier = modifier,
                 onBannerClick = {
