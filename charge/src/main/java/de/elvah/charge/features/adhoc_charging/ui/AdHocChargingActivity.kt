@@ -7,26 +7,23 @@ import androidx.activity.enableEdgeToEdge
 import de.elvah.charge.platform.config.ChargeConfig
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
-import org.koin.compose.KoinContext
 
 class AdHocChargingActivity : ComponentActivity() {
 
     companion object {
-        const val ARG_DEAL_ID = "dealId"
+        const val ARG_SITE_ID = "siteId"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val dealId = intent.extras?.getString(ARG_DEAL_ID).orEmpty()
+        val siteId = intent.extras?.getString(ARG_SITE_ID).orEmpty()
 
         setContent {
             ElvahChargeTheme(darkTheme = shouldUseDarkColors(ChargeConfig.config.darkTheme)) {
-                KoinContext {
-                    AdHocChargingGraph(dealId) {
-                        finish()
-                    }
+                AdHocChargingGraph(siteId) {
+                    finish()
                 }
             }
         }

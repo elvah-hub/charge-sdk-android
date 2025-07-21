@@ -1,5 +1,6 @@
 package de.elvah.charge.platform.network.retrofit.di
 
+import coil3.intercept.Interceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.elvah.charge.platform.network.retrofit.ApiKeyInterceptor
@@ -16,17 +17,19 @@ private fun provideRetrofitFactory(
     okHttpClient: OkHttpClient,
     moshi: Moshi,
     httpLoggingInterceptor: HttpLoggingInterceptor,
-    apiKeyInterceptor: ApiKeyInterceptor
+    apiKeyInterceptor: ApiKeyInterceptor,
+    distinctKeyInterceptor: okhttp3.Interceptor
 ): RetrofitFactory {
     return RetrofitFactory(
         okHttpClient = okHttpClient,
         httpLoggingInterceptor = httpLoggingInterceptor,
         moshi = moshi,
-        apiKeyInterceptor = apiKeyInterceptor
+        apiKeyInterceptor = apiKeyInterceptor,
+        distinctKeyInterceptor = distinctKeyInterceptor
     )
 }
 
 val retrofitModule = module {
     single { provideMoshi() }
-    single { provideRetrofitFactory(get(), get(), get(), get()) }
+    single { provideRetrofitFactory(get(), get(), get(), get(), get()) }
 }

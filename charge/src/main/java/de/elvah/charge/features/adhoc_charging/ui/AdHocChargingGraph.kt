@@ -20,19 +20,18 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailS
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-internal fun AdHocChargingGraph(dealId: String, onFinishClicked: () -> Unit) {
+internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = SiteDetailRoute(dealId)) {
+    NavHost(navController, startDestination = SiteDetailRoute(siteId)) {
 
         composable<SiteDetailRoute> {
-            SiteDetailScreen(koinViewModel()) { evseId, signedOffer ->
+            SiteDetailScreen(koinViewModel()) { evseId ->
                 navController.navigate(
                     ChargingPointDetailRoute(
-                        dealId = dealId,
+                        siteId = siteId,
                         evseId = evseId,
-                        signedOffer = signedOffer
                     )
                 )
             }
@@ -40,7 +39,7 @@ internal fun AdHocChargingGraph(dealId: String, onFinishClicked: () -> Unit) {
 
         composable<ChargingPointDetailRoute>(
             deepLinks = listOf(
-                navDeepLink<ChargingPointDetailRoute>(basePath = ChargingPointDetailRoute.route)
+                navDeepLink<ChargingPointDetailRoute>(basePath = ChargingPointDetailRoute.ROUTE)
             )
         ) {
             ChargingPointDetailScreen(koinViewModel(), onBackClick = {

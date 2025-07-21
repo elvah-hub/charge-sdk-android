@@ -19,14 +19,12 @@ import de.elvah.charge.platform.config.ChargeConfig
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.KoinContext
 
 @Composable
 fun ChargePointList(
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
 ) {
-    KoinContext {
         val siteDetailViewModel: SiteDetailViewModel = koinViewModel()
 
         val state by siteDetailViewModel.state.collectAsStateWithLifecycle()
@@ -44,20 +42,18 @@ fun ChargePointList(
                     }
                 }
                 is SiteDetailState.Success -> {
-                    ChargePointsList(state.dealUI.chargePoints, onItemClick = { evseId, signedDeal ->  })
+                    ChargePointsList(state.chargeSiteUI.chargePoints, onItemClick = { evseId ->  })
                 }
             }
         }
-    }
 }
 
-fun Context.goToChargePoint(evseId: String, signedDeal: String) {
+fun Context.goToChargePoint(evseId: String) {
     val deepLinkIntent = Intent(
         Intent.ACTION_VIEW,
         ChargingPointDetailRoute(
-            dealId = "",
+            siteId = "",
             evseId = evseId,
-            signedOffer = signedDeal
         ).route.toUri(),
         this,
         AdHocChargingActivity::class.java

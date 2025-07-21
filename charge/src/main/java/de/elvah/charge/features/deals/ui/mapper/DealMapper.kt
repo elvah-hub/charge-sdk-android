@@ -21,5 +21,4 @@ internal fun ChargePoint.toUI() = ChargePointUI(
     pricePerKwh = this.pricePerKwh,
     energyType = this.energyType,
     energyValue = this.energyValue,
-    signedDeal = this.signedDeal
 )

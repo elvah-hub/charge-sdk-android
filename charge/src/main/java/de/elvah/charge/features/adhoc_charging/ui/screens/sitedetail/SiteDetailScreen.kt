@@ -59,7 +59,7 @@ import kotlin.collections.isNotEmpty
 @Composable
 internal fun SiteDetailScreen(
     viewModel: SiteDetailViewModel,
-    onItemClick: (String, String) -> Unit,
+    onItemClick: (String) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -73,7 +73,7 @@ internal fun SiteDetailScreen(
 @Composable
 private fun SiteDetailScreen_Content(
     state: SiteDetailState.Success,
-    onItemClick: (String, String) -> Unit,
+    onItemClick: (String) -> Unit,
 ) {
     Scaffold {
         Column(
@@ -87,9 +87,9 @@ private fun SiteDetailScreen_Content(
                     .systemBarsPadding()
                     .padding(16.dp)
             ) {
-                TitleSmall(state.dealUI.cpoName)
+                TitleSmall(state.chargeSiteUI.cpoName)
                 Spacer(modifier = Modifier.size(6.dp))
-                CopyMedium(state.dealUI.address, color = MaterialTheme.colorScheme.secondary)
+                CopyMedium(state.chargeSiteUI.address, color = MaterialTheme.colorScheme.secondary)
 
                 Spacer(modifier = Modifier.size(20.dp))
 
@@ -99,7 +99,7 @@ private fun SiteDetailScreen_Content(
                     text = stringResource(R.string.route_label),
                     icon = R.drawable.ic_directions,
                     onClick = {
-                        with(state.dealUI) {
+                        with(state.chargeSiteUI) {
                             context.openMap(lat, lng, cpoName)
                         }
                     }
@@ -116,7 +116,7 @@ private fun SiteDetailScreen_Content(
                 OfferBanner(modifier = Modifier.fillMaxWidth())
             }
 
-            ChargePointsList(state.dealUI.chargePoints, onItemClick = onItemClick)
+            ChargePointsList(state.chargeSiteUI.chargePoints, onItemClick = onItemClick)
         }
     }
 }
@@ -146,7 +146,7 @@ private fun OfferBanner(modifier: Modifier = Modifier) {
 internal fun ChargePointsList(
     chargePoints: List<ChargePointUI>,
     modifier: Modifier = Modifier,
-    onItemClick: (String, String) -> Unit
+    onItemClick: (String) -> Unit
 ) {
     Column(modifier = modifier) {
         var tabIndex by remember { mutableIntStateOf(0) }
@@ -215,7 +215,7 @@ private fun ChargingTabs(
 @Composable
 private fun ChargePointsListContent(
     items: List<ChargePointUI>,
-    onItemClick: (String, String) -> Unit,
+    onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -228,7 +228,7 @@ private fun ChargePointsListContent(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface)
                     .clickable {
-                        onItemClick(item.evseId, item.signedDeal)
+                        onItemClick(item.evseId)
                     }
             )
             if (index != items.lastIndex) {
@@ -274,9 +274,9 @@ private fun SiteDetailScreen_Content_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
             SiteDetailState.Success(
-                dealUI = MockData.dealUI
+                chargeSiteUI = MockData.siteUI
             ),
-            onItemClick = { _, _ -> }
+            onItemClick = { _ -> }
         )
     }
 }
@@ -287,9 +287,9 @@ private fun SiteDetailScreen_Content_EmptyList_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
             SiteDetailState.Success(
-                dealUI = MockData.dealWithoutChargePoints
+                chargeSiteUI = MockData.siteWithoutChargePoints
             ),
-            onItemClick = { _, _ -> }
+            onItemClick = { _ -> }
         )
     }
 }

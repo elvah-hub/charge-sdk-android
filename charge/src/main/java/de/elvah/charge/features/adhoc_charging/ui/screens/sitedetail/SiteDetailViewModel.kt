@@ -3,34 +3,22 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
-import de.elvah.charge.features.deals.domain.repository.DealsRepository
-import de.elvah.charge.features.deals.ui.mapper.toUI
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import de.elvah.charge.features.sites.domain.repository.SitesRepository
+import de.elvah.charge.features.sites.ui.mapper.toUI
+import de.elvah.charge.platform.ui.navigation.asFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 internal class SiteDetailViewModel(
-    dealsRepository: DealsRepository,
+    sitesRepository: SitesRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<SiteDetailState>(SiteDetailState.Loading)
-    val state = _state.asStateFlow()
-
-    init {
-        val route = savedStateHandle.toRoute<AdHocChargingScreens.SiteDetailRoute>()
-
-        viewModelScope.launch {
-            val deal = dealsRepository.getDeal(route.dealId)
-
-            _state.update {
-                SiteDetailState.Success(
-                    deal.toUI()
-                )
-            }
-        }
-    }
+    val state = savedStateHandle.asFlow<AdHocChargingScreens.SiteDetailRoute>()
+        .map {
+            val site = sitesRepository.getChargeSite(it.siteId).toUI()
+            SiteDetailState.Success(site)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SiteDetailState.Loading)
 }

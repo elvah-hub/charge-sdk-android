@@ -3,15 +3,10 @@ package de.elvah.charge
 import android.content.Context
 import de.elvah.charge.features.adhoc_charging.data.local.DefaultChargingStore
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
-import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
 import de.elvah.charge.features.adhoc_charging.di.adHocChargingUseCasesModule
+import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
-import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.usecase.HasActiveChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.usecase.StartChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.adhoc_charging.ui.screens.activecharging.ActiveChargingViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingStartViewModel
@@ -40,8 +35,9 @@ import de.elvah.charge.features.payments.domain.usecase.GetSessionDetails
 import de.elvah.charge.features.payments.domain.usecase.GetSummaryInfo
 import de.elvah.charge.features.payments.domain.usecase.ResetSession
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
-import de.elvah.charge.features.sites.data.DefaultSitesRepository
-import de.elvah.charge.features.sites.domain.repository.SitesRepository
+import de.elvah.charge.features.sites.di.sitesRepositoriesModule
+import de.elvah.charge.features.sites.di.sitesUseCaseModule
+import de.elvah.charge.features.sites.di.sitesViewModelModule
 import de.elvah.charge.platform.config.ChargeConfig
 import de.elvah.charge.platform.network.ApiUrlBuilder
 import de.elvah.charge.platform.network.okhttp.di.okHttpModule
@@ -87,7 +83,6 @@ object Elvah {
         singleOf(::DefaultChargingStore) { bind<ChargingStore>() }
         singleOf(::DefaultLocationRepository) { bind<LocationRepository>() }
         singleOf(::DefaultDealsRepository) { bind<DealsRepository>() }
-        singleOf(::DefaultSitesRepository) { bind<SitesRepository>() }
     }
 
     val networkModule = module {
@@ -123,6 +118,9 @@ object Elvah {
                 okHttpModule,
                 retrofitModule,
                 adHocChargingUseCasesModule,
+                sitesRepositoriesModule,
+                sitesUseCaseModule,
+                sitesViewModelModule,
             )
         }
 

@@ -15,16 +15,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -36,52 +26,41 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
-import de.elvah.charge.features.deals.ui.model.DealUI
 import de.elvah.charge.features.deals.ui.utils.MockData
-import de.elvah.charge.features.deals.ui.utils.getSecondsTillDealEnd
 import de.elvah.charge.features.deals.ui.utils.parseDate
+import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 import de.elvah.charge.platform.ui.components.ButtonPrimary
 import de.elvah.charge.platform.ui.components.Chevron
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
-import de.elvah.charge.platform.ui.theme.secondary
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.isActive
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.isActive
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 @Composable
 internal fun DealBanner_Content(
-    deal: DealUI,
+    site: ChargeSiteUI,
     modifier: Modifier = Modifier,
     compact: Boolean = true,
-    onDealClick: (DealUI) -> Unit
+    onDealClick: (ChargeSiteUI) -> Unit
 ) {
     Card(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            DealHeader(deal.campaignEnd, modifier = Modifier.fillMaxWidth())
+            DealHeader(site.campaignEnd, modifier = Modifier.fillMaxWidth())
             if (compact) {
                 DealContentCollapsed(
-                    operatorName = deal.cpoName,
-                    price = deal.pricePerKw,
+                    operatorName = site.cpoName,
+                    price = site.pricePerKw,
                     onBannerClick = {
-                        onDealClick(deal)
+                        onDealClick(site)
                     }
                 )
             } else {
                 DealContentExpanded(
-                    operatorName = deal.cpoName,
-                    price = deal.pricePerKw,
+                    operatorName = site.cpoName,
+                    price = site.pricePerKw,
                     onBannerClick = {
-                        onDealClick(deal)
+                        onDealClick(site)
                     }
                 )
             }
@@ -148,13 +127,13 @@ fun DealBanner_Error(modifier: Modifier = Modifier) {
 
 @Composable
 internal fun DealBanner_ActiveSession(
-    deal: DealUI,
+    site: ChargeSiteUI,
     onBannerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            DealHeader(deal.campaignEnd, modifier = Modifier.fillMaxWidth())
+            DealHeader(site.campaignEnd, modifier = Modifier.fillMaxWidth())
 
             Row(
                 modifier = Modifier
@@ -162,7 +141,7 @@ internal fun DealBanner_ActiveSession(
                     .background(MaterialTheme.colorScheme.tertiary)
                     .padding(vertical = 16.dp)
                     .padding(start = 16.dp)
-                    .clickable { onBannerClick(deal.id) },
+                    .clickable { onBannerClick(site.id) },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -281,7 +260,7 @@ private fun DealButton(onBannerClick: () -> Unit, modifier: Modifier = Modifier)
 private fun DealBanner_Preview() {
     ElvahChargeTheme {
         DealBanner_Content(
-            DealUI(
+            ChargeSiteUI(
                 id = "id",
                 cpoName = "Deal Title",
                 pricePerKw = 100.0,
@@ -299,7 +278,7 @@ private fun DealBanner_Preview() {
 private fun DealBannerCollapsed_Preview() {
     ElvahChargeTheme {
         DealBanner_Content(
-            DealUI(
+            ChargeSiteUI(
                 id = "id",
                 cpoName = "Deal Title",
                 pricePerKw = 100.0,
@@ -333,7 +312,7 @@ private fun DealBanner_Error_Preview() {
 private fun DealBanner_ActiveSession_Preview() {
     ElvahChargeTheme {
         DealBanner_ActiveSession(
-            deal = MockData.dealUI,
+            site = MockData.siteUI,
             onBannerClick = {})
     }
 }

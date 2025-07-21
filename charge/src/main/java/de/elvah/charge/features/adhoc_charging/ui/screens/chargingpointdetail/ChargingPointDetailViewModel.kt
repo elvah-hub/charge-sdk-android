@@ -10,11 +10,11 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.Ch
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Loading
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Success
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.model.ChargePointDetail
-import de.elvah.charge.features.deals.domain.repository.DealsRepository
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
+import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.platform.core.mvi.MVIBaseViewModel
 import de.elvah.charge.platform.core.mvi.Reducer
 import kotlinx.coroutines.launch
@@ -24,7 +24,7 @@ internal class ChargingPointDetailViewModel(
     private val getPaymentConfiguration: GetPaymentConfiguration,
     private val initStripeConfig: InitStripeConfig,
     private val getOrganisationDetails: GetOrganisationDetails,
-    private val dealsRepository: DealsRepository,
+    private val sitesRepository: SitesRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<ChargingPointDetailState, ChargingPointDetailEvent, ChargingPointDetailEffect>(
     initialState = Loading(savedStateHandle.toRoute<ChargingPointDetailRoute>().evseId),
@@ -46,23 +46,23 @@ internal class ChargingPointDetailViewModel(
 
             is ChargingPointDetailEvent.Initialize -> {
                 val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
-                val deal = dealsRepository.getDeal(route.dealId)
-                val chargePoint = deal.chargePoints.first { route.evseId == it.evseId }
+                val site = sitesRepository.getChargeSite(route.siteId)
+                val chargePoint = site.evses.first { route.evseId == it.evseId }
                 val organisationDetails = runBlocking { getOrganisationDetails() }
 
                 Reducer.Result(
                     Success(
-                        evseId,
-                        ChargePointDetail(
+                        evseId = evseId,
+                        chargePointDetail = ChargePointDetail(
                             chargingPoint = chargePoint.evseId,
-                            type = chargePoint.energyType,
+                            type = chargePoint.powerSpecification.type,
                             price = ChargePointDetail.Price(
-                                current = chargePoint.pricePerKwh.toString(),
-                                old = chargePoint.pricePerKwh.toString()
+                                current = chargePoint.offer.price.toString(),
+                                old = chargePoint.offer.price.toString()
                             ),
-                            cpoName = deal.operatorName,
+                            cpoName = site.operatorName,
                             evseId = chargePoint.evseId,
-                            energy = chargePoint.energyValue.toString(),
+                            energy = chargePoint.powerSpecification.maxPowerInKW.toString(),
                             signedOffer = "",
                             termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
                             privacyUrl = organisationDetails?.privacyUrl.orEmpty()
@@ -85,12 +85,13 @@ internal class ChargingPointDetailViewModel(
     init {
         viewModelScope.launch {
             val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
-            executeInitializeStripe(route.evseId, route.signedOffer)
+            executeInitializeStripe(route.siteId, route.evseId)
         }
     }
 
-    private suspend fun executeInitializeStripe(evseId: String, signedOffer: String) {
-        val result: Either<Exception, PaymentConfiguration> = getPaymentConfiguration(evseId, signedOffer)
+    private suspend fun executeInitializeStripe(siteId: String, evseId: String) {
+        val result: Either<Exception, PaymentConfiguration> =
+            getPaymentConfiguration(siteId, evseId)
         val logoUrl = getOrganisationDetails()?.logoUrl.orEmpty()
 
         result.fold(

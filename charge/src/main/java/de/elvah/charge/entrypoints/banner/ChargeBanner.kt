@@ -14,63 +14,60 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.entrypoints.DisplayBehavior
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
-import de.elvah.charge.features.deals.ui.DealsState
-import de.elvah.charge.features.deals.ui.DealsViewModel
 import de.elvah.charge.features.deals.ui.components.DealBanner_ActiveSession
 import de.elvah.charge.features.deals.ui.components.DealBanner_Content
 import de.elvah.charge.features.deals.ui.components.DealBanner_Error
 import de.elvah.charge.features.deals.ui.components.DealBanner_Loading
+import de.elvah.charge.features.sites.ui.SitesState
+import de.elvah.charge.features.sites.ui.SitesViewModel
 import de.elvah.charge.platform.config.ChargeConfig
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.KoinContext
 
 
 @Composable
-fun CampaignBanner(
+fun ChargeBanner(
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
     variant: BannerVariant = BannerVariant.DEFAULT
 ) {
-    KoinContext {
-        val dealsViewModel: DealsViewModel = koinViewModel()
+    val sitesViewModel: SitesViewModel = koinViewModel()
 
-        val state by dealsViewModel.state.collectAsStateWithLifecycle()
-        val context = LocalContext.current
+    val state by sitesViewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-        ElvahChargeTheme(darkTheme = shouldUseDarkColors(ChargeConfig.config.darkTheme)) {
-            when (state) {
-                DealsState.Error -> {
-                    if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
-                        DealBanner_Error(modifier)
-                    }
+    ElvahChargeTheme(darkTheme = shouldUseDarkColors(ChargeConfig.config.darkTheme)) {
+        when (val state = state) {
+            SitesState.Error -> {
+                if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
+                    DealBanner_Error(modifier)
                 }
-
-                DealsState.Loading -> {
-                    if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
-                        Card(modifier = modifier) {
-                            DealBanner_Loading(modifier)
-                        }
-                    }
-                }
-
-                is DealsState.Success -> DealBanner_Content(
-                    deal = (state as DealsState.Success).deal,
-                    compact = variant == BannerVariant.COMPACT,
-                    modifier = modifier
-                ) {
-                    context.openDeal(dealId = it.id)
-                }
-
-                is DealsState.ActiveSession -> DealBanner_ActiveSession(
-                    deal = (state as DealsState.ActiveSession).deal,
-                    modifier = modifier,
-                    onBannerClick = {
-                        context.goToChargingSession()
-                    }
-                )
             }
+
+            SitesState.Loading -> {
+                if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
+                    Card(modifier = modifier) {
+                        DealBanner_Loading(modifier)
+                    }
+                }
+            }
+
+            is SitesState.Success -> DealBanner_Content(
+                site = state.site,
+                compact = variant == BannerVariant.COMPACT,
+                modifier = modifier
+            ) {
+                context.openDeal(dealId = it.id)
+            }
+
+            is SitesState.ActiveSession -> DealBanner_ActiveSession(
+                site = state.site,
+                modifier = modifier,
+                onBannerClick = {
+                    context.goToChargingSession()
+                }
+            )
         }
     }
 }
@@ -79,7 +76,7 @@ fun CampaignBanner(
 fun Context.openDeal(dealId: String) {
     val intent =
         Intent(this, AdHocChargingActivity::class.java).apply {
-            putExtra(AdHocChargingActivity.ARG_DEAL_ID, dealId)
+            putExtra(AdHocChargingActivity.ARG_SITE_ID, dealId)
         }
     startActivity(intent)
 }

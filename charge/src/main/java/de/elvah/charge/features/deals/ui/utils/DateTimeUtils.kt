@@ -52,7 +52,7 @@ fun getSecondsTillDealEnd(date: String): Long {
     return timeDifference
 }
 
-private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'"
 
 private const val SECONDS_IN_HOUR = 3600
 private const val SECONDS_IN_MINUTE = 60
