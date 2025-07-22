@@ -1,14 +1,13 @@
 package de.elvah.charge.features.sites.data
 
-import android.util.Log
 import arrow.core.Either
 import de.elvah.charge.features.sites.data.mapper.toDomain
 import de.elvah.charge.features.sites.data.mapper.toSite
-import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.data.remote.SitesApi
 import de.elvah.charge.features.sites.data.remote.model.request.SignedOfferRequest
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
+import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.platform.core.arrow.extensions.toEither
 
@@ -83,7 +82,6 @@ internal class DefaultSitesRepository(
             }
         }
     }
-
 
     companion object {
         const val MIN_LAT_KEY = "minLat"

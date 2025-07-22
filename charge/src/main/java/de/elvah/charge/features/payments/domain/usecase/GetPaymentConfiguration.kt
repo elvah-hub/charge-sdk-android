@@ -1,6 +1,5 @@
 package de.elvah.charge.features.payments.domain.usecase
 
-import android.util.Log
 import arrow.core.Either
 import arrow.core.flatMap
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore

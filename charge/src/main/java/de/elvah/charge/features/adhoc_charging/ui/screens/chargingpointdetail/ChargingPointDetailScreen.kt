@@ -37,7 +37,6 @@ import de.elvah.charge.R
 import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.model.ChargePointDetail
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
-import de.elvah.charge.features.sites.ui.SitesState
 import de.elvah.charge.platform.ui.components.BasicCard
 import de.elvah.charge.platform.ui.components.ButtonPrimary
 import de.elvah.charge.platform.ui.components.CPOLogo

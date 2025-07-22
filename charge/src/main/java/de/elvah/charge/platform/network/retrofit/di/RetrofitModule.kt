@@ -1,6 +1,5 @@
 package de.elvah.charge.platform.network.retrofit.di
 
-import coil3.intercept.Interceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.elvah.charge.platform.network.retrofit.ApiKeyInterceptor

@@ -1,5 +1,6 @@
 package de.elvah.charge.features.deals.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,7 +37,10 @@ import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 internal fun ChargeBanner_Content(
@@ -135,7 +144,7 @@ internal fun ChargeBanner_ActiveSession(
     Card(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth()) {
             ChargeBannerHeaderActiveSession(
-                chargeTime = site.chargeTime.toString(),
+                chargeTime = site.chargeTime,
                 modifier = Modifier.fillMaxWidth()
             )
             Row(
@@ -178,7 +187,8 @@ private fun ChargeBannerHeader(timeLeft: String, modifier: Modifier = Modifier) 
 }
 
 @Composable
-private fun ChargeBannerHeaderActiveSession(chargeTime: String, modifier: Modifier = Modifier) {
+private fun
+        ChargeBannerHeaderActiveSession(chargeTime: Duration, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .background(color = MaterialTheme.colorScheme.onTertiary)
@@ -191,12 +201,35 @@ private fun ChargeBannerHeaderActiveSession(chargeTime: String, modifier: Modifi
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.W700
         )
-        CopySmall(
-            text = chargeTime,
-            color = MaterialTheme.colorScheme.brand,
-            fontWeight = FontWeight.W700
-        )
+
+        LiveCounter(chargeTime) {
+            CopySmall(
+                text = it.toString(),
+                color = MaterialTheme.colorScheme.brand,
+                fontWeight = FontWeight.W700
+            )
+        }
     }
+}
+
+@Composable
+private fun LiveCounter(
+    initialValue: Duration,
+    step: Duration = 1.seconds,
+    content: @Composable (Duration) -> Unit
+) {
+    var counter by remember { mutableStateOf(initialValue) }
+    Log.d("ChargeBanner", "counter: $counter")
+
+    LaunchedEffect(initialValue) {
+        while (isActive) {
+            Log.d("ChargeBanner", "counter: $counter")
+            delay(step)
+            counter = counter.plus(step)
+        }
+    }
+
+    content(counter)
 }
 
 @Composable
@@ -277,7 +310,10 @@ private fun ChargeBannerPrice(
             )
 
             originalPrice?.let {
-                CopyMedium(originalPrice.toString(), textDecoration = TextDecoration.LineThrough)
+                CopyMedium(
+                    originalPrice.toString(),
+                    textDecoration = TextDecoration.LineThrough
+                )
             }
         }
 
