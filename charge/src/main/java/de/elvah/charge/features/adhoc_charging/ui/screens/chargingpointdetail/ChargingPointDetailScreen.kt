@@ -34,8 +34,10 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.rememberPaymentSheet
 import de.elvah.charge.R
+import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.model.ChargePointDetail
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
+import de.elvah.charge.features.sites.ui.SitesState
 import de.elvah.charge.platform.ui.components.BasicCard
 import de.elvah.charge.platform.ui.components.ButtonPrimary
 import de.elvah.charge.platform.ui.components.CPOLogo
@@ -58,7 +60,7 @@ internal fun ChargingPointDetailScreen(
 ) {
     val state by chargingPointDetailViewModel.state.collectAsStateWithLifecycle()
 
-    when (state) {
+    when (val state = state) {
         is ChargingPointDetailState.Loading -> ChargingPointDetail_Loading()
         is ChargingPointDetailState.Error -> ChargingPointDetail_Error()
         is ChargingPointDetailState.Success -> {
@@ -67,22 +69,22 @@ internal fun ChargingPointDetailScreen(
                 onPaymentSheetResult(it)
                 if (it is PaymentSheetResult.Completed) {
                     onPaymentSuccess(
-                        (state as ChargingPointDetailState.Success).chargePointDetail.evseId,
-                        (state as ChargingPointDetailState.Success).paymentIntentParams.paymentId
+                        state.render.evseId.value,
+                        state.paymentIntentParams.paymentId
                     )
                 }
             }
 
             ChargingPointDetail_Success(
-                state as ChargingPointDetailState.Success,
+                state,
                 onBackClick = onBackClick,
                 onAction = {
                     val configuration = PaymentSheet.Configuration(
-                        merchantDisplayName = (state as ChargingPointDetailState.Success).chargePointDetail.cpoName,
+                        merchantDisplayName = state.chargePointDetail.cpoName,
                     )
 
                     val currentClientSecret =
-                        (state as ChargingPointDetailState.Success).paymentIntentParams.clientSecret
+                        state.paymentIntentParams.clientSecret
                     presentPaymentSheet(paymentSheet, configuration, currentClientSecret)
                 }
             )
@@ -117,7 +119,7 @@ private fun ChargingPointDetail_Success(
         ) {
             BrandedChargePoint(
                 chargePoint = state.chargePointDetail,
-                logoUrl = state.logoUrl,
+                logoUrl = state.render.logoUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(25.dp)
@@ -125,7 +127,7 @@ private fun ChargingPointDetail_Success(
 
             ChargingPointDetailTariffInfo(
                 modifier = Modifier,
-                price = state.chargePointDetail.price
+                price = state.render.price
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -135,9 +137,9 @@ private fun ChargingPointDetail_Success(
             }
 
             TermsAndConditions(
-                state.chargePointDetail.cpoName,
-                state.chargePointDetail.termsUrl,
-                state.chargePointDetail.privacyUrl
+                state.render.cpoName,
+                state.render.termsUrl,
+                state.render.privacyUrl
             )
 
             ElvahLogo(modifier.padding(top = 20.dp))
@@ -240,7 +242,7 @@ private fun ChargePointType(
 
 @Composable
 private fun ChargingPointDetailTariffInfo(
-    price: ChargePointDetail.Price,
+    price: Double,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(24.dp)) {
@@ -262,7 +264,7 @@ private fun ChargingPointDetailTariffInfo(
                             copyLargeBold.toSpanStyle()
                                 .copy(color = MaterialTheme.colorScheme.primary)
                         ) {
-                            append(price.current)
+                            append(price.toString())
                         }
                         withStyle(
                             copyLarge.toSpanStyle()
@@ -316,9 +318,9 @@ private fun ChargingPointDetail_Success_Preview() {
             chargePointDetail = ChargePointDetail(
                 chargingPoint = "Charge Point",
                 type = "Type",
-                price = ChargePointDetail.Price(
-                    current = "0,44",
-                    old = "0,50"
+                offer = ChargePointDetail.Offer(
+                    current = 0.24,
+                    old = 0.5
                 ),
                 cpoName = "cpoName",
                 evseId = "evseId",
@@ -332,7 +334,18 @@ private fun ChargingPointDetail_Success_Preview() {
                 accountId = "",
                 clientSecret = "",
                 paymentId = ""
-            ), logoUrl = ""
+            ), logoUrl = "",
+            render = ChargePointDetailRender(
+                evseId = EvseId(""),
+                energyType = "",
+                energyValue = 0,
+                price = 0.0,
+                originalPrice = 0.0,
+                logoUrl = "logoUrl",
+                cpoName = "cpoName",
+                termsUrl = "termsUrl",
+                privacyUrl = "privacyUrl"
+            )
         ),
         onBackClick = {},
         onAction = {}

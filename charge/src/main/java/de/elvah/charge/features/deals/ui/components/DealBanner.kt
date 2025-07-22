@@ -10,55 +10,56 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import de.elvah.charge.R
 import de.elvah.charge.features.deals.ui.utils.MockData
 import de.elvah.charge.features.deals.ui.utils.parseDate
-import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
+import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
+import de.elvah.charge.features.sites.ui.model.Location
 import de.elvah.charge.platform.ui.components.ButtonPrimary
 import de.elvah.charge.platform.ui.components.Chevron
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
+import kotlin.time.Duration
 
 @Composable
 internal fun ChargeBanner_Content(
-    site: ChargeSiteUI,
+    site: ChargeBannerRender,
     modifier: Modifier = Modifier,
     compact: Boolean = true,
-    onDealClick: (ChargeSiteUI) -> Unit
+    onDealClick: (ChargeBannerRender) -> Unit
 ) {
     Card(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            ChargeBannerHeader(site.campaignEnd, modifier = Modifier.fillMaxWidth())
+            site.originalPrice?.let {
+                ChargeBannerHeader(
+                    timeLeft = site.campaignEnd,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             if (compact) {
                 ChargeBannerContentCollapsed(
-                    operatorName = site.cpoName,
-                    price = site.pricePerKw,
+                    price = site.price,
+                    originalPrice = site.originalPrice,
                     onBannerClick = {
                         onDealClick(site)
                     }
                 )
             } else {
                 ChargeBannerContentExpanded(
-                    operatorName = site.cpoName,
-                    price = site.pricePerKw,
+                    price = site.price,
+                    originalPrice = site.originalPrice,
                     onBannerClick = {
                         onDealClick(site)
                     }
@@ -70,9 +71,9 @@ internal fun ChargeBanner_Content(
 
 @Composable
 private fun ChargeBannerContentCollapsed(
-    operatorName: String,
     price: Double,
     modifier: Modifier = Modifier,
+    originalPrice: Double? = null,
     onBannerClick: () -> Unit
 ) {
     Row(
@@ -84,15 +85,15 @@ private fun ChargeBannerContentCollapsed(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ChargeBannerPrice(operatorName, price, modifier = Modifier.weight(1f))
-
-        IconButton(onClick = onBannerClick) {
-            Icon(
-                painter = painterResource(R.drawable.ic_chevron_right),
-                tint = MaterialTheme.colorScheme.primary,
-                contentDescription = null
-            )
-        }
+        ChargeBannerPrice(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onBannerClick()
+                },
+            price = price,
+            originalPrice = originalPrice
+        )
     }
 }
 
@@ -118,7 +119,7 @@ internal fun ChargeBanner_Error(modifier: Modifier = Modifier) {
                 .padding(16.dp)
         ) {
             Text(
-                stringResource(R.string.error_deal_banner),
+                stringResource(R.string.campaign_banner__deal_loading_error__text),
                 modifier = Modifier.align(Alignment.Center)
             )
         }
@@ -127,14 +128,16 @@ internal fun ChargeBanner_Error(modifier: Modifier = Modifier) {
 
 @Composable
 internal fun ChargeBanner_ActiveSession(
-    site: ChargeSiteUI,
+    site: ChargeBannerActiveSessionRender,
     onBannerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            ChargeBannerHeader(site.campaignEnd, modifier = Modifier.fillMaxWidth())
-
+            ChargeBannerHeaderActiveSession(
+                chargeTime = site.chargeTime.toString(),
+                modifier = Modifier.fillMaxWidth()
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,7 +149,7 @@ internal fun ChargeBanner_ActiveSession(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 CopyMedium(
-                    stringResource(R.string.active_session_label),
+                    stringResource(R.string.campaign_banner__active_session_text),
                     modifier = Modifier.weight(1f)
                 )
 
@@ -155,6 +158,11 @@ internal fun ChargeBanner_ActiveSession(
         }
     }
 }
+
+data class ChargeBannerActiveSessionRender(
+    val id: String,
+    val chargeTime: Duration
+)
 
 @Composable
 private fun ChargeBannerHeader(timeLeft: String, modifier: Modifier = Modifier) {
@@ -165,26 +173,27 @@ private fun ChargeBannerHeader(timeLeft: String, modifier: Modifier = Modifier) 
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        BestDealLabel()
         BestDealTimeLeft(timeLeft)
     }
 }
 
 @Composable
-private fun BestDealLabel(modifier: Modifier = Modifier) {
+private fun ChargeBannerHeaderActiveSession(chargeTime: String, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .background(color = MaterialTheme.colorScheme.onTertiary)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_pinpoint),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
+        CopySmall(
+            text = stringResource(R.string.charging_label),
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.W700
         )
         CopySmall(
-            stringResource(R.string.best_deal_around_you_label),
-            color = MaterialTheme.colorScheme.primary,
+            text = chargeTime,
+            color = MaterialTheme.colorScheme.brand,
             fontWeight = FontWeight.W700
         )
     }
@@ -202,9 +211,9 @@ private fun BestDealTimeLeft(timeLeft: String, modifier: Modifier = Modifier) {
 
 @Composable
 private fun ChargeBannerContentExpanded(
-    operatorName: String,
     price: Double,
     modifier: Modifier = Modifier,
+    originalPrice: Double? = null,
     onBannerClick: () -> Unit,
 ) {
     Column(
@@ -215,7 +224,12 @@ private fun ChargeBannerContentExpanded(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ChargeBannerPrice(operatorName, price)
+        ChargeBannerPrice(
+            modifier = Modifier.fillMaxWidth(),
+            price = price,
+            originalPrice = originalPrice,
+            collapsed = false
+        )
 
         ButtonPrimary(
             modifier = Modifier.fillMaxWidth(),
@@ -226,30 +240,79 @@ private fun ChargeBannerContentExpanded(
 }
 
 @Composable
-private fun ChargeBannerPrice(operatorName: String, price: Double, modifier: Modifier = Modifier) {
-    val buildText = buildAnnotatedString {
-        withStyle(
-            style = SpanStyle(
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
+private fun ChargeBannerPrice(
+    price: Double,
+    modifier: Modifier = Modifier,
+    originalPrice: Double? = null,
+    collapsed: Boolean = false
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            append(stringResource(R.string.charge_at_station_placeholder, operatorName))
+            CopyMedium(
+                stringResource(R.string.campaign_banner__ad_hoc),
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.W700
+            )
+
+            CopySmall(
+                stringResource(R.string.campaign_banner__charge_without_registration),
+            )
         }
 
-        withStyle(
-            style = SpanStyle(
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.brand
-            )
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.End
         ) {
-            append(stringResource(R.string.euros_kw_label, price))
+            CopyMedium(
+                price.toString(),
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.W700
+            )
+
+            originalPrice?.let {
+                CopyMedium(originalPrice.toString(), textDecoration = TextDecoration.LineThrough)
+            }
+        }
+
+        if (collapsed) {
+            Chevron()
         }
     }
-    Text(buildText, modifier = modifier)
 }
+
+@PreviewLightDark
+@Composable
+private fun ChargeBannerContentExpanded_Preview() {
+    ElvahChargeTheme {
+        ChargeBannerPrice(
+            modifier = Modifier.fillMaxWidth(),
+            price = 0.24,
+            originalPrice = 0.50,
+            collapsed = false
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun ChargeBannerContentCollapsed_Preview() {
+    ElvahChargeTheme {
+        ChargeBannerPrice(
+            modifier = Modifier.fillMaxWidth(),
+            price = 0.24,
+            originalPrice = 0.50,
+            collapsed = true
+        )
+    }
+}
+
 
 @Composable
 internal fun ChargeBanner_Empty(modifier: Modifier = Modifier) {
@@ -273,16 +336,19 @@ internal fun ChargeBanner_Empty(modifier: Modifier = Modifier) {
 private fun ChargeBanner_Preview() {
     ElvahChargeTheme {
         ChargeBanner_Content(
-            ChargeSiteUI(
+            site = ChargeBannerRender(
                 id = "id",
                 cpoName = "Deal Title",
-                pricePerKw = 100.0,
-                campaignEnd = "2025-04-23T10:21:28.405000000Z",
                 address = "address",
-                lat = 0.0,
-                lng = 0.0,
-                chargePoints = emptyList()
-            ), onDealClick = {})
+                location = Location(
+                    lat = 0.0,
+                    lng = 0.0
+                ),
+                campaignEnd = "2025-04-23T10:21:28.405000000Z",
+                originalPrice = 0.50,
+                price = 0.24
+            ), onDealClick = {}
+        )
     }
 }
 
@@ -291,16 +357,10 @@ private fun ChargeBanner_Preview() {
 private fun ChargeBannerCollapsed_Preview() {
     ElvahChargeTheme {
         ChargeBanner_Content(
-            ChargeSiteUI(
-                id = "id",
-                cpoName = "Deal Title",
-                pricePerKw = 100.0,
-                campaignEnd = "2025-04-23T10:21:28.405000000Z",
-                address = "address",
-                lat = 0.0,
-                lng = 0.0,
-                chargePoints = emptyList()
-            ), compact = false, onDealClick = {})
+            site = MockData.chargeSiteRender,
+            compact = false,
+            onDealClick = {}
+        )
     }
 }
 
@@ -325,7 +385,7 @@ private fun ChargeBanner_Error_Preview() {
 private fun ChargeBanner_ActiveSession_Preview() {
     ElvahChargeTheme {
         ChargeBanner_ActiveSession(
-            site = MockData.siteUI,
+            site = MockData.chargeSiteActiveSessionRender,
             onBannerClick = {})
     }
 }

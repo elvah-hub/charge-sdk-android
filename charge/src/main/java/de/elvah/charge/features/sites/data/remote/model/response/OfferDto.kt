@@ -7,6 +7,9 @@ data class OfferDto(
 	@param:Json(name="price")
 	val price: PriceDto,
 
+	@param:Json(name="originalPrice")
+	val originalPrice: PriceDto?,
+
 	@param:Json(name="type")
 	val type: String,
 

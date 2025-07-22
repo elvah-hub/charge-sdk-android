@@ -1,27 +1,24 @@
 package de.elvah.charge.features.sites.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.elvah.charge.features.adhoc_charging.domain.usecase.HasActiveChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.usecase.GetActiveChargingSession
+import de.elvah.charge.features.deals.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.domain.usecase.GetFilters
 import de.elvah.charge.features.sites.domain.usecase.GetSite
-import de.elvah.charge.features.sites.ui.mapper.toUI
+import de.elvah.charge.features.sites.ui.mapper.toRender
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlin.time.Duration.Companion.seconds
 
 internal class SitesViewModel(
     private val getSite: GetSite,
-    private val hasActiveSession: HasActiveChargingSession,
+    private val getActiveChargingSession: GetActiveChargingSession,
     getFilters: GetFilters,
 ) : ViewModel() {
 
     val state = getFilters()
-        .onEach {
-            Log.d("HOLA", it.toString())
-        }
         .map {
             getSite(
                 GetSite.Params(
@@ -33,18 +30,20 @@ internal class SitesViewModel(
             )
         }
         .map {
-            val activeSession = hasActiveSession()
-
+            val activeSession = getActiveChargingSession().getOrNull()
             it.getOrNull()?.let {
-                if (activeSession) {
-                    SitesState.ActiveSession(it.toUI())
+                if (activeSession != null) {
+                    SitesState.ActiveSession(
+                        ChargeBannerActiveSessionRender(
+                            activeSession.evseId, activeSession.duration.seconds
+                        )
+                    )
                 } else {
-                    SitesState.Success(it.toUI())
+                    SitesState.Success(it.toRender())
                 }
             } ?: run {
                 SitesState.Error
             }
-
         }
         .stateIn(
             scope = viewModelScope,

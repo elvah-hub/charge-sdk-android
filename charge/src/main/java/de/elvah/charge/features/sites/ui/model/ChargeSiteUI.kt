@@ -12,3 +12,18 @@ internal data class ChargeSiteUI(
     val campaignEnd: String,
     val chargePoints: List<ChargePointUI>,
 )
+
+internal data class ChargeBannerRender(
+    val id: String,
+    val cpoName: String,
+    val address: String,
+    val location: Location,
+    val originalPrice: Double? = null,
+    val price: Double,
+    val campaignEnd: String,
+)
+
+internal data class Location(
+    val lat: Double,
+    val lng: Double,
+)

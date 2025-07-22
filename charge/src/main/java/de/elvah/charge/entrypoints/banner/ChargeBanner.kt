@@ -16,6 +16,7 @@ import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
 import de.elvah.charge.features.deals.ui.components.ChargeBanner_ActiveSession
 import de.elvah.charge.features.deals.ui.components.ChargeBanner_Content
+import de.elvah.charge.features.deals.ui.components.ChargeBanner_Empty
 import de.elvah.charge.features.deals.ui.components.ChargeBanner_Error
 import de.elvah.charge.features.deals.ui.components.DealBanner_Loading
 import de.elvah.charge.features.sites.ui.SitesState
@@ -68,6 +69,8 @@ fun ChargeBanner(
                     context.goToChargingSession()
                 }
             )
+
+            SitesState.Empty -> ChargeBanner_Empty()
         }
     }
 }

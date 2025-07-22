@@ -11,7 +11,7 @@ import de.elvah.charge.features.sites.data.remote.model.response.SitesDto
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 
 
-internal fun  SitesDto<OfferDto>.toSite(): ChargeSite {
+internal fun SitesDto<OfferDto>.toSite(): ChargeSite {
     return ChargeSite(
         address = address.toDomain(),
         evses = evses.map { it.toOffer() },
@@ -46,15 +46,17 @@ internal fun ChargePointDto<OfferDto>.toOffer(): ChargeSite.ChargePoint = Charge
     normalizedEvseId = normalizedEvseId
 )
 
-internal fun ChargePointDto<SignedOfferDto>.toDomain(): ChargeSite.ChargePoint = ChargeSite.ChargePoint(
-    evseId = evseId,
-    offer = offer.toDomain(),
-    powerSpecification = powerSpecification.toDomain(),
-    normalizedEvseId = normalizedEvseId
-)
+internal fun ChargePointDto<SignedOfferDto>.toDomain(): ChargeSite.ChargePoint =
+    ChargeSite.ChargePoint(
+        evseId = evseId,
+        offer = offer.toDomain(),
+        powerSpecification = powerSpecification.toDomain(),
+        normalizedEvseId = normalizedEvseId
+    )
 
 internal fun OfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSite.ChargePoint.Offer(
     price = price.toDomain(),
+    originalPrice = originalPrice?.toDomain(),
     type = type,
     expiresAt = expiresAt
 )
@@ -68,12 +70,13 @@ internal fun SignedOfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSit
     signedOffer = signedOffer
 )
 
-internal fun PriceDto.toDomain(): ChargeSite.ChargePoint.Offer.Price = ChargeSite.ChargePoint.Offer.Price(
-    energyPricePerKWh = energyPricePerKWh,
-    baseFee = baseFee,
-    currency = currency,
-    blockingFee = blockingFee?.toDomain()
-)
+internal fun PriceDto.toDomain(): ChargeSite.ChargePoint.Offer.Price =
+    ChargeSite.ChargePoint.Offer.Price(
+        energyPricePerKWh = energyPricePerKWh,
+        baseFee = baseFee,
+        currency = currency,
+        blockingFee = blockingFee?.toDomain()
+    )
 
 
 internal fun BlockingFeeDto.toDomain(): ChargeSite.ChargePoint.Offer.Price.BlockingFee =

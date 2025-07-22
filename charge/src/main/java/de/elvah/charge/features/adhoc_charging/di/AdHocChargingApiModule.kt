@@ -2,6 +2,7 @@ package de.elvah.charge.features.adhoc_charging.di
 
 import de.elvah.charge.features.adhoc_charging.data.remote.api.ChargingApi
 import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.usecase.GetActiveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.HasActiveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StartChargingSession
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 
 internal val adHocChargingUseCasesModule = module {
     singleOf(::FetchChargingSession)
+    singleOf(::GetActiveChargingSession)
     singleOf(::HasActiveChargingSession)
     singleOf(::ObserveChargingSession)
     singleOf(::StartChargingSession)

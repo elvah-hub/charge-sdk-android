@@ -3,7 +3,7 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.m
 class ChargePointDetail(
     val chargingPoint: String,
     val type: String,
-    val price: Price,
+    val offer: Offer,
     val cpoName: String,
     val termsUrl: String,
     val privacyUrl: String,
@@ -11,8 +11,8 @@ class ChargePointDetail(
     val energy: String,
     val signedOffer: String
 ) {
-    class Price(
-        val current: String,
-        val old: String,
+    class Offer(
+        val current: Double,
+        val old: Double?,
     )
 }

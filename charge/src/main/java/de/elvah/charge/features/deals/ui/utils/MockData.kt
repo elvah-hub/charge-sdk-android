@@ -1,7 +1,10 @@
 package de.elvah.charge.features.deals.ui.utils
 
+import de.elvah.charge.features.deals.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.deals.ui.model.ChargePointUI
+import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
+import de.elvah.charge.features.sites.ui.model.Location
 
 internal object MockData {
     val chargePoints = List(10) {
@@ -22,6 +25,24 @@ internal object MockData {
         pricePerKw = 0.42,
         campaignEnd = "2025-07-23T10:21:28.423423423Z",
         chargePoints = chargePoints
+    )
+
+    val chargeSiteRender = ChargeBannerRender(
+        id = "id",
+        cpoName = "Deal Title",
+        address = "address",
+        location = Location(
+            lat = 0.0,
+            lng = 0.0
+        ),
+        campaignEnd = "2025-04-23T10:21:28.405000000Z",
+        originalPrice = 0.50,
+        price = 0.24
+    )
+
+    val chargeSiteActiveSessionRender = ChargeBannerActiveSessionRender(
+        id = "id",
+        chargeTime = kotlin.time.Duration.ZERO
     )
 
     val siteWithoutChargePoints = siteUI.copy(chargePoints = emptyList())

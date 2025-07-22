@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import arrow.core.Either
+import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Error
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Loading
@@ -56,9 +57,9 @@ internal class ChargingPointDetailViewModel(
                         chargePointDetail = ChargePointDetail(
                             chargingPoint = chargePoint.evseId,
                             type = chargePoint.powerSpecification.type,
-                            price = ChargePointDetail.Price(
-                                current = chargePoint.offer.price.toString(),
-                                old = chargePoint.offer.price.toString()
+                            offer = ChargePointDetail.Offer(
+                                current = chargePoint.offer.price.energyPricePerKWh,
+                                old = chargePoint.offer.originalPrice?.energyPricePerKWh
                             ),
                             cpoName = site.operatorName,
                             evseId = chargePoint.evseId,
@@ -68,7 +69,18 @@ internal class ChargingPointDetailViewModel(
                             privacyUrl = organisationDetails?.privacyUrl.orEmpty()
                         ),
                         paymentIntentParams = event.paymentConfiguration,
-                        logoUrl = event.logoUrl
+                        logoUrl = event.logoUrl,
+                        render = ChargePointDetailRender(
+                            evseId = EvseId(chargePoint.evseId),
+                            energyType = chargePoint.powerSpecification.type,
+                            energyValue = chargePoint.powerSpecification.maxPowerInKW,
+                            price = chargePoint.offer.price.energyPricePerKWh,
+                            originalPrice = chargePoint.offer.originalPrice?.energyPricePerKWh,
+                            logoUrl = event.logoUrl,
+                            cpoName = site.operatorName,
+                            termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
+                            privacyUrl = organisationDetails?.privacyUrl.orEmpty()
+                        )
                     ), null
                 )
             }
