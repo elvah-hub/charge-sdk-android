@@ -6,15 +6,15 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class OriginalPriceDto(
 
-	@param:Json(name="energyPricePerKWh")
-	val energyPricePerKWh: Any,
+    @param:Json(name = "energyPricePerKWh")
+    val energyPricePerKWh: Any,
 
-	@param:Json(name="baseFee")
-	val baseFee: Any,
+    @param:Json(name = "baseFee")
+    val baseFee: Any,
 
-	@param:Json(name="currency")
-	val currency: String,
+    @param:Json(name = "currency")
+    val currency: String,
 
-	@param:Json(name="blockingFee")
-	val blockingFee: Any
+    @param:Json(name = "blockingFee")
+    val blockingFee: Any
 )

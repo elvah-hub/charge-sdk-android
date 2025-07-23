@@ -1,6 +1,6 @@
 package de.elvah.charge.features.sites.ui
 
-import de.elvah.charge.features.deals.ui.components.ChargeBannerActiveSessionRender
+import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 
 internal sealed class SitesState {

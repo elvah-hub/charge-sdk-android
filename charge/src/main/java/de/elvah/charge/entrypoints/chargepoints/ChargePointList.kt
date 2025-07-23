@@ -25,27 +25,29 @@ fun ChargePointList(
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
 ) {
-        val siteDetailViewModel: SiteDetailViewModel = koinViewModel()
+    val siteDetailViewModel: SiteDetailViewModel = koinViewModel()
 
-        val state by siteDetailViewModel.state.collectAsStateWithLifecycle()
+    val state by siteDetailViewModel.state.collectAsStateWithLifecycle()
 
-        ElvahChargeTheme(darkTheme = shouldUseDarkColors(ChargeConfig.config.darkTheme)) {
-            when (val state = state) {
-                SiteDetailState.Error -> {
-                    if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
+    ElvahChargeTheme(darkTheme = shouldUseDarkColors(ChargeConfig.config.darkTheme)) {
+        when (val state = state) {
+            SiteDetailState.Error -> {
+                if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
 
-                    }
-                }
-                SiteDetailState.Loading ->{
-                    if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
-
-                    }
-                }
-                is SiteDetailState.Success -> {
-                    ChargePointsList(state.chargeSiteUI.chargePoints, onItemClick = { evseId ->  })
                 }
             }
+
+            SiteDetailState.Loading -> {
+                if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
+
+                }
+            }
+
+            is SiteDetailState.Success -> {
+                ChargePointsList(state.chargeSiteUI.chargePoints, onItemClick = { evseId -> })
+            }
         }
+    }
 }
 
 fun Context.goToChargePoint(evseId: String) {

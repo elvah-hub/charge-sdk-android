@@ -1,4 +1,4 @@
-package de.elvah.charge.features.deals.ui.model
+package de.elvah.charge.features.sites.ui.model
 
 
 internal data class DealUI(

@@ -30,7 +30,7 @@ internal sealed class AdHocChargingScreens {
             get() = ROUTE
 
         companion object {
-            const val ROUTE = baseRoute +  "chargingPointDetail"
+            const val ROUTE = baseRoute + "chargingPointDetail"
         }
     }
 

@@ -26,6 +26,7 @@ internal class UpdateFilters(
             )
         )
     }
+
     suspend operator fun invoke(
         evseIds: List<EvseId>,
         offerType: OfferType? = null

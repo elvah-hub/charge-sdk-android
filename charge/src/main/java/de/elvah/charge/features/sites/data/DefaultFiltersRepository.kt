@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 internal class DefaultFiltersRepository(
 ) : FiltersRepository {
 
-
     private val _filters: MutableSharedFlow<SiteFilter> = MutableSharedFlow(replay = 1)
     private var currentFilter = SiteFilter()
 

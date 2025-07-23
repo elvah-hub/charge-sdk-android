@@ -1,8 +1,8 @@
 package de.elvah.charge.features.sites.ui.mapper
 
-import de.elvah.charge.features.deals.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
+import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 import de.elvah.charge.features.sites.ui.model.Location
 

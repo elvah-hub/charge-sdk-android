@@ -26,7 +26,7 @@ internal class GetSite(
             if (it.isNotEmpty()) {
                 it.first().right()
             } else {
-                Exception("No deals found").left()
+                EmptyResultsException().left()
             }
         }
     }
@@ -38,3 +38,5 @@ internal class GetSite(
         val offerType: OfferType? = null
     )
 }
+
+class EmptyResultsException : Exception()

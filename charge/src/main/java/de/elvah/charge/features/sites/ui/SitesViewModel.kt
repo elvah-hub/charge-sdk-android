@@ -3,9 +3,10 @@ package de.elvah.charge.features.sites.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.elvah.charge.features.adhoc_charging.domain.usecase.GetActiveChargingSession
-import de.elvah.charge.features.deals.ui.components.ChargeBannerActiveSessionRender
+import de.elvah.charge.features.sites.domain.usecase.EmptyResultsException
 import de.elvah.charge.features.sites.domain.usecase.GetFilters
 import de.elvah.charge.features.sites.domain.usecase.GetSite
+import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.mapper.toRender
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -31,18 +32,21 @@ internal class SitesViewModel(
         }
         .map {
             val activeSession = getActiveChargingSession().getOrNull()
-            it.getOrNull()?.let {
-                if (activeSession != null) {
-                    SitesState.ActiveSession(
-                        ChargeBannerActiveSessionRender(
-                            activeSession.evseId, activeSession.duration.seconds
-                        )
+
+            if (activeSession != null) {
+                SitesState.ActiveSession(
+                    ChargeBannerActiveSessionRender(
+                        activeSession.evseId, activeSession.duration.seconds
                     )
-                } else {
-                    SitesState.Success(it.toRender())
+                )
+            } else {
+                it.getOrNull()?.let {
+                    SitesState.Success(
+                        it.toRender()
+                    )
+                } ?: run {
+                    parseException(it.leftOrNull())
                 }
-            } ?: run {
-                SitesState.Error
             }
         }
         .stateIn(
@@ -50,4 +54,18 @@ internal class SitesViewModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = SitesState.Loading
         )
+
+
+    private fun parseException(exception: Exception?): SitesState {
+        when (exception) {
+            is EmptyResultsException -> {
+                return SitesState.Empty
+            }
+
+            else -> {
+                return SitesState.Error
+            }
+        }
+    }
+
 }

@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -63,16 +64,17 @@ internal fun ChargingPointDetailScreen(
         is ChargingPointDetailState.Loading -> ChargingPointDetail_Loading()
         is ChargingPointDetailState.Error -> ChargingPointDetail_Error()
         is ChargingPointDetailState.Success -> {
-
-            val paymentSheet = rememberPaymentSheet {
-                onPaymentSheetResult(it)
-                if (it is PaymentSheetResult.Completed) {
-                    onPaymentSuccess(
-                        state.render.evseId.value,
-                        state.paymentIntentParams.paymentId
-                    )
-                }
-            }
+            val paymentSheet = remember {
+                PaymentSheet.Builder(resultCallback = {
+                    onPaymentSheetResult(it)
+                    if (it is PaymentSheetResult.Completed) {
+                        onPaymentSuccess(
+                            state.render.evseId.value,
+                            state.paymentIntentParams.paymentId
+                        )
+                    }
+                })
+            }.build()
 
             ChargingPointDetail_Success(
                 state,

@@ -1,4 +1,4 @@
-package de.elvah.charge.features.deals.ui.components
+package de.elvah.charge.features.sites.ui.components
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -27,10 +27,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
-import de.elvah.charge.features.deals.ui.utils.MockData
-import de.elvah.charge.features.deals.ui.utils.parseDate
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.Location
+import de.elvah.charge.features.sites.ui.utils.MockData
+import de.elvah.charge.features.sites.ui.utils.parseDate
 import de.elvah.charge.platform.ui.components.ButtonPrimary
 import de.elvah.charge.platform.ui.components.Chevron
 import de.elvah.charge.platform.ui.components.CopyMedium
@@ -107,7 +107,7 @@ private fun ChargeBannerContentCollapsed(
 }
 
 @Composable
-internal fun DealBanner_Loading(modifier: Modifier = Modifier) {
+internal fun ChargeBanner_Loading(modifier: Modifier = Modifier) {
     Card(modifier = modifier) {
         Box(
             modifier = Modifier
@@ -404,7 +404,7 @@ private fun ChargeBannerCollapsed_Preview() {
 @Composable
 private fun ChargeBanner_Loading_Preview() {
     ElvahChargeTheme {
-        DealBanner_Loading()
+        ChargeBanner_Loading()
     }
 }
 

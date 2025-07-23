@@ -4,30 +4,20 @@ import android.content.Context
 import de.elvah.charge.features.adhoc_charging.data.local.DefaultChargingStore
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
 import de.elvah.charge.features.adhoc_charging.di.adHocChargingUseCasesModule
+import de.elvah.charge.features.adhoc_charging.di.adHocViewModelModule
 import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
-import de.elvah.charge.features.adhoc_charging.ui.screens.activecharging.ActiveChargingViewModel
-import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailViewModel
-import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingStartViewModel
-import de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpViewModel
-import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewViewModel
-import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
 import de.elvah.charge.features.payments.data.repository.DefaultPaymentsRepository
+import de.elvah.charge.features.payments.di.paymentsUseCaseModule
 import de.elvah.charge.features.payments.di.provideChargeSettlementApi
 import de.elvah.charge.features.payments.di.provideIntegrateApi
 import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
-import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
-import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
-import de.elvah.charge.features.payments.domain.usecase.GetPaymentSummary
-import de.elvah.charge.features.payments.domain.usecase.GetPaymentToken
-import de.elvah.charge.features.payments.domain.usecase.GetSessionDetails
-import de.elvah.charge.features.payments.domain.usecase.GetSummaryInfo
-import de.elvah.charge.features.payments.domain.usecase.ResetSession
-import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
+import de.elvah.charge.platform.simulator.FakeSitesRepository
 import de.elvah.charge.features.sites.di.sitesRepositoriesModule
 import de.elvah.charge.features.sites.di.sitesUseCaseModule
 import de.elvah.charge.features.sites.di.sitesViewModelModule
+import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.platform.config.ChargeConfig
 import de.elvah.charge.platform.network.ApiUrlBuilder
 import de.elvah.charge.platform.network.okhttp.di.okHttpModule
@@ -37,29 +27,16 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 object Elvah {
 
     private val useCaseModule = module {
-        singleOf(::GetPaymentConfiguration)
-        singleOf(::InitStripeConfig)
-        singleOf(::GetOrganisationDetails)
-        singleOf(::GetPaymentToken)
-        singleOf(::GetPaymentSummary)
-        singleOf(::ResetSession)
-        singleOf(::GetSessionDetails)
-        singleOf(::GetSummaryInfo)
+        includes(sitesUseCaseModule, adHocChargingUseCasesModule, paymentsUseCaseModule)
     }
 
     private val viewModelsModule = module {
-        viewModelOf(::SiteDetailViewModel)
-        viewModelOf(::ChargingPointDetailViewModel)
-        viewModelOf(::ChargingStartViewModel)
-        viewModelOf(::ActiveChargingViewModel)
-        viewModelOf(::HelpViewModel)
-        viewModelOf(::ReviewViewModel)
+        includes(sitesViewModelModule, adHocViewModelModule)
     }
 
     val repositoriesModule = module {
@@ -87,6 +64,14 @@ object Elvah {
 
     }
 
+    val simulator = module {
+        singleOf(::FakeSitesRepository) { bind<SitesRepository>() }
+    }
+
+    val emptyModule = module {
+
+    }
+
     fun initialize(context: Context, config: Config) {
         startKoin {
             androidLogger()
@@ -99,10 +84,8 @@ object Elvah {
                 repositoriesModule,
                 okHttpModule,
                 retrofitModule,
-                adHocChargingUseCasesModule,
                 sitesRepositoriesModule,
-                sitesUseCaseModule,
-                sitesViewModelModule,
+                simulator.takeIf { config.enableSimulator } ?: emptyModule
             )
         }
 
@@ -118,6 +101,7 @@ object Elvah {
 
 data class Config(
     val apiKey: String,
+    val enableSimulator: Boolean = false,
     val darkTheme: Boolean? = null,
     val environment: String = "int",
 )

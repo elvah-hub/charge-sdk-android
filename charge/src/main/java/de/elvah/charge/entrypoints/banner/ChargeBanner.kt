@@ -14,13 +14,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.entrypoints.DisplayBehavior
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
-import de.elvah.charge.features.deals.ui.components.ChargeBanner_ActiveSession
-import de.elvah.charge.features.deals.ui.components.ChargeBanner_Content
-import de.elvah.charge.features.deals.ui.components.ChargeBanner_Empty
-import de.elvah.charge.features.deals.ui.components.ChargeBanner_Error
-import de.elvah.charge.features.deals.ui.components.DealBanner_Loading
 import de.elvah.charge.features.sites.ui.SitesState
 import de.elvah.charge.features.sites.ui.SitesViewModel
+import de.elvah.charge.features.sites.ui.components.ChargeBanner_ActiveSession
+import de.elvah.charge.features.sites.ui.components.ChargeBanner_Content
+import de.elvah.charge.features.sites.ui.components.ChargeBanner_Empty
+import de.elvah.charge.features.sites.ui.components.ChargeBanner_Error
+import de.elvah.charge.features.sites.ui.components.ChargeBanner_Loading
 import de.elvah.charge.platform.config.ChargeConfig
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
@@ -49,7 +49,7 @@ fun ChargeBanner(
             SitesState.Loading -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
                     Card(modifier = modifier) {
-                        DealBanner_Loading(modifier)
+                        ChargeBanner_Loading(modifier)
                     }
                 }
             }

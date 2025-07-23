@@ -17,6 +17,4 @@ internal interface SitesRepository {
     ): Either<Exception, List<ChargeSite>>
 
     suspend fun getSignedOffer(siteId: String, evseId: String): Either<Exception, ChargeSite>
-
-    //suspend fun getSignedOffer(siteId: String, evseId: EvseId): Either<Exception, SignedChargePoint>
 }

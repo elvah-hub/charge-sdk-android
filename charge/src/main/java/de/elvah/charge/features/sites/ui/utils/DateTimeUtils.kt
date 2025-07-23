@@ -1,4 +1,4 @@
-package de.elvah.charge.features.deals.ui.utils
+package de.elvah.charge.features.sites.ui.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

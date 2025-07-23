@@ -39,8 +39,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
-import de.elvah.charge.features.deals.ui.model.ChargePointUI
-import de.elvah.charge.features.deals.ui.utils.MockData
+import de.elvah.charge.features.sites.ui.model.ChargePointUI
+import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.core.android.openMap
 import de.elvah.charge.platform.ui.components.BasicCard
 import de.elvah.charge.platform.ui.components.ButtonPrimary
