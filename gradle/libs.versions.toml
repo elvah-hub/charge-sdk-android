@@ -27,6 +27,8 @@ stripe = "21.20.2"
 test-extensions = "1.2.1"
 version-catalog-linter = "1.1.0"
 protobuf = "0.9.5"
+preference = "1.2.0"
+fragmentCompose = "1.8.8"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -65,6 +67,8 @@ protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
 retrofit-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit2" }
 stripe-android = { module = "com.stripe:stripe-android", version.ref = "stripe" }
+androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
+androidx-fragment-compose = { group = "androidx.fragment", name = "fragment-compose", version.ref = "fragmentCompose" }
 
 [bundles]
 networking = [

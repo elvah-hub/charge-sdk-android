@@ -268,7 +268,7 @@ fun TickIcon(modifier: Modifier = Modifier) {
 private fun KilowattsText(kilowatts: Double, modifier: Modifier = Modifier) {
     val kilowattsText = buildAnnotatedString {
         withStyle(titleXLargeBold.copy(color = MaterialTheme.colorScheme.primary).toSpanStyle()) {
-            append(kilowatts.toString())
+            append("%.3f".format(kilowatts))
         }
         appendLine()
 

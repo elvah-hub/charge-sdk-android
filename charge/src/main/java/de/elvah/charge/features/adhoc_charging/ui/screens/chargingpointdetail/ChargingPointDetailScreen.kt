@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,10 +31,12 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
-import com.stripe.android.paymentsheet.rememberPaymentSheet
 import de.elvah.charge.R
 import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.model.ChargePointDetail
@@ -51,6 +54,8 @@ import de.elvah.charge.platform.ui.components.TopAppBar
 import de.elvah.charge.platform.ui.theme.copyLarge
 import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.copySmall
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 
 @Composable
 internal fun ChargingPointDetailScreen(
@@ -80,13 +85,20 @@ internal fun ChargingPointDetailScreen(
                 state,
                 onBackClick = onBackClick,
                 onAction = {
-                    val configuration = PaymentSheet.Configuration(
-                        merchantDisplayName = state.chargePointDetail.cpoName,
-                    )
+                    if (state.mocked) {
+                        onPaymentSuccess(
+                            state.render.evseId.value,
+                            state.paymentIntentParams.paymentId
+                        )
+                    } else {
+                        val configuration = PaymentSheet.Configuration(
+                            merchantDisplayName = state.chargePointDetail.cpoName,
+                        )
 
-                    val currentClientSecret =
-                        state.paymentIntentParams.clientSecret
-                    presentPaymentSheet(paymentSheet, configuration, currentClientSecret)
+                        val currentClientSecret =
+                            state.paymentIntentParams.clientSecret
+                        presentPaymentSheet(paymentSheet, configuration, currentClientSecret)
+                    }
                 }
             )
         }
@@ -380,4 +392,23 @@ private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
             Log.d("StripeResult", "Completed")
         }
     }
+}
+
+/**
+ * Remembers in the Composition a flow that only emits data when `lifecycle` is
+ * at least in `minActiveState`. That's achieved using the `Flow.flowWithLifecycle` operator.
+ *
+ * Explanation: If flows with operators in composable functions are not remembered, operators
+ * will _always_ be called and applied on every recomposition.
+ */
+@Composable
+fun <T> rememberFlowWithLifecycle(
+    flow: Flow<T>,
+    lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
+    minActiveState: Lifecycle.State = Lifecycle.State.STARTED
+): Flow<T> = remember(flow, lifecycle) {
+    flow.flowWithLifecycle(
+        lifecycle = lifecycle,
+        minActiveState = minActiveState
+    )
 }

@@ -1,4 +1,4 @@
-package de.elvah.charge.platform.simulator
+package de.elvah.charge.platform.simulator.data.repository
 
 import arrow.core.Either
 import arrow.core.right
@@ -6,9 +6,10 @@ import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
+import de.elvah.charge.features.sites.ui.utils.MockData
+import de.elvah.charge.platform.simulator.domain.model.SimulatorFlow
 
-internal class FakeSitesRepository(
-) : SitesRepository {
+internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesRepository {
 
     private var chargeSites: List<ChargeSite> = emptyList()
 
@@ -22,25 +23,18 @@ internal class FakeSitesRepository(
         organisationId: String?,
         offerType: OfferType?
     ): Either<Exception, List<ChargeSite>> {
-        return emptyList<ChargeSite>().right()
+        return MockData.chargeSites.right().also {
+            it.getOrNull()?.let {
+                chargeSites = it
+            }
+        }
     }
 
     override suspend fun getSignedOffer(
         siteId: String,
         evseId: String
     ): Either<Exception, ChargeSite> {
-        return ChargeSite(
-            address = ChargeSite.Address(
-                streetAddress = listOf(),
-                postalCode = "curae",
-                locality = "gravida"
-            ),
-            evses = listOf(),
-            location = listOf(),
-            id = "fusce",
-            operatorName = "Susanna Dillard",
-            prevalentPowerType = "auctor"
-        ).right()
+        return MockData.chargeSites.first().right()
     }
 
     companion object {

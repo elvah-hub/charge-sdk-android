@@ -14,6 +14,7 @@ sealed class ChargingPointDetailState(open val evseId: String) : Reducer.ViewSta
         val render: ChargePointDetailRender,
         val paymentIntentParams: PaymentConfiguration,
         val logoUrl: String,
+        val mocked: Boolean = false,
     ) : ChargingPointDetailState(evseId)
 }
 

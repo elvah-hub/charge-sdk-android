@@ -1,6 +1,5 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
@@ -35,8 +34,6 @@ internal class ActiveChargingViewModel(
                 startPolling()
 
                 observeChargingSession().collect {
-
-                    Log.d("HOLA", it.toString())
                     val organisationDetails = getOrganisationDetails()
 
                     when (state.value) {

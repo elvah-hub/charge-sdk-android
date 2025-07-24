@@ -1,5 +1,6 @@
 package de.elvah.charge.features.sites.ui.utils
 
+import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
@@ -47,4 +48,41 @@ internal object MockData {
     )
 
     val siteWithoutChargePoints = siteUI.copy(chargePoints = emptyList())
+
+    val chargeSites = List(3){ siteIndex ->
+        ChargeSite(
+            address = ChargeSite.Address(
+                streetAddress = listOf("Address $siteIndex"),
+                postalCode = "curae",
+                locality = "gravida"
+            ),
+            evses = List(10){ evseIndex ->
+                ChargeSite.ChargePoint(
+                    evseId = "DE*KDL*E000004$siteIndex$evseIndex",
+                    offer = ChargeSite.ChargePoint.Offer(
+                        price = ChargeSite.ChargePoint.Offer.Price(
+                            energyPricePerKWh = 22.23,
+                            baseFee = 2847,
+                            currency = "nostra",
+                            blockingFee = null
+                        ),
+                        type = "fusce",
+                        expiresAt = "posuere",
+                        originalPrice = null,
+                        campaignEndsAt = "rhoncus",
+                        signedOffer = "iusto"
+                    ),
+                    powerSpecification = ChargeSite.PowerSpecification(
+                        maxPowerInKW = 8531,
+                        type = if (evseIndex % 2 == 0) "AC" else "DC"
+                    ),
+                    normalizedEvseId = "DEKDLE000004$siteIndex$evseIndex",
+                )
+            },
+            location = listOf(6.7, 8.9),
+            id = "odio",
+            operatorName = "Robby Stafford",
+            prevalentPowerType = "felis",
+        )
+    }
 }
