@@ -18,5 +18,5 @@ internal interface ChargingRepository {
 
     suspend fun startChargingSession(): Either<SessionExceptions, Boolean>
 
-    suspend fun stopChargingSession()
+    suspend fun stopChargingSession(): Either<SessionExceptions, Boolean>
 }

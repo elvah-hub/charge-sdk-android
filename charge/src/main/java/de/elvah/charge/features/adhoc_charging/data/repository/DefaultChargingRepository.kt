@@ -61,10 +61,16 @@ internal class DefaultChargingRepository(
         )
     }
 
-    override suspend fun stopChargingSession() {
-        runCatching {
+    override suspend fun stopChargingSession(): Either<SessionExceptions, Boolean> {
+        return runCatching {
             chargingApi.stopChargeSession(BEARER_TEMPLATE.format(getToken()))
-        }
+        }.fold(
+            onSuccess = {
+                true.right()
+            }, onFailure = {
+                SessionExceptions.GenericError.left()
+            }
+        )
     }
 
     private fun getToken() = runBlocking {
@@ -73,8 +79,3 @@ internal class DefaultChargingRepository(
 }
 
 private const val BEARER_TEMPLATE = "Bearer %s"
-
-internal sealed class SessionExceptions {
-    data object OngoingSession : SessionExceptions()
-    data object GenericError : SessionExceptions()
-}

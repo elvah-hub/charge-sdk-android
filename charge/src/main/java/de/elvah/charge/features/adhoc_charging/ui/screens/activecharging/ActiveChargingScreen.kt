@@ -15,9 +15,12 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
+import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingPointErrorModal
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SupportContacts
 import de.elvah.charge.platform.ui.components.ButtonPrimary
@@ -66,6 +70,9 @@ internal fun ActiveChargingScreen(
                 viewModel.stopCharging()
             },
             onBackClick = {
+            },
+            onDismissError = {
+                viewModel.onDismissError()
             }
         )
 
@@ -84,12 +91,12 @@ internal fun ActiveChargingScreen(
 }
 
 @Composable
-fun ActiveCharging_Loading() {
+private fun ActiveCharging_Loading() {
     FullScreenLoading()
 }
 
 @Composable
-fun ActiveCharging_Error() {
+private fun ActiveCharging_Error() {
     FullScreenError()
 }
 
@@ -100,6 +107,7 @@ internal fun ActiveCharging_Success(
     onSupportClick: () -> Unit,
     onStopClick: () -> Unit,
     onBackClick: () -> Unit,
+    onDismissError: () -> Unit
 ) {
     Scaffold(topBar = {
         TopAppBar(stringResource(R.string.charging_session_active_title), onBackClick)
@@ -143,6 +151,28 @@ internal fun ActiveCharging_Success(
             Spacer(Modifier.size(20.dp))
             ElvahLogo()
             Spacer(Modifier.size(20.dp))
+
+            val errorSheetState = rememberModalBottomSheetState()
+
+            LaunchedEffect(state.activeChargingSessionUI.error) {
+                if (state.activeChargingSessionUI.error) {
+                    errorSheetState.show()
+                } else {
+                    errorSheetState.hide()
+                }
+            }
+
+            if (errorSheetState.isVisible) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        onDismissError()
+                    }, sheetState = errorSheetState
+                ) {
+                    ChargingPointErrorModal(
+                        onCloseModal = onDismissError
+                    )
+                }
+            }
         }
     }
 }
@@ -388,9 +418,10 @@ private fun ActiveCharging_Success_Preview() {
                 status = "",
                 consumption = 0.0,
                 duration = 0,
-                cpoLogo = ""
+                cpoLogo = "",
+                error = false
             )
-        ), {}, {}, {})
+        ), {}, {}, {}, {})
 }
 
 @Preview

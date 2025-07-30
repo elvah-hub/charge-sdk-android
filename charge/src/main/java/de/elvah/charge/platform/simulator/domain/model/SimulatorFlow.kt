@@ -9,10 +9,10 @@ package de.elvah.charge.platform.simulator.domain.model
  * The [StartFails] flow simulates a failure to start the charging session.
  * The [StopFails] flow simulates a failure to stop the charging session.
  * The [InterruptedCharge] flow simulates a charging session that gets interrupted unexpectedly.
- * The [SlowDefault] flow is similar to the [Default] flow, but with slower transitions.
- * The [StatusMissing] flow simulates a charging session where the session status is never set.
  * The [StopRejected] flow simulates a charging session where the stop request is rejected by the charge point.
  * The [StartRejected] flow simulates a charging session where the start request is rejected by the charge point.
+ * The [SlowDefault] flow is similar to the [Default] flow, but with slower transitions.
+ * The [StatusMissing] flow simulates a charging session where the session status is never set.
  *
  *
  * @property name The unique identifier for the flow.
@@ -31,8 +31,7 @@ sealed class SimulatorFlow(val name: String, val description: String) {
     object InterruptedCharge :
         SimulatorFlow("interruptedCharge", "Charge session gets unexpectedly interrupted")
 
-    object SlowDefault :
-        SimulatorFlow("slowDefault", "Similar to default but with slower transitions")
+    //object SlowDefault : SimulatorFlow("slowDefault", "Similar to default but with slower transitions")
 
-    object StatusMissing : SimulatorFlow("statusMissing", "Session status is never set")
+    //object StatusMissing : SimulatorFlow("statusMissing", "Session status is never set")
 }

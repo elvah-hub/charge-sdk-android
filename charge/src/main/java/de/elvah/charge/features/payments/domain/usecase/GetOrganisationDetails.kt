@@ -6,8 +6,7 @@ import de.elvah.charge.features.payments.domain.model.SupportContacts
 
 internal class GetOrganisationDetails(private val getSessionDetails: GetSessionDetails) {
 
-    suspend operator fun invoke(
-    ): OrganisationDetails? =
+    suspend operator fun invoke(): OrganisationDetails? =
         getSessionDetails().let {
             OrganisationDetails(
                 it.privacyUrl,

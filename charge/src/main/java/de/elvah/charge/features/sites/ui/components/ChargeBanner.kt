@@ -281,7 +281,7 @@ private fun ChargeBannerPrice(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Column(
             modifier = Modifier,

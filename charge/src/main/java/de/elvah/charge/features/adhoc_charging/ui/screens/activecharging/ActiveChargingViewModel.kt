@@ -1,15 +1,20 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.raise.nullable
 import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StartChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
+import de.elvah.charge.platform.simulator.data.repository.SessionStatus
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -33,49 +38,65 @@ internal class ActiveChargingViewModel(
                 _state.value = ActiveChargingState.Waiting(organisationDetails)
                 startPolling()
 
-                observeChargingSession().collect {
+                observeChargingSession().collect { chargeSession ->
                     val organisationDetails = getOrganisationDetails()
 
-                    when (state.value) {
-                        is ActiveChargingState.Waiting -> {
-                            if (it != null) {
-                                _state.value = ActiveChargingState.Active(
-                                    ActiveChargingSessionUI(
-                                        evseId = it.evseId,
-                                        status = it.status,
-                                        consumption = it.consumption,
-                                        duration = it.duration,
-                                        cpoLogo = organisationDetails?.logoUrl.orEmpty()
-                                    )
-                                )
+                    organisationDetails?.let { organisationDetails ->
+                        when (chargeSession?.status1) {
+                            SessionStatus.START_REQUESTED, SessionStatus.STARTED, null -> {
+                                _state.update {
+                                    ActiveChargingState.Waiting(organisationDetails)
+                                }
+
                             }
-                        }
 
-
-                        is ActiveChargingState.Active -> {
-                            if (it != null) {
-                                _state.value = ActiveChargingState.Active(
-                                    ActiveChargingSessionUI(
-                                        evseId = it.evseId,
-                                        status = it.status,
-                                        consumption = it.consumption,
-                                        duration = it.duration,
-                                        cpoLogo = organisationDetails?.logoUrl.orEmpty()
-                                    )
-                                )
+                            SessionStatus.STOP_REQUESTED -> {
+                                _state.update {
+                                    ActiveChargingState.Stopping(organisationDetails)
+                                }
                             }
-                        }
 
-                        ActiveChargingState.Error -> {
+                            SessionStatus.STOP_REJECTED,
+                            SessionStatus.START_REJECTED -> {
+                                _state.update {
+                                    ActiveChargingState.Error
+                                }
+                            }
 
-                        }
+                            SessionStatus.CHARGING -> {
+                                _state.update {
+                                    val currentValue =
+                                        (state.value as? ActiveChargingState.Active)?.activeChargingSessionUI
 
-                        ActiveChargingState.Loading -> {
+                                    if (currentValue != null) {
+                                        ActiveChargingState.Active(
+                                            currentValue.copy(
+                                                evseId = chargeSession.evseId,
+                                                status = chargeSession.status1.name,
+                                                consumption = chargeSession.consumption,
+                                                duration = chargeSession.duration
+                                            )
+                                        )
+                                    } else {
+                                        ActiveChargingState.Active(
+                                            ActiveChargingSessionUI(
+                                                evseId = chargeSession.evseId,
+                                                status = chargeSession.status1.name,
+                                                consumption = chargeSession.consumption,
+                                                duration = chargeSession.duration,
+                                                error = false,
+                                                cpoLogo = organisationDetails.logoUrl
+                                            )
+                                        )
+                                    }
+                                }
+                            }
 
-                        }
-
-                        else -> {
-
+                            SessionStatus.STOPPED -> {
+                                _state.update {
+                                    ActiveChargingState.Stopped(organisationDetails)
+                                }
+                            }
                         }
                     }
                 }
@@ -85,23 +106,46 @@ internal class ActiveChargingViewModel(
 
     fun stopCharging() {
         viewModelScope.launch {
-            stopChargingSession()
+            val result = stopChargingSession()
 
             val organisationDetails = getOrganisationDetails()
 
             organisationDetails?.let {
-                _state.value = ActiveChargingState.Stopping(organisationDetails)
-                delay(5000)
-                _state.value = ActiveChargingState.Stopped(organisationDetails)
+
+                if (result.isRight()) {
+                    _state.value = ActiveChargingState.Stopping(organisationDetails)
+                } else {
+                    val currentValue =
+                        (state.value as ActiveChargingState.Active).activeChargingSessionUI
+                    _state.update {
+                        ActiveChargingState.Active(
+                            currentValue.copy(
+                                error = true
+                            )
+                        )
+                    }
+                }
             }
         }
     }
 
     private fun startPolling() {
         viewModelScope.launch {
-            while (isActive && (state.value is ActiveChargingState.Waiting || state.value is ActiveChargingState.Active)) {
+            while (isActive && state.value !is ActiveChargingState.Error) {
                 fetchChargingSession()
                 delay(DELAY_IN_MILLIS)
+            }
+        }
+    }
+
+    fun onDismissError() {
+        viewModelScope.launch {
+            _state.update {
+                ActiveChargingState.Active(
+                    (state.value as ActiveChargingState.Active).activeChargingSessionUI.copy(
+                        error = false
+                    )
+                )
             }
         }
     }

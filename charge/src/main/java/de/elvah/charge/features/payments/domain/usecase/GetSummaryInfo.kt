@@ -9,8 +9,7 @@ import kotlinx.coroutines.flow.flow
 
 internal class GetSummaryInfo(private val chargingStore: ChargingStore) {
 
-    operator fun invoke(
-    ): Flow<SummaryInfo> =
+    operator fun invoke(): Flow<SummaryInfo> =
         flow {
             emit(
                 chargingStore.getChargingPrefs().first().let {

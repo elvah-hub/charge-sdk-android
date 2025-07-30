@@ -100,7 +100,7 @@ fun SwipeButton(
                 AnchoredDraggableState(
                     initialValue = DragAnchors.Start,
                     positionalThreshold = { distance: Float -> distance * 0.99f },
-                    snapAnimationSpec = tween<Float>(),
+                    snapAnimationSpec = tween(),
                     velocityThreshold = { Float.MAX_VALUE },
                     decayAnimationSpec = flingSpec
                 ).apply {

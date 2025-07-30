@@ -9,5 +9,7 @@ sealed class ChargingStartState {
         val evseId: String,
         val organisationDetails: OrganisationDetails,
         val shouldShowAuthorizationBanner: Boolean = true,
+        val error: Boolean = false
     ) : ChargingStartState()
+    data object StartRequest : ChargingStartState()
 }
