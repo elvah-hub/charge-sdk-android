@@ -16,10 +16,9 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 
-
 fun provideSimulatorModule(simulatorFlow: SimulatorFlow) = module {
     viewModelOf(::SimulatorListViewModel)
-    single{
+    single {
         simulatorFlow
     }
     singleOf(::FakeSitesRepository) { bind<SitesRepository>() }

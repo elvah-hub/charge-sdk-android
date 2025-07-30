@@ -1,8 +1,5 @@
 package de.elvah.charge.platform.simulator.data
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-
 class ConfigStore {
 
     /*
@@ -91,8 +88,7 @@ class DefaultSimulatorConfig<T>(
     override val options: List<SimulatorConfigValue<T>>,
     override val type: ConfigType
 
-) : SimulatorConfig<T>, SimulatorConfigOptions<T> {
-}
+) : SimulatorConfig<T>, SimulatorConfigOptions<T>
 
 
 class DefaultTextSimulatorConfig<T>(

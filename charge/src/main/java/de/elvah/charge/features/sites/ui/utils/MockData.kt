@@ -49,14 +49,14 @@ internal object MockData {
 
     val siteWithoutChargePoints = siteUI.copy(chargePoints = emptyList())
 
-    val chargeSites = List(3){ siteIndex ->
+    val chargeSites = List(3) { siteIndex ->
         ChargeSite(
             address = ChargeSite.Address(
                 streetAddress = listOf("Address $siteIndex"),
                 postalCode = "curae",
                 locality = "gravida"
             ),
-            evses = List(10){ evseIndex ->
+            evses = List(10) { evseIndex ->
                 ChargeSite.ChargePoint(
                     evseId = "DE*KDL*E000004$siteIndex$evseIndex",
                     offer = ChargeSite.ChargePoint.Offer(

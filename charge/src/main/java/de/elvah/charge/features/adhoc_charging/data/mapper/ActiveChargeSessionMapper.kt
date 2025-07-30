@@ -13,7 +13,7 @@ internal fun ActiveChargeSessionsDto.toDomain() = ChargingSession(
 
 )
 
-private fun parseStatus(status: String): SessionStatus = when(status) {
+private fun parseStatus(status: String): SessionStatus = when (status) {
     "START_REQUESTED" -> SessionStatus.START_REQUESTED
     "STARTED" -> SessionStatus.STARTED
     "START_REJECTED" -> SessionStatus.START_REJECTED

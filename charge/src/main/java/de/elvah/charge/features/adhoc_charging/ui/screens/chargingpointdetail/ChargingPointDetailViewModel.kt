@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import arrow.core.Either
-import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Error
@@ -18,6 +17,7 @@ import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.platform.config.ChargeConfig
+import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.platform.core.mvi.MVIBaseViewModel
 import de.elvah.charge.platform.core.mvi.Reducer
 import kotlinx.coroutines.launch

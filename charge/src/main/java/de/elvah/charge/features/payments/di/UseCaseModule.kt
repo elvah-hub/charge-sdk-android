@@ -23,5 +23,5 @@ val paymentsUseCaseModule = module {
     factoryOf(::GetSummaryInfo)
     factoryOf(::ResetSession)
 
-    factoryOf(::DefaultInitStripeConfig){bind<InitStripeConfig>()}
+    factoryOf(::DefaultInitStripeConfig) { bind<InitStripeConfig>() }
 }

@@ -22,7 +22,7 @@ internal class ReviewViewModel(
 
     val state = getSummaryInfo().map {
         var summary = getPaymentSummary(it.paymentId)
-        if (summary.isLeft()){
+        if (summary.isLeft()) {
             delay(2000)
             summary = withContext(Dispatchers.IO) {
                 getPaymentSummary(it.paymentId)

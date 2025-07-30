@@ -76,7 +76,7 @@ internal class ChargingStartViewModel(
 
     fun onDismissError() {
         viewModelScope.launch {
-            if (_state.value is ChargingStartState.Success){
+            if (_state.value is ChargingStartState.Success) {
                 _state.update {
                     ChargingStartState.Success(
                         evseId = (_state.value as ChargingStartState.Success).evseId,
