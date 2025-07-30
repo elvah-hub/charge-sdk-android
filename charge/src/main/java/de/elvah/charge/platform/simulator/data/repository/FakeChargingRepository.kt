@@ -79,9 +79,7 @@ internal class FakeChargingRepository(
             SimulatorFlow.StartFails -> generateStartFailsActiveSession()
             SimulatorFlow.StopFails -> generateStopFailsActiveSession()
             SimulatorFlow.InterruptedCharge -> generateInterruptedChargeActiveSession()
-            SimulatorFlow.SlowDefault -> TODO()
             SimulatorFlow.StartRejected -> generateStartRejectedActiveSession()
-            SimulatorFlow.StatusMissing -> TODO()
             SimulatorFlow.StopRejected -> generateStartRejectedActiveSession()
         }
     }
