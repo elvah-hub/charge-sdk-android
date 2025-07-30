@@ -14,11 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import de.elvah.charge.entrypoints.banner.ChargeBanner
-import de.elvah.charge.entrypoints.banner.DiscoveryProvider
+import de.elvah.charge.entrypoints.banner.CampaignSource
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 
 class MainActivity : ComponentActivity() {
-    private var discoveryProvider: DiscoveryProvider = DiscoveryProvider()
+    private var campaignSource: CampaignSource = CampaignSource()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
             LaunchedEffect(Unit) {
-                discoveryProvider.sitesAt(
+                campaignSource.sitesAt(
                     BoundingBox(
                         minLat = 14.0,
                         minLng = -88.0,
