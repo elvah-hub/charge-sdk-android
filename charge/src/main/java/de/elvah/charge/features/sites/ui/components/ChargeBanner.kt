@@ -304,14 +304,14 @@ private fun ChargeBannerPrice(
             horizontalAlignment = Alignment.End
         ) {
             CopyMedium(
-                price.toString(),
+                stringResource(R.string.campaign_banner__current_price_text, price),
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.W700
             )
 
             originalPrice?.let {
                 CopyMedium(
-                    originalPrice.toString(),
+                    stringResource(R.string.campaign_banner__original_price_text, originalPrice),
                     textDecoration = TextDecoration.LineThrough
                 )
             }

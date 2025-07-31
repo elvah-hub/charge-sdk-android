@@ -6,15 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import de.elvah.charge.entrypoints.banner.ChargeBanner
 import de.elvah.charge.entrypoints.banner.CampaignSource
+import de.elvah.charge.entrypoints.banner.ChargeBanner
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 
 class MainActivity : ComponentActivity() {
@@ -34,9 +33,7 @@ class MainActivity : ComponentActivity() {
                         .background(Color.DarkGray),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column {
-                        ChargeBanner()
-                    }
+                    ChargeBanner()
                 }
             }
             LaunchedEffect(Unit) {
