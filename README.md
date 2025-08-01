@@ -17,8 +17,11 @@ leaving your app.
     - [Campaign Source](#campaign-source)
     - [Display Behavior](#display-behavior)
     - [Banner Variants](#banner-variants)
-3. [Glossary](#glossary)
-4. [Legal Notice](#legal-notice)
+3. **[Development & Testing](#development--testing)**
+    - [Charging Session Simulator](#charging-session-simulator)
+    - [Available Simulation Flows](#available-simulation-flows)
+4. [Glossary](#glossary)
+5. [Legal Notice](#legal-notice)
 
 ## Installation
 
@@ -123,6 +126,69 @@ variant through a `variant` parameter:
 ```kotlin
 CampaignBanner(variant = Variant.COMPACT)
 ```
+
+## Development & Testing
+
+### Charging Session Simulator
+
+The Elvah Charge SDK includes a powerful simulation framework for testing different charging scenarios without requiring actual hardware or backend services. The simulator has been architected using Gang of Four design patterns to provide maximum flexibility and extensibility.
+
+#### Quick Start
+
+```kotlin
+// Configure the simulator environment
+val config = ChargeConfig(
+    environment = Environment.Simulator(
+        simulatorFlow = SimulatorFlow.Default
+    )
+)
+```
+
+### Available Simulation Flows
+
+| Flow Type | Description | Use Case |
+|-----------|-------------|----------|
+| `Default` | Normal successful charging flow | Happy path testing |
+| `StartFails` | Start request fails after retries | Error handling testing |
+| `StopFails` | Stop request fails | Stop error scenarios |
+| `InterruptedCharge` | Session interrupted during charging | Network/hardware issues |
+| `StartRejected` | Start immediately rejected | Authorization issues |
+| `StopRejected` | Stop request rejected | Settlement issues |
+| `Custom` | User-defined behavior | Specific test scenarios |
+
+#### Custom Implementation Example
+
+```kotlin
+class MyCustomSimulationStrategy(
+    private val sessionFactory: ChargingSessionFactory
+) : ChargingSimulationStrategy {
+    
+    override suspend fun generateNextSession(context: SimulationContext): ChargingSession? {
+        return when (context.currentStatus) {
+            SessionStatus.START_REQUESTED -> {
+                sessionFactory.createSession {
+                    evseId(context.evseId)
+                    status(SessionStatus.STARTED)
+                    consumption(0.0)
+                    duration(0)
+                }
+            }
+            // Define your custom flow logic here...
+            else -> context.currentSession
+        }
+    }
+    
+    override fun shouldContinue(context: SimulationContext): Boolean {
+        return context.currentStatus != SessionStatus.STOPPED
+    }
+    
+    override fun reset() {
+        // Reset any internal state
+    }
+}
+```
+
+For detailed documentation, examples, and advanced usage patterns, see the complete [Simulator Documentation](docs/SIMULATOR.md).
 
 ## Glossary
 
