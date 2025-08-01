@@ -15,9 +15,11 @@ koinAndroidxCompose = "4.1.0"
 koinAndroidxComposeNavigation = "4.1.0"
 kotlin = "2.2.0"
 kotlinx-serialization-json = "1.9.0"
+kotlinxCoroutinesTest = "1.10.2"
 ksp = "2.2.0-2.0.2"
 lifecycleRuntimeKtx = "2.9.2"
 material = "1.12.0"
+mockk = "1.14.5"
 moshi = "1.15.2"
 navigationCompose = "2.9.2"
 okhttp3 = "5.1.0"
@@ -25,6 +27,7 @@ protobufJavalite = "4.31.1"
 retrofit2 = "3.0.0"
 stripe = "21.20.2"
 test-extensions = "1.2.1"
+turbine = "1.2.1"
 version-catalog-linter = "1.1.0"
 protobuf = "0.9.5"
 preference = "1.2.0"
@@ -55,8 +58,10 @@ converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 koin-androidx-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", version.ref = "koinAndroidxComposeNavigation" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-adapters = { group = "com.squareup.moshi", name = "moshi-adapters", version.ref = "moshi" }
 moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
@@ -69,6 +74,7 @@ retrofit-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars
 stripe-android = { module = "com.stripe:stripe-android", version.ref = "stripe" }
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 androidx-fragment-compose = { group = "androidx.fragment", name = "fragment-compose", version.ref = "fragmentCompose" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [bundles]
 networking = [

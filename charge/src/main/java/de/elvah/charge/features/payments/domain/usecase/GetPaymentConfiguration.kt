@@ -19,7 +19,7 @@ internal class GetPaymentConfiguration(
     suspend operator fun invoke(
         siteId: String,
         evseId: String
-    ): Either<Exception, PaymentConfiguration> =
+    ): Either<Throwable, PaymentConfiguration> =
         coroutineScope {
             val publishableKey = async { paymentsRepository.getPublishableKey() }
             val signedOffer = async { sitesRepository.getSignedOffer(siteId, evseId) }

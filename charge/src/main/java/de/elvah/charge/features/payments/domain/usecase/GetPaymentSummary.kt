@@ -9,7 +9,7 @@ internal class GetPaymentSummary(
     private val paymentsRepository: PaymentsRepository,
 ) {
 
-    suspend operator fun invoke(paymentId: String): Either<Exception, PaymentSummary> {
+    suspend operator fun invoke(paymentId: String): Either<Throwable, PaymentSummary> {
         return paymentsRepository.getPaymentSummary(paymentId)
     }
 }

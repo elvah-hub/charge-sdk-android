@@ -14,7 +14,7 @@ internal interface SitesRepository {
         campaignId: String? = null,
         organisationId: String? = null,
         offerType: OfferType? = null
-    ): Either<Exception, List<ChargeSite>>
+    ): Either<Throwable, List<ChargeSite>>
 
-    suspend fun getSignedOffer(siteId: String, evseId: String): Either<Exception, ChargeSite>
+    suspend fun getSignedOffer(siteId: String, evseId: String): Either<Throwable, ChargeSite>
 }
