@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "de.elvah.charge"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "de.elvah.charge"
