@@ -46,7 +46,7 @@ dependencyResolutionManagement {
 Add the following line to the dependencies in your `build.gradle` file:
 
 ```kotlin
-implementation("com.github.elvah-hub:charge-sdk-android:0.1.2")
+implementation("com.github.elvah-hub:charge-sdk-android:0.2.0")
 ```
 
 Alternatively, you can download the source code and place it in your project. Everything yoy need is
@@ -60,6 +60,8 @@ place could be the `Application` class or as soon as possible in the Activities
 The configuration allows you to pass the following values:
 
 - `apiKey`: The API key that allows the SDK to connect with elvah's backend.
+- `environment`: Sets if the sdk targets the backend or any of
+  the [Simulated Flows](#simulated-flows)
 
 ### Campaign Banner
 
@@ -109,7 +111,7 @@ By default, there will be visible loading and error states inside the `CampaignB
 whenever a source is set. To change this, specify a `DisplayBehavior` in the `display` property:
 
 ```kotlin 
-CampaignBanner(display: DisplayBehavior. WHEN_CONTENT_AVAILABLE)
+CampaignBanner(display: DisplayBehavior.WHEN_CONTENT_AVAILABLE)
 ```
 
 Setting the `DisplayBehavior` to `DisplayBehavior.WHEN_CONTENT_AVAILABLE` can be useful when you do
@@ -123,6 +125,21 @@ variant through a `variant` parameter:
 ```kotlin
 CampaignBanner(variant = Variant.COMPACT)
 ```
+
+## Simulator
+
+The SDK provides a simulation mode to test common scenarios without targeting the real backend.
+
+### Simulated flows
+
+- [Default] flow simulates a successful charging session with typical timing.
+- [StartFails] flow simulates a failure to start the charging session.
+- [StopFails] flow simulates a failure to stop the charging session.
+- [InterruptedCharge] flow simulates a charging session that gets interrupted unexpectedly.
+- [StopRejected] flow simulates a charging session where the stop request is rejected by the charge
+  point.
+- [StartRejected] flow simulates a charging session where the start request is rejected by the
+  charge point.
 
 ## Glossary
 

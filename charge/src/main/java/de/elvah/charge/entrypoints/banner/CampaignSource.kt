@@ -5,7 +5,7 @@ import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.usecase.UpdateFilters
 import org.koin.java.KoinJavaComponent
 
-class DiscoveryProvider() {
+class CampaignSource() {
 
     private val updateFilters: UpdateFilters by KoinJavaComponent.inject(UpdateFilters::class.java)
 
