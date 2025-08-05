@@ -1,11 +1,11 @@
 package de.elvah.charge.features.sites.data
 
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
+import de.elvah.charge.features.sites.domain.model.filters.CampaignId
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
+import de.elvah.charge.features.sites.domain.model.filters.OrganisationId
 import de.elvah.charge.features.sites.domain.model.filters.SiteFilter
 import de.elvah.charge.features.sites.domain.repository.FiltersRepository
-import de.elvah.charge.features.sites.domain.usecase.CampaignId
-import de.elvah.charge.features.sites.domain.usecase.OrganisationId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -36,7 +36,7 @@ internal class DefaultFiltersRepository(
 
     override suspend fun updateCampaignId(campaignId: CampaignId) {
         val updatedFilter = currentFilter.copy(
-            campaignId = campaignId.value
+            campaignId = campaignId
         )
         updateFilters(updatedFilter).also {
             currentFilter = updatedFilter
@@ -45,7 +45,7 @@ internal class DefaultFiltersRepository(
 
     override suspend fun updateOrganisationId(organisationId: OrganisationId) {
         val updatedFilter = currentFilter.copy(
-            organisationId = organisationId.value
+            organisationId = organisationId
         )
         updateFilters(updatedFilter).also {
             currentFilter = updatedFilter

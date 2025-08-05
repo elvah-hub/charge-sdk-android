@@ -37,13 +37,21 @@ class MainActivity : ComponentActivity() {
                 }
             }
             LaunchedEffect(Unit) {
-                campaignSource.sitesAt(
+                /*campaignSource.sitesAt(
                     BoundingBox(
-                        minLat = 14.0,
-                        minLng = -88.0,
-                        maxLat = 15.0,
-                        maxLng = -87.0
+                        minLat = 5.0,
+                        minLng = 4.0,
+                        maxLat = 52.0,
+                        maxLng = 50.0
                     )
+                )
+
+                 */
+                val honduras = doubleArrayOf(-87.19039, 14.09499)
+                campaignSource.sitesAt(
+                    longitude = honduras.first(),
+                    latitude = honduras.last(),
+                    radius = 10.0
                 )
             }
         }

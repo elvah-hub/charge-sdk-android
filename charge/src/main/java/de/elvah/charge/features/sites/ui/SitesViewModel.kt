@@ -1,11 +1,12 @@
 package de.elvah.charge.features.sites.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.elvah.charge.features.adhoc_charging.domain.usecase.GetActiveChargingSession
-import de.elvah.charge.features.sites.domain.usecase.EmptyResultsException
+import de.elvah.charge.features.sites.domain.exceptions.EmptyResultsException
+import de.elvah.charge.features.sites.domain.usecase.GetBestSite
 import de.elvah.charge.features.sites.domain.usecase.GetFilters
-import de.elvah.charge.features.sites.domain.usecase.GetSite
 import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.mapper.toRender
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,25 +15,24 @@ import kotlinx.coroutines.flow.stateIn
 import kotlin.time.Duration.Companion.seconds
 
 internal class SitesViewModel(
-    private val getSite: GetSite,
+    private val getBestSite: GetBestSite,
     private val getActiveChargingSession: GetActiveChargingSession,
     getFilters: GetFilters,
 ) : ViewModel() {
 
     val state = getFilters()
         .map {
-            getSite(
-                GetSite.Params(
+            getBestSite(
+                GetBestSite.Params(
                     boundingBox = it.boundingBox,
-                    campaignId = it.campaignId,
-                    organisationId = it.organisationId,
+                    campaignId = it.campaignId?.value,
+                    organisationId = it.organisationId?.value,
                     offerType = it.offerType
                 )
             )
         }
-        .map {
+        .map { site ->
             val activeSession = getActiveChargingSession().getOrNull()
-
             if (activeSession != null) {
                 SitesState.ActiveSession(
                     ChargeBannerActiveSessionRender(
@@ -40,12 +40,12 @@ internal class SitesViewModel(
                     )
                 )
             } else {
-                it.getOrNull()?.let {
+                site.getOrNull()?.let { site ->
                     SitesState.Success(
-                        it.toRender()
+                        site.toRender()
                     )
                 } ?: run {
-                    parseException(it.leftOrNull())
+                    parseException(site.leftOrNull())
                 }
             }
         }
@@ -65,7 +65,8 @@ internal class SitesViewModel(
             else -> {
                 SitesState.Error
             }
+        }.also {
+            Log.e("SitesViewModel", "parseException: ${exception?.cause}")
         }
     }
-
 }

@@ -92,6 +92,8 @@ dependencies {
     implementation(libs.stripe.android)
     implementation(libs.coil3.coil.compose)
 
+    implementation(libs.kotlinx.datetime)
+
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.javalite)
 

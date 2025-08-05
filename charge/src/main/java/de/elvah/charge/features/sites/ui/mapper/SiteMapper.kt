@@ -15,15 +15,15 @@ internal fun ChargeSite.toUI(): ChargeSiteUI =
         lat = location.first(),
         lng = location.last(),
         pricePerKw = evses.first().offer.price.energyPricePerKWh,
-        campaignEnd = evses.first().offer.expiresAt,
+        campaignEnd = evses.first().offer.campaignEndsAt.orEmpty(),
         chargePoints = evses.map { it.toUI() }
     )
 
 internal fun ChargeSite.ChargePoint.toUI(): ChargePointUI = ChargePointUI(
     evseId = evseId,
     pricePerKwh = offer.price.energyPricePerKWh,
-    energyType = powerSpecification.type,
-    energyValue = powerSpecification.maxPowerInKW,
+    energyType = powerSpecification?.type.orEmpty(),
+    energyValue = powerSpecification?.maxPowerInKW,
 )
 
 internal fun ChargeSite.toRender(): ChargeBannerRender {
@@ -39,7 +39,7 @@ internal fun ChargeSite.toRender(): ChargeBannerRender {
         ),
         originalPrice = bestOffer.originalPrice?.energyPricePerKWh,
         price = bestOffer.price.energyPricePerKWh,
-        campaignEnd = evses.first().offer.expiresAt,
+        campaignEnd = evses.first().offer.campaignEndsAt.orEmpty(),
     )
 }
 

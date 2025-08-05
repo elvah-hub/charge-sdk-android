@@ -21,7 +21,7 @@ sealed class ChargingPointDetailState(open val evseId: String) : Reducer.ViewSta
 data class ChargePointDetailRender(
     val evseId: EvseId,
     val energyType: String,
-    val energyValue: Int,
+    val energyValue: Float?,
     val price: Double,
     val originalPrice: Double?,
     val logoUrl: String,

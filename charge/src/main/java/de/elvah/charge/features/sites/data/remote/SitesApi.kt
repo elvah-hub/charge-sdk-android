@@ -1,8 +1,8 @@
 package de.elvah.charge.features.sites.data.remote
 
 import de.elvah.charge.features.sites.data.remote.model.request.SignedOfferRequest
-import de.elvah.charge.features.sites.data.remote.model.response.ApiListResponse
-import de.elvah.charge.features.sites.data.remote.model.response.ApiResponse
+import de.elvah.charge.features.sites.data.remote.model.response.common.ApiListResponse
+import de.elvah.charge.features.sites.data.remote.model.response.common.ApiResponse
 import de.elvah.charge.features.sites.data.remote.model.response.OfferDto
 import de.elvah.charge.features.sites.data.remote.model.response.SignedOfferDto
 import de.elvah.charge.features.sites.data.remote.model.response.SitesDto

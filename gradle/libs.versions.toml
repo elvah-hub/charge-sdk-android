@@ -16,6 +16,7 @@ koinAndroidxComposeNavigation = "4.1.0"
 kotlin = "2.2.0"
 kotlinx-serialization-json = "1.9.0"
 kotlinxCoroutinesTest = "1.10.2"
+kotlinxDatetime = "0.7.1"
 ksp = "2.2.0-2.0.2"
 lifecycleRuntimeKtx = "2.9.2"
 material = "1.12.0"
@@ -59,6 +60,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 koin-androidx-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", version.ref = "koinAndroidxComposeNavigation" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
