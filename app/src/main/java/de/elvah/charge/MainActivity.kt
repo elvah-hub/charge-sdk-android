@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import de.elvah.charge.entrypoints.banner.CampaignSource
 import de.elvah.charge.entrypoints.banner.ChargeBanner
+import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 
 class MainActivity : ComponentActivity() {
@@ -37,21 +38,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
             LaunchedEffect(Unit) {
-                /*campaignSource.sitesAt(
-                    BoundingBox(
-                        minLat = 5.0,
-                        minLng = 4.0,
-                        maxLat = 52.0,
-                        maxLng = 50.0
-                    )
-                )
-
-                 */
-                val honduras = doubleArrayOf(-87.19039, 14.09499)
+                /*val honduras = doubleArrayOf(-87.19039, 14.09499)
                 campaignSource.sitesAt(
                     longitude = honduras.first(),
                     latitude = honduras.last(),
                     radius = 10.0
+                )
+
+                 */
+
+                campaignSource.sitesAt(
+                    listOf(EvseId("HNTCI*E*00004"))
                 )
             }
         }

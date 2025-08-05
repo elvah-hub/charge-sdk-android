@@ -27,7 +27,8 @@ internal class SitesViewModel(
                     boundingBox = it.boundingBox,
                     campaignId = it.campaignId?.value,
                     organisationId = it.organisationId?.value,
-                    offerType = it.offerType
+                    offerType = it.offerType,
+                    evseIds = it.evseIds
                 )
             )
         }

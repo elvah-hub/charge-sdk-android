@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
+import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.sites.domain.exceptions.EmptyResultsException
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
@@ -27,7 +28,8 @@ internal class GetBestSite(
                     boundingBox = boundingBox,
                     campaignId = campaignId,
                     organisationId = organisationId,
-                    offerType = offerType
+                    offerType = offerType,
+                    evseIds = evseIds
                 )
             }
         ).flatMap {
@@ -59,7 +61,8 @@ internal class GetBestSite(
         val boundingBox: BoundingBox? = null,
         val campaignId: String? = null,
         val organisationId: String? = null,
-        val offerType: OfferType? = null
+        val offerType: OfferType? = null,
+        val evseIds: List<EvseId>? = null,
     )
 }
 

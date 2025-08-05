@@ -2,6 +2,7 @@ package de.elvah.charge.features.sites.domain.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
+import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
@@ -15,7 +16,8 @@ internal class GetSites(private val sitesRepository: SitesRepository) {
                 boundingBox = params.boundingBox,
                 campaignId = params.campaignId,
                 organisationId = params.organisationId,
-                offerType = params.offerType
+                offerType = params.offerType,
+                evseIds = params.evseIds
             )
 
             sites.bind()
@@ -26,6 +28,7 @@ internal class GetSites(private val sitesRepository: SitesRepository) {
         val boundingBox: BoundingBox? = null,
         val campaignId: String? = null,
         val organisationId: String? = null,
-        val offerType: OfferType? = null
+        val offerType: OfferType? = null,
+        val evseIds: List<EvseId>? = null,
     )
 }
