@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
@@ -53,14 +53,13 @@ private fun ReviewScreen_Content(
     state: ReviewState.Success,
     onDoneClick: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .systemBarsPadding()
+                .padding(it)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -79,7 +78,10 @@ private fun ReviewScreen_Content(
             BasicCard(modifier = Modifier.fillMaxWidth()) {
                 TitleSmall(state.summary.cpoName, fontWeight = FontWeight.W700)
                 CopyMedium(state.summary.address)
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     CopyMedium(stringResource(R.string.code_label))
                     CopyMedium(state.summary.evseId)
                 }
@@ -131,7 +133,7 @@ private fun ReviewScreen_Content(
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun ReviewScreen_Content_Preview() {
     ElvahChargeTheme {

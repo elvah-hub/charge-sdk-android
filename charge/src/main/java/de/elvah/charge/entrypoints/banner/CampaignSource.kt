@@ -1,29 +1,29 @@
 package de.elvah.charge.entrypoints.banner
 
-import de.elvah.charge.features.deals.domain.usecase.UpdateLocation
+import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
+import de.elvah.charge.features.sites.domain.model.filters.OfferType
+import de.elvah.charge.features.sites.domain.usecase.UpdateFilters
 import org.koin.java.KoinJavaComponent
 
 class CampaignSource() {
 
-    private val updateLocation: UpdateLocation by KoinJavaComponent.inject(UpdateLocation::class.java)
+    private val updateFilters: UpdateFilters by KoinJavaComponent.inject(UpdateFilters::class.java)
 
-    suspend fun dealsAt(coordinates: Coordinates) {
-        dealsAt(
-            minLat = coordinates.minLat,
-            minLng = coordinates.minLng,
-            maxLat = coordinates.maxLat,
-            maxLng = coordinates.maxLng
-        )
+    suspend fun sitesAt(
+        boundingBox: BoundingBox,
+        offerType: OfferType? = null
+    ) {
+        updateFilters(boundingBox = boundingBox, offerType = offerType)
     }
 
-    suspend fun dealsAt(minLat: Double, minLng: Double, maxLat: Double, maxLng: Double) {
-        updateLocation(minLat, minLng, maxLat, maxLng)
+    suspend fun sitesAt(
+        evseIds: List<EvseId>,
+        offerType: OfferType? = null
+    ) {
+        updateFilters(evseIds = evseIds, offerType = offerType)
     }
-
-    class Coordinates(
-        val minLat: Double,
-        val minLng: Double,
-        val maxLat: Double,
-        val maxLng: Double
-    )
 }
+
+
+@JvmInline
+value class EvseId(val value: String)

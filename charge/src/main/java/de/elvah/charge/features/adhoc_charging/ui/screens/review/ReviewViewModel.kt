@@ -6,19 +6,34 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.review.model.PaymentSu
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentSummary
 import de.elvah.charge.features.payments.domain.usecase.GetSummaryInfo
 import de.elvah.charge.features.payments.domain.usecase.ResetSession
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.withContext
 
 internal class ReviewViewModel(
     private val getPaymentSummary: GetPaymentSummary,
     private val resetSession: ResetSession,
-    getSessionDetails: GetSummaryInfo,
+    getSummaryInfo: GetSummaryInfo,
 ) : ViewModel() {
 
-    val state = getSessionDetails().map {
-        Pair(it, getPaymentSummary(it.paymentId))
+    val state = getSummaryInfo().map {
+        var summary = getPaymentSummary(it.paymentId)
+        if (summary.isLeft()) {
+            delay(2000)
+            summary = withContext(Dispatchers.IO) {
+                getPaymentSummary(it.paymentId)
+            }
+
+            delay(5000)
+            summary = withContext(Dispatchers.IO) {
+                getPaymentSummary(it.paymentId)
+            }
+        }
+        Pair(it, summary)
     }.map { (orgDetails, summary) ->
         summary.fold(
             ifLeft = { ReviewState.Error },

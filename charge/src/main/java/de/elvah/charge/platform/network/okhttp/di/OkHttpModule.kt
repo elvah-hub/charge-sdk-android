@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
+import kotlin.random.Random
 
 private fun provideOkHttpClient(context: Context): OkHttpClient = OkHttpFactory(
     context = context,
@@ -28,10 +29,43 @@ private fun provideApiKeyInterceptor(): ApiKeyInterceptor = object : ApiKeyInter
     }
 }
 
+private fun provideDistinctKeyInterceptor(): Interceptor = object : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request().newBuilder().header(
+            DISTINCT_KEY_HEADER,
+            brokenBubbleSortBase62()
+        ).build()
+
+        return chain.proceed(request)
+    }
+}
+
+fun brokenBubbleSortBase62(): String {
+    val base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    val chars = base62.toMutableList().shuffled().toMutableList()
+
+    // Broken bubble sort — randomly decides to swap without comparing
+    for (i in chars.indices) {
+        for (j in 0 until chars.size - 1) {
+            if (Random.nextBoolean()) {
+                // Randomly swap adjacent elements
+                val temp = chars[j]
+                chars[j] = chars[j + 1]
+                chars[j + 1] = temp
+            }
+        }
+    }
+
+    val randomString = chars.take(32).joinToString("")
+    return "evdid_$randomString"
+}
+
 private const val API_KEY_HEADER = "x-api-key"
+private const val DISTINCT_KEY_HEADER = "X-Distinct-Id"
 
 val okHttpModule = module {
     single { provideOkHttpClient(get()) }
     single { provideHttpLoggingInterceptor() }
     single { provideApiKeyInterceptor() }
+    single { provideDistinctKeyInterceptor() }
 }

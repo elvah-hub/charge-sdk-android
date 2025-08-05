@@ -1,7 +1,7 @@
 package de.elvah.charge.platform.config
 
-internal class Config(
+class Config(
     val apiKey: String,
     val darkTheme: Boolean? = null,
-    val environment: String = "int",
+    val environment: Environment = Environment.Int,
 )

@@ -5,22 +5,22 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 internal data class ActiveChargeSessionsDto(
-    @Json(name = "data")
+    @param:Json(name = "data")
     val data: Data,
 ) {
     @JsonClass(generateAdapter = true)
     internal data class Data(
 
-        @Json(name = "evseId")
+        @param:Json(name = "evseId")
         val evseId: String,
 
-        @Json(name = "duration")
+        @param:Json(name = "duration")
         val duration: Int?,
 
-        @Json(name = "consumption")
+        @param:Json(name = "consumption")
         val consumption: Double?,
 
-        @Json(name = "status")
+        @param:Json(name = "status")
         val status: String,
     )
 }

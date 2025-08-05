@@ -4,6 +4,7 @@ import de.elvah.charge.features.adhoc_charging.data.remote.api.ChargingApi
 import de.elvah.charge.platform.network.ApiUrlBuilder
 import de.elvah.charge.platform.network.retrofit.RetrofitFactory
 
+
 internal fun provideChargingApi(
     apiUrlBuilder: ApiUrlBuilder,
     retrofitFactory: RetrofitFactory,

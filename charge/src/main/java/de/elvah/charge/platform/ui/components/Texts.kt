@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import de.elvah.charge.platform.ui.theme.copyLarge
 import de.elvah.charge.platform.ui.theme.copyMedium
 import de.elvah.charge.platform.ui.theme.copySmall
@@ -131,6 +132,7 @@ fun CopyMedium(
     fontWeight: FontWeight = FontWeight.W400,
     textAlign: TextAlign = TextAlign.Start,
     color: Color = MaterialTheme.colorScheme.primary,
+    textDecoration: TextDecoration = TextDecoration.None
 ) {
     Text(
         text,
@@ -138,7 +140,8 @@ fun CopyMedium(
         style = copyMedium,
         fontWeight = fontWeight,
         textAlign = textAlign,
-        color = color
+        color = color,
+        textDecoration = textDecoration
     )
 }
 

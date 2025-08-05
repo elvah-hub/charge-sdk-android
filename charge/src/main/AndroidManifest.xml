@@ -8,9 +8,16 @@
             android:label="@string/title_activity_ad_hoc_charging"
             android:theme="@style/Theme.ElvahChargeAndroid">
             <intent-filter>
-                <data android:scheme="https" android:host="www.elvah.de" />
+                <data
+                    android:host="www.elvah.de"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".platform.simulator.ui.SimulatorActivity"
+            android:exported="false"
+            android:label="@string/title_activity_ad_hoc_charging"
+            android:theme="@style/Theme.ElvahChargeAndroid" />
     </application>
 
 </manifest>

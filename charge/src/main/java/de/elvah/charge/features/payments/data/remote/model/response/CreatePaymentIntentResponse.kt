@@ -7,48 +7,48 @@ import de.elvah.charge.features.payments.data.remote.model.OrganisationDetailsDt
 @JsonClass(generateAdapter = true)
 internal data class CreatePaymentIntentResponse(
 
-    @Json(name = "data")
+    @param:Json(name = "data")
     val data: Data,
 )
 
 @JsonClass(generateAdapter = true)
 internal data class SupportContactsItem(
 
-    @Json(name = "supportType")
+    @param:Json(name = "supportType")
     val supportType: String,
 
-    @Json(name = "value")
+    @param:Json(name = "value")
     val value: String
 )
 
 @JsonClass(generateAdapter = true)
 internal data class Data(
 
-    @Json(name = "paymentIntentId")
+    @param:Json(name = "paymentIntentId")
     val paymentIntentId: String,
 
-    @Json(name = "accountId")
+    @param:Json(name = "accountId")
     val accountId: String,
 
-    @Json(name = "paymentId")
+    @param:Json(name = "paymentId")
     val paymentId: String,
 
-    @Json(name = "organisationDetails")
+    @param:Json(name = "organisationDetails")
     val organisationDetails: OrganisationDetailsDto,
 
-    @Json(name = "clientSecret")
+    @param:Json(name = "clientSecret")
     val clientSecret: String,
 
-    @Json(name = "authorisationAmount")
+    @param:Json(name = "authorisationAmount")
     val authorisationAmount: AuthorisationAmount
 )
 
 @JsonClass(generateAdapter = true)
 internal data class AuthorisationAmount(
 
-    @Json(name = "currency")
+    @param:Json(name = "currency")
     val currency: String,
 
-    @Json(name = "value")
+    @param:Json(name = "value")
     val value: Double
 )

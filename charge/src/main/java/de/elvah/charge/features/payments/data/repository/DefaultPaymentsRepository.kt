@@ -35,7 +35,6 @@ internal class DefaultPaymentsRepository(
         return runCatching {
             chargeSettlementApi.authorizeSession(AuthorizeSessionRequest(paymentIntentId)).data.chargeIdentityToken
         }.toEither()
-
     }
 
     override suspend fun getPublishableKey(): Either<Exception, String> {

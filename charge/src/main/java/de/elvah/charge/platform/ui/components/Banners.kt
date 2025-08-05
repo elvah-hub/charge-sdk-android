@@ -12,7 +12,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,11 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.onSuccess
+import de.elvah.charge.platform.ui.theme.primary
 import de.elvah.charge.platform.ui.theme.success
 import kotlinx.coroutines.delay
 
@@ -77,7 +77,7 @@ fun Banner(
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            Text(text, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.W600)
+            Text(text, color = primary, fontWeight = FontWeight.W600)
 
             onCloseClick?.let {
                 Spacer(modifier = Modifier.weight(1f))
@@ -93,7 +93,7 @@ fun Banner(
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun Banner_Preview() {
     ElvahChargeTheme {

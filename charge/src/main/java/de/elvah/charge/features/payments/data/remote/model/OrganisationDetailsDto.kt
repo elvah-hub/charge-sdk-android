@@ -6,18 +6,18 @@ import de.elvah.charge.features.payments.data.remote.model.response.SupportConta
 
 @JsonClass(generateAdapter = true)
 internal data class OrganisationDetailsDto(
-    @Json(name = "privacyUrl")
+    @param:Json(name = "privacyUrl")
     val privacyUrl: String?,
 
-    @Json(name = "supportContacts")
+    @param:Json(name = "supportContacts")
     val supportContacts: List<SupportContactsItem>,
 
-    @Json(name = "termsOfConditionUrl")
+    @param:Json(name = "termsOfConditionUrl")
     val termsOfConditionUrl: String?,
 
-    @Json(name = "companyName")
+    @param:Json(name = "companyName")
     val companyName: String?,
 
-    @Json(name = "logoUrl")
+    @param:Json(name = "logoUrl")
     val logoUrl: String?
 )

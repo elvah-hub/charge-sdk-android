@@ -6,13 +6,13 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 internal data class AuthorizeSessionResponse(
 
-    @Json(name = "data")
+    @param:Json(name = "data")
     val data: Data,
 ) {
     @JsonClass(generateAdapter = true)
     internal data class Data(
 
-        @Json(name = "chargeIdentityToken")
+        @param:Json(name = "chargeIdentityToken")
         val chargeIdentityToken: String
     )
 }

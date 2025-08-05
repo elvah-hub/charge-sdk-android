@@ -6,7 +6,7 @@ internal sealed class AdHocChargingScreens {
 
     @Serializable
     data class SiteDetailRoute(
-        val dealId: String,
+        val siteId: String,
     ) : AdHocChargingScreens()
 
     @Serializable
@@ -23,15 +23,14 @@ internal sealed class AdHocChargingScreens {
 
     @Serializable
     data class ChargingPointDetailRoute(
-        val dealId: String,
+        val siteId: String,
         val evseId: String,
-        val signedOffer: String,
     ) : AdHocChargingScreens(), Deeplink {
         override val route: String
-            get() = Companion.route
+            get() = ROUTE
 
         companion object {
-            const val route = baseRoute +  "chargingPointDetail"
+            const val ROUTE = baseRoute + "chargingPointDetail"
         }
     }
 

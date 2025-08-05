@@ -7,17 +7,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import de.elvah.charge.entrypoints.banner.CampaignBanner
 import de.elvah.charge.entrypoints.banner.CampaignSource
+import de.elvah.charge.entrypoints.banner.ChargeBanner
+import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 
 class MainActivity : ComponentActivity() {
-
     private var campaignSource: CampaignSource = CampaignSource()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +26,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             Surface(
                 modifier = Modifier
-                    .statusBarsPadding()
             ) {
                 Box(
                     modifier = Modifier
@@ -35,16 +33,16 @@ class MainActivity : ComponentActivity() {
                         .background(Color.DarkGray),
                     contentAlignment = Alignment.Center
                 ) {
-                    CampaignBanner()
+                    ChargeBanner()
                 }
             }
             LaunchedEffect(Unit) {
-                campaignSource.dealsAt(
-                    CampaignSource.Coordinates(
-                        minLat = 50.0,
-                        minLng = 40.0,
-                        maxLat = 51.0,
-                        maxLng = 41.0
+                campaignSource.sitesAt(
+                    BoundingBox(
+                        minLat = 14.0,
+                        minLng = -88.0,
+                        maxLat = 15.0,
+                        maxLng = -87.0
                     )
                 )
             }

@@ -18,7 +18,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
-
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SupportContacts
 import de.elvah.charge.platform.ui.components.BasicCard
@@ -48,6 +48,7 @@ import de.elvah.charge.platform.ui.components.SwipeButton
 import de.elvah.charge.platform.ui.components.TickBanner
 import de.elvah.charge.platform.ui.components.TitleMedium
 import de.elvah.charge.platform.ui.components.TitleSmall
+import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
 import de.elvah.charge.platform.ui.theme.onBrand
 import kotlinx.coroutines.launch
@@ -64,9 +65,16 @@ internal fun ChargingStartScreen(
         is ChargingStartState.Error -> ChargingStart_Error()
         is ChargingStartState.Success -> ChargingStart_Success(
             state as ChargingStartState.Success,
-            onStartCharging = onStartCharging,
-            onCloseBanner = { viewModel.closeBanner() }
+            onStartCharging = { viewModel.startChargeSession() },
+            onCloseBanner = { viewModel.closeBanner() },
+            onDismissError = { viewModel.onDismissError() }
         )
+
+        ChargingStartState.StartRequest -> {
+            SideEffect {
+                onStartCharging()
+            }
+        }
     }
 }
 
@@ -86,8 +94,9 @@ internal fun ChargingStart_Success(
     state: ChargingStartState.Success,
     onStartCharging: () -> Unit,
     onCloseBanner: () -> Unit,
+    onDismissError: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val lockedSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
     Scaffold {
@@ -120,7 +129,7 @@ internal fun ChargingStart_Success(
 
                     ButtonTertiary(stringResource(R.string.is_charging_label)) {
                         scope.launch {
-                            sheetState.show()
+                            lockedSheetState.show()
                         }
                     }
                 }
@@ -142,17 +151,40 @@ internal fun ChargingStart_Success(
             }
         }
 
-        if (sheetState.isVisible) {
-            ModalBottomSheet(onDismissRequest = {
-                scope.launch {
-                    sheetState.hide()
-                }
-            }, sheetState = sheetState) {
+        if (lockedSheetState.isVisible) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    scope.launch {
+                        lockedSheetState.hide()
+                    }
+                }, sheetState = lockedSheetState
+            ) {
                 ChargingPointLockedModal {
                     scope.launch {
-                        sheetState.hide()
+                        lockedSheetState.hide()
                     }
                 }
+            }
+        }
+        val errorSheetState = rememberModalBottomSheetState()
+
+        LaunchedEffect(state.error) {
+            if (state.error) {
+                errorSheetState.show()
+            } else {
+                errorSheetState.hide()
+            }
+        }
+
+        if (errorSheetState.isVisible) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    onDismissError()
+                }, sheetState = errorSheetState
+            ) {
+                ChargingPointErrorModal(
+                    onCloseModal = onDismissError
+                )
             }
         }
     }
@@ -197,18 +229,68 @@ private fun ChargingPointLockedModal(
 @Preview
 @Composable
 private fun ChargingPointLockedModal_Preview() {
-    ChargingPointLockedModal {}
+    ElvahChargeTheme {
+        ChargingPointLockedModal {}
+    }
 }
+
+@Composable
+fun ChargingPointErrorModal(
+    modifier: Modifier = Modifier,
+    onCloseModal: () -> Unit,
+) {
+    Column(
+        modifier
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 16.dp)
+    ) {
+        CopyLarge(
+            text = stringResource(R.string.generic_error_bottom_sheet__title),
+            fontWeight = FontWeight.W700,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.size(16.dp))
+
+        ButtonPrimary(
+            stringResource(R.string.understood),
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onCloseModal
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ChargingPointErrorModal_Preview() {
+    ElvahChargeTheme {
+        ChargingPointErrorModal { }
+    }
+}
+
 
 @Composable
 private fun ChargingActions(modifier: Modifier = Modifier, onStartCharging: () -> Unit) {
     Column(modifier) {
-
         SwipeButton(stringResource(R.string.start_charging_process)) {
             onStartCharging()
         }
+        /*
+                SlideToBookButton(
+                    btnText = "Book Ride ₹199",
+                    outerBtnBackgroundColor = MaterialTheme.colorScheme.brand,
+                    sliderBtnBackgroundColor = MaterialTheme.colorScheme.brand,
+                    sliderPositionPx = sliderPositionPx,
+                    onDragUpdated = {
+                        sliderPositionPx = it
+                    },
+                    onBtnSwipe = onStartCharging,
+                    sliderBtnIcon = R.drawable.ic_plug
+                )
 
+         */
     }
+
 }
 
 @Composable
@@ -266,5 +348,5 @@ private fun ChargingStart_Success_Preview() {
                 supportContacts = SupportContacts()
 
             )
-        ), onStartCharging = {}, onCloseBanner = {})
+        ), onStartCharging = {}, onCloseBanner = {}, onDismissError = {})
 }
