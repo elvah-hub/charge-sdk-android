@@ -22,7 +22,7 @@ internal class DefaultPaymentsRepository(
 
     override suspend fun createPaymentIntent(
         signedOffer: String,
-    ): Either<Exception, PaymentIntent> = runCatching {
+    ): Either<Throwable, PaymentIntent> = runCatching {
         val response =
             chargeSettlementApi.createPaymentIntent(CreatePaymentIntentRequest(signedOffer))
 
@@ -31,19 +31,19 @@ internal class DefaultPaymentsRepository(
         response.toDomain()
     }.toEither()
 
-    override suspend fun authorizeSession(paymentIntentId: String): Either<Exception, String> {
+    override suspend fun authorizeSession(paymentIntentId: String): Either<Throwable, String> {
         return runCatching {
             chargeSettlementApi.authorizeSession(AuthorizeSessionRequest(paymentIntentId)).data.chargeIdentityToken
         }.toEither()
     }
 
-    override suspend fun getPublishableKey(): Either<Exception, String> {
+    override suspend fun getPublishableKey(): Either<Throwable, String> {
         return runCatching {
             integrateApi.getPublishableKey().data.publishableKey
         }.toEither()
     }
 
-    override suspend fun getPaymentSummary(paymentId: String): Either<Exception, PaymentSummary> {
+    override suspend fun getPaymentSummary(paymentId: String): Either<Throwable, PaymentSummary> {
         return runCatching {
             val sessionDetails = chargingStore.getChargingPrefs().first()
 

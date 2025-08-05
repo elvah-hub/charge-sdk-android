@@ -12,7 +12,7 @@ import de.elvah.charge.features.sites.domain.model.filters.OfferType
 internal class GetSite(
     private val getSites: GetSites,
 ) {
-    suspend operator fun invoke(params: Params): Either<Exception, ChargeSite> {
+    suspend operator fun invoke(params: Params): Either<Throwable, ChargeSite> {
         return getSites(
             with(params) {
                 GetSites.Params(

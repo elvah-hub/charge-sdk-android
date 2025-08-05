@@ -8,6 +8,6 @@ internal class GetPaymentToken(
     private val paymentsRepository: PaymentsRepository,
 ) {
 
-    suspend operator fun invoke(paymentId: String): Either<Exception, String> =
+    suspend operator fun invoke(paymentId: String): Either<Throwable, String> =
         paymentsRepository.authorizeSession(paymentId)
 }

@@ -27,7 +27,7 @@ internal class DefaultSitesRepository(
         campaignId: String?,
         organisationId: String?,
         offerType: OfferType?
-    ): Either<Exception, List<ChargeSite>> {
+    ): Either<Throwable, List<ChargeSite>> {
         return runCatching {
             sitesApi.getSites(
                 parseFilters(
@@ -47,7 +47,7 @@ internal class DefaultSitesRepository(
     override suspend fun getSignedOffer(
         siteId: String,
         evseId: String
-    ): Either<Exception, ChargeSite> {
+    ): Either<Throwable, ChargeSite> {
         return runCatching {
             sitesApi.getSignedOffer(
                 siteId = siteId,

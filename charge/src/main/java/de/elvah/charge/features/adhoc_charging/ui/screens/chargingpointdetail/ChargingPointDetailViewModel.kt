@@ -105,7 +105,7 @@ internal class ChargingPointDetailViewModel(
     }
 
     private suspend fun executeInitializeStripe(siteId: String, evseId: String) {
-        val result: Either<Exception, PaymentConfiguration> =
+        val result: Either<Throwable, PaymentConfiguration> =
             getPaymentConfiguration(siteId, evseId)
         val logoUrl = getOrganisationDetails()?.logoUrl.orEmpty()
 

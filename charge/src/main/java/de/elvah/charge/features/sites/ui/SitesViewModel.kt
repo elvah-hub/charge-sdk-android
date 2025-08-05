@@ -56,14 +56,14 @@ internal class SitesViewModel(
         )
 
 
-    private fun parseException(exception: Exception?): SitesState {
-        when (exception) {
+    private fun parseException(exception: Throwable?): SitesState {
+        return when (exception) {
             is EmptyResultsException -> {
-                return SitesState.Empty
+                SitesState.Empty
             }
 
             else -> {
-                return SitesState.Error
+                SitesState.Error
             }
         }
     }
