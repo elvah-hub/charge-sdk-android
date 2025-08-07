@@ -3,7 +3,7 @@
 The elvah Charge SDK is a lightweight toolkit that enables apps to discover nearby EV charging deals
 and initiate charge sessions through a fully native and seamless interface.
 
-With just a few lines of code, you can add a `CampaignBanner` view to your app that intelligently
+With just a few lines of code, you can add a `ChargeBanner` view to your app that intelligently
 finds and displays nearby charging deals. The SDK handles everything from deal discovery to payment
 processing and charge session management, allowing your users to charge their cars without ever
 leaving your app.
@@ -46,7 +46,7 @@ dependencyResolutionManagement {
 Add the following line to the dependencies in your `build.gradle` file:
 
 ```kotlin
-implementation("com.github.elvah-hub:charge-sdk-android:0.2.0")
+implementation("com.github.elvah-hub:charge-sdk-android:0.2.1")
 ```
 
 Alternatively, you can download the source code and place it in your project. Everything yoy need is
@@ -65,17 +65,17 @@ The configuration allows you to pass the following values:
 
 ### Campaign Banner
 
-The SDK's primary entry point is the `CampaignBanner` view. You can add it anywhere you want to
+The SDK's primary entry point is the `ChargeBanner` view. You can add it anywhere you want to
 offer users a deal to charge their electric car nearby.
 
-The minimal setup to integrate a `CampaignBanner` into your view hierarchy is this:
+The minimal setup to integrate a `ChargeBanner` into your view hierarchy is this:
 
 ```kotlin
 
 @Composable
 fun ExampleScreen() {
     Box {
-        CampaignBanner()
+        ChargeBanner()
     }
 }
 
@@ -83,35 +83,56 @@ fun ExampleScreen() {
 
 ### Campaign Source
 
-The campaign banner relies on the coordinates where the user wants to search the available
+The charge banner relies on the coordinates where the user wants to search the available
 campaigns. You can set the coordinates by using `CampaignSource` class and calling the method
-`dealsAt`. For example:
+`sitesAt`. For example:
 
 ```kotlin
 // Injects the CampaignSource into the view hierarchy
 private var campaignSource: CampaignSource = CampaignSource()
 
-campaignSource.dealsAt(minLat = 5.0, minLng = 4.0, maxLat = 52.0, maxLng = 50.0)
-
-//or
-
-campaignSource.dealsAt(
-    CampaignSource.Coordinates(
-        minLat = 5.0,
-        minLng = 4.0,
-        maxLat = 52.0,
-        maxLng = 50.0
+campaignSource.sitesAt(
+    BoundingBox(
+        minLat = -87.0,
+        minLng = 14.0,
+        maxLat = -86.0,
+        maxLng = 15.0
     )
+)
+
+// or
+campaignSource.sitesAt(
+    latitude = 14.09499,
+    longitude = -87.19039,
+    radius = 10.0
 )
 ```
 
+Additionally, you can query the sites by passing a list of evse ids with the `evseIds` parameter:
+
+```kotlin
+campaignSource.sitesAt(
+    evseIds = listOf(EvseId("HNTCI*E*00001"))
+)
+```
+
+All sites can be filtered by the `offerType` parameter:
+
+```kotlin
+campaignSource.sitesAt(
+    // other filters
+    offerType = OfferType.CAMPAIGN
+)
+```
+
+
 #### Display Behavior
 
-By default, there will be visible loading and error states inside the `CampaignBanner` view,
+By default, there will be visible loading and error states inside the `ChargeBanner` view,
 whenever a source is set. To change this, specify a `DisplayBehavior` in the `display` property:
 
 ```kotlin 
-CampaignBanner(display: DisplayBehavior.WHEN_CONTENT_AVAILABLE)
+ChargeBanner(display: DisplayBehavior.WHEN_CONTENT_AVAILABLE)
 ```
 
 Setting the `DisplayBehavior` to `DisplayBehavior.WHEN_CONTENT_AVAILABLE` can be useful when you do
@@ -119,11 +140,11 @@ not want to introduce changes to your UI until it is certain there is an active 
 
 #### Banner Variants
 
-The `CampaignBanner` view comes in two variants: `default` and `compact`. You can specify the
+The `ChargeBanner` view comes in two variants: `default` and `compact`. You can specify the
 variant through a `variant` parameter:
 
 ```kotlin
-CampaignBanner(variant = Variant.COMPACT)
+ChargeBanner(variant = Variant.COMPACT)
 ```
 
 ## Simulator

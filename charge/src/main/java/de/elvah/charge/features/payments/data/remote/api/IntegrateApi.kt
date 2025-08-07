@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 internal interface IntegrateApi {
 
-    @GET("/api/payments/publishable-key")
+    @GET("/payments/publishable-key")
     suspend fun getPublishableKey(): GetPublishableKeyResponse
 }

@@ -7,12 +7,12 @@ import retrofit2.http.Header
 
 internal interface ChargingApi {
 
-    @GET("/api/direct-charge/user/session")
+    @GET("/direct-charge/user/session")
     suspend fun getActiveChargeSessions(@Header("Authorization") token: String): ActiveChargeSessionsDto
 
-    @GET("/api/direct-charge/user/session/start")
+    @GET("/direct-charge/user/session/start")
     suspend fun startChargeSessions(@Header("Authorization") token: String)
 
-    @GET("/api/direct-charge/user/session/stop")
+    @GET("/direct-charge/user/session/stop")
     suspend fun stopChargeSession(@Header("Authorization") token: String)
 }

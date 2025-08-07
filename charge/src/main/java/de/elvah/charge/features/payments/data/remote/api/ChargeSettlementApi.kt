@@ -13,12 +13,12 @@ import retrofit2.http.Path
 
 internal interface ChargeSettlementApi {
 
-    @POST("/api/payments/initiate")
+    @POST("/payments/initiate")
     suspend fun createPaymentIntent(@Body request: CreatePaymentIntentRequest): CreatePaymentIntentResponse
 
-    @POST("/api/payments/authorize-session")
+    @POST("/payments/authorize-session")
     suspend fun authorizeSession(@Body request: AuthorizeSessionRequest): AuthorizeSessionResponse
 
-    @GET("/api/payments/{paymentId}/summary")
+    @GET("/payments/{paymentId}/summary")
     suspend fun getPaymentSummary(@Path("paymentId") paymentId: String): PaymentSummaryDto
 }

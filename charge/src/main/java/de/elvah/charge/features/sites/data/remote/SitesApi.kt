@@ -16,13 +16,13 @@ import retrofit2.http.QueryMap
 
 internal interface SitesApi {
 
-    @GET("/api/sites-offers")
+    @GET("/discovery/sites-offers")
     suspend fun getSites(
         @Query("evseIds") evseIds: List<String>? = null,
         @QueryMap filters: Map<String, String>
     ): ApiListResponse<SitesDto<OfferDto>>
 
-    @POST("/api/sites-offers/{siteId}")
+    @POST("/discovery/sites-offers/{siteId}")
     suspend fun getSignedOffer(
         @Path("siteId") siteId: String,
         @Body signedOfferRequest: SignedOfferRequest

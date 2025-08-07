@@ -38,17 +38,25 @@ class MainActivity : ComponentActivity() {
                 }
             }
             LaunchedEffect(Unit) {
-                /*val honduras = doubleArrayOf(-87.19039, 14.09499)
-                campaignSource.sitesAt(
-                    longitude = honduras.first(),
-                    latitude = honduras.last(),
+              /*  campaignSource.sitesAt(
+                    latitude = 14.09499,
+                    longitude = -87.19039,
                     radius = 10.0
                 )
 
-                 */
+                campaignSource.sitesAt(
+                    BoundingBox(
+                        minLat = -87.0,
+                        minLng = 14.0,
+                        maxLat = -86.0,
+                        maxLng = 15.0
+                    )
+                )
+
+               */
 
                 campaignSource.sitesAt(
-                    listOf(EvseId("HNTCI*E*00004"))
+                    evseIds = listOf(EvseId("HNTCI*E*00001"))
                 )
             }
         }
