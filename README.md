@@ -13,12 +13,13 @@ leaving your app.
 1. [Installation](#installation)
     - [Gradle](#gradle)
 2. **[Getting Started](#getting-started)**
-    - [Campaign Banner](#campaign-banner)
+    - [Charge Banner](#campaign-banner)
     - [Campaign Source](#campaign-source)
     - [Display Behavior](#display-behavior)
     - [Banner Variants](#banner-variants)
-3. [Glossary](#glossary)
-4. [Legal Notice](#legal-notice)
+3. [Simulator](#simulator)
+4. [Glossary](#glossary)
+5. [Legal Notice](#legal-notice)
 
 ## Installation
 
@@ -63,7 +64,7 @@ The configuration allows you to pass the following values:
 - `environment`: Sets if the sdk targets the backend or any of
   the [Simulated Flows](#simulated-flows)
 
-### Campaign Banner
+### Charge Banner
 
 The SDK's primary entry point is the `ChargeBanner` view. You can add it anywhere you want to
 offer users a deal to charge their electric car nearby.
@@ -125,14 +126,13 @@ campaignSource.sitesAt(
 )
 ```
 
-
 #### Display Behavior
 
 By default, there will be visible loading and error states inside the `ChargeBanner` view,
 whenever a source is set. To change this, specify a `DisplayBehavior` in the `display` property:
 
 ```kotlin 
-ChargeBanner(display: DisplayBehavior.WHEN_CONTENT_AVAILABLE)
+ChargeBanner(display: DisplayBehavior. WHEN_CONTENT_AVAILABLE)
 ```
 
 Setting the `DisplayBehavior` to `DisplayBehavior.WHEN_CONTENT_AVAILABLE` can be useful when you do
