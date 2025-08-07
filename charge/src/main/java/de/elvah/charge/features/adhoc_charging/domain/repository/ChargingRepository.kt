@@ -14,7 +14,7 @@ internal interface ChargingRepository {
 
     suspend fun updateOrganisationDetails(organisationDetails: OrganisationDetails)
 
-    suspend fun fetchChargingSession(): Either<Exception, ChargingSession>
+    suspend fun fetchChargingSession(): Either<Throwable, ChargingSession>
 
     suspend fun startChargingSession(): Either<SessionExceptions, Boolean>
 

@@ -1,6 +1,7 @@
 package de.elvah.charge.features.sites.data
 
 import arrow.core.Either
+import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.sites.data.mapper.toDomain
 import de.elvah.charge.features.sites.data.mapper.toSite
 import de.elvah.charge.features.sites.data.remote.SitesApi
@@ -26,15 +27,17 @@ internal class DefaultSitesRepository(
         boundingBox: BoundingBox?,
         campaignId: String?,
         organisationId: String?,
-        offerType: OfferType?
-    ): Either<Exception, List<ChargeSite>> {
+        offerType: OfferType?,
+        evseIds: List<EvseId>?
+    ): Either<Throwable, List<ChargeSite>> {
         return runCatching {
             sitesApi.getSites(
+                evseIds?.map { it.value },
                 parseFilters(
                     boundingBox,
                     campaignId,
                     organisationId,
-                    offerType
+                    offerType,
                 )
             ).data.map {
                 it.toSite()
@@ -47,7 +50,7 @@ internal class DefaultSitesRepository(
     override suspend fun getSignedOffer(
         siteId: String,
         evseId: String
-    ): Either<Exception, ChargeSite> {
+    ): Either<Throwable, ChargeSite> {
         return runCatching {
             sitesApi.getSignedOffer(
                 siteId = siteId,
@@ -62,7 +65,7 @@ internal class DefaultSitesRepository(
         boundingBox: BoundingBox? = null,
         campaignId: String? = null,
         organisationId: String? = null,
-        offerType: OfferType? = null
+        offerType: OfferType? = null,
     ): Map<String, String> {
         return buildMap {
             boundingBox?.let {
@@ -91,5 +94,6 @@ internal class DefaultSitesRepository(
         const val CAMPAIGN_ID_KEY = "campaignId"
         const val ORGANISATION_ID_KEY = "organisationId"
         const val OFFER_TYPE_KEY = "offerType"
+        const val EVSE_IDS_KEY = "evseIds"
     }
 }

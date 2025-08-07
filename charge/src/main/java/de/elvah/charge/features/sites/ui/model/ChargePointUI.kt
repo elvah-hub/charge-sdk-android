@@ -5,7 +5,7 @@ internal data class ChargePointUI(
     val evseId: String,
     val pricePerKwh: Double,
     val energyType: String,
-    val energyValue: Int,
+    val energyValue: Float?,
 )
 
 internal data class SignedChargePointUI(

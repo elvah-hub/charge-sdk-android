@@ -2,7 +2,9 @@ package de.elvah.charge.features.sites.domain.usecase
 
 import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
+import de.elvah.charge.features.sites.domain.model.filters.CampaignId
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
+import de.elvah.charge.features.sites.domain.model.filters.OrganisationId
 import de.elvah.charge.features.sites.domain.model.filters.SiteFilter
 import de.elvah.charge.features.sites.domain.repository.FiltersRepository
 
@@ -20,8 +22,8 @@ internal class UpdateFilters(
         filtersRepository.updateFilters(
             SiteFilter(
                 boundingBox = boundingBox,
-                campaignId = campaignId,
-                organisationId = organisationId,
+                campaignId = campaignId?.let { CampaignId(it) },
+                organisationId = organisationId?.let { OrganisationId(it) },
                 offerType = offerType
             )
         )
@@ -58,11 +60,4 @@ internal class UpdateFilters(
     suspend operator fun invoke(offerType: OfferType) {
         filtersRepository.updateOfferType(offerType)
     }
-
 }
-
-@JvmInline
-value class CampaignId(val value: String)
-
-@JvmInline
-value class OrganisationId(val value: String)

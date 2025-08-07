@@ -11,7 +11,7 @@ internal class FakePaymentsRepository() : PaymentsRepository {
 
     override suspend fun createPaymentIntent(
         signedOffer: String,
-    ): Either<Exception, PaymentIntent> = runCatching {
+    ): Either<Throwable, PaymentIntent> = runCatching {
         PaymentIntent(
             paymentId = "ex",
             paymentIntentId = "dolores",
@@ -22,20 +22,20 @@ internal class FakePaymentsRepository() : PaymentsRepository {
         )
     }.toEither()
 
-    override suspend fun authorizeSession(paymentIntentId: String): Either<Exception, String> {
+    override suspend fun authorizeSession(paymentIntentId: String): Either<Throwable, String> {
         return runCatching {
             ""
         }.toEither()
 
     }
 
-    override suspend fun getPublishableKey(): Either<Exception, String> {
+    override suspend fun getPublishableKey(): Either<Throwable, String> {
         return runCatching {
             ""
         }.toEither()
     }
 
-    override suspend fun getPaymentSummary(paymentId: String): Either<Exception, PaymentSummary> {
+    override suspend fun getPaymentSummary(paymentId: String): Either<Throwable, PaymentSummary> {
         return runCatching {
             PaymentSummary(
                 evseId = "nulla",

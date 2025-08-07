@@ -8,8 +8,8 @@ data class AddressDto(
     val streetAddress: List<String>,
 
     @param:Json(name = "postalCode")
-    val postalCode: String,
+    val postalCode: String?,
 
     @param:Json(name = "locality")
-    val locality: String
+    val locality: String?
 )

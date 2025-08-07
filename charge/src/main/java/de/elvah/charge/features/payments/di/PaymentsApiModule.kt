@@ -35,4 +35,4 @@ internal fun provideIntegrateApi(
         )
 }
 
-private const val CHARGE_SETTLEMENT_API_SERVICE_NAME = "charge-settlement.backend"
+private const val CHARGE_SETTLEMENT_API_SERVICE_NAME = "integrate"

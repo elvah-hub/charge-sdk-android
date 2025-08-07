@@ -349,7 +349,7 @@ private fun ChargingPointDetail_Success_Preview() {
             render = ChargePointDetailRender(
                 evseId = EvseId(""),
                 energyType = "",
-                energyValue = 0,
+                energyValue = 0.0f,
                 price = 0.0,
                 originalPrice = 0.0,
                 logoUrl = "logoUrl",
