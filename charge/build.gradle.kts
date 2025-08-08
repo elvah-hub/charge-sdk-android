@@ -33,7 +33,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlin {
         jvmToolchain(17)
 
@@ -62,6 +62,18 @@ publishing {
             }
         }
     }
+}
+
+tasks.register("checkMinifyEnabled") {
+    doLast {
+        if (android.buildTypes.getByName("release").isMinifyEnabled) {
+            throw GradleException("Minification is enabled for the release build type. Please disable it.")
+        }
+    }
+}
+
+tasks.matching { it.group == "publishing" }.onEach {
+    it.dependsOn("checkMinifyEnabled")
 }
 
 protobuf {
