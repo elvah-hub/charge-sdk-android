@@ -11,10 +11,12 @@
   <string name="campaign_banner__ad_hoc" comment="campaign_banncampaign_banner__ad_hocer__ad_hoc">Ad-hoc</string>
   <string name="campaign_banner__charge_at_station_text">Charge at %1$s from %2$s</string>
   <string name="campaign_banner__charge_without_registration" comment="Charge without registration">Charge without registration</string>
+  <string name="campaign_banner__current_price_text">From %s/kWh</string>
   <string name="campaign_banner__deal_expired_message">This offer has ended, but more are coming!</string>
   <string name="campaign_banner__deal_loading_error__text">Failed to load offer</string>
   <string name="campaign_banner__loading__text">Loading data…</string>
   <string name="campaign_banner__no_data_text">No offer found</string>
+  <string name="campaign_banner__original_price_text">%s/kWh</string>
   <string name="cancel">Cancel</string>
   <string name="charge">Charge</string>
   <string name="charge_at_station_placeholder">Charge at %1$s station for </string>
@@ -72,7 +74,7 @@
   <string name="energy_label">Energy</string>
   <string name="error_deal_banner">Error loading offers…</string>
   <string name="error_label">Error…</string>
-  <string name="euros_kw_label">%1$s€/kW</string>
+  <string name="euros_kw_label">%1$s€/kWh</string>
   <string name="euros_label">€</string>
   <string name="generic_error__title">An error occurred</string>
   <string name="generic_error_bottom_sheet__message">An unexpected error has occurred. Please try again or contact our support.</string>
@@ -118,6 +120,4 @@
   <string name="try_again">Try again</string>
   <string name="understood">Understood</string>
   <string name="whatsapp">WhatsApp</string>
-  <string name="campaign_banner__current_price_text" translatable="false">From %.2f€/kWh</string>
-  <string name="campaign_banner__original_price_text" translatable="false">%.2f€/kWh</string>
 </resources>
