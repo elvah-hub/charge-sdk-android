@@ -4,12 +4,11 @@
   <string name="apple_maps">Cartes Apple</string>
   <string name="authorization_successful">Recharge autorisée</string>
   <string name="back">Retour</string>
-  <string name="best_deal_around_you_label__short">Meilleure offre</string>
   <string name="call">Appeler</string>
-  <string name="campaign_banner__active_session_text">Gérer la session de recharge</string>
-  <string name="campaign_banner__active_session_text__short">Gérer</string>
+  <string name="campaign_banner__active_session_text">Gérer la charge</string>
   <string name="campaign_banner__ad_hoc" comment="campaign_banncampaign_banner__ad_hocer__ad_hoc">Ad-hoc</string>
   <string name="campaign_banner__charge_at_station_text">Charger à %1$s depuis %2$s</string>
+  <string name="campaign_banner__charge_session__failed_to_load__text">Échec du chargement des détails de la session de recharge</string>
   <string name="campaign_banner__charge_without_registration" comment="Charge without registration">Recharger sans inscription</string>
   <string name="campaign_banner__current_price_text">Depuis %s/kWh</string>
   <string name="campaign_banner__deal_expired_message">Cette offre a expiré, mais d\'autres arrivent bientôt!</string>
@@ -41,7 +40,6 @@
   <string name="charge_session__stop_failed_title">Veuillez terminer la recharge manuellement</string>
   <string name="charge_session__stop_requested__message">Connexion à la station pour terminer la session.</string>
   <string name="charge_session__stop_requested__title">Arrêt en cours</string>
-  <string name="charge_session__stopped__title">Merci d’avoir rechargé</string>
   <string name="charge_session__title">Session de recharge</string>
   <string name="charge_session__unauthorized_error__message">Le délai entre le paiement et le début de la session a été trop long. Veuillez autoriser un nouveau paiement.</string>
   <string name="charge_session__unauthorized_error__title">Paiement expiré</string>
@@ -53,16 +51,16 @@
   <string name="charging_label">Recharge…</string>
   <string name="charging_session_active_title">Recharge en cours</string>
   <string name="close">Fermer</string>
-  <string name="code_label">Code:</string>
+  <string name="code_label">EVSE ID:</string>
   <string name="connect_vehicle">Connectez votre véhicule électrique maintenant et lancez la recharge.</string>
   <string name="contact_phone">+45 123 456 456</string>
   <string name="contact_support_agent">Contacter le support en ligne</string>
   <string name="contact_support_agent_short">Support web</string>
+  <string name="cpo_label">CPO</string>
   <string name="dc_label">DC</string>
   <string name="deal_ended">Terminé</string>
   <string name="deal_expired_label">L\'offre est terminée</string>
   <string name="discover_button">Charger</string>
-  <string name="discover_button__short">Découvrir</string>
   <string name="done_label">Terminé</string>
   <string name="email">Email</string>
   <string name="email_app_missing_title">Malheureusement, aucune application Email n’a été trouvée.</string>
@@ -72,7 +70,6 @@
   <string name="ends_in_minutes_placeholder">L’offre se termine dans %1$sm %2$ss</string>
   <string name="ends_in_seconds_placeholder">L’offre se termine dans %1$ss</string>
   <string name="energy_label">Énergie</string>
-  <string name="error_deal_banner">Erreur…</string>
   <string name="error_label">Erreur…</string>
   <string name="euros_kw_label">%1$s€/kWh</string>
   <string name="euros_label">€</string>
@@ -114,7 +111,6 @@
   <string name="terms_privacy_template_1">Conditions d’utilisation &amp; recharge</string>
   <string name="terms_privacy_template_2"> ainsi que notre </string>
   <string name="terms_privacy_template_3">Politique de confidentialité</string>
-  <string name="title_activity_ad_hoc_charging">AdHocChargingActivity</string>
   <string name="total">Total</string>
   <string name="total_cost_label">Total</string>
   <string name="try_again">Réessayer</string>
