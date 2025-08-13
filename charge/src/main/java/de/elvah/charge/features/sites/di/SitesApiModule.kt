@@ -19,4 +19,4 @@ internal fun provideApi(
         )
 }
 
-private const val API_SERVICE_NAME = "discovery.backend"
+private const val API_SERVICE_NAME = "integrate"

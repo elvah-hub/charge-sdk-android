@@ -14,7 +14,7 @@ internal object MockData {
             "DE*KDL*E0000049$it",
             0.42,
             if (it % 2 == 0) "AC" else "DC",
-            if (it % 2 == 0) 22 else 300,
+            if (it % 2 == 0) 22.0f else 300.0f,
         )
     }
 
@@ -73,7 +73,7 @@ internal object MockData {
                         signedOffer = "iusto"
                     ),
                     powerSpecification = ChargeSite.PowerSpecification(
-                        maxPowerInKW = 8531,
+                        maxPowerInKW = 22.0f,
                         type = if (evseIndex % 2 == 0) "AC" else "DC"
                     ),
                     normalizedEvseId = "DEKDLE000004$siteIndex$evseIndex",

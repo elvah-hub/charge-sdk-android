@@ -5,7 +5,6 @@
         <activity
             android:name=".features.adhoc_charging.ui.AdHocChargingActivity"
             android:exported="false"
-            android:label="@string/title_activity_ad_hoc_charging"
             android:theme="@style/Theme.ElvahChargeAndroid">
             <intent-filter>
                 <data
@@ -16,7 +15,6 @@
         <activity
             android:name=".platform.simulator.ui.SimulatorActivity"
             android:exported="false"
-            android:label="@string/title_activity_ad_hoc_charging"
             android:theme="@style/Theme.ElvahChargeAndroid" />
     </application>
 

@@ -18,7 +18,7 @@ data class ChargeSite(
     data class ChargePoint(
         val evseId: String,
         val offer: Offer,
-        val powerSpecification: PowerSpecification,
+        val powerSpecification: PowerSpecification?,
         val normalizedEvseId: String
     ) {
         data class Offer(
@@ -45,7 +45,7 @@ data class ChargeSite(
     }
 
     data class PowerSpecification(
-        val maxPowerInKW: Int,
+        val maxPowerInKW: Float?,
         val type: String
     )
 }

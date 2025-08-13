@@ -2,6 +2,7 @@ package de.elvah.charge.platform.simulator.data.repository
 
 import arrow.core.Either
 import arrow.core.right
+import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
@@ -21,8 +22,9 @@ internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesReposito
         boundingBox: BoundingBox?,
         campaignId: String?,
         organisationId: String?,
-        offerType: OfferType?
-    ): Either<Exception, List<ChargeSite>> {
+        offerType: OfferType?,
+        evseIds: List<EvseId>?
+    ): Either<Throwable, List<ChargeSite>> {
         return MockData.chargeSites.right().also {
             it.getOrNull()?.let {
                 chargeSites = it

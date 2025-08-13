@@ -8,6 +8,7 @@ import de.elvah.charge.features.adhoc_charging.domain.usecase.StartChargingSessi
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -93,6 +94,7 @@ internal class ActiveChargingViewModel(
                                 _state.update {
                                     ActiveChargingState.Stopped(organisationDetails)
                                 }
+                                viewModelScope.cancel()
                             }
                         }
                     }
