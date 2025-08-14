@@ -6,6 +6,7 @@ import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.model.filters.OrganisationId
 import de.elvah.charge.features.sites.domain.model.filters.SiteFilter
 import de.elvah.charge.features.sites.domain.repository.FiltersRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -59,5 +60,10 @@ internal class DefaultFiltersRepository(
         updateFilters(updatedFilter).also {
             currentFilter = updatedFilter
         }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun clearFilters() {
+        _filters.resetReplayCache()
     }
 }

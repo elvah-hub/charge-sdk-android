@@ -1,6 +1,5 @@
 package de.elvah.charge.features.sites.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.elvah.charge.features.adhoc_charging.domain.usecase.GetActiveChargingSession
@@ -57,17 +56,13 @@ internal class SitesViewModel(
         )
 
 
-    private fun parseException(exception: Throwable?): SitesState {
-        return when (exception) {
-            is EmptyResultsException -> {
-                SitesState.Empty
-            }
+    private fun parseException(exception: Throwable?): SitesState = when (exception) {
+        is EmptyResultsException -> {
+            SitesState.Empty
+        }
 
-            else -> {
-                SitesState.Error
-            }
-        }.also {
-            Log.e("SitesViewModel", "parseException: ${exception?.cause}")
+        else -> {
+            SitesState.Error
         }
     }
 }

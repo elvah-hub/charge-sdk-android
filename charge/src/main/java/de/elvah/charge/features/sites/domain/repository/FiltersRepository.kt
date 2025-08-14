@@ -16,4 +16,6 @@ internal interface FiltersRepository {
     suspend fun updateCampaignId(campaignId: CampaignId)
     suspend fun updateOrganisationId(organisationId: OrganisationId)
     suspend fun updateOfferType(offerType: OfferType)
+
+    suspend fun clearFilters()
 }
