@@ -1,6 +1,7 @@
 package de.elvah.charge.entrypoints.banner
 
 import androidx.compose.ui.util.fastCoerceAtLeast
+import androidx.compose.ui.util.fastCoerceAtMost
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.usecase.ClearFilters
@@ -25,12 +26,13 @@ class CampaignSource() {
         radius: Double,
         offerType: OfferType? = null
     ) {
+        val radioInDegrees = radius / 11
         updateFilters(
             boundingBox = BoundingBox(
-                minLat = (latitude - radius).fastCoerceAtLeast(-90.0),
-                minLng = longitude - radius,
-                maxLat = latitude + radius,
-                maxLng = longitude + radius
+                minLat = (latitude - radioInDegrees).fastCoerceAtLeast(-90.0),
+                minLng = (longitude - radioInDegrees).fastCoerceAtLeast(-180.0),
+                maxLat = (latitude + radioInDegrees).fastCoerceAtMost(90.0),
+                maxLng = (longitude + radioInDegrees).fastCoerceAtMost(180.0)
             ),
             offerType = offerType
         )
