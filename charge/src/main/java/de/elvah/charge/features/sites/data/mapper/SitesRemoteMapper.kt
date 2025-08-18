@@ -66,7 +66,7 @@ internal fun SignedOfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSit
     price = price.toDomain(),
     type = type,
     expiresAt = expiresAt,
-    originalPrice = originalPrice.toDomain(),
+    originalPrice = originalPrice?.toDomain(),
     campaignEndsAt = campaignEndsAt,
     signedOffer = signedOffer
 )
