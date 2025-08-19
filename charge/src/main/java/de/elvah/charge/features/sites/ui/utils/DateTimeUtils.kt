@@ -1,21 +1,19 @@
 package de.elvah.charge.features.sites.ui.utils
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import de.elvah.charge.R
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 @Composable
-fun parseDate(date: String): String {
-    val dateTimeFormat = remember { DateTimeFormatter.ofPattern(DATE_FORMAT) }
-
-    val currentDateTime = LocalDateTime.now()
-    val dealDateTime = remember(date) { LocalDateTime.parse(date, dateTimeFormat) }
-
-    val timeDifference = ChronoUnit.SECONDS.between(currentDateTime, dealDateTime)
+internal fun parseDate(date: String): String {
+    val timeDifference = (Instant.parse(date) - Clock.System.now()).inWholeSeconds
 
     return when {
         timeDifference <= 0 -> stringResource(R.string.deal_expired_label)
@@ -40,7 +38,7 @@ fun parseDate(date: String): String {
     }
 }
 
-fun getSecondsTillDealEnd(date: String): Long {
+internal fun getSecondsTillDealEnd(date: String): Long {
     val dateTimeFormat = DateTimeFormatter.ofPattern(DATE_FORMAT)
 
     val currentDateTime = LocalDateTime.now()

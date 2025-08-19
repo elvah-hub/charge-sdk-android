@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -31,7 +30,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ChargeBanner(
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
-    variant: BannerVariant = BannerVariant.DEFAULT
+    variant: BannerVariant = BannerVariant.DEFAULT,
 ) {
     val sitesViewModel: SitesViewModel = koinViewModel()
 
@@ -48,9 +47,7 @@ fun ChargeBanner(
 
             SitesState.Loading -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
-                    Card(modifier = modifier) {
-                        ChargeBanner_Loading(modifier)
-                    }
+                    ChargeBanner_Loading(modifier)
                 }
             }
 

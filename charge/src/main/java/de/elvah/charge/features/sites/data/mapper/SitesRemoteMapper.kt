@@ -35,14 +35,14 @@ internal fun SitesDto<SignedOfferDto>.toDomain(): ChargeSite {
 
 internal fun AddressDto.toDomain(): ChargeSite.Address = ChargeSite.Address(
     streetAddress = streetAddress,
-    postalCode = postalCode,
-    locality = locality
+    postalCode = postalCode.orEmpty(),
+    locality = locality.orEmpty()
 )
 
 internal fun ChargePointDto<OfferDto>.toOffer(): ChargeSite.ChargePoint = ChargeSite.ChargePoint(
     evseId = evseId,
     offer = offer.toDomain(),
-    powerSpecification = powerSpecification.toDomain(),
+    powerSpecification = powerSpecification?.toDomain(),
     normalizedEvseId = normalizedEvseId
 )
 
@@ -50,7 +50,7 @@ internal fun ChargePointDto<SignedOfferDto>.toDomain(): ChargeSite.ChargePoint =
     ChargeSite.ChargePoint(
         evseId = evseId,
         offer = offer.toDomain(),
-        powerSpecification = powerSpecification.toDomain(),
+        powerSpecification = powerSpecification?.toDomain(),
         normalizedEvseId = normalizedEvseId
     )
 
@@ -58,7 +58,8 @@ internal fun OfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSite.Char
     price = price.toDomain(),
     originalPrice = originalPrice?.toDomain(),
     type = type,
-    expiresAt = expiresAt
+    expiresAt = expiresAt,
+    campaignEndsAt = campaignEndsAt,
 )
 
 internal fun SignedOfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSite.ChargePoint.Offer(

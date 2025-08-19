@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 data class SignedOfferDto(
 
     @param:Json(name = "originalPrice")
-    val originalPrice: PriceDto,
+    val originalPrice: PriceDto?,
 
     @param:Json(name = "price")
     val price: PriceDto,

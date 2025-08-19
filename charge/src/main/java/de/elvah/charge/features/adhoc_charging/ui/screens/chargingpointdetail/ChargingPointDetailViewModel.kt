@@ -58,14 +58,14 @@ internal class ChargingPointDetailViewModel(
                         evseId = evseId,
                         chargePointDetail = ChargePointDetail(
                             chargingPoint = chargePoint.evseId,
-                            type = chargePoint.powerSpecification.type,
+                            type = chargePoint.powerSpecification?.type.orEmpty(),
                             offer = ChargePointDetail.Offer(
                                 current = chargePoint.offer.price.energyPricePerKWh,
                                 old = chargePoint.offer.originalPrice?.energyPricePerKWh
                             ),
                             cpoName = site.operatorName,
                             evseId = chargePoint.evseId,
-                            energy = chargePoint.powerSpecification.maxPowerInKW.toString(),
+                            energy = chargePoint.powerSpecification?.maxPowerInKW.toString(),
                             signedOffer = "",
                             termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
                             privacyUrl = organisationDetails?.privacyUrl.orEmpty()
@@ -74,8 +74,8 @@ internal class ChargingPointDetailViewModel(
                         logoUrl = event.logoUrl,
                         render = ChargePointDetailRender(
                             evseId = EvseId(chargePoint.evseId),
-                            energyType = chargePoint.powerSpecification.type,
-                            energyValue = chargePoint.powerSpecification.maxPowerInKW,
+                            energyType = chargePoint.powerSpecification?.type.orEmpty(),
+                            energyValue = chargePoint.powerSpecification?.maxPowerInKW,
                             price = chargePoint.offer.price.energyPricePerKWh,
                             originalPrice = chargePoint.offer.originalPrice?.energyPricePerKWh,
                             logoUrl = event.logoUrl,
@@ -105,7 +105,7 @@ internal class ChargingPointDetailViewModel(
     }
 
     private suspend fun executeInitializeStripe(siteId: String, evseId: String) {
-        val result: Either<Exception, PaymentConfiguration> =
+        val result: Either<Throwable, PaymentConfiguration> =
             getPaymentConfiguration(siteId, evseId)
         val logoUrl = getOrganisationDetails()?.logoUrl.orEmpty()
 

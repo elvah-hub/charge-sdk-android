@@ -11,7 +11,7 @@ data class ChargePointDto<T>(
     val offer: T,
 
     @param:Json(name = "powerSpecification")
-    val powerSpecification: PowerSpecificationDto,
+    val powerSpecification: PowerSpecificationDto?,
 
     @param:Json(name = "normalizedEvseId")
     val normalizedEvseId: String

@@ -9,7 +9,7 @@ internal class GetActiveChargingSession(
     private val chargingRepository: ChargingRepository,
 ) {
 
-    suspend operator fun invoke(): Either<Exception, ChargingSession> {
+    suspend operator fun invoke(): Either<Throwable, ChargingSession> {
         return chargingRepository.fetchChargingSession()
     }
 }

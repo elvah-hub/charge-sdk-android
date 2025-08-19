@@ -14,5 +14,9 @@ data class OfferDto(
     val type: String,
 
     @param:Json(name = "expiresAt")
-    val expiresAt: String
+    val expiresAt: String,
+
+    @param:Json(name = "campaignEndsAt")
+    val campaignEndsAt: String?
+
 )

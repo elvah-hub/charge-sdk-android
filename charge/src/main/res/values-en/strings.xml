@@ -4,17 +4,18 @@
   <string name="apple_maps">Apple Maps</string>
   <string name="authorization_successful">Authorization successful</string>
   <string name="back">Back</string>
-  <string name="best_deal_around_you_label__short">Best offer</string>
   <string name="call">Call</string>
-  <string name="campaign_banner__active_session_text">Manage Charge Session</string>
-  <string name="campaign_banner__active_session_text__short">Manage</string>
+  <string name="campaign_banner__active_session_text">Manage your current charge session</string>
   <string name="campaign_banner__ad_hoc" comment="campaign_banncampaign_banner__ad_hocer__ad_hoc">Ad-hoc</string>
   <string name="campaign_banner__charge_at_station_text">Charge at %1$s from %2$s</string>
+  <string name="campaign_banner__charge_session__failed_to_load__text">Failed to load charge session details</string>
   <string name="campaign_banner__charge_without_registration" comment="Charge without registration">Charge without registration</string>
+  <string name="campaign_banner__current_price_text">From %s/kWh</string>
   <string name="campaign_banner__deal_expired_message">This offer has ended, but more are coming!</string>
   <string name="campaign_banner__deal_loading_error__text">Failed to load offer</string>
   <string name="campaign_banner__loading__text">Loading data…</string>
   <string name="campaign_banner__no_data_text">No offer found</string>
+  <string name="campaign_banner__original_price_text">%s/kWh</string>
   <string name="cancel">Cancel</string>
   <string name="charge">Charge</string>
   <string name="charge_at_station_placeholder">Charge at %1$s station for </string>
@@ -39,7 +40,6 @@
   <string name="charge_session__stop_failed_title">Please end charging manually</string>
   <string name="charge_session__stop_requested__message">We are connecting to the station to end the charging session.</string>
   <string name="charge_session__stop_requested__title">Stopping</string>
-  <string name="charge_session__stopped__title">Thanks for charging\nwith E.ON</string>
   <string name="charge_session__title">Charge Session</string>
   <string name="charge_session__unauthorized_error__message">Unfortunately, the time between payment and session start was too long. We need you to authorize a new deposit on your payment method.</string>
   <string name="charge_session__unauthorized_error__title">Payment expired</string>
@@ -51,16 +51,16 @@
   <string name="charging_label">Charging…</string>
   <string name="charging_session_active_title">Charging session is active</string>
   <string name="close">Close</string>
-  <string name="code_label">Code:</string>
+  <string name="code_label">EVSE ID:</string>
   <string name="connect_vehicle">Connect your electric vehicle now and start the charging process.</string>
   <string name="contact_phone">+45 123 456 456</string>
   <string name="contact_support_agent">Contact Web Support Agent</string>
   <string name="contact_support_agent_short">Web Support</string>
+  <string name="cpo_label">CPO</string>
   <string name="dc_label">DC</string>
   <string name="deal_ended">Ended</string>
   <string name="deal_expired_label">Offer has ended</string>
   <string name="discover_button">Charge Now</string>
-  <string name="discover_button__short">Discover</string>
   <string name="done_label">Done</string>
   <string name="email">E-Mail</string>
   <string name="email_app_missing_title">Unfortunately, we did not find your email app.</string>
@@ -70,9 +70,8 @@
   <string name="ends_in_minutes_placeholder">Offer ends in %1$sm %2$ss</string>
   <string name="ends_in_seconds_placeholder">Offer ends in %1$ss</string>
   <string name="energy_label">Energy</string>
-  <string name="error_deal_banner">Error loading offers…</string>
   <string name="error_label">Error…</string>
-  <string name="euros_kw_label">%1$s€/kW</string>
+  <string name="euros_kw_label">%1$s€/kWh</string>
   <string name="euros_label">€</string>
   <string name="generic_error__title">An error occurred</string>
   <string name="generic_error_bottom_sheet__message">An unexpected error has occurred. Please try again or contact our support.</string>
@@ -112,7 +111,6 @@
   <string name="terms_privacy_template_1">Terms of Service &amp; Charging</string>
   <string name="terms_privacy_template_2"> as well as our </string>
   <string name="terms_privacy_template_3">Privacy Policy</string>
-  <string name="title_activity_ad_hoc_charging">AdHocChargingActivity</string>
   <string name="total">Total</string>
   <string name="total_cost_label">Total</string>
   <string name="try_again">Try again</string>

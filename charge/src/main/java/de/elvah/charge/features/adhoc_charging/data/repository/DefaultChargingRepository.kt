@@ -22,7 +22,7 @@ internal class DefaultChargingRepository(
     private val chargingStore: ChargingStore
 ) : ChargingRepository {
 
-    private val _activeSessions: MutableSharedFlow<ChargingSession?> = MutableSharedFlow()
+    private val _activeSessions: MutableSharedFlow<ChargingSession?> = MutableSharedFlow(replay = 1)
     override val activeSessions: Flow<ChargingSession?>
         get() = _activeSessions.asSharedFlow()
 
@@ -34,7 +34,7 @@ internal class DefaultChargingRepository(
         chargingStore.saveOrganisationDetails(organisationDetails)
     }
 
-    override suspend fun fetchChargingSession(): Either<Exception, ChargingSession> {
+    override suspend fun fetchChargingSession(): Either<Throwable, ChargingSession> {
         val session = runCatching {
             chargingApi.getActiveChargeSessions(
                 BEARER_TEMPLATE.format(

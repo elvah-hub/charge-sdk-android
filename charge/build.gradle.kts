@@ -21,7 +21,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -32,6 +32,15 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    kotlin {
+        jvmToolchain(21)
+
+        @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+        abiValidation {
+            enabled.set(true)
+        }
     }
 
     publishing {
@@ -46,13 +55,25 @@ publishing {
         register<MavenPublication>("release") {
             artifactId = "charge-sdk-android"
             groupId = "com.github.elvah-hub"
-            version = "0.2.0"
+            version = "0.3.2"
 
             afterEvaluate {
                 from(components["release"])
             }
         }
     }
+}
+
+tasks.register("checkMinifyEnabled") {
+    doLast {
+        if (android.buildTypes.getByName("release").isMinifyEnabled) {
+            throw GradleException("Minification is enabled for the release build type. Please disable it.")
+        }
+    }
+}
+
+tasks.matching { it.group == "publishing" }.onEach {
+    it.dependsOn("checkMinifyEnabled")
 }
 
 protobuf {
@@ -88,6 +109,8 @@ dependencies {
     implementation(libs.stripe.android)
     implementation(libs.coil3.coil.compose)
 
+    implementation(libs.kotlinx.datetime)
+
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.javalite)
 
@@ -96,7 +119,12 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.preference)
     implementation(libs.androidx.fragment.compose)
+
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
