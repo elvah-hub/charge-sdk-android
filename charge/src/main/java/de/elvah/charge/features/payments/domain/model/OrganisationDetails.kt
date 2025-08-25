@@ -1,6 +1,6 @@
 package de.elvah.charge.features.payments.domain.model
 
-internal class OrganisationDetails(
+internal data class OrganisationDetails(
     val privacyUrl: String,
     val termsOfConditionUrl: String,
     val companyName: String,
