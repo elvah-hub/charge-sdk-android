@@ -40,12 +40,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
             LaunchedEffect(Unit) {
-                /*  campaignSource.sitesAt(
-                      latitude = 14.09499,
-                      longitude = -87.19039,
+                  campaignSource.sitesAt(
+                      latitude = 53.075833333333,
+                      longitude = 8.8072222222222,
                       radius = 10.0
                   )
 
+                /*
                   campaignSource.sitesAt(
                       BoundingBox(
                           minLat = -87.0,
@@ -57,9 +58,12 @@ class MainActivity : ComponentActivity() {
 
                  */
 
+                /*
                 campaignSource.sitesAt(
                     evseIds = listOf(EvseId("HNTCI*E*00001"))
                 )
+
+                 */
             }
         }
     }

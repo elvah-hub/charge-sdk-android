@@ -16,7 +16,6 @@ import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
 import de.elvah.charge.features.sites.di.sitesRepositoriesModule
 import de.elvah.charge.features.sites.di.sitesUseCaseModule
 import de.elvah.charge.features.sites.di.sitesViewModelModule
-import de.elvah.charge.platform.config.ChargeConfig
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.platform.network.ApiUrlBuilder
@@ -44,6 +43,10 @@ object Elvah {
         singleOf(::DefaultChargingRepository) { bind<ChargingRepository>() }
         singleOf(::DefaultPaymentsRepository) { bind<PaymentsRepository>() }
         singleOf(::DefaultChargingStore) { bind<ChargingStore>() }
+    }
+
+    private fun configModule(config: Config) = module {
+        single { config }
     }
 
     val networkModule = module {
@@ -82,6 +85,7 @@ object Elvah {
             androidLogger()
             androidContext(context)
             modules(
+                configModule(config),
                 viewModelsModule,
                 useCaseModule,
                 networkModule,
@@ -93,8 +97,6 @@ object Elvah {
                 simulatorModule
             )
         }
-
-        ChargeConfig.initialize(config)
     }
 }
 

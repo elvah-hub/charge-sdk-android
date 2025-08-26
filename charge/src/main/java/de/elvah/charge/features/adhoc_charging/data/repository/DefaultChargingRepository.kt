@@ -35,15 +35,19 @@ internal class DefaultChargingRepository(
     }
 
     override suspend fun fetchChargingSession(): Either<Throwable, ChargingSession> {
-        val session = runCatching {
-            chargingApi.getActiveChargeSessions(
-                BEARER_TEMPLATE.format(
-                    getToken()
-                )
-            )
-        }.map { it.toDomain() }
-        _activeSessions.emit(session.getOrNull())
-        return session.toEither()
+        val token = getToken()
+
+        return if (token.isNotEmpty()) {
+            runCatching {
+                chargingApi.getActiveChargeSessions(BEARER_TEMPLATE.format(token))
+            }.map { it.toDomain() }.toEither().also {
+                it
+            }
+        } else {
+            Either.Left(IllegalStateException("No token found"))
+        }.also {
+            _activeSessions.emit(it.getOrNull())
+        }
     }
 
     override suspend fun startChargingSession(): Either<SessionExceptions, Boolean> {

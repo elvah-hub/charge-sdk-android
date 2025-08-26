@@ -16,7 +16,7 @@ import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
-import de.elvah.charge.platform.config.ChargeConfig
+import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.platform.core.mvi.MVIBaseViewModel
 import de.elvah.charge.platform.core.mvi.Reducer
@@ -29,6 +29,7 @@ internal class ChargingPointDetailViewModel(
     private val getOrganisationDetails: GetOrganisationDetails,
     private val sitesRepository: SitesRepository,
     private val savedStateHandle: SavedStateHandle,
+    private val config: Config,
 ) : MVIBaseViewModel<ChargingPointDetailState, ChargingPointDetailEvent, ChargingPointDetailEffect>(
     initialState = Loading(savedStateHandle.toRoute<ChargingPointDetailRoute>().evseId),
     reducer = Reducer { previousState, event ->
@@ -83,7 +84,7 @@ internal class ChargingPointDetailViewModel(
                             termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
                             privacyUrl = organisationDetails?.privacyUrl.orEmpty()
                         ),
-                        mocked = ChargeConfig.config.environment is Environment.Simulator
+                        mocked = config.environment is Environment.Simulator
                     ), null
                 )
             }

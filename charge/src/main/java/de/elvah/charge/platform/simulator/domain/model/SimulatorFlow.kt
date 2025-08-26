@@ -38,7 +38,7 @@ sealed class SimulatorFlow(val name: String, val description: String) {
         val onSessionStop: () -> Unit,
         internal val onSessionStatusUpdate: (SimulationContext) -> ChargingSession?
 
-    ): SimulatorFlow("custom", "Custom simulation flow")
+    ) : SimulatorFlow("custom", "Custom simulation flow")
 
     //object SlowDefault : SimulatorFlow("slowDefault", "Similar to default but with slower transitions")
 

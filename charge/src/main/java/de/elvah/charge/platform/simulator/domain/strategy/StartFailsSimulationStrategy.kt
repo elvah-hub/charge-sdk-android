@@ -24,7 +24,7 @@ internal class StartFailsSimulationStrategy(
                     duration(0)
                 }
             }
-            
+
             SessionStatus.START_REQUESTED,
             SessionStatus.START_REJECTED -> {
                 if (context.sessionCounter > failureThreshold) {
@@ -38,7 +38,7 @@ internal class StartFailsSimulationStrategy(
                     context.currentSession
                 }
             }
-            
+
             else -> {
                 context.currentSession
             }
@@ -46,8 +46,8 @@ internal class StartFailsSimulationStrategy(
     }
 
     override fun shouldContinue(context: SimulationContext): Boolean {
-        return context.currentStatus != SessionStatus.START_REJECTED || 
-               context.sessionCounter <= failureThreshold
+        return context.currentStatus != SessionStatus.START_REJECTED ||
+                context.sessionCounter <= failureThreshold
     }
 
     override fun reset() {

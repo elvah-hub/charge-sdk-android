@@ -4,9 +4,9 @@ import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingReposit
 import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
+import de.elvah.charge.platform.simulator.data.repository.FakeChargingRepository
 import de.elvah.charge.platform.simulator.data.repository.FakePaymentsRepository
 import de.elvah.charge.platform.simulator.data.repository.FakeSitesRepository
-import de.elvah.charge.platform.simulator.data.repository.RefactoredFakeChargingRepository
 import de.elvah.charge.platform.simulator.domain.factory.ChargingSessionFactory
 import de.elvah.charge.platform.simulator.domain.factory.DefaultChargingSessionFactory
 import de.elvah.charge.platform.simulator.domain.factory.DefaultSimulationStrategyFactory
@@ -27,9 +27,9 @@ fun provideSimulatorModule(simulatorFlow: SimulatorFlow) = module {
     }
     singleOf(::FakeSitesRepository) { bind<SitesRepository>() }
     singleOf(::FakePaymentsRepository) { bind<PaymentsRepository>() }
-    singleOf(::DefaultChargingSessionFactory){ bind<ChargingSessionFactory>() }
-    singleOf(::DefaultSimulationStrategyFactory){ bind<SimulationStrategyFactory>() }
-    singleOf(::RefactoredFakeChargingRepository) { bind<ChargingRepository>() }
+    singleOf(::DefaultChargingSessionFactory) { bind<ChargingSessionFactory>() }
+    singleOf(::DefaultSimulationStrategyFactory) { bind<SimulationStrategyFactory>() }
+    singleOf(::FakeChargingRepository) { bind<ChargingRepository>() }
     singleOf(::FakeInitStripeConfig) { bind<InitStripeConfig>() }
 
 

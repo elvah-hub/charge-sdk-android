@@ -1,7 +1,7 @@
 package de.elvah.charge.platform.network.okhttp.di
 
 import android.content.Context
-import de.elvah.charge.platform.config.ChargeConfig
+import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.network.okhttp.OkHttpFactory
 import de.elvah.charge.platform.network.retrofit.ApiKeyInterceptor
 import okhttp3.Interceptor
@@ -18,16 +18,17 @@ private fun provideOkHttpClient(context: Context): OkHttpClient = OkHttpFactory(
 private fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor(
 ).apply { level = HttpLoggingInterceptor.Level.BODY }
 
-private fun provideApiKeyInterceptor(): ApiKeyInterceptor = object : ApiKeyInterceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request().newBuilder().header(
-            API_KEY_HEADER,
-            ChargeConfig.config.apiKey
-        ).build()
+private fun provideApiKeyInterceptor(config: Config): ApiKeyInterceptor =
+    object : ApiKeyInterceptor {
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val request = chain.request().newBuilder().header(
+                API_KEY_HEADER,
+                config.apiKey
+            ).build()
 
-        return chain.proceed(request)
+            return chain.proceed(request)
+        }
     }
-}
 
 private fun provideDistinctKeyInterceptor(): Interceptor = object : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -66,6 +67,6 @@ private const val DISTINCT_KEY_HEADER = "X-Distinct-Id"
 val okHttpModule = module {
     single { provideOkHttpClient(get()) }
     single { provideHttpLoggingInterceptor() }
-    single { provideApiKeyInterceptor() }
+    single { provideApiKeyInterceptor(get()) }
     single { provideDistinctKeyInterceptor() }
 }

@@ -25,7 +25,7 @@ internal class InterruptedChargeSimulationStrategy(
                     duration(0)
                 }
             }
-            
+
             SessionStatus.START_REQUESTED -> {
                 if (context.sessionCounter > startDelay) {
                     sessionFactory.createSession {
@@ -38,7 +38,7 @@ internal class InterruptedChargeSimulationStrategy(
                     context.currentSession
                 }
             }
-            
+
             SessionStatus.STARTED -> {
                 sessionFactory.createSession {
                     evseId(context.evseId)
@@ -47,7 +47,7 @@ internal class InterruptedChargeSimulationStrategy(
                     duration(0)
                 }
             }
-            
+
             SessionStatus.CHARGING -> {
                 if (context.secondsSinceLastChange < interruptionThreshold) {
                     // Continue charging normally
@@ -67,7 +67,7 @@ internal class InterruptedChargeSimulationStrategy(
                     }
                 }
             }
-            
+
             SessionStatus.STOP_REQUESTED -> {
                 // After interruption, the stop also fails
                 sessionFactory.createSession {
@@ -77,7 +77,7 @@ internal class InterruptedChargeSimulationStrategy(
                     duration(context.sessionCounter * 3)
                 }
             }
-            
+
             else -> {
                 context.currentSession
             }

@@ -8,20 +8,20 @@ import de.elvah.charge.platform.simulator.domain.model.SimulationContext
  * Each concrete strategy implements a specific simulation behavior.
  */
 internal interface ChargingSimulationStrategy {
-    
+
     /**
      * Generates the next charging session state based on the current context.
-     * 
+     *
      * @param context Current simulation state and configuration
      * @return Next charging session or null if session should end
      */
     suspend fun generateNextSession(context: SimulationContext): ChargingSession?
-    
+
     /**
      * Determines if the simulation should continue running.
      */
     fun shouldContinue(context: SimulationContext): Boolean
-    
+
     /**
      * Resets the strategy to its initial state.
      */

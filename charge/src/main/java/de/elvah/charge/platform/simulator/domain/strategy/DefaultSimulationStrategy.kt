@@ -23,7 +23,7 @@ internal class DefaultSimulationStrategy(
                     duration(context.sessionCounter * 3)
                 }
             }
-            
+
             SessionStatus.STARTED -> {
                 sessionFactory.createSession {
                     evseId(context.evseId)
@@ -32,11 +32,11 @@ internal class DefaultSimulationStrategy(
                     duration(0)
                 }
             }
-            
+
             SessionStatus.START_REJECTED -> {
                 context.currentSession?.incrementDuration()
             }
-            
+
             SessionStatus.CHARGING -> {
                 sessionFactory.createSession {
                     evseId(context.evseId)
@@ -45,7 +45,7 @@ internal class DefaultSimulationStrategy(
                     duration(context.sessionCounter * 3)
                 }
             }
-            
+
             SessionStatus.STOP_REQUESTED -> {
                 sessionFactory.createSession {
                     evseId(context.evseId)
@@ -54,11 +54,11 @@ internal class DefaultSimulationStrategy(
                     duration(context.sessionCounter * 3)
                 }
             }
-            
+
             SessionStatus.STOPPED -> {
                 context.currentSession?.incrementDuration()
             }
-            
+
             else -> {
                 sessionFactory.createSession {
                     evseId(context.evseId)
@@ -77,7 +77,7 @@ internal class DefaultSimulationStrategy(
     override fun reset() {
         // Default strategy has no internal state to reset
     }
-    
+
     private fun ChargingSession?.incrementDuration(): ChargingSession? = this?.let {
         ChargingSession(
             evseId = this.evseId,
