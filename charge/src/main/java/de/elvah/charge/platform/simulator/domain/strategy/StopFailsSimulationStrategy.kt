@@ -24,7 +24,7 @@ internal class StopFailsSimulationStrategy(
                     duration(0)
                 }
             }
-            
+
             SessionStatus.START_REQUESTED -> {
                 if (context.sessionCounter > startDelay) {
                     sessionFactory.createSession {
@@ -37,7 +37,7 @@ internal class StopFailsSimulationStrategy(
                     context.currentSession
                 }
             }
-            
+
             SessionStatus.STARTED -> {
                 sessionFactory.createSession {
                     evseId(context.evseId)
@@ -46,7 +46,7 @@ internal class StopFailsSimulationStrategy(
                     duration(0)
                 }
             }
-            
+
             SessionStatus.CHARGING -> {
                 sessionFactory.createSession {
                     evseId(context.evseId)
@@ -55,7 +55,7 @@ internal class StopFailsSimulationStrategy(
                     duration(context.secondsSinceLastChange * 3)
                 }
             }
-            
+
             SessionStatus.STOP_REQUESTED -> {
                 // This is where the stop fails - return STOP_REJECTED instead of STOPPED
                 sessionFactory.createSession {
@@ -65,7 +65,7 @@ internal class StopFailsSimulationStrategy(
                     duration(context.sessionCounter * 3)
                 }
             }
-            
+
             else -> {
                 context.currentSession
             }

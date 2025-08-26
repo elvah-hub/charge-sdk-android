@@ -24,7 +24,7 @@ internal class StartRejectedSimulationStrategy(
                     duration(0)
                 }
             }
-            
+
             SessionStatus.START_REQUESTED -> {
                 if (context.sessionCounter > rejectionDelay) {
                     sessionFactory.createSession {
@@ -37,7 +37,7 @@ internal class StartRejectedSimulationStrategy(
                     context.currentSession
                 }
             }
-            
+
             else -> {
                 context.currentSession
             }

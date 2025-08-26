@@ -20,10 +20,11 @@ import de.elvah.charge.features.sites.ui.components.ChargeBanner_Content
 import de.elvah.charge.features.sites.ui.components.ChargeBanner_Empty
 import de.elvah.charge.features.sites.ui.components.ChargeBanner_Error
 import de.elvah.charge.features.sites.ui.components.ChargeBanner_Loading
-import de.elvah.charge.platform.config.ChargeConfig
+import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 
 @Composable
@@ -33,11 +34,12 @@ fun ChargeBanner(
     variant: BannerVariant = BannerVariant.DEFAULT,
 ) {
     val sitesViewModel: SitesViewModel = koinViewModel()
+    val config: Config = koinInject()
 
     val state by sitesViewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    ElvahChargeTheme(darkTheme = shouldUseDarkColors(ChargeConfig.config.darkTheme)) {
+    ElvahChargeTheme(darkTheme = shouldUseDarkColors(config.darkTheme)) {
         when (val state = state) {
             SitesState.Error -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
