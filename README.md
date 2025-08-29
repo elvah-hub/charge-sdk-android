@@ -13,8 +13,9 @@ leaving your app.
 1. [Installation](#installation)
     - [Gradle](#gradle)
 2. **[Getting Started](#getting-started)**
-    - [Charge Banner](#campaign-banner)
-    - [Campaign Source](#campaign-source)
+    - [Charge Banner](#charge-banner)
+    - [Charge Banner Source](#charge-banner-source)
+    - [Raw Site Information](#raw-site-information)
     - [Display Behavior](#display-behavior)
     - [Banner Variants](#banner-variants)
 3. [Simulator](#simulator)
@@ -82,17 +83,17 @@ fun ExampleScreen() {
 
 ```
 
-### Campaign Source
+### Charge Banner Source
 
 The charge banner relies on the coordinates where the user wants to search the available
-campaigns. You can set the coordinates by using `CampaignSource` class and calling the method
+campaigns. You can set the coordinates by using `ChargeBannerSource` class and calling the method
 `sitesAt`. For example:
 
 ```kotlin
-// Injects the CampaignSource into the view hierarchy
-private var campaignSource: CampaignSource = CampaignSource()
+// Injects the ChargeBannerSource into the view hierarchy
+private var chargeBannerSource: ChargeBannerSource = ChargeBannerSource()
 
-campaignSource.sitesAt(
+chargeBannerSource.sitesAt(
     BoundingBox(
         minLat = -87.0,
         minLng = 14.0,
@@ -102,7 +103,7 @@ campaignSource.sitesAt(
 )
 
 // or
-campaignSource.sitesAt(
+chargeBannerSource.sitesAt(
     latitude = 14.09499,
     longitude = -87.19039,
     radius = 10.0
@@ -112,7 +113,7 @@ campaignSource.sitesAt(
 Additionally, you can query the sites by passing a list of evse ids with the `evseIds` parameter:
 
 ```kotlin
-campaignSource.sitesAt(
+chargeBannerSource.sitesAt(
     evseIds = listOf(EvseId("HNTCI*E*00001"))
 )
 ```
@@ -120,10 +121,31 @@ campaignSource.sitesAt(
 All sites can be filtered by the `offerType` parameter:
 
 ```kotlin
-campaignSource.sitesAt(
+chargeBannerSource.sitesAt(
     // other filters
     offerType = OfferType.CAMPAIGN
 )
+```
+
+### Raw Site Information
+
+Besides the `ChargeBanner` view, you can also get the raw site information to build your own custom
+UI. The `GetSites` use case allows you to get a list of sites based on a list of EVSE IDs.
+
+```kotlin
+val getSites: GetSites = GetSites()
+
+val sites = getSites(
+    GetSites.Params(
+        evseIds = listOf(EvseId("HNTCI*E*00001"))
+    )
+)
+```
+
+Once you have the list of sites, you can use the `SitesManager` to open a specific site.
+
+```kotlin
+SitesManager.openSite(context, sites.first().id)
 ```
 
 #### Display Behavior
