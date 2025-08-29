@@ -18,7 +18,10 @@ internal class SiteDetailViewModel(
 
     val state = savedStateHandle.asFlow<AdHocChargingScreens.SiteDetailRoute>()
         .map {
-            val site = sitesRepository.getChargeSite(it.siteId).toUI()
-            SiteDetailState.Success(site)
+            sitesRepository.getChargeSite(it.siteId).map { it.toUI() }
+                .fold(
+                    ifLeft = { SiteDetailState.Error },
+                    ifRight = { SiteDetailState.Success(it) }
+                )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SiteDetailState.Loading)
 }

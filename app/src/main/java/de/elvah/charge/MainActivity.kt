@@ -8,23 +8,39 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import de.elvah.charge.entrypoints.banner.CampaignSource
+import androidx.compose.ui.platform.LocalContext
 import de.elvah.charge.entrypoints.banner.ChargeBanner
+import de.elvah.charge.entrypoints.banner.ChargeBannerSource
 import de.elvah.charge.entrypoints.banner.EvseId
+import de.elvah.charge.entrypoints.sites.GetSites
+import de.elvah.charge.entrypoints.sites.SitesManager
 
 class MainActivity : ComponentActivity() {
-    private var campaignSource: CampaignSource = CampaignSource()
+    private var chargeBannerSource: ChargeBannerSource = ChargeBannerSource()
+    private var getSites: GetSites = GetSites()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
+            val context = LocalContext.current
+            val sites by produceState(emptyList()) {
+                value = getSites(
+                    GetSites.Params(
+                        evseIds = listOf(EvseId("HNTCI*E*00001"))
+                    )
+                )
+            }
             Surface(
                 modifier = Modifier
             ) {
@@ -36,15 +52,23 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column {
                         ChargeBanner()
+                        Button({
+                            SitesManager.openSite(context, sites.first().id)
+                        }) {
+                            Text("Open Deal at HNTCI*E*00001")
+                        }
                     }
                 }
             }
             LaunchedEffect(Unit) {
-                  campaignSource.sitesAt(
+
+                /*  chargeBannerSource.sitesAt(
                       latitude = 53.075833333333,
                       longitude = 8.8072222222222,
                       radius = 10.0
                   )
+
+                 */
 
                 /*
                   campaignSource.sitesAt(

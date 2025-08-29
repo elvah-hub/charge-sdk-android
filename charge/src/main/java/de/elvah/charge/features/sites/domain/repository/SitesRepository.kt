@@ -8,7 +8,9 @@ import de.elvah.charge.features.sites.domain.model.filters.OfferType
 
 internal interface SitesRepository {
 
-    fun getChargeSite(siteId: String): ChargeSite
+    fun getChargeSite(siteId: String): Either<Throwable, ChargeSite>
+
+    fun updateChargeSite(site: ChargeSite)
 
     suspend fun getChargeSites(
         boundingBox: BoundingBox? = null,

@@ -8,7 +8,7 @@ import de.elvah.charge.features.sites.domain.usecase.ClearFilters
 import de.elvah.charge.features.sites.domain.usecase.UpdateFilters
 import org.koin.java.KoinJavaComponent
 
-class CampaignSource() {
+class ChargeBannerSource() {
 
     private val updateFilters: UpdateFilters by KoinJavaComponent.inject(UpdateFilters::class.java)
     private val clearFilters: ClearFilters by KoinJavaComponent.inject(ClearFilters::class.java)
