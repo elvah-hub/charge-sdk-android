@@ -50,43 +50,49 @@ internal class ChargingPointDetailViewModel(
 
             is ChargingPointDetailEvent.Initialize -> {
                 val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
-                val site = sitesRepository.getChargeSite(route.siteId)
-                val chargePoint = site.evses.first { route.evseId == it.evseId }
-                val organisationDetails = runBlocking { getOrganisationDetails() }
 
-                Reducer.Result(
-                    Success(
-                        evseId = evseId,
-                        chargePointDetail = ChargePointDetail(
-                            chargingPoint = chargePoint.evseId,
-                            type = chargePoint.powerSpecification?.type.orEmpty(),
-                            offer = ChargePointDetail.Offer(
-                                current = chargePoint.offer.price.energyPricePerKWh,
-                                old = chargePoint.offer.originalPrice?.energyPricePerKWh
-                            ),
-                            cpoName = site.operatorName,
-                            evseId = chargePoint.evseId,
-                            energy = chargePoint.powerSpecification?.maxPowerInKW.toString(),
-                            signedOffer = "",
-                            termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
-                            privacyUrl = organisationDetails?.privacyUrl.orEmpty()
-                        ),
-                        paymentIntentParams = event.paymentConfiguration,
-                        logoUrl = event.logoUrl,
-                        render = ChargePointDetailRender(
-                            evseId = EvseId(chargePoint.evseId),
-                            energyType = chargePoint.powerSpecification?.type.orEmpty(),
-                            energyValue = chargePoint.powerSpecification?.maxPowerInKW,
-                            price = chargePoint.offer.price.energyPricePerKWh,
-                            originalPrice = chargePoint.offer.originalPrice?.energyPricePerKWh,
-                            logoUrl = event.logoUrl,
-                            cpoName = site.operatorName,
-                            termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
-                            privacyUrl = organisationDetails?.privacyUrl.orEmpty()
-                        ),
-                        mocked = config.environment is Environment.Simulator
-                    ), null
-                )
+                sitesRepository.getChargeSite(route.siteId)
+                    .fold(
+                        ifLeft = { Reducer.Result(Error(evseId, it.message.orEmpty())) },
+                        ifRight = { site ->
+                            val chargePoint = site.evses.first { route.evseId == it.evseId }
+                            val organisationDetails = runBlocking { getOrganisationDetails() }
+
+                            Reducer.Result(
+                                Success(
+                                    evseId = evseId,
+                                    chargePointDetail = ChargePointDetail(
+                                        chargingPoint = chargePoint.evseId,
+                                        type = chargePoint.powerSpecification?.type.orEmpty(),
+                                        offer = ChargePointDetail.Offer(
+                                            current = chargePoint.offer.price.energyPricePerKWh,
+                                            old = chargePoint.offer.originalPrice?.energyPricePerKWh
+                                        ),
+                                        cpoName = site.operatorName,
+                                        evseId = chargePoint.evseId,
+                                        energy = chargePoint.powerSpecification?.maxPowerInKW.toString(),
+                                        signedOffer = "",
+                                        termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
+                                        privacyUrl = organisationDetails?.privacyUrl.orEmpty()
+                                    ),
+                                    paymentIntentParams = event.paymentConfiguration,
+                                    logoUrl = event.logoUrl,
+                                    render = ChargePointDetailRender(
+                                        evseId = EvseId(chargePoint.evseId),
+                                        energyType = chargePoint.powerSpecification?.type.orEmpty(),
+                                        energyValue = chargePoint.powerSpecification?.maxPowerInKW,
+                                        price = chargePoint.offer.price.energyPricePerKWh,
+                                        originalPrice = chargePoint.offer.originalPrice?.energyPricePerKWh,
+                                        logoUrl = event.logoUrl,
+                                        cpoName = site.operatorName,
+                                        termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
+                                        privacyUrl = organisationDetails?.privacyUrl.orEmpty()
+                                    ),
+                                    mocked = config.environment is Environment.Simulator
+                                ), null
+                            )
+                        })
+
             }
 
             ChargingPointDetailEvent.OnPaymentSuccess -> {

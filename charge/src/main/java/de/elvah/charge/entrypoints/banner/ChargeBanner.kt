@@ -58,7 +58,7 @@ fun ChargeBanner(
                 compact = variant == BannerVariant.COMPACT,
                 modifier = modifier
             ) {
-                context.openDeal(dealId = it.id)
+                context.openSite(dealId = it.id)
             }
 
             is SitesState.ActiveSession -> ChargeBanner_ActiveSession(
@@ -75,7 +75,7 @@ fun ChargeBanner(
 }
 
 
-fun Context.openDeal(dealId: String) {
+internal fun Context.openSite(dealId: String) {
     val intent =
         Intent(this, AdHocChargingActivity::class.java).apply {
             putExtra(AdHocChargingActivity.ARG_SITE_ID, dealId)
@@ -84,7 +84,7 @@ fun Context.openDeal(dealId: String) {
 }
 
 
-fun Context.goToChargingSession() {
+internal fun Context.goToChargingSession() {
     val deepLinkIntent = Intent(
         Intent.ACTION_VIEW,
         ActiveChargingRoute.route.toUri(),

@@ -1,6 +1,7 @@
 package de.elvah.charge.features.sites.data
 
 import arrow.core.Either
+import arrow.core.right
 import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.sites.data.mapper.toDomain
 import de.elvah.charge.features.sites.data.mapper.toSite
@@ -19,8 +20,24 @@ internal class DefaultSitesRepository(
 
     private var chargeSites: List<ChargeSite> = emptyList()
 
-    override fun getChargeSite(siteId: String): ChargeSite {
-        return chargeSites.first { it.id == siteId }
+    override fun getChargeSite(siteId: String): Either<Throwable, ChargeSite> {
+        return chargeSites.firstOrNull { it.id == siteId }?.right() ?: Either.Left(
+            Exception("Site not found")
+        )
+    }
+
+    override fun updateChargeSite(site: ChargeSite) {
+        if (chargeSites.none { it.id == site.id }) {
+            chargeSites = chargeSites + site
+        } else {
+            chargeSites = chargeSites.map {
+                if (it.id == site.id) {
+                    site
+                } else {
+                    it
+                }
+            }
+        }
     }
 
     override suspend fun getChargeSites(

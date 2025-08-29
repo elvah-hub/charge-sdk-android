@@ -14,8 +14,22 @@ internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesReposito
 
     private var chargeSites: List<ChargeSite> = emptyList()
 
-    override fun getChargeSite(siteId: String): ChargeSite {
-        return chargeSites.first { it.id == siteId }
+    override fun getChargeSite(siteId: String): Either<Throwable, ChargeSite> {
+        return chargeSites.first { it.id == siteId }.right()
+    }
+
+    override fun updateChargeSite(site: ChargeSite) {
+        if (chargeSites.none { it.id == site.id }) {
+            chargeSites = chargeSites + site
+        } else {
+            chargeSites = chargeSites.map {
+                if (it.id == site.id) {
+                    site
+                } else {
+                    it
+                }
+            }
+        }
     }
 
     override suspend fun getChargeSites(
