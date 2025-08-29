@@ -5,6 +5,7 @@ import de.elvah.charge.features.sites.domain.usecase.GetBestSite
 import de.elvah.charge.features.sites.domain.usecase.GetFilters
 import de.elvah.charge.features.sites.domain.usecase.GetSites
 import de.elvah.charge.features.sites.domain.usecase.UpdateFilters
+import de.elvah.charge.features.sites.domain.usecase.UpdateSite
 import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 
@@ -14,5 +15,6 @@ val sitesUseCaseModule = module {
     factory { GetBestSite(get(), Dispatchers.Default) }
     factory { GetSites(get()) }
     factory { UpdateFilters(get()) }
+    factory { UpdateSite(get()) }
     factory { ClearFilters(get()) }
 }
