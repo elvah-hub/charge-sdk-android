@@ -1,3 +1,5 @@
+[![JitPack](https://jitpack.io/v/com.github.elvah-hub/charge-sdk-android.svg)](https://jitpack.io/#/com.github.elvah-hub/charge-sdk-android)
+
 # elvah Charge SDK
 
 The elvah Charge SDK helps you integrate EV charging into your app. With just a few lines of code, you can add a `ChargeBanner` view to your app that intelligently finds and displays nearby charging deals. The SDK handles everything from deal discovery to payment processing and charge session management, allowing your users to charge their cars without ever leaving your app.
@@ -42,7 +44,7 @@ dependencyResolutionManagement {
 Add the following line to the dependencies in your `build.gradle` file:
 
 ```kotlin
-implementation("com.github.elvah-hub:charge-sdk-android:0.3.3")
+implementation("com.github.elvah-hub:charge-sdk-android:0.3.4")
 ```
 
 Alternatively, you can download the source code and place it in your project. Everything you need is
