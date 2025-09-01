@@ -39,7 +39,7 @@ object Elvah {
         includes(sitesViewModelModule, adHocViewModelModule)
     }
 
-    val repositoriesModule = module {
+    private val repositoriesModule = module {
         singleOf(::DefaultChargingRepository) { bind<ChargingRepository>() }
         singleOf(::DefaultPaymentsRepository) { bind<PaymentsRepository>() }
         singleOf(::DefaultChargingStore) { bind<ChargingStore>() }
@@ -49,7 +49,7 @@ object Elvah {
         single { config }
     }
 
-    val networkModule = module {
+    private val networkModule = module {
         singleOf(::ApiUrlBuilder)
         single {
             provideChargingApi(get(), get())
@@ -64,7 +64,7 @@ object Elvah {
         single { de.elvah.charge.features.sites.di.provideApi(get(), get()) }
     }
 
-    val localModule = module {
+    private val localModule = module {
 
     }
 
