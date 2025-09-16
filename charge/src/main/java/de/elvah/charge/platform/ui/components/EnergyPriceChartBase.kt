@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
+import java.time.LocalDate
 
 private data class EnergyPriceData1(
     val hour: Int,
@@ -324,7 +325,7 @@ private fun EnergyPriceChart_Preview() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             EnergyPriceChart(
-                data = generateSampleEnergyData(),
+                dailyData = generateThreeDaySampleData(),
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -360,7 +361,7 @@ private fun EnergyPriceChartDarkPreview() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             EnergyPriceChart(
-                data = generateSampleEnergyData(),
+                dailyData = generateThreeDaySampleData(),
                 modifier = Modifier.fillMaxWidth()
             )
             
@@ -377,7 +378,7 @@ private fun EnergyPriceChartDarkPreview() {
 private fun EnergyPriceChartHighVariationPreview() {
     ElvahChargeTheme {
         EnergyPriceChart(
-            data = generateHighVariationEnergyData(),
+            dailyData = generateThreeDayHighVariationData(),
             modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
     }
@@ -388,7 +389,7 @@ private fun EnergyPriceChartHighVariationPreview() {
 private fun EnergyPriceChartLowVariationPreview() {
     ElvahChargeTheme {
         EnergyPriceChart(
-            data = generateLowVariationEnergyData(),
+            dailyData = generateThreeDayLowVariationData(),
             modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
     }
@@ -449,6 +450,33 @@ private fun generateHighVariationEnergyData(): List<EnergyPriceData> {
         EnergyPriceData(21, 0.58),
         EnergyPriceData(22, 0.40),
         EnergyPriceData(23, 0.62)
+    )
+}
+
+private fun generateThreeDaySampleData(): List<DailyEnergyData> {
+    val today = LocalDate.now()
+    return listOf(
+        DailyEnergyData(today.minusDays(1), generateSampleEnergyData()), // Yesterday
+        DailyEnergyData(today, generateSampleEnergyData()), // Today
+        DailyEnergyData(today.plusDays(1), generateSampleEnergyData()) // Tomorrow
+    )
+}
+
+private fun generateThreeDayHighVariationData(): List<DailyEnergyData> {
+    val today = LocalDate.now()
+    return listOf(
+        DailyEnergyData(today.minusDays(1), generateHighVariationEnergyData()), // Yesterday
+        DailyEnergyData(today, generateHighVariationEnergyData()), // Today
+        DailyEnergyData(today.plusDays(1), generateHighVariationEnergyData()) // Tomorrow
+    )
+}
+
+private fun generateThreeDayLowVariationData(): List<DailyEnergyData> {
+    val today = LocalDate.now()
+    return listOf(
+        DailyEnergyData(today.minusDays(1), generateLowVariationEnergyData()), // Yesterday
+        DailyEnergyData(today, generateLowVariationEnergyData()), // Today
+        DailyEnergyData(today.plusDays(1), generateLowVariationEnergyData()) // Tomorrow
     )
 }
 

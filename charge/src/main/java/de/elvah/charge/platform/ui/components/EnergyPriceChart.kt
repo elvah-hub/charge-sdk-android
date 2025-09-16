@@ -2,10 +2,12 @@ package de.elvah.charge.platform.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -13,15 +15,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 data class EnergyPriceData(
     val hour: Int,
@@ -29,18 +34,30 @@ data class EnergyPriceData(
     val currency: String = "€"
 )
 
+data class DailyEnergyData(
+    val date: LocalDate,
+    val hourlyData: List<EnergyPriceData>
+)
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EnergyPriceChart(
-    data: List<EnergyPriceData>,
+    dailyData: List<DailyEnergyData>,
     modifier: Modifier = Modifier,
-    animated: Boolean = true
+    animated: Boolean = true,
+    showVerticalGridLines: Boolean = true,
+    gridLineInterval: Int = 4
 ) {
-    if (data.isEmpty()) return
+    if (dailyData.isEmpty()) return
 
-    val scrollState = rememberScrollState()
-    val maxPrice = data.maxOf { it.price }
-    val minPrice = data.minOf { it.price }
-    val priceRange = maxPrice - minPrice
+    val pagerState = rememberPagerState(
+        initialPage = 1, // Start with today (middle page)
+        pageCount = { dailyData.size }
+    )
+    
+    val allHourlyData = dailyData.flatMap { it.hourlyData }
+    val maxPrice = allHourlyData.maxOf { it.price }
+    val minPrice = allHourlyData.minOf { it.price }
 
     val animatedProgress by animateFloatAsState(
         targetValue = if (animated) 1f else 1f,
@@ -55,23 +72,75 @@ fun EnergyPriceChart(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        BoxWithConstraints(
+        Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            val barWidth = this.maxWidth / data.size
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth()
+            ) { pageIndex ->
+                DayChart(
+                    dayData = dailyData[pageIndex],
+                    maxPrice = maxPrice,
+                    minPrice = minPrice,
+                    progress = animatedProgress,
+                    showVerticalGridLines = showVerticalGridLines,
+                    gridLineInterval = gridLineInterval
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DayChart(
+    dayData: DailyEnergyData,
+    maxPrice: Double,
+    minPrice: Double,
+    progress: Float,
+    modifier: Modifier = Modifier,
+    showVerticalGridLines: Boolean = true,
+    gridLineInterval: Int = 4
+) {
+    Column(modifier = modifier) {
+        // Date header
+        Text(
+            text = dayData.date.format(DateTimeFormatter.ofPattern("EEEE, MMM dd")),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+        
+        // Hourly chart
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+        ) {
+            // Grid lines and bars
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawGridLines(
+                    hourCount = dayData.hourlyData.size,
+                    showVerticalGridLines = showVerticalGridLines,
+                    gridLineInterval = gridLineInterval
+                )
+            }
+            
+            // Bars
             Row(
                 modifier = Modifier
-                    .horizontalScroll(scrollState)
-                    .padding(vertical = 8.dp)
+                    .fillMaxSize()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                data.forEach { priceData ->
+                dayData.hourlyData.forEach { priceData ->
                     EnergyPriceBar(
                         data = priceData,
-                        barWidth = barWidth,
                         maxPrice = maxPrice,
                         minPrice = minPrice,
-                        progress = animatedProgress,
-                        modifier = Modifier
+                        progress = progress,
+                        showHourLabel = priceData.hour % gridLineInterval == 0,
+                        modifier = Modifier.weight(1f)
                     )
                 }
             }
@@ -82,14 +151,13 @@ fun EnergyPriceChart(
 @Composable
 private fun EnergyPriceBar(
     data: EnergyPriceData,
-    barWidth: Dp = 32.dp,
     maxPrice: Double,
     minPrice: Double,
     progress: Float,
+    showHourLabel: Boolean = true,
     barColor: Color = MaterialTheme.colorScheme.brand,
     modifier: Modifier = Modifier
 ) {
-    val density = LocalDensity.current
     val barHeight = 120.dp
 
     val normalizedHeight = if (maxPrice > minPrice) {
@@ -101,12 +169,12 @@ private fun EnergyPriceBar(
     val currentHeight = (normalizedHeight * progress).coerceIn(0f, 1f)
 
     Column(
-        modifier = modifier.width(barWidth),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
-                .width(barWidth)
+                .fillMaxWidth()
                 .height(barHeight)
         ) {
             Box(
@@ -118,12 +186,38 @@ private fun EnergyPriceBar(
             )
         }
 
-        Text(
-            text = "${data.hour}",
-            style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 4.dp)
+        if (showHourLabel) {
+            Text(
+                text = "${data.hour}:00",
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(18.dp)) // Reserve space for consistent layout
+        }
+    }
+}
+
+private fun DrawScope.drawGridLines(
+    hourCount: Int,
+    showVerticalGridLines: Boolean,
+    gridLineInterval: Int
+) {
+    if (!showVerticalGridLines) return
+    
+    val gridColor = Color.Gray.copy(alpha = 0.3f)
+    val stepWidth = size.width / hourCount
+    
+    // Draw vertical grid lines every gridLineInterval hours
+    for (hour in 0 until hourCount step gridLineInterval) {
+        val x = hour * stepWidth
+        drawLine(
+            color = gridColor,
+            start = Offset(x, 0f),
+            end = Offset(x, size.height),
+            strokeWidth = 1.dp.toPx()
         )
     }
 }
@@ -139,20 +233,19 @@ private fun EnergyPriceChart_Preview() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             EnergyPriceChart(
-                data = generateSampleEnergyData(),
+                dailyData = generateThreeDaySampleData(),
                 modifier = Modifier.fillMaxWidth()
             )
         }
     }
 }
 
-
 @Preview(showBackground = true, name = "High Price Variation")
 @Composable
 private fun EnergyPriceChartHighVariationPreview() {
     ElvahChargeTheme {
         EnergyPriceChart(
-            data = generateHighVariationEnergyData(),
+            dailyData = generateThreeDayHighVariationData(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -165,12 +258,39 @@ private fun EnergyPriceChartHighVariationPreview() {
 private fun EnergyPriceChartLowVariationPreview() {
     ElvahChargeTheme {
         EnergyPriceChart(
-            data = generateLowVariationEnergyData(),
+            dailyData = generateThreeDayLowVariationData(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         )
     }
+}
+
+private fun generateThreeDaySampleData(): List<DailyEnergyData> {
+    val today = LocalDate.now()
+    return listOf(
+        DailyEnergyData(today.minusDays(1), generateSampleEnergyData()), // Yesterday
+        DailyEnergyData(today, generateSampleEnergyData()), // Today
+        DailyEnergyData(today.plusDays(1), generateSampleEnergyData()) // Tomorrow
+    )
+}
+
+private fun generateThreeDayHighVariationData(): List<DailyEnergyData> {
+    val today = LocalDate.now()
+    return listOf(
+        DailyEnergyData(today.minusDays(1), generateHighVariationEnergyData()), // Yesterday
+        DailyEnergyData(today, generateHighVariationEnergyData()), // Today
+        DailyEnergyData(today.plusDays(1), generateHighVariationEnergyData()) // Tomorrow
+    )
+}
+
+private fun generateThreeDayLowVariationData(): List<DailyEnergyData> {
+    val today = LocalDate.now()
+    return listOf(
+        DailyEnergyData(today.minusDays(1), generateLowVariationEnergyData()), // Yesterday
+        DailyEnergyData(today, generateLowVariationEnergyData()), // Today
+        DailyEnergyData(today.plusDays(1), generateLowVariationEnergyData()) // Tomorrow
+    )
 }
 
 private fun generateSampleEnergyData(): List<EnergyPriceData> {
@@ -232,18 +352,7 @@ private fun generateHighVariationEnergyData(): List<EnergyPriceData> {
 }
 
 private fun generateLowVariationEnergyData(): List<EnergyPriceData> {
-    return listOf(
-        EnergyPriceData(0, 0.20),
-        EnergyPriceData(1, 0.21),
-        EnergyPriceData(2, 0.19),
-        EnergyPriceData(3, 0.22),
-        EnergyPriceData(4, 0.20),
-        EnergyPriceData(5, 0.21),
-        EnergyPriceData(6, 0.23),
-        EnergyPriceData(7, 0.22),
-        EnergyPriceData(8, 0.20),
-        EnergyPriceData(9, 0.21),
-        EnergyPriceData(10, 0.19),
-        EnergyPriceData(11, 0.22)
-    )
+    return (0..23).map { hour ->
+        EnergyPriceData(hour, 0.20 + (kotlin.math.sin(hour * 0.5) * 0.02))
+    }
 }
