@@ -3,12 +3,17 @@ package de.elvah.charge.features.sites.data.mapper
 import de.elvah.charge.features.sites.data.remote.model.response.AddressDto
 import de.elvah.charge.features.sites.data.remote.model.response.BlockingFeeDto
 import de.elvah.charge.features.sites.data.remote.model.response.ChargePointDto
+import de.elvah.charge.features.sites.data.remote.model.response.DailyPricingDto
+import de.elvah.charge.features.sites.data.remote.model.response.DayDto
 import de.elvah.charge.features.sites.data.remote.model.response.OfferDto
 import de.elvah.charge.features.sites.data.remote.model.response.PowerSpecificationDto
 import de.elvah.charge.features.sites.data.remote.model.response.PriceDto
+import de.elvah.charge.features.sites.data.remote.model.response.ScheduledPricingDto
 import de.elvah.charge.features.sites.data.remote.model.response.SignedOfferDto
 import de.elvah.charge.features.sites.data.remote.model.response.SitesDto
+import de.elvah.charge.features.sites.data.remote.model.response.TimeSlotsItemDto
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 
 
 internal fun SitesDto<OfferDto>.toSite(): ChargeSite {
@@ -89,4 +94,41 @@ internal fun BlockingFeeDto.toDomain(): ChargeSite.ChargePoint.Offer.Price.Block
 internal fun PowerSpecificationDto.toDomain(): ChargeSite.PowerSpecification =
     ChargeSite.PowerSpecification(
         maxPowerInKW = maxPowerInKW, type = type
+    )
+
+internal fun ScheduledPricingDto.toDomain(): ScheduledPricing = ScheduledPricing(
+    dailyPricing = dailyPricing.toDomain(),
+    standardPrice = standardPrice.toScheduledPricingPrice()
+)
+
+internal fun DailyPricingDto.toDomain(): ScheduledPricing.DailyPricing = ScheduledPricing.DailyPricing(
+    yesterday = yesterday.toDomain(),
+    today = today.toDomain(),
+    tomorrow = tomorrow.toDomain()
+)
+
+internal fun DayDto.toDomain(): ScheduledPricing.Day = ScheduledPricing.Day(
+    lowestPrice = lowestPrice.toScheduledPricingPrice(),
+    trend = trend,
+    timeSlots = timeSlots.map { it.toDomain() }
+)
+
+internal fun TimeSlotsItemDto.toDomain(): ScheduledPricing.TimeSlot = ScheduledPricing.TimeSlot(
+    isDiscounted = isDiscounted,
+    price = price.toScheduledPricingPrice(),
+    from = from,
+    to = to
+)
+
+internal fun PriceDto.toScheduledPricingPrice(): ScheduledPricing.Price = ScheduledPricing.Price(
+    energyPricePerKWh = energyPricePerKWh,
+    baseFee = baseFee,
+    currency = currency,
+    blockingFee = blockingFee?.toScheduledPricingBlockingFee()
+)
+
+internal fun BlockingFeeDto.toScheduledPricingBlockingFee(): ScheduledPricing.Price.BlockingFee =
+    ScheduledPricing.Price.BlockingFee(
+        pricePerMinute = pricePerMinute,
+        startsAfterMinutes = startsAfterMinutes
     )
