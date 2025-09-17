@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.entrypoints.DisplayBehavior
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphEffect
-import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphIntent
+import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphEvent
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphState
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphViewModel
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphContent
@@ -38,11 +38,20 @@ fun PricingGraph(
     LaunchedEffect(pricingGraphViewModel) {
         pricingGraphViewModel.effects.collectLatest { effect ->
             when (effect) {
-                is PricingGraphEffect.ShowError -> {
+                is PricingGraphEffect.ShowErrorToast -> {
                     onError?.invoke(effect.message)
                 }
-                PricingGraphEffect.ShowRefreshSuccess -> {
+                PricingGraphEffect.ShowRefreshSuccessToast -> {
                     onRefreshSuccess?.invoke()
+                }
+                PricingGraphEffect.ShowLoadingIndicator -> {
+                    // Could trigger additional loading UI if needed
+                }
+                PricingGraphEffect.HideLoadingIndicator -> {
+                    // Could hide additional loading UI if needed
+                }
+                is PricingGraphEffect.NavigateToErrorScreen -> {
+                    // Could trigger navigation if needed
                 }
             }
         }
@@ -50,12 +59,12 @@ fun PricingGraph(
 
     // Load pricing data when siteId changes
     LaunchedEffect(siteId) {
-        pricingGraphViewModel.handleIntent(PricingGraphIntent.LoadPricing(siteId))
+        pricingGraphViewModel.loadPricing(siteId)
     }
 
     ElvahChargeTheme(darkTheme = shouldUseDarkColors(config.darkTheme)) {
         when (val currentState = state) {
-            PricingGraphState.Loading -> {
+            is PricingGraphState.Loading -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
                     PricingGraphLoading(modifier)
                 }
@@ -68,18 +77,18 @@ fun PricingGraph(
                 )
             }
 
-            PricingGraphState.Error -> {
+            is PricingGraphState.Error -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
                     PricingGraphError(
                         onRetry = {
-                            pricingGraphViewModel.handleIntent(PricingGraphIntent.RetryLoad)
+                            pricingGraphViewModel.retryLoad()
                         },
                         modifier = modifier
                     )
                 }
             }
 
-            PricingGraphState.Empty -> {
+            is PricingGraphState.Empty -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
                     PricingGraphEmpty(modifier)
                 }
@@ -102,7 +111,7 @@ fun RefreshablePricingGraph(
     LaunchedEffect(onRefresh) {
         onRefresh?.let {
             it.invoke()
-            pricingGraphViewModel.handleIntent(PricingGraphIntent.RefreshData)
+            pricingGraphViewModel.refreshData()
         }
     }
 
