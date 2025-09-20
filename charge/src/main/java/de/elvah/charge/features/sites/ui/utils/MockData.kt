@@ -6,9 +6,9 @@ import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 import de.elvah.charge.features.sites.ui.model.Location
-import de.elvah.charge.platform.ui.components.DailyPricingData
-import de.elvah.charge.platform.ui.components.PriceOffer
-import de.elvah.charge.platform.ui.components.TimeRange
+import de.elvah.charge.platform.ui.components.graph.line.DailyPricingData
+import de.elvah.charge.platform.ui.components.graph.line.PriceOffer
+import de.elvah.charge.platform.ui.components.graph.line.TimeRange
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration

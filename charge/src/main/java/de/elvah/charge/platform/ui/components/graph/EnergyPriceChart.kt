@@ -1,4 +1,4 @@
-package de.elvah.charge.platform.ui.components
+package de.elvah.charge.platform.ui.components.graph
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -28,6 +28,7 @@ import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.math.sin
 
 data class EnergyPriceData(
     val hour: Int,
@@ -395,6 +396,6 @@ private fun generateHighVariationEnergyData(): List<EnergyPriceData> {
 
 private fun generateLowVariationEnergyData(): List<EnergyPriceData> {
     return (0..23).map { hour ->
-        EnergyPriceData(hour, 0.20 + (kotlin.math.sin(hour * 0.5) * 0.02))
+        EnergyPriceData(hour, 0.20 + (sin(hour * 0.5) * 0.02))
     }
 }

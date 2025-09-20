@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
 import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toChartData
-import de.elvah.charge.platform.ui.components.EnergyPriceLineChart
+import de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart
 
 @Composable
 internal fun PricingGraphContent(

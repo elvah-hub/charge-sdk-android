@@ -1,109 +1,63 @@
-package de.elvah.charge.platform.ui.components
+package de.elvah.charge.platform.ui.components.graph.line
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.elvah.charge.R
+import de.elvah.charge.features.sites.ui.utils.MINUTES_IN_A_DAY
 import de.elvah.charge.features.sites.ui.utils.MockData
+import de.elvah.charge.platform.ui.components.CopySmall
+import de.elvah.charge.platform.ui.components.TitleSmall
+import de.elvah.charge.platform.ui.components.graph.line.utils.getClickedTimeByOffset
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
-data class TimeRange(
-    val startTime: LocalTime, // hour:minute
-    val endTime: LocalTime    // hour:minute
-)
-
-data class PriceOffer(
-    val timeRange: TimeRange,
-    val discountedPrice: Double,
-    val isSelected: Boolean = false // Future selection state
-)
-
-data class DailyPricingData(
-    val date: LocalDate,
-    val regularPrice: Double,
-    val offers: List<PriceOffer> = emptyList(),
-    val currency: String = "€",
-    val isSelected: Boolean = false // Future selection state for entire day
-)
-
-/**
- * Defines all color variations for the graph with full combination support:
- * - Area and Line colors
- * - Offer and Regular pricing types
- * - Selected and Unselected states
- */
-data class GraphColors(
-    // Offer colors - selected state
-    val offerSelectedLine: Color,
-    val offerSelectedArea: Color,
-    // Offer colors - unselected state  
-    val offerUnselectedLine: Color,
-    val offerUnselectedArea: Color,
-    // Regular colors - selected state
-    val regularSelectedLine: Color,
-    val regularSelectedArea: Color,
-    // Regular colors - unselected state
-    val regularUnselectedLine: Color, 
-    val regularUnselectedArea: Color,
-    // Vertical transition lines (always same color regardless of selection)
-    val verticalLine: Color
-)
-
-/**
- * Default graph colors following Jetpack Compose patterns.
- * Uses brand color for offers and gray for regular pricing.
- */
-object GraphColorDefaults {
-    
-    @Composable
-    fun colors(
-        offerSelectedLine: Color = MaterialTheme.colorScheme.brand,
-        offerSelectedArea: Color = MaterialTheme.colorScheme.brand.copy(alpha = 0.6f),
-        offerUnselectedLine: Color = MaterialTheme.colorScheme.brand.copy(alpha = 0.6f),
-        offerUnselectedArea: Color = MaterialTheme.colorScheme.brand.copy(alpha = 0.3f),
-        regularSelectedLine: Color = Color.Gray.copy(alpha = 0.8f),
-        regularSelectedArea: Color = Color.Gray.copy(alpha = 0.6f),
-        regularUnselectedLine: Color = Color.Gray.copy(alpha = 0.4f),
-        regularUnselectedArea: Color = Color.Gray.copy(alpha = 0.3f),
-        verticalLine: Color = Color.Gray.copy(alpha = 0.8f)
-    ): GraphColors = GraphColors(
-        offerSelectedLine = offerSelectedLine,
-        offerSelectedArea = offerSelectedArea,
-        offerUnselectedLine = offerUnselectedLine,
-        offerUnselectedArea = offerUnselectedArea,
-        regularSelectedLine = regularSelectedLine,
-        regularSelectedArea = regularSelectedArea,
-        regularUnselectedLine = regularUnselectedLine,
-        regularUnselectedArea = regularUnselectedArea,
-        verticalLine = verticalLine
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EnergyPriceLineChart(
     dailyData: List<DailyPricingData>,
@@ -118,12 +72,67 @@ fun EnergyPriceLineChart(
 ) {
     if (dailyData.isEmpty()) return
 
+    // Default value is the today page and the slot based on the current hour
+    val todayIndex = dailyData.indexOfFirst { it.date == LocalDate.now() }.takeIf { it != -1 } ?: 1
+
     val pagerState = rememberPagerState(
-        initialPage = 1, // Start with today (middle page)
+        initialPage = todayIndex,
         pageCount = { dailyData.size }
     )
+    var selectedType by remember { mutableStateOf(ChargeType.FAST) }
+    var selectedPrice by remember {
+        mutableStateOf(
+            getPriceAtTime(
+                dailyData[todayIndex],
+                LocalTime.of(LocalTime.now().hour, 0)
+            ).first
+        )
+    }
+    var offerSelected by remember { mutableStateOf(false) }
 
-    val allPrices = dailyData.flatMap { day ->
+    // State to track updated daily data with selections
+    var updatedDailyData by remember { mutableStateOf(dailyData) }
+
+    // Function to handle slot clicks
+    val handleSlotClick: (pageIndex: Int, clickedTime: LocalTime) -> Unit =
+        { pageIndex, clickedTime ->
+            val currentDayData = updatedDailyData[pageIndex]
+
+            // Find if clicked time is within an offer
+            val clickedOffer = getOfferAtTime(currentDayData, clickedTime)
+
+            val updatedDay = if (clickedOffer != null) {
+                // Toggle the clicked offer's selection
+                val updatedOffers = currentDayData.offers.map { offer ->
+                    if (offer.timeRange.startTime == clickedOffer.timeRange.startTime &&
+                        offer.timeRange.endTime == clickedOffer.timeRange.endTime
+                    ) {
+                        offer.copy(isSelected = true)
+                    } else {
+                        offer.copy(isSelected = false) // Deselect all other offers
+                    }
+                }
+                currentDayData.copy(offers = updatedOffers, isSelected = false)
+            } else {
+                // Regular price slot clicked - toggle day selection and deselect all offers
+                val updatedOffers = currentDayData.offers.map { it.copy(isSelected = false) }
+                currentDayData.copy(offers = updatedOffers, isSelected = !currentDayData.isSelected)
+            }
+
+            // Update the daily data
+            updatedDailyData = updatedDailyData.toMutableList().apply {
+                this[pageIndex] = updatedDay
+            }
+
+            // Update selected price
+            val (newPrice, isOffer) = getPriceAtTime(updatedDay, clickedTime)
+            selectedPrice = newPrice
+
+            // Update offer selected state
+            offerSelected = isOffer
+        }
+
+    val allPrices = updatedDailyData.flatMap { day ->
         listOf(day.regularPrice) + day.offers.map { it.discountedPrice }
     }
     val maxPrice = allPrices.maxOf { it }
@@ -148,12 +157,55 @@ fun EnergyPriceLineChart(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                CopySmall(
+                    stringResource(R.string.schedule_pricing__live_pricing__label),
+                    fontWeight = FontWeight.W700
+                )
+
+                TypeDropdownSelector(
+                    selectedOption = selectedType.name,
+                    options = listOf(ChargeType.FAST.name, ChargeType.SLOW.name),
+                    onOptionSelected = {}
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                TitleSmall(
+                    selectedPrice.toString() + dailyData.first().currency + " " + stringResource(R.string.kwh_label),
+                    color = if (offerSelected) {
+                        MaterialTheme.colorScheme.brand
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    }
+                )
+
+                if (offerSelected){
+                    CopySmall(
+                        dailyData[pagerState.currentPage].regularPrice.toString() + dailyData.first().currency + " " + stringResource(
+                            R.string.kwh_label
+                        ),
+                        textDecoration = TextDecoration.LineThrough
+                    )
+                }
+            }
+
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth()
             ) { pageIndex ->
                 DayLineChart(
-                    dayData = dailyData[pageIndex],
+                    dayData = updatedDailyData[pageIndex],
                     maxPrice = maxPrice,
                     minPrice = minPrice,
                     progress = animatedProgress,
@@ -162,11 +214,51 @@ fun EnergyPriceLineChart(
                     modifier = Modifier,
                     showVerticalGridLines = showVerticalGridLines,
                     gridLineInterval = gridLineInterval,
-                    gridLineDotSize = gridLineDotSize
+                    gridLineDotSize = gridLineDotSize,
+                    onSlotClick = { clickedTime ->
+                        handleSlotClick(pageIndex, clickedTime)
+                    }
                 )
             }
         }
     }
+}
+
+@Composable
+private fun TypeDropdownSelector(
+    selectedOption: String,
+    options: List<String>,
+    onOptionSelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        TextButton(onClick = { expanded = true }) {
+            CopySmall(selectedOption)
+            Spacer(modifier = Modifier.width(6.dp))
+            Icon(
+                imageVector = Icons.Filled.ArrowDropDown,
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = "Dropdown Arrow"
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        onOptionSelected(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+
 }
 
 @Composable
@@ -180,22 +272,20 @@ private fun DayLineChart(
     modifier: Modifier = Modifier,
     showVerticalGridLines: Boolean = true,
     gridLineInterval: Int = 4,
-    gridLineDotSize: Float = 4f
+    gridLineDotSize: Float = 4f,
+    onSlotClick: (LocalTime) -> Unit
 ) {
     Column(modifier = modifier) {
-        // Date header
-        Text(
-            text = dayData.date.format(DateTimeFormatter.ofPattern("EEEE, MMM dd")),
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
         // Line chart
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
+                .pointerInput(dayData) {
+                    detectTapGestures { offset ->
+                        onSlotClick(getClickedTimeByOffset(offset, minuteResolution))
+                    }
+                }
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 // Draw grid lines
@@ -288,7 +378,7 @@ private fun DrawScope.drawStepLineChart(
     val offerSelectedHorizontalPath = Path()
     val offerUnselectedHorizontalPath = Path()
     val verticalLinesPath = Path()
-    
+
     val regularSelectedFillPath = Path()
     val regularUnselectedFillPath = Path()
     val offerSelectedFillPath = Path()
@@ -320,7 +410,7 @@ private fun DrawScope.drawStepLineChart(
             regularUnselectedFillPath.moveTo(x, chartBottom)
             offerSelectedFillPath.moveTo(x, chartBottom)
             offerUnselectedFillPath.moveTo(x, chartBottom)
-            
+
             // Select the appropriate fill path
             currentFillPath = when {
                 isOffer && isSelected -> offerSelectedFillPath
@@ -328,8 +418,8 @@ private fun DrawScope.drawStepLineChart(
                 !isOffer && isSelected -> regularSelectedFillPath
                 else -> regularUnselectedFillPath
             }
-            currentFillPath?.lineTo(x, y)
-            
+            currentFillPath.lineTo(x, y)
+
             isFirstPoint = false
             lastWasOffer = isOffer
             lastWasSelected = isSelected
@@ -367,8 +457,8 @@ private fun DrawScope.drawStepLineChart(
                     !isOffer && isSelected -> regularSelectedFillPath
                     else -> regularUnselectedFillPath
                 }
-                currentFillPath?.moveTo(x, chartBottom)
-                currentFillPath?.lineTo(x, lastY)
+                currentFillPath.moveTo(x, chartBottom)
+                currentFillPath.lineTo(x, lastY)
             }
 
             // Continue fill path with vertical step
@@ -386,7 +476,12 @@ private fun DrawScope.drawStepLineChart(
     regularUnselectedFillPath.lineTo(lastX, chartBottom)
     offerSelectedFillPath.lineTo(lastX, chartBottom)
     offerUnselectedFillPath.lineTo(lastX, chartBottom)
-    listOf(regularSelectedFillPath, regularUnselectedFillPath, offerSelectedFillPath, offerUnselectedFillPath)
+    listOf(
+        regularSelectedFillPath,
+        regularUnselectedFillPath,
+        offerSelectedFillPath,
+        offerUnselectedFillPath
+    )
         .forEach { it.close() }
 
     // Draw filled areas with state-specific colors
@@ -396,11 +491,27 @@ private fun DrawScope.drawStepLineChart(
     drawPath(offerUnselectedFillPath, colors.offerUnselectedArea)
 
     // Draw horizontal lines with state-specific colors
-    drawPath(regularSelectedHorizontalPath, colors.regularSelectedLine, style = Stroke(width = 2.dp.toPx()))
-    drawPath(regularUnselectedHorizontalPath, colors.regularUnselectedLine, style = Stroke(width = 2.dp.toPx()))
-    drawPath(offerSelectedHorizontalPath, colors.offerSelectedLine, style = Stroke(width = 2.dp.toPx()))
-    drawPath(offerUnselectedHorizontalPath, colors.offerUnselectedLine, style = Stroke(width = 2.dp.toPx()))
-    
+    drawPath(
+        regularSelectedHorizontalPath,
+        colors.regularSelectedLine,
+        style = Stroke(width = 2.dp.toPx())
+    )
+    drawPath(
+        regularUnselectedHorizontalPath,
+        colors.regularUnselectedLine,
+        style = Stroke(width = 2.dp.toPx())
+    )
+    drawPath(
+        offerSelectedHorizontalPath,
+        colors.offerSelectedLine,
+        style = Stroke(width = 2.dp.toPx())
+    )
+    drawPath(
+        offerUnselectedHorizontalPath,
+        colors.offerUnselectedLine,
+        style = Stroke(width = 2.dp.toPx())
+    )
+
     // Draw all vertical lines with consistent color
     drawPath(verticalLinesPath, colors.verticalLine, style = Stroke(width = 2.dp.toPx()))
 }
@@ -429,25 +540,24 @@ private fun isTimeSlotSelected(dayData: DailyPricingData, time: LocalTime): Bool
     return offer?.isSelected ?: dayData.isSelected
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun EnergyPriceLineChart_Preview() {
     ElvahChargeTheme {
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             EnergyPriceLineChart(
                 dailyData = MockData.generateThreeDayPricingData(),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
 }
 
-@Preview(showBackground = true, name = "High Resolution")
+@PreviewLightDark
 @Composable
 private fun EnergyPriceLineChartHighResPreview() {
     ElvahChargeTheme {
@@ -456,12 +566,12 @@ private fun EnergyPriceLineChartHighResPreview() {
             minuteResolution = 5, // Every 5 minutes for smoother line
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
         )
     }
 }
 
-@Preview(showBackground = true, name = "Custom Min Y-Axis Price")
+@PreviewLightDark
 @Composable
 private fun EnergyPriceLineChartCustomMinYAxisPreview() {
     ElvahChargeTheme {
@@ -470,12 +580,12 @@ private fun EnergyPriceLineChartCustomMinYAxisPreview() {
             minYAxisPrice = 0.0, // Set minimum Y-axis price to 0.0
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
         )
     }
 }
 
-@Preview(showBackground = true, name = "Dotted Grid Lines")
+@PreviewLightDark
 @Composable
 private fun EnergyPriceLineChartDottedGridPreview() {
     ElvahChargeTheme {
@@ -484,7 +594,7 @@ private fun EnergyPriceLineChartDottedGridPreview() {
             gridLineDotSize = 6f, // Larger dots for demonstration
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
         )
     }
 }

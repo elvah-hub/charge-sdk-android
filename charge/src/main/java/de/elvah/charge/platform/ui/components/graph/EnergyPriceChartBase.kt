@@ -1,4 +1,4 @@
-package de.elvah.charge.platform.ui.components
+package de.elvah.charge.platform.ui.components.graph
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

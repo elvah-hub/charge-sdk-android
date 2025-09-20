@@ -116,4 +116,5 @@
   <string name="try_again">Try again</string>
   <string name="understood">Understood</string>
   <string name="whatsapp">WhatsApp</string>
+    <string name="schedule_pricing__live_pricing__label">Live Pricing</string>
 </resources>

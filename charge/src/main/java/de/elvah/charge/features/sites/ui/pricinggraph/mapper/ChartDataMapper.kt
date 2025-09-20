@@ -1,9 +1,9 @@
 package de.elvah.charge.features.sites.ui.pricinggraph.mapper
 
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
-import de.elvah.charge.platform.ui.components.DailyPricingData
-import de.elvah.charge.platform.ui.components.PriceOffer
-import de.elvah.charge.platform.ui.components.TimeRange
+import de.elvah.charge.platform.ui.components.graph.line.DailyPricingData
+import de.elvah.charge.platform.ui.components.graph.line.PriceOffer
+import de.elvah.charge.platform.ui.components.graph.line.TimeRange
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
