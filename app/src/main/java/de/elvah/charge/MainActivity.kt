@@ -23,6 +23,7 @@ import de.elvah.charge.entrypoints.banner.ChargeBannerSource
 import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.entrypoints.sites.GetSites
 import de.elvah.charge.entrypoints.sites.SitesManager
+import de.elvah.charge.entrypoints.pricinggraph.PricingGraph
 
 class MainActivity : ComponentActivity() {
     private var chargeBannerSource: ChargeBannerSource = ChargeBannerSource()
@@ -56,6 +57,13 @@ class MainActivity : ComponentActivity() {
                             SitesManager.openSite(context, sites.first().id)
                         }) {
                             Text("Open Deal at HNTCI*E*00001")
+                        }
+                        
+                        // Test PricingGraph with sample site ID
+                        if (sites.isNotEmpty()) {
+                            PricingGraph(
+                                siteId = sites.first().id
+                            )
                         }
                     }
                 }

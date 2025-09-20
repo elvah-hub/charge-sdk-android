@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +47,9 @@ fun EnergyPriceChart(
     modifier: Modifier = Modifier,
     animated: Boolean = true,
     showVerticalGridLines: Boolean = true,
-    gridLineInterval: Int = 4
+    gridLineInterval: Int = 4,
+    minYAxisPrice: Double? = null, // User-defined minimum Y-axis price
+    gridLineDotSize: Float = 4f // Size of dots in dotted grid lines
 ) {
     if (dailyData.isEmpty()) return
 
@@ -57,7 +60,10 @@ fun EnergyPriceChart(
     
     val allHourlyData = dailyData.flatMap { it.hourlyData }
     val maxPrice = allHourlyData.maxOf { it.price }
-    val minPrice = allHourlyData.minOf { it.price }
+    val calculatedMinPrice = allHourlyData.minOf { it.price }
+    val minPrice = minYAxisPrice?.let { userMin ->
+        minOf(userMin, calculatedMinPrice)
+    } ?: calculatedMinPrice
 
     val animatedProgress by animateFloatAsState(
         targetValue = if (animated) 1f else 1f,
@@ -85,7 +91,8 @@ fun EnergyPriceChart(
                     minPrice = minPrice,
                     progress = animatedProgress,
                     showVerticalGridLines = showVerticalGridLines,
-                    gridLineInterval = gridLineInterval
+                    gridLineInterval = gridLineInterval,
+                    gridLineDotSize = gridLineDotSize
                 )
             }
         }
@@ -100,7 +107,8 @@ private fun DayChart(
     progress: Float,
     modifier: Modifier = Modifier,
     showVerticalGridLines: Boolean = true,
-    gridLineInterval: Int = 4
+    gridLineInterval: Int = 4,
+    gridLineDotSize: Float = 4f
 ) {
     Column(modifier = modifier) {
         // Date header
@@ -122,7 +130,8 @@ private fun DayChart(
                 drawGridLines(
                     hourCount = dayData.hourlyData.size,
                     showVerticalGridLines = showVerticalGridLines,
-                    gridLineInterval = gridLineInterval
+                    gridLineInterval = gridLineInterval,
+                    gridLineDotSize = gridLineDotSize
                 )
             }
             
@@ -203,21 +212,26 @@ private fun EnergyPriceBar(
 private fun DrawScope.drawGridLines(
     hourCount: Int,
     showVerticalGridLines: Boolean,
-    gridLineInterval: Int
+    gridLineInterval: Int,
+    gridLineDotSize: Float = 4f
 ) {
     if (!showVerticalGridLines) return
     
     val gridColor = Color.Gray.copy(alpha = 0.3f)
     val stepWidth = size.width / hourCount
     
-    // Draw vertical grid lines every gridLineInterval hours
+    // Create dotted path effect
+    val pathEffect = PathEffect.dashPathEffect(floatArrayOf(gridLineDotSize, gridLineDotSize), 0f)
+    
+    // Draw vertical dotted grid lines every gridLineInterval hours
     for (hour in 0 until hourCount step gridLineInterval) {
         val x = hour * stepWidth
         drawLine(
             color = gridColor,
             start = Offset(x, 0f),
             end = Offset(x, size.height),
-            strokeWidth = 1.dp.toPx()
+            strokeWidth = 1.dp.toPx(),
+            pathEffect = pathEffect
         )
     }
 }
@@ -259,6 +273,34 @@ private fun EnergyPriceChartLowVariationPreview() {
     ElvahChargeTheme {
         EnergyPriceChart(
             dailyData = generateThreeDayLowVariationData(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Custom Min Y-Axis Price")
+@Composable
+private fun EnergyPriceChartCustomMinYAxisPreview() {
+    ElvahChargeTheme {
+        EnergyPriceChart(
+            dailyData = generateThreeDayHighVariationData(),
+            minYAxisPrice = 0.0, // Set minimum Y-axis price to 0.0
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Dotted Grid Lines")
+@Composable
+private fun EnergyPriceChartDottedGridPreview() {
+    ElvahChargeTheme {
+        EnergyPriceChart(
+            dailyData = generateThreeDaySampleData(),
+            gridLineDotSize = 6f, // Larger dots for demonstration
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)

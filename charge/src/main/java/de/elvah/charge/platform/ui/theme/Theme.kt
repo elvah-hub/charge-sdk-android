@@ -56,9 +56,9 @@ fun ElvahChargeTheme(
 val ColorScheme.brand: Color
     get() = brandColor
 
-
 val ColorScheme.onBrand: Color
     get() = onBrandColor
+
 
 @Composable
 fun shouldUseDarkColors(darkTheme: Boolean?): Boolean = darkTheme ?: isSystemInDarkTheme()

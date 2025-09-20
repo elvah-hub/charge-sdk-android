@@ -28,6 +28,8 @@ fun PricingGraph(
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
     onError: ((String) -> Unit)? = null,
     onRefreshSuccess: (() -> Unit)? = null,
+    minYAxisPrice: Double? = null,
+    gridLineDotSize: Float = 4f
 ) {
     val pricingGraphViewModel: PricingGraphViewModel = koinViewModel()
     val config: Config = koinInject()
@@ -73,7 +75,9 @@ fun PricingGraph(
             is PricingGraphState.Success -> {
                 PricingGraphContent(
                     scheduledPricing = currentState.scheduledPricing,
-                    modifier = modifier
+                    modifier = modifier,
+                    minYAxisPrice = minYAxisPrice,
+                    gridLineDotSize = gridLineDotSize
                 )
             }
 
@@ -105,6 +109,8 @@ fun RefreshablePricingGraph(
     onError: ((String) -> Unit)? = null,
     onRefreshSuccess: (() -> Unit)? = null,
     onRefresh: (() -> Unit)? = null,
+    minYAxisPrice: Double? = null,
+    gridLineDotSize: Float = 4f
 ) {
     val pricingGraphViewModel: PricingGraphViewModel = koinViewModel()
 
@@ -120,6 +126,8 @@ fun RefreshablePricingGraph(
         modifier = modifier,
         display = display,
         onError = onError,
-        onRefreshSuccess = onRefreshSuccess
+        onRefreshSuccess = onRefreshSuccess,
+        minYAxisPrice = minYAxisPrice,
+        gridLineDotSize = gridLineDotSize
     )
 }

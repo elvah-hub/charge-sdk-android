@@ -1,10 +1,8 @@
 package de.elvah.charge.features.sites.ui.pricinggraph.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,11 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
+import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toChartData
+import de.elvah.charge.platform.ui.components.EnergyPriceLineChart
 
 @Composable
 internal fun PricingGraphContent(
     scheduledPricing: ScheduledPricingUI,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    minYAxisPrice: Double? = null,
+    gridLineDotSize: Float = 4f
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -42,11 +44,18 @@ internal fun PricingGraphContent(
                 modifier = Modifier.fillMaxWidth()
             )
             
-            // Placeholder for the graph - this is where the actual graph component will be placed
-            PricingGraphPlaceholder(
+            // Energy price line chart displaying the API data
+            EnergyPriceLineChart(
+                dailyData = scheduledPricing.toChartData(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(200.dp),
+                animated = true,
+                showVerticalGridLines = true,
+                gridLineInterval = 6,
+                minuteResolution = 30,
+                minYAxisPrice = minYAxisPrice,
+                gridLineDotSize = gridLineDotSize
             )
             
             // Standard price info
@@ -132,26 +141,6 @@ internal fun PricingGraphEmpty(
     }
 }
 
-@Composable
-private fun PricingGraphPlaceholder(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .background(
-                MaterialTheme.colorScheme.surfaceVariant,
-                RoundedCornerShape(8.dp)
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Graph will be placed here",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
-    }
-}
 
 @Composable
 private fun StandardPriceInfo(
