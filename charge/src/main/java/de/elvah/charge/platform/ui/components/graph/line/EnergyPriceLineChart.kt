@@ -215,6 +215,7 @@ fun EnergyPriceLineChart(
                     showVerticalGridLines = showVerticalGridLines,
                     gridLineInterval = gridLineInterval,
                     gridLineDotSize = gridLineDotSize,
+                    isToday = updatedDailyData[pageIndex].date == LocalDate.now(),
                     onSlotClick = { clickedTime ->
                         handleSlotClick(pageIndex, clickedTime)
                     }
@@ -273,6 +274,7 @@ private fun DayLineChart(
     showVerticalGridLines: Boolean = true,
     gridLineInterval: Int = 4,
     gridLineDotSize: Float = 4f,
+    isToday: Boolean = false,
     onSlotClick: (LocalTime) -> Unit
 ) {
     Column(modifier = modifier) {
@@ -302,7 +304,8 @@ private fun DayLineChart(
                     minPrice = minPrice,
                     progress = progress,
                     minuteResolution = minuteResolution,
-                    colors = colors
+                    colors = colors,
+                    isToday = isToday
                 )
             }
         }
@@ -361,7 +364,8 @@ private fun DrawScope.drawStepLineChart(
     minPrice: Double,
     progress: Float,
     minuteResolution: Int,
-    colors: GraphColors
+    colors: GraphColors,
+    isToday: Boolean = false
 ) {
     val priceRange = maxPrice - minPrice
     if (priceRange <= 0) return
@@ -514,6 +518,68 @@ private fun DrawScope.drawStepLineChart(
 
     // Draw all vertical lines with consistent color
     drawPath(verticalLinesPath, colors.verticalLine, style = Stroke(width = 2.dp.toPx()))
+
+    // Draw current time marker if showing today
+    if (isToday) {
+        drawCurrentTimeMarker(
+            maxPrice = maxPrice,
+            minPrice = minPrice,
+            minuteResolution = minuteResolution,
+            chartHeight = chartHeight,
+            chartBottom = chartBottom,
+            colors = colors,
+            dayData = dayData
+        )
+    }
+}
+
+private fun DrawScope.drawCurrentTimeMarker(
+    maxPrice: Double,
+    minPrice: Double,
+    minuteResolution: Int,
+    chartHeight: Float,
+    chartBottom: Float,
+    colors: GraphColors,
+    dayData: DailyPricingData
+) {
+    val currentTime = LocalTime.now()
+    val currentMinutes = currentTime.hour * 60 + currentTime.minute
+    
+    val minutesInDay = 24 * 60
+    val dataPoints = minutesInDay / minuteResolution
+    val stepWidth = size.width / dataPoints
+    val priceRange = maxPrice - minPrice
+    
+    if (priceRange <= 0) return
+    
+    // Calculate x position for current time
+    val currentTimeIndex = (currentMinutes / minuteResolution).toFloat()
+    val x = currentTimeIndex * stepWidth
+    
+    // Get current price to determine y position
+    val (currentPrice, _) = getPriceAtTime(dayData, currentTime)
+    val normalizedPrice = ((currentPrice - minPrice) / priceRange).toFloat()
+    val y = chartBottom - (normalizedPrice * chartHeight)
+    
+    // Draw vertical line from chart bottom to the circle marker
+    drawLine(
+        color = colors.currentTimeMarker,
+        start = Offset(x, chartBottom),
+        end = Offset(x, y),
+        strokeWidth = 2.dp.toPx()
+    )
+    
+    // Draw circle marker on the line
+    drawCircle(
+        color = colors.currentTimeMarker,
+        radius = 4.dp.toPx(),
+        center = Offset(x, y)
+    )
+    drawCircle(
+        color = Color.White,
+        radius = 2.dp.toPx(),
+        center = Offset(x, y)
+    )
 }
 
 private fun getPriceAtTime(dayData: DailyPricingData, time: LocalTime): Pair<Double, Boolean> {

@@ -21,7 +21,8 @@ object GraphColorDefaults {
         regularSelectedArea: Color = Color.Companion.Gray.copy(alpha = 0.6f),
         regularUnselectedLine: Color = Color.Companion.Gray.copy(alpha = 0.4f),
         regularUnselectedArea: Color = Color.Companion.Gray.copy(alpha = 0.3f),
-        verticalLine: Color = Color.Companion.Gray.copy(alpha = 0.8f)
+        verticalLine: Color = Color.Companion.Gray.copy(alpha = 0.8f),
+        currentTimeMarker: Color = MaterialTheme.colorScheme.primary
     ): GraphColors = GraphColors(
         offerSelectedLine = offerSelectedLine,
         offerSelectedArea = offerSelectedArea,
@@ -31,6 +32,7 @@ object GraphColorDefaults {
         regularSelectedArea = regularSelectedArea,
         regularUnselectedLine = regularUnselectedLine,
         regularUnselectedArea = regularUnselectedArea,
-        verticalLine = verticalLine
+        verticalLine = verticalLine,
+        currentTimeMarker = currentTimeMarker
     )
 }

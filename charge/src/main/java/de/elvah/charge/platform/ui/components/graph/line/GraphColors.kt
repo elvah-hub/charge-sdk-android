@@ -22,5 +22,7 @@ data class GraphColors(
     val regularUnselectedLine: Color,
     val regularUnselectedArea: Color,
     // Vertical transition lines (always same color regardless of selection)
-    val verticalLine: Color
+    val verticalLine: Color,
+    // Current time marker
+    val currentTimeMarker: Color
 )
