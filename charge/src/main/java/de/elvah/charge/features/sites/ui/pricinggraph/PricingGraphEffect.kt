@@ -7,5 +7,6 @@ internal sealed class PricingGraphEffect : Reducer.ViewEffect {
     data object ShowRefreshSuccessToast : PricingGraphEffect()
     data object ShowLoadingIndicator : PricingGraphEffect()
     data object HideLoadingIndicator : PricingGraphEffect()
-    data class NavigateToErrorScreen(val siteId: String, val errorMessage: String) : PricingGraphEffect()
+    data class NavigateToErrorScreen(val siteId: String, val errorMessage: String) :
+        PricingGraphEffect()
 }

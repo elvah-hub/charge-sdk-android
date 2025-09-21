@@ -8,7 +8,7 @@ internal fun ScheduledPricing.toUI(): ScheduledPricingUI = ScheduledPricingUI(
     standardPrice = standardPrice.toUI()
 )
 
-internal fun ScheduledPricing.DailyPricing.toUI(): ScheduledPricingUI.DailyPricingUI = 
+internal fun ScheduledPricing.DailyPricing.toUI(): ScheduledPricingUI.DailyPricingUI =
     ScheduledPricingUI.DailyPricingUI(
         yesterday = yesterday.toUI(),
         today = today.toUI(),
@@ -21,7 +21,7 @@ internal fun ScheduledPricing.Day.toUI(): ScheduledPricingUI.DayUI = ScheduledPr
     timeSlots = timeSlots.map { it.toUI() }
 )
 
-internal fun ScheduledPricing.TimeSlot.toUI(): ScheduledPricingUI.TimeSlotUI = 
+internal fun ScheduledPricing.TimeSlot.toUI(): ScheduledPricingUI.TimeSlotUI =
     ScheduledPricingUI.TimeSlotUI(
         isDiscounted = isDiscounted,
         price = price.toUI(),
@@ -36,7 +36,7 @@ internal fun ScheduledPricing.Price.toUI(): ScheduledPricingUI.PriceUI = Schedul
     blockingFee = blockingFee?.toUI()
 )
 
-internal fun ScheduledPricing.Price.BlockingFee.toUI(): ScheduledPricingUI.PriceUI.BlockingFeeUI = 
+internal fun ScheduledPricing.Price.BlockingFee.toUI(): ScheduledPricingUI.PriceUI.BlockingFeeUI =
     ScheduledPricingUI.PriceUI.BlockingFeeUI(
         pricePerMinute = pricePerMinute,
         startsAfterMinutes = startsAfterMinutes

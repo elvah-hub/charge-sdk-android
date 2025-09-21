@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
                         // Test PricingGraph with sample site ID
                         if (sites.isNotEmpty()) {
                             PricingGraph(
-                                siteId = sites.first().id
+                                siteId = sites.first().id,
                             )
                         }
                     }

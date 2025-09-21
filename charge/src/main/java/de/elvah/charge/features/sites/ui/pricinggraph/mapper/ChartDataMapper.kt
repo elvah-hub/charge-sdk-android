@@ -11,7 +11,7 @@ import java.time.format.DateTimeParseException
 
 fun ScheduledPricingUI.toChartData(): List<DailyPricingData> {
     val today = LocalDate.now()
-    
+
     return listOf(
         dailyPricing.yesterday.toChartData(
             date = today.minusDays(1),
@@ -35,7 +35,7 @@ private fun ScheduledPricingUI.DayUI.toChartData(
     // Find the regular price from non-discounted time slots or use the lowest price as fallback
     val regularPrice = timeSlots.firstOrNull { !it.isDiscounted }?.price?.energyPricePerKWh
         ?: lowestPrice.energyPricePerKWh
-    
+
     // Convert discounted time slots to price offers
     val offers = timeSlots
         .filter { it.isDiscounted }
@@ -48,7 +48,7 @@ private fun ScheduledPricingUI.DayUI.toChartData(
                 )
             }
         }
-    
+
     return DailyPricingData(
         date = date,
         regularPrice = regularPrice,
@@ -62,7 +62,7 @@ private fun parseTimeRange(from: String, to: String): TimeRange? {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val startTime = LocalTime.parse(from, formatter)
         val endTime = LocalTime.parse(to, formatter)
-        
+
         TimeRange(startTime = startTime, endTime = endTime)
     } catch (e: DateTimeParseException) {
         // Try alternative format HH:MM or H:MM
@@ -82,9 +82,11 @@ private fun parseTimeFlexible(timeString: String): LocalTime {
             val parts = timeString.split(":")
             LocalTime.of(parts[0].toInt(), parts[1].toInt())
         }
+
         timeString.length <= 2 -> {
             LocalTime.of(timeString.toInt(), 0)
         }
+
         else -> {
             // Assume format like 1430 for 14:30
             val hour = timeString.substring(0, timeString.length - 2).toInt()

@@ -234,6 +234,9 @@ fun EnergyPriceLineChart(
                 )
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth()

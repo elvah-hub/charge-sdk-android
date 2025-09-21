@@ -9,9 +9,11 @@ internal sealed class PricingGraphState : Reducer.ViewState {
         val siteId: String,
         val scheduledPricing: ScheduledPricingUI
     ) : PricingGraphState()
+
     data class Error(
         val siteId: String?,
         val message: String
     ) : PricingGraphState()
+
     data class Empty(val siteId: String?) : PricingGraphState()
 }
