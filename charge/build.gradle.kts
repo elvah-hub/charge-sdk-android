@@ -15,6 +15,8 @@ android {
     defaultConfig {
         minSdk = 26
 
+        buildConfigField("String", "SDK_VERSION", "\"${libs.versions.sdk.get()}\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -48,6 +50,8 @@ android {
             withSourcesJar()
         }
     }
+
+    android.buildFeatures.buildConfig = true
 }
 
 publishing {

@@ -4,6 +4,9 @@ import android.content.Context
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.network.okhttp.OkHttpFactory
 import de.elvah.charge.platform.network.retrofit.ApiKeyInterceptor
+import de.elvah.charge.platform.network.retrofit.interceptor.provideApiKeyInterceptor
+import de.elvah.charge.platform.network.retrofit.interceptor.provideHttpLoggingInterceptor
+import de.elvah.charge.platform.network.retrofit.interceptor.provideUserAgentInterceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -68,5 +71,6 @@ val okHttpModule = module {
     single { provideOkHttpClient(get()) }
     single { provideHttpLoggingInterceptor() }
     single { provideApiKeyInterceptor(get()) }
+    single { provideUserAgentInterceptor() }
     single { provideDistinctKeyInterceptor() }
 }
