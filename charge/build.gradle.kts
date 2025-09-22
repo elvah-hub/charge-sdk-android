@@ -55,7 +55,7 @@ publishing {
         register<MavenPublication>("release") {
             artifactId = "charge-sdk-android"
             groupId = "com.github.elvah-hub"
-            version = "0.3.4"
+            version = libs.versions.sdk.get()
 
             afterEvaluate {
                 from(components["release"])
