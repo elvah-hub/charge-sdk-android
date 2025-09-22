@@ -1,6 +1,7 @@
 package de.elvah.charge.platform.network.retrofit
 
 import com.squareup.moshi.Moshi
+import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.UserAgentInterceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

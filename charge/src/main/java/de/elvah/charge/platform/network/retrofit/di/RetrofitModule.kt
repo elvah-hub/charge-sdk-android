@@ -2,7 +2,7 @@ package de.elvah.charge.platform.network.retrofit.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.elvah.charge.platform.network.retrofit.ApiKeyInterceptor
+import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.RetrofitFactory
 import de.elvah.charge.platform.network.retrofit.interceptor.UserAgentInterceptor
 import okhttp3.Interceptor
