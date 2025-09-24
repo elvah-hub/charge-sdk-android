@@ -1,6 +1,8 @@
 package de.elvah.charge.platform.network.retrofit
 
 import com.squareup.moshi.Moshi
+import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
+import de.elvah.charge.platform.network.retrofit.interceptor.UserAgentInterceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,6 +16,7 @@ internal class RetrofitFactory(
     private val httpLoggingInterceptor: HttpLoggingInterceptor,
     private val apiKeyInterceptor: ApiKeyInterceptor,
     private val distinctKeyInterceptor: Interceptor,
+    private val userAgentInterceptor: UserAgentInterceptor,
     private val moshi: Moshi,
 ) {
 
@@ -27,6 +30,7 @@ internal class RetrofitFactory(
         // by interceptors
         httpClientBuilder.addInterceptor(apiKeyInterceptor)
         httpClientBuilder.addInterceptor(distinctKeyInterceptor)
+        httpClientBuilder.addInterceptor(userAgentInterceptor)
         httpClientBuilder.addInterceptor(httpLoggingInterceptor)
 
         return Retrofit.Builder()

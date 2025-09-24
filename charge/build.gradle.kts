@@ -15,6 +15,8 @@ android {
     defaultConfig {
         minSdk = 26
 
+        buildConfigField("String", "SDK_VERSION", "\"${libs.versions.sdk.get()}\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -48,6 +50,8 @@ android {
             withSourcesJar()
         }
     }
+
+    android.buildFeatures.buildConfig = true
 }
 
 publishing {
@@ -55,7 +59,7 @@ publishing {
         register<MavenPublication>("release") {
             artifactId = "charge-sdk-android"
             groupId = "com.github.elvah-hub"
-            version = "0.3.4"
+            version = libs.versions.sdk.get()
 
             afterEvaluate {
                 from(components["release"])
