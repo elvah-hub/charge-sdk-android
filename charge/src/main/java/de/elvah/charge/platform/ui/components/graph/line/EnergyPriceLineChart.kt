@@ -40,10 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,6 +53,29 @@ import de.elvah.charge.R
 import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.components.TitleSmall
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.BADGE_PADDING_HORIZONTAL
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.BADGE_PADDING_VERTICAL
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.CARD_ELEVATION
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.CARD_PADDING
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_ANIMATION_DURATION_MS
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_CHART_HEIGHT_DP
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_GRID_LINE_DOT_SIZE
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_GRID_LINE_INTERVAL
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_MINUTE_RESOLUTION
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.EQUAL_WEIGHT
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.GRID_TEXT_SIZE
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.HOURS_IN_DAY
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.ICON_SIZE_SMALL
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.OFFER_BACKGROUND_COLOR
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.ROUNDED_CORNER_RADIUS
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SECTION_SPACING
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SMALL_SPACING
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SPACER_SIZE
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SPACER_WIDTH
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.TINY_SPACING
+import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SURFACE_ALPHA_70
+import de.elvah.charge.platform.ui.components.graph.line.drawGridLines
+import de.elvah.charge.platform.ui.components.graph.line.drawStepLineChart
 import de.elvah.charge.platform.ui.components.graph.line.utils.getClickedTimeByOffset
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
@@ -70,10 +89,10 @@ fun EnergyPriceLineChart(
     colors: GraphColors = GraphColorDefaults.colors(),
     animated: Boolean = true,
     showVerticalGridLines: Boolean = true,
-    gridLineInterval: Int = 4,
-    minuteResolution: Int = 15, // Data point every N minutes
-    minYAxisPrice: Double? = null, // User-defined minimum Y-axis price
-    gridLineDotSize: Float = 4f // Size of dots in dotted grid lines
+    gridLineInterval: Int = DEFAULT_GRID_LINE_INTERVAL,
+    minuteResolution: Int = DEFAULT_MINUTE_RESOLUTION,
+    minYAxisPrice: Double? = null,
+    gridLineDotSize: Float = DEFAULT_GRID_LINE_DOT_SIZE
 ) {
     if (dailyData.isEmpty()) return
 
@@ -160,7 +179,7 @@ fun EnergyPriceLineChart(
 
     val animatedProgress by animateFloatAsState(
         targetValue = if (animated) 1f else 1f,
-        animationSpec = tween(durationMillis = 1000),
+        animationSpec = tween(durationMillis = DEFAULT_ANIMATION_DURATION_MS),
         label = "chart_animation"
     )
 
@@ -450,280 +469,21 @@ private fun DayLineChart(
     }
 }
 
-private fun DrawScope.drawGridLines(
-    showVerticalGridLines: Boolean,
-    gridLineInterval: Int,
-    gridLineDotSize: Float = 4f
-) {
-    if (!showVerticalGridLines) return
-
-    // Vertical grid lines are always gray regardless of selection state
-    val gridColor = Color.Gray.copy(alpha = 0.3f)
-    val hoursInDay = 24
-    val stepWidth = size.width / hoursInDay
-
-    // Create dotted path effect
-    val pathEffect = PathEffect.dashPathEffect(floatArrayOf(gridLineDotSize, gridLineDotSize), 0f)
-
-    // Draw vertical dotted grid lines every gridLineInterval hours
-    for (hour in 0..hoursInDay step gridLineInterval) {
-        val x = hour * stepWidth
-        drawLine(
-            color = gridColor,
-            start = Offset(x, 0f),
-            end = Offset(x, size.height),
-            strokeWidth = 1.dp.toPx(),
-            pathEffect = pathEffect
-        )
-    }
-}
-
-private fun DrawScope.drawStepLineChart(
-    dayData: DailyPricingData,
-    maxPrice: Double,
-    minPrice: Double,
-    progress: Float,
-    minuteResolution: Int,
-    colors: GraphColors,
-    isToday: Boolean = false
-) {
-    val priceRange = maxPrice - minPrice
-    if (priceRange <= 0) return
-
-    val minutesInDay = 24 * 60
-    val dataPoints = minutesInDay / minuteResolution
-    val stepWidth = size.width / dataPoints
-    val chartHeight = size.height * 0.9f // Leave some margin
-    val chartBottom = size.height * 0.95f
-
-    // Separate paths for different pricing types and selection states
-    val regularSelectedHorizontalPath = Path()
-    val regularUnselectedHorizontalPath = Path()
-    val offerSelectedHorizontalPath = Path()
-    val offerUnselectedHorizontalPath = Path()
-    val verticalLinesPath = Path()
-
-    val regularSelectedFillPath = Path()
-    val regularUnselectedFillPath = Path()
-    val offerSelectedFillPath = Path()
-    val offerUnselectedFillPath = Path()
-
-    var isFirstPoint = true
-    var currentFillPath: Path? = null
-    var lastWasOffer = false
-    var lastWasSelected = false
-    var lastY = 0f
-
-    for (i in 0 until (dataPoints * progress).toInt()) {
-        val minute = i * minuteResolution
-        val hour = minute / 60
-        val minuteOfHour = minute % 60
-        val currentTime = LocalTime.of(hour, minuteOfHour)
-
-        // Determine current price and selection state
-        val (currentPrice, isOffer) = getPriceAtTime(dayData, currentTime)
-        val isSelected = isTimeSlotSelected(dayData, currentTime)
-
-        val x = i * stepWidth
-        val normalizedPrice = ((currentPrice - minPrice) / priceRange).toFloat()
-        val y = chartBottom - (normalizedPrice * chartHeight)
-
-        if (isFirstPoint) {
-            // Initialize all fill paths
-            regularSelectedFillPath.moveTo(x, chartBottom)
-            regularUnselectedFillPath.moveTo(x, chartBottom)
-            offerSelectedFillPath.moveTo(x, chartBottom)
-            offerUnselectedFillPath.moveTo(x, chartBottom)
-
-            // Select the appropriate fill path
-            currentFillPath = when {
-                isOffer && isSelected -> offerSelectedFillPath
-                isOffer && !isSelected -> offerUnselectedFillPath
-                !isOffer && isSelected -> regularSelectedFillPath
-                else -> regularUnselectedFillPath
-            }
-            currentFillPath.lineTo(x, y)
-
-            isFirstPoint = false
-            lastWasOffer = isOffer
-            lastWasSelected = isSelected
-            lastY = y
-        } else {
-            // Add horizontal line to appropriate path
-            val horizontalPath = when {
-                lastWasOffer && lastWasSelected -> offerSelectedHorizontalPath
-                lastWasOffer && !lastWasSelected -> offerUnselectedHorizontalPath
-                !lastWasOffer && lastWasSelected -> regularSelectedHorizontalPath
-                else -> regularUnselectedHorizontalPath
-            }
-            horizontalPath.moveTo((i - 1) * stepWidth, lastY)
-            horizontalPath.lineTo(x, lastY)
-
-            // Add vertical line (always same color) when there's a price change
-            if (lastY != y) {
-                verticalLinesPath.moveTo(x, lastY)
-                verticalLinesPath.lineTo(x, y)
-            }
-
-            // Continue current fill path with horizontal step
-            currentFillPath?.lineTo(x, lastY)
-
-            // Handle transitions between different pricing/selection states
-            val stateChanged = (isOffer != lastWasOffer) || (isSelected != lastWasSelected)
-            if (stateChanged) {
-                // Close current fill path at transition point
-                currentFillPath?.lineTo(x, chartBottom)
-
-                // Select new fill path
-                currentFillPath = when {
-                    isOffer && isSelected -> offerSelectedFillPath
-                    isOffer && !isSelected -> offerUnselectedFillPath
-                    !isOffer && isSelected -> regularSelectedFillPath
-                    else -> regularUnselectedFillPath
-                }
-                currentFillPath.moveTo(x, chartBottom)
-                currentFillPath.lineTo(x, lastY)
-            }
-
-            // Continue fill path with vertical step
-            currentFillPath?.lineTo(x, y)
-
-            lastWasOffer = isOffer
-            lastWasSelected = isSelected
-            lastY = y
-        }
-    }
-
-    // Close all fill paths
-    val lastX = ((dataPoints * progress).toInt() - 1) * stepWidth
-    regularSelectedFillPath.lineTo(lastX, chartBottom)
-    regularUnselectedFillPath.lineTo(lastX, chartBottom)
-    offerSelectedFillPath.lineTo(lastX, chartBottom)
-    offerUnselectedFillPath.lineTo(lastX, chartBottom)
-    listOf(
-        regularSelectedFillPath,
-        regularUnselectedFillPath,
-        offerSelectedFillPath,
-        offerUnselectedFillPath
-    )
-        .forEach { it.close() }
-
-    // Draw filled areas with state-specific colors
-    drawPath(regularSelectedFillPath, colors.regularSelectedArea)
-    drawPath(regularUnselectedFillPath, colors.regularUnselectedArea)
-    drawPath(offerSelectedFillPath, colors.offerSelectedArea)
-    drawPath(offerUnselectedFillPath, colors.offerUnselectedArea)
-
-    // Draw horizontal lines with state-specific colors
-    drawPath(
-        regularSelectedHorizontalPath,
-        colors.regularSelectedLine,
-        style = Stroke(width = 2.dp.toPx())
-    )
-    drawPath(
-        regularUnselectedHorizontalPath,
-        colors.regularUnselectedLine,
-        style = Stroke(width = 2.dp.toPx())
-    )
-    drawPath(
-        offerSelectedHorizontalPath,
-        colors.offerSelectedLine,
-        style = Stroke(width = 2.dp.toPx())
-    )
-    drawPath(
-        offerUnselectedHorizontalPath,
-        colors.offerUnselectedLine,
-        style = Stroke(width = 2.dp.toPx())
-    )
-
-    // Draw all vertical lines with consistent color
-    drawPath(verticalLinesPath, colors.verticalLine, style = Stroke(width = 2.dp.toPx()))
-
-    // Draw current time marker if showing today
-    if (isToday) {
-        drawCurrentTimeMarker(
-            maxPrice = maxPrice,
-            minPrice = minPrice,
-            minuteResolution = minuteResolution,
-            chartHeight = chartHeight,
-            chartBottom = chartBottom,
-            colors = colors,
-            dayData = dayData
-        )
-    }
-}
-
-private fun DrawScope.drawCurrentTimeMarker(
-    maxPrice: Double,
-    minPrice: Double,
-    minuteResolution: Int,
-    chartHeight: Float,
-    chartBottom: Float,
-    colors: GraphColors,
-    dayData: DailyPricingData
-) {
-    val currentTime = LocalTime.now()
-    val currentMinutes = currentTime.hour * 60 + currentTime.minute
-
-    val minutesInDay = 24 * 60
-    val dataPoints = minutesInDay / minuteResolution
-    val stepWidth = size.width / dataPoints
-    val priceRange = maxPrice - minPrice
-
-    if (priceRange <= 0) return
-
-    // Calculate x position for current time
-    val currentTimeIndex = (currentMinutes / minuteResolution).toFloat()
-    val x = currentTimeIndex * stepWidth
-
-    // Get current price to determine y position
-    val (currentPrice, _) = getPriceAtTime(dayData, currentTime)
-    val normalizedPrice = ((currentPrice - minPrice) / priceRange).toFloat()
-    val y = chartBottom - (normalizedPrice * chartHeight)
-
-    // Draw vertical line from chart bottom to the circle marker
-    drawLine(
-        color = colors.currentTimeMarker,
-        start = Offset(x, chartBottom),
-        end = Offset(x, y),
-        strokeWidth = 2.dp.toPx()
-    )
-
-    // Draw circle marker on the line
-    drawCircle(
-        color = colors.currentTimeMarker,
-        radius = 4.dp.toPx(),
-        center = Offset(x, y)
-    )
-    drawCircle(
-        color = Color.White,
-        radius = 2.dp.toPx(),
-        center = Offset(x, y)
-    )
-}
-
-private fun getPriceAtTime(dayData: DailyPricingData, time: LocalTime): Pair<Double, Boolean> {
-    // Check if time falls within any offer period
-    for (offer in dayData.offers) {
-        if (time >= offer.timeRange.startTime && time < offer.timeRange.endTime) {
-            return offer.discountedPrice to true
-        }
-    }
-    // Return regular price if no offer applies
-    return dayData.regularPrice to false
-}
-
-// Helper function to get offer at specific time for future selection handling
+// Helper function to get offer at specific time for selection handling
 private fun getOfferAtTime(dayData: DailyPricingData, time: LocalTime): PriceOffer? {
     return dayData.offers.find { offer ->
         time >= offer.timeRange.startTime && time < offer.timeRange.endTime
     }
 }
 
-// Helper function to determine if a time slot is selected (for future use)
-private fun isTimeSlotSelected(dayData: DailyPricingData, time: LocalTime): Boolean {
-    val offer = getOfferAtTime(dayData, time)
-    return offer?.isSelected ?: dayData.isSelected
+// Helper function to get price at specific time
+private fun getPriceAtTime(dayData: DailyPricingData, time: LocalTime): Pair<Double, Boolean> {
+    for (offer in dayData.offers) {
+        if (time >= offer.timeRange.startTime && time < offer.timeRange.endTime) {
+            return offer.discountedPrice to true
+        }
+    }
+    return dayData.regularPrice to false
 }
 
 @PreviewLightDark
