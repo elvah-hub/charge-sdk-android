@@ -83,6 +83,11 @@ val copyMediumBold = copyMedium.copy(
     fontWeight = FontWeight.W700,
 )
 
+val copyMediumBoldSmall = copyMedium.copy(
+    fontWeight = FontWeight.W700,
+    fontSize = 12.sp,
+)
+
 val copySmall = TextStyle(
     fontWeight = FontWeight.W400,
     fontSize = 14.sp,

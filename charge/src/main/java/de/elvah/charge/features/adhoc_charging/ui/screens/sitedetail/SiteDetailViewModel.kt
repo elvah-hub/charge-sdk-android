@@ -18,10 +18,51 @@ internal class SiteDetailViewModel(
 
     val state = savedStateHandle.asFlow<AdHocChargingScreens.SiteDetailRoute>()
         .map {
-            sitesRepository.getChargeSite(it.siteId).map { it.toUI() }
+            sitesRepository.getChargeSite(it.siteId)
+                .map { cp -> cp.toUI() }
+                .map { ui ->
+                    // TODO: extract to use case
+                    val ids = ui.chargePoints
+                        .map { it.evseId }
+
+                    val (common, unique) = getCommonAndUniquePrefixes(ids)
+
+                    val chargePoints = ui.chargePoints.mapIndexed { index, cp ->
+                        cp.copy(
+                            evseId = unique.getOrNull(index)
+                                ?.takeIf { it.isNotBlank() }
+                            // if there are no unique strings, means all elements have the same common text
+                                ?: common,
+                        )
+                    }
+
+                    ui.copy(
+                        chargePoints = chargePoints,
+                    )
+                }
                 .fold(
                     ifLeft = { SiteDetailState.Error },
                     ifRight = { SiteDetailState.Success(it) }
                 )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SiteDetailState.Loading)
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = SiteDetailState.Loading
+        )
+}
+
+private fun getCommonAndUniquePrefixes(
+    ids: List<String>,
+): Pair<String, List<String>> {
+    val commonPrefix = ids
+        .takeIf { it.isNotEmpty() }
+        ?.reduce { accumulator, nextElement ->
+            accumulator.commonPrefixWith(nextElement, true)
+        }
+        ?: ""
+
+    val uniqueStringList = ids.map { it.removePrefix(commonPrefix) }
+
+    return commonPrefix to uniqueStringList
 }

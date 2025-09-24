@@ -21,8 +21,9 @@ internal fun ChargeSite.toUI(): ChargeSiteUI =
 
 internal fun ChargeSite.ChargePoint.toUI(): ChargePointUI = ChargePointUI(
     evseId = evseId,
+    availability = availability,
     pricePerKwh = offer.price.energyPricePerKWh,
-    energyType = powerSpecification?.type.orEmpty(),
+    previousPricePerKwh = null, // TODO:
     energyValue = powerSpecification?.maxPowerInKW,
 )
 

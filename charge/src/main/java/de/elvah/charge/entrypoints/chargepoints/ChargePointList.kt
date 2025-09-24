@@ -12,9 +12,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.entrypoints.DisplayBehavior
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
-import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePointsList
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors

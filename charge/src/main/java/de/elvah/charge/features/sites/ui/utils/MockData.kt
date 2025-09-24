@@ -12,10 +12,11 @@ import kotlin.time.Duration
 internal object MockData {
     val chargePoints = List(10) {
         ChargePointUI(
-            "DE*KDL*E0000049$it",
-            0.42,
-            if (it % 2 == 0) "AC" else "DC",
-            if (it % 2 == 0) 22.0f else 300.0f,
+            evseId = "DE*KDL*E0000049$it",
+            availability = ChargePointAvailability.AVAILABLE,
+            pricePerKwh = 0.42,
+            previousPricePerKwh = null,
+            energyValue = if (it % 2 == 0) 22.0f else 300.0f,
         )
     }
 
