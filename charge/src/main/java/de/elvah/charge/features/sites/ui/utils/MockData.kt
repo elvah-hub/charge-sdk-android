@@ -1,5 +1,6 @@
 package de.elvah.charge.features.sites.ui.utils
 
+import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
@@ -76,6 +77,7 @@ internal object MockData {
                         maxPowerInKW = 22.0f,
                         type = if (evseIndex % 2 == 0) "AC" else "DC"
                     ),
+                    availability = ChargePointAvailability.AVAILABLE,
                     normalizedEvseId = "DEKDLE000004$siteIndex$evseIndex",
                 )
             },
