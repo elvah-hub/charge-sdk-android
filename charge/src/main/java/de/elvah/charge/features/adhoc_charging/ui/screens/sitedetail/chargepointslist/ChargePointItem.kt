@@ -182,7 +182,7 @@ private fun ChargePointItemPreview() {
 }
 
 internal val chargePointUIMock = ChargePointUI(
-    shortenedEvseId = "DE*KDL*E0000049",
+    shortenedEvseId = "1*01",
     maxPowerInKW = 0.42f,
     availability = ChargePointAvailability.AVAILABLE,
     pricePerKwh = Price(22.0, "EUR"),
