@@ -1,21 +1,27 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,13 +30,11 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepoint
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.SearchChargePointInputField
 import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.core.android.openMap
-import de.elvah.charge.platform.ui.components.ButtonPrimary
-import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
-import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
+import de.elvah.charge.platform.ui.theme.titleSmallBold
 
 @Composable
 internal fun SiteDetailScreen(
@@ -58,60 +62,99 @@ private fun SiteDetailScreen_Content(
     onChargePointSearchInputChange: (String) -> Unit,
     onItemClick: (String) -> Unit,
 ) {
-    Scaffold {
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(innerPadding),
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .systemBarsPadding()
-                    .padding(16.dp)
-            ) {
-                TitleSmall(state.chargeSiteUI.cpoName)
-                Spacer(modifier = Modifier.size(6.dp))
-                CopyMedium(state.chargeSiteUI.address, color = MaterialTheme.colorScheme.secondary)
+            SiteDetailHeader(state)
 
-                Spacer(modifier = Modifier.size(20.dp))
+            Spacer(Modifier.height(16.dp))
 
-                val context = LocalContext.current
+            SelectChargePointHeader(state, onChargePointSearchInputChange)
 
-                ButtonPrimary(
-                    text = stringResource(R.string.route_label),
-                    icon = R.drawable.ic_directions,
-                    onClick = {
-                        with(state.chargeSiteUI) {
-                            context.openMap(lat, lng, cpoName)
-                        }
-                    }
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .padding(
-                        horizontal = 16.dp,
-                    ),
-            ) {
-                CopyXLarge(
-                    text = stringResource(R.string.select_charge_point_label),
-                    fontWeight = FontWeight.W700,
-                )
-
-                Spacer(Modifier.height(16.dp))
-
-                SearchChargePointInputField(
-                    searchInput = state.searchInput,
-                    onSearchInputChange = onChargePointSearchInputChange,
-                )
-            }
-
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(16.dp))
 
             ChargePointsList(state.chargeSiteUI.chargePoints, onItemClick = onItemClick)
         }
+    }
+}
+
+@Composable
+private fun SiteDetailHeader(
+    state: SiteDetailState.Success,
+) {
+    val context = LocalContext.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = 16.dp,
+            ),
+    ) {
+        Text(
+            text = state.chargeSiteUI.cpoName,
+            color = MaterialTheme.colorScheme.primary,
+            style = titleSmallBold
+        )
+
+        state.chargeSiteUI.address
+            .takeIf { it.isNotBlank() }
+            ?.let {
+                Row(
+                    modifier = Modifier
+                        .padding(top = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .clickable {
+                                with(state.chargeSiteUI) {
+                                    context.openMap(lat, lng, cpoName)
+                                }
+                            },
+                        text = it,
+                        color = MaterialTheme.colorScheme.secondary,
+                        textDecoration = TextDecoration.Underline,
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    Icon(
+                        painter = painterResource(R.drawable.ic_open_external),
+                        tint = MaterialTheme.colorScheme.secondary,
+                        contentDescription = null,
+                    )
+                }
+            }
+    }
+}
+
+@Composable
+private fun SelectChargePointHeader(
+    state: SiteDetailState.Success,
+    onChargePointSearchInputChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(
+                horizontal = 16.dp,
+            ),
+    ) {
+        CopyXLarge(
+            text = stringResource(R.string.select_charge_point_label),
+            fontWeight = FontWeight.W700,
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        SearchChargePointInputField(
+            searchInput = state.searchInput,
+            onSearchInputChange = onChargePointSearchInputChange,
+        )
     }
 }
 
