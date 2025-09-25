@@ -30,9 +30,17 @@ internal fun ChargePointsList(
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         if (chargePoints.isNotEmpty()) {
-            ChargePointsListContent(chargePoints, onItemClick, Modifier.fillMaxWidth())
+            ChargePointsListContent(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                items = chargePoints,
+                onItemClick = onItemClick,
+            )
         } else {
             Box(
                 modifier = Modifier
@@ -48,9 +56,9 @@ internal fun ChargePointsList(
 
 @Composable
 private fun ChargePointsListContent(
+    modifier: Modifier = Modifier,
     items: List<ChargePointUI>,
     onItemClick: (String) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier,
@@ -66,7 +74,7 @@ private fun ChargePointsListContent(
                 chargePoint = item,
                 showSeparator = index != items.lastIndex,
                 onClick = {
-                    onItemClick(item.evseId)
+                    onItemClick(item.shortenedEvseId)
                 },
             )
         }

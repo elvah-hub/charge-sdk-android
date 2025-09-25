@@ -4,65 +4,39 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state.BuildSiteDetailSuccessState
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.features.sites.ui.mapper.toUI
 import de.elvah.charge.platform.ui.navigation.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 internal class SiteDetailViewModel(
     sitesRepository: SitesRepository,
     savedStateHandle: SavedStateHandle,
+    private val buildSiteDetailSuccessState: BuildSiteDetailSuccessState,
 ) : ViewModel() {
 
+    private var chargePointSearchInput = MutableStateFlow("")
+
     val state = savedStateHandle.asFlow<AdHocChargingScreens.SiteDetailRoute>()
-        .map {
-            sitesRepository.getChargeSite(it.siteId)
-                .map { cp -> cp.toUI() }
-                .map { ui ->
-                    // TODO: extract to use case
-                    val ids = ui.chargePoints
-                        .map { it.evseId }
-
-                    val (common, unique) = getCommonAndUniquePrefixes(ids)
-
-                    val chargePoints = ui.chargePoints.mapIndexed { index, cp ->
-                        cp.copy(
-                            evseId = unique.getOrNull(index)
-                                ?.takeIf { it.isNotBlank() }
-                            // if there are no unique strings, means all elements have the same common text
-                                ?: common,
-                        )
-                    }
-
-                    ui.copy(
-                        chargePoints = chargePoints,
-                    )
-                }
+        .combine(chargePointSearchInput) { args, searchInput ->
+            sitesRepository.getChargeSite(args.siteId)
+                .map { it.toUI() }
                 .fold(
                     ifLeft = { SiteDetailState.Error },
-                    ifRight = { SiteDetailState.Success(it) }
+                    ifRight = { buildSiteDetailSuccessState(searchInput, it) }
                 )
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = SiteDetailState.Loading
+            initialValue = SiteDetailState.Loading,
         )
-}
 
-private fun getCommonAndUniquePrefixes(
-    ids: List<String>,
-): Pair<String, List<String>> {
-    val commonPrefix = ids
-        .takeIf { it.isNotEmpty() }
-        ?.reduce { accumulator, nextElement ->
-            accumulator.commonPrefixWith(nextElement, true)
-        }
-        ?: ""
-
-    val uniqueStringList = ids.map { it.removePrefix(commonPrefix) }
-
-    return commonPrefix to uniqueStringList
+    internal fun onChargePointSearchInputChange(input: String) {
+        chargePointSearchInput.value = input
+    }
 }

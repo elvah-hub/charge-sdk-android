@@ -53,7 +53,7 @@ internal fun ChargePointItem(
     ) {
         Column {
             BadgeStatus(
-                title = chargePoint.evseId,
+                title = chargePoint.shortenedEvseId,
                 availability = chargePoint.availability,
             )
 
@@ -217,7 +217,7 @@ private fun ChargePointItemPreview() {
 }
 
 internal val chargePointUIMock = ChargePointUI(
-    evseId = "DE*KDL*E0000049",
+    shortenedEvseId = "DE*KDL*E0000049",
     energyValue = 0.42f,
     availability = ChargePointAvailability.AVAILABLE,
     pricePerKwh = 22.0,

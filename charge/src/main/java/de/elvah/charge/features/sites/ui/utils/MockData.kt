@@ -12,7 +12,7 @@ import kotlin.time.Duration
 internal object MockData {
     val chargePoints = List(10) {
         ChargePointUI(
-            evseId = "DE*KDL*E0000049$it",
+            shortenedEvseId = "DE*KDL*E0000049$it",
             availability = ChargePointAvailability.AVAILABLE,
             pricePerKwh = 0.42,
             previousPricePerKwh = null,

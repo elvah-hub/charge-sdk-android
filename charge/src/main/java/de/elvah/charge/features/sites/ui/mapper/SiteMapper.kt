@@ -20,7 +20,7 @@ internal fun ChargeSite.toUI(): ChargeSiteUI =
     )
 
 internal fun ChargeSite.ChargePoint.toUI(): ChargePointUI = ChargePointUI(
-    evseId = evseId,
+    shortenedEvseId = evseId,
     availability = availability,
     pricePerKwh = offer.price.energyPricePerKWh,
     previousPricePerKwh = null, // TODO:

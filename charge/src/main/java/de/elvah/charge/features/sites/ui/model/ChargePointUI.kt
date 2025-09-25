@@ -3,7 +3,7 @@ package de.elvah.charge.features.sites.ui.model
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 
 internal data class ChargePointUI(
-    val evseId: String, // TODO: rename to shortEvseId
+    val shortenedEvseId: String,
     val availability: ChargePointAvailability,
     val pricePerKwh: Double,
     val previousPricePerKwh: Double?,
