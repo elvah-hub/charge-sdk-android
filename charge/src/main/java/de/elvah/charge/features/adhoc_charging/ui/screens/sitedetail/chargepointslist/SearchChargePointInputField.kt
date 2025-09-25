@@ -25,7 +25,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.copyMediumBold
-import de.elvah.charge.platform.ui.theme.primary
 
 @Composable
 internal fun SearchChargePointInputField(
@@ -72,7 +71,7 @@ internal fun SearchChargePointInputField(
                     modifier = modifier
                         .size(24.dp),
                     painter = painterResource(id = de.elvah.charge.R.drawable.ic_search),
-                    tint = primary,
+                    tint = MaterialTheme.colorScheme.primary,
                     contentDescription = null,
                 )
             },
@@ -81,7 +80,7 @@ internal fun SearchChargePointInputField(
                 ?.let {
                     {
                         IconButton(
-                            onClick = { onSearchInputChange("")},
+                            onClick = { onSearchInputChange("") },
                             content = {
                                 Icon(
                                     painter = painterResource(id = de.elvah.charge.R.drawable.ic_close_filled),
