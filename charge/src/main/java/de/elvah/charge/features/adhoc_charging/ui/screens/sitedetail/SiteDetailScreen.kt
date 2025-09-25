@@ -1,6 +1,8 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -25,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -38,11 +43,15 @@ import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
+import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.copySmallBold
 import de.elvah.charge.platform.ui.theme.titleSmallBold
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 internal fun SiteDetailScreen(
     viewModel: SiteDetailViewModel,
+    onCloseClick: () -> Unit,
     onItemClick: (String) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -52,6 +61,7 @@ internal fun SiteDetailScreen(
 
         is SiteDetailState.Success -> SiteDetailScreen_Content(
             state = state,
+            onCloseClick = onCloseClick,
             onChargePointSearchInputChange = viewModel::onChargePointSearchInputChange,
             onItemClick = onItemClick
         )
@@ -63,6 +73,7 @@ internal fun SiteDetailScreen(
 @Composable
 private fun SiteDetailScreen_Content(
     state: SiteDetailState.Success,
+    onCloseClick: () -> Unit,
     onChargePointSearchInputChange: (String) -> Unit,
     onItemClick: (String) -> Unit,
 ) {
@@ -75,6 +86,11 @@ private fun SiteDetailScreen_Content(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
+
+            OfferBannerAndClose(null, onCloseClick)
+
+            Spacer(Modifier.height(2.dp))
+
             SiteDetailHeader(state)
 
             Spacer(Modifier.height(16.dp))
@@ -84,6 +100,73 @@ private fun SiteDetailScreen_Content(
             Spacer(Modifier.height(16.dp))
 
             ChargePointsList(state.chargeSiteUI.chargePoints, onItemClick = onItemClick)
+        }
+    }
+}
+
+@Composable
+private fun OfferBannerAndClose(
+    @Suppress("SameParameterValue")
+    offerEndDateTime: LocalDateTime?,
+    onCloseClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        offerEndDateTime?.let {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.brand.copy(
+                            alpha = 0.1f,
+                        ),
+                    )
+                    .padding(
+                        vertical = 8.dp,
+                    )
+            ) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(
+                            horizontal = 16.dp,
+                        ),
+                    text = "Offer ends in 13h 11m",
+                    style = copySmallBold,
+                    color = MaterialTheme.colorScheme.brand,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(
+                    end = 12.dp,
+                    top = 16.dp,
+                )
+                .background(
+                    color = MaterialTheme.colorScheme.background,
+                    shape = CircleShape,
+                )
+                .clickable(
+                    onClick = onCloseClick,
+                )
+                .padding(
+                    all = 10.dp
+                ),
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(20.dp)
+                    .align(Alignment.Center),
+                painter = painterResource(id = R.drawable.ic_close),
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = null
+            )
         }
     }
 }
@@ -174,6 +257,7 @@ private fun SiteDetailScreen_Content_Preview() {
                 searchInput = "",
                 chargeSiteUI = MockData.siteUI,
             ),
+            onCloseClick = {},
             onChargePointSearchInputChange = {},
             onItemClick = { _ -> },
         )
@@ -189,6 +273,7 @@ private fun SiteDetailScreen_Content_EmptyList_Preview() {
                 searchInput = "",
                 chargeSiteUI = MockData.siteWithoutChargePoints,
             ),
+            onCloseClick = {},
             onChargePointSearchInputChange = {},
             onItemClick = { _ -> },
         )
