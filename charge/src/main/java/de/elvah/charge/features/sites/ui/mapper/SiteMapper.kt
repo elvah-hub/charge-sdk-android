@@ -27,7 +27,7 @@ internal fun ChargeSite.ChargePoint.toUI(): ChargePointUI = ChargePointUI(
         value = offer.price.energyPricePerKWh,
         currency = offer.price.currency,
     ),
-    energyValue = powerSpecification?.maxPowerInKW,
+    maxPowerInKW = powerSpecification?.maxPowerInKW,
 )
 
 internal fun ChargeSite.toRender(): ChargeBannerRender {

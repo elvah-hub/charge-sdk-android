@@ -2,10 +2,10 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state
 
 import android.content.Context
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
-import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.formatKW
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.getChargePointAvailabilityStatusTextResId
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 
@@ -34,7 +34,7 @@ internal class BuildSiteDetailSuccessState(
                     evseId = cp.shortenedEvseId,
                     availability = cp.availability,
                     pricePerKwh = cp.pricePerKwh,
-                    energyValue = cp.energyValue,
+                    maxPowerInKW = cp.maxPowerInKW,
                 )
 
                 val updatedChargePoint = cp.copy(
@@ -79,7 +79,7 @@ internal class BuildSiteDetailSuccessState(
         evseId: String,
         availability: ChargePointAvailability,
         pricePerKwh: Price,
-        energyValue: Float?,
+        maxPowerInKW: Float?,
     ): Boolean {
         // always include results if search input is empty
         if (searchInput.isBlank()) return true
@@ -90,7 +90,7 @@ internal class BuildSiteDetailSuccessState(
 
         val price = pricePerKwh.formatted()
 
-        val maxPowerInKw = energyValue?.formatKW()
+        val maxPowerInKw = maxPowerInKW?.formatKW()
 
         val wordsToCheck = listOfNotNull(
             evseId,

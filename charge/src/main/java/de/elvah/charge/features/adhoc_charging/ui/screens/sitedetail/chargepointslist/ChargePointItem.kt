@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.platform.ui.components.CopyMedium
@@ -33,8 +34,6 @@ import de.elvah.charge.platform.ui.theme.brand
 import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.copyXLargeBold
 import de.elvah.charge.platform.ui.theme.decorativeStroke
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 @Composable
 internal fun ChargePointItem(
@@ -78,7 +77,7 @@ internal fun ChargePointItem(
             )
 
             CopySmall(
-                text = chargePoint.energyValue?.formatKW().orEmpty(),
+                text = chargePoint.maxPowerInKW?.formatKW().orEmpty(),
             )
         }
 
@@ -91,28 +90,6 @@ internal fun ChargePointItem(
         )
     }
 }
-
-
-public fun Float.formatKW(
-    includeMinusEqualChar: Boolean = false,
-): String {
-    // TODO: get from strings stringResource(R.string.kw_label)
-    val pattern = StringBuilder()
-        .apply {
-            if (includeMinusEqualChar) {
-                append("≤")
-                append(" ")
-            }
-
-            append("0.#kW")
-        }
-        .toString()
-
-    return DecimalFormat(pattern)
-        .apply { roundingMode = RoundingMode.HALF_UP }
-        .format(this)
-}
-
 
 fun getChargePointAvailabilityStatusTextResId(
     availability: ChargePointAvailability,
@@ -206,7 +183,7 @@ private fun ChargePointItemPreview() {
 
 internal val chargePointUIMock = ChargePointUI(
     shortenedEvseId = "DE*KDL*E0000049",
-    energyValue = 0.42f,
+    maxPowerInKW = 0.42f,
     availability = ChargePointAvailability.AVAILABLE,
     pricePerKwh = Price(22.0, "EUR"),
 )
