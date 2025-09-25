@@ -2,6 +2,7 @@ package de.elvah.charge.features.sites.ui.utils
 
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
@@ -14,8 +15,7 @@ internal object MockData {
         ChargePointUI(
             shortenedEvseId = "DE*KDL*E0000049$it",
             availability = ChargePointAvailability.AVAILABLE,
-            pricePerKwh = 0.42,
-            previousPricePerKwh = null,
+            pricePerKwh = Price(0.42, "EUR"),
             energyValue = if (it % 2 == 0) 22.0f else 300.0f,
         )
     }

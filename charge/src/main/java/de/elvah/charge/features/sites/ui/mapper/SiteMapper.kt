@@ -1,6 +1,7 @@
 package de.elvah.charge.features.sites.ui.mapper
 
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
@@ -22,8 +23,10 @@ internal fun ChargeSite.toUI(): ChargeSiteUI =
 internal fun ChargeSite.ChargePoint.toUI(): ChargePointUI = ChargePointUI(
     shortenedEvseId = evseId,
     availability = availability,
-    pricePerKwh = offer.price.energyPricePerKWh,
-    previousPricePerKwh = null, // TODO:
+    pricePerKwh = Price(
+        value = offer.price.energyPricePerKWh,
+        currency = offer.price.currency,
+    ),
     energyValue = powerSpecification?.maxPowerInKW,
 )
 
@@ -48,4 +51,3 @@ internal fun ChargeSite.getBestOffer(): ChargeSite.ChargePoint.Offer =
     this.evses.map { it to it.offer.price.energyPricePerKWh }.reduce { acc, pair ->
         minOf(acc, pair, compareBy { it.second })
     }.first.offer
-

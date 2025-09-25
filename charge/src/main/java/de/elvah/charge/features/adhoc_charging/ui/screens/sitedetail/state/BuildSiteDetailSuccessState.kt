@@ -1,11 +1,12 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state
 
 import android.content.Context
-import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.formatKW
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.getChargePointAvailabilityStatusTextResId
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
+import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 
 internal class BuildSiteDetailSuccessState(
@@ -77,7 +78,7 @@ internal class BuildSiteDetailSuccessState(
         searchInput: String,
         evseId: String,
         availability: ChargePointAvailability,
-        pricePerKwh: Double,
+        pricePerKwh: Price,
         energyValue: Float?,
     ): Boolean {
         // always include results if search input is empty
@@ -87,7 +88,7 @@ internal class BuildSiteDetailSuccessState(
             availability = availability,
         ).let { stringResId -> context.getString(stringResId) }
 
-        val price = pricePerKwh.toString() + context.getString(R.string.kwh_label)
+        val price = pricePerKwh.formatted()
 
         val maxPowerInKw = energyValue?.formatKW()
 

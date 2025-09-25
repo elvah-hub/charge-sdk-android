@@ -29,8 +29,7 @@ data class ChargeSite(
             val originalPrice: Price? = null,
             val campaignEndsAt: String? = null,
             val signedOffer: String? = null,
-
-            ) {
+        ) {
             data class Price(
                 val energyPricePerKWh: Double,
                 val baseFee: Int?,

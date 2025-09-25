@@ -19,11 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
+import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
@@ -71,23 +72,10 @@ internal fun ChargePointItem(
         Spacer(modifier = Modifier.weight(1.5f))
 
         Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                CopyMedium(
-                    text = chargePoint.pricePerKwh.toString() + stringResource(R.string.kwh_label),
-                    fontWeight = FontWeight.W700
-                )
-
-                chargePoint.previousPricePerKwh?.let {
-                    Spacer(Modifier.width(4.dp))
-
-                    CopyMedium(
-                        text = it.toString(),
-                        textDecoration = TextDecoration.LineThrough,
-                    )
-                }
-            }
+            CopyMedium(
+                text = chargePoint.pricePerKwh.formatted(),
+                fontWeight = FontWeight.W700
+            )
 
             CopySmall(
                 text = chargePoint.energyValue?.formatKW().orEmpty(),
@@ -220,6 +208,5 @@ internal val chargePointUIMock = ChargePointUI(
     shortenedEvseId = "DE*KDL*E0000049",
     energyValue = 0.42f,
     availability = ChargePointAvailability.AVAILABLE,
-    pricePerKwh = 22.0,
-    previousPricePerKwh = 25.0,
+    pricePerKwh = Price(22.0, "EUR"),
 )
