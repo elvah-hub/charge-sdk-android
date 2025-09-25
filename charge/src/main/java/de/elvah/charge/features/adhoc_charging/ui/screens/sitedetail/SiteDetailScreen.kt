@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,8 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -44,6 +47,7 @@ import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.copyMediumBold
 import de.elvah.charge.platform.ui.theme.copySmallBold
 import de.elvah.charge.platform.ui.theme.titleSmallBold
 import kotlinx.datetime.LocalDateTime
@@ -99,7 +103,25 @@ private fun SiteDetailScreen_Content(
 
             Spacer(Modifier.height(16.dp))
 
-            ChargePointsList(state.chargeSiteUI.chargePoints, onItemClick = onItemClick)
+            ChargePointsList(
+                modifier = Modifier
+                    .weight(1f),
+                chargePoints = state.chargeSiteUI.chargePoints,
+                onItemClick = onItemClick
+            )
+
+            @Suppress("ConstantConditionIf")
+            if (false) {
+                Spacer(Modifier.height(36.dp))
+
+                Button(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    onClick = {}
+                )
+
+                Spacer(Modifier.height(36.dp))
+            }
         }
     }
 }
@@ -244,6 +266,36 @@ private fun SelectChargePointHeader(
         SearchChargePointInputField(
             searchInput = state.searchInput,
             onSearchInputChange = onChargePointSearchInputChange,
+        )
+    }
+}
+
+@Composable
+private fun Button(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .clickable(
+                onClick = onClick,
+            )
+            .width(IntrinsicSize.Max),
+    ) {
+        Text(
+            text = "Back to map",
+            style = copyMediumBold,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth(),
+            thickness = 2.dp,
+            color = MaterialTheme.colorScheme.primary,
         )
     }
 }

@@ -59,7 +59,7 @@ internal fun SearchChargePointInputField(
             ),
             label = {
                 Text(
-                    text = "Type Charge point ID", // TODO: extract string stringResource( de.elvah.charge.R.string.charge_label),
+                    text = "Type Charge point ID",
                     style = copyMediumBold.copy(
                         color = MaterialTheme.colorScheme.secondary,
                     ),
