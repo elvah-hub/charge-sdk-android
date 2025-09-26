@@ -62,6 +62,14 @@ fun ChargingStationsScreen() {
         display = DisplayBehavior.WHEN_SOURCE_SET
     )
 }
+
+// Public API - Use the PricingGraph component
+@Composable
+fun PricingScreen() {
+    PricingGraph(
+        modifier = Modifier.fillMaxSize()
+    )
+}
 ```
 
 ## Internal Architecture (Not Public API)
@@ -94,8 +102,8 @@ The SDK uses Kotlin visibility modifiers to enforce encapsulation:
 ### ✅ DO
 - Import only from `de.elvah.charge.public_api.*` packages
 - Use the provided `Elvah.initialize()` method
-- Utilize the public composables (`ChargeBanner`, `ChargePointList`, etc.)
-- Configure using the public `Config` class and `DisplayBehavior` enum
+- Utilize the public composables (`ChargeBanner`, `ChargePointList`, `PricingGraph`, etc.)
+- Configure using the `Config` class (passed to `Elvah.initialize()`) and `DisplayBehavior` enum
 
 ### ❌ DON'T
 - Import from `de.elvah.charge.features.*`
@@ -118,7 +126,7 @@ Internal packages may change significantly between any version without notice.
 For questions about the public API or integration help:
 
 1. Check the public methods and classes in `public_api/`
-2. Review the demo app implementation for usage examples
-3. Consult SDK configuration documentation for `Config` options
+2. Review the demo app implementation for usage examples  
+3. Consult the `Config` class documentation for initialization options
 
 Remember: If you find yourself importing anything outside of `public_api/`, you're likely using internal APIs that may change without notice.
