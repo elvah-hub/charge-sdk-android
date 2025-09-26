@@ -1,3 +1,8 @@
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.kotlin
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -34,6 +39,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+
     }
 
     kotlin {
@@ -97,6 +103,11 @@ protobuf {
     }
 }
 
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexplicit-api=strict")
+    }
+}
 
 dependencies {
     implementation(libs.androidx.navigation.compose)

@@ -1,26 +1,6 @@
 package de.elvah.charge.platform.simulator.ui
 
-import androidx.lifecycle.ViewModel
-import de.elvah.charge.platform.simulator.data.BooleanSimulatorValue
-
-class SimulatorListViewModel : ViewModel() {
-
-    /*
-    private val configStore = ConfigStore()
-    val configItemLists = configStore.configs
-
-    private val _state = MutableStateFlow(configItemLists)
-    val state = _state.asStateFlow()
-
-     */
-
-    fun updateConfig(id: String, onValueChange: (BooleanSimulatorValue) -> Unit) {
-
-
-    }
-}
-
-enum class SimulatorFlows(val value: String, val description: String) {
+internal enum class SimulatorFlows(val value: String, val description: String) {
     DEFAULT("default", "Standard successful charge flow with typical timing"),
     START_FAILS("startFails", "Simulates start request failures"),
     START_REJECTED("startRejected", "Start request is rejected by the charge point"),

@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.dp
  * @param onBtnSwipe Callback triggered once the user slides to complete the booking
  */
 @Composable
-fun SlideToBookButton(
+internal fun SlideToBookButton(
     btnText: String,
     outerBtnBackgroundColor: Color,
     sliderBtnBackgroundColor: Color,

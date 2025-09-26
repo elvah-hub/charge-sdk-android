@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
-fun FullScreenLoading(modifier: Modifier = Modifier) {
+internal fun FullScreenLoading(modifier: Modifier = Modifier) {
     Surface(modifier = modifier) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

@@ -2,7 +2,7 @@ package de.elvah.charge.features.sites.data.remote.model.response
 
 import com.squareup.moshi.Json
 
-data class SitesDto<T>(
+internal data class SitesDto<T>(
 
     @param:Json(name = "address")
     val address: AddressDto,

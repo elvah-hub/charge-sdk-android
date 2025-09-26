@@ -30,7 +30,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-object Elvah {
+public object Elvah {
 
     private val useCaseModule = module {
         includes(sitesUseCaseModule, adHocChargingUseCasesModule, paymentsUseCaseModule)
@@ -73,7 +73,7 @@ object Elvah {
 
     }
 
-    fun initialize(context: Context, config: Config) {
+    public fun initialize(context: Context, config: Config) {
         val simulatorModule = if (config.environment is Environment.Simulator) {
             module {
                 includes(provideSimulatorModule(config.environment.simulatorFlow))

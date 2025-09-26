@@ -25,7 +25,7 @@ import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.brand
 
 @Composable
-fun BrandBadge(
+internal fun BrandBadge(
     @DrawableRes brandIcon: Int,
     contentDescription: String,
     modifier: Modifier = Modifier,
@@ -48,7 +48,7 @@ private fun BrandBadge_Preview() {
 
 
 @Composable
-fun ChargingBadge(
+internal fun ChargingBadge(
     progress: Int,
     modifier: Modifier = Modifier,
     tint: Color = MaterialTheme.colorScheme.brand,

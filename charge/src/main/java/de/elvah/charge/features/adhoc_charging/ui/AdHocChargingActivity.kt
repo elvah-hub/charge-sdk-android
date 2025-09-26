@@ -9,7 +9,7 @@ import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import org.koin.android.ext.android.inject
 
-class AdHocChargingActivity : ComponentActivity() {
+internal class AdHocChargingActivity : ComponentActivity() {
 
     private val config: Config by inject()
 

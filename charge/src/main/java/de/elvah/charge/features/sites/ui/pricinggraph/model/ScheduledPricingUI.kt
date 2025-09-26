@@ -1,6 +1,6 @@
 package de.elvah.charge.features.sites.ui.pricinggraph.model
 
-data class ScheduledPricingUI(
+internal data class ScheduledPricingUI(
     val dailyPricing: DailyPricingUI,
     val standardPrice: PriceUI
 ) {

@@ -30,7 +30,7 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun TickBanner(
+internal fun TickBanner(
     text: String,
     modifier: Modifier = Modifier,
     autoClose: Boolean = true,
@@ -52,7 +52,7 @@ fun TickBanner(
 }
 
 @Composable
-fun Banner(
+internal fun Banner(
     text: String,
     @DrawableRes icon: Int,
     modifier: Modifier = Modifier,

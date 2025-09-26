@@ -2,7 +2,7 @@ package de.elvah.charge.platform.simulator.data.repository
 
 import arrow.core.Either
 import arrow.core.right
-import de.elvah.charge.entrypoints.banner.EvseId
+import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox

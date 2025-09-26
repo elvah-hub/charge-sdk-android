@@ -1,6 +1,6 @@
 package de.elvah.charge.features.sites.domain.model
 
-data class ChargeSite(
+public data class ChargeSite(
     val address: Address,
     val evses: List<ChargePoint>,
     val location: List<Double>,
@@ -9,34 +9,34 @@ data class ChargeSite(
     val prevalentPowerType: String
 ) {
 
-    data class Address(
+    public data class Address(
         val streetAddress: List<String?>,
         val postalCode: String,
         val locality: String
     )
 
-    data class ChargePoint(
+    public data class ChargePoint(
         val evseId: String,
         val offer: Offer,
         val powerSpecification: PowerSpecification?,
         val availability: ChargePointAvailability,
         val normalizedEvseId: String
     ) {
-        data class Offer(
+        public data class Offer(
             val price: Price,
             val type: String,
             val expiresAt: String,
             val originalPrice: Price? = null,
             val campaignEndsAt: String? = null,
             val signedOffer: String? = null,
-        ) {
-            data class Price(
+            ) {
+            public data class Price(
                 val energyPricePerKWh: Double,
                 val baseFee: Int?,
                 val currency: String,
                 val blockingFee: BlockingFee?
             ) {
-                data class BlockingFee(
+                public data class BlockingFee(
                     val pricePerMinute: Int,
                     val startsAfterMinutes: Int
                 )
@@ -44,7 +44,7 @@ data class ChargeSite(
         }
     }
 
-    data class PowerSpecification(
+    public data class PowerSpecification(
         val maxPowerInKW: Float?,
         val type: String
     )

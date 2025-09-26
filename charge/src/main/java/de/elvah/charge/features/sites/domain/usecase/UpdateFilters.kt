@@ -1,6 +1,6 @@
 package de.elvah.charge.features.sites.domain.usecase
 
-import de.elvah.charge.entrypoints.banner.EvseId
+import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.CampaignId
 import de.elvah.charge.features.sites.domain.model.filters.OfferType

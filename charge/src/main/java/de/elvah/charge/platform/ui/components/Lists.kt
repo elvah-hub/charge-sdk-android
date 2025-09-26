@@ -22,7 +22,7 @@ import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 
 @Composable
-fun BulletedList(items: List<String>, modifier: Modifier = Modifier) {
+internal fun BulletedList(items: List<String>, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         items.forEach { item ->
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -48,7 +48,7 @@ private fun BulletedList_Preview() {
 }
 
 @Composable
-fun OrderedList(items: List<String>, modifier: Modifier = Modifier) {
+internal fun OrderedList(items: List<String>, modifier: Modifier = Modifier) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         items.forEachIndexed { index, item ->
             Row(

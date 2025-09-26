@@ -2,7 +2,7 @@ package de.elvah.charge.features.sites.data
 
 import arrow.core.Either
 import arrow.core.right
-import de.elvah.charge.entrypoints.banner.EvseId
+import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.features.sites.data.mapper.toDomain
 import de.elvah.charge.features.sites.data.mapper.toSite
 import de.elvah.charge.features.sites.data.remote.SitesApi

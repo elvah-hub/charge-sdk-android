@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class AnonymousPaymentIntentResponse(
+internal class AnonymousPaymentIntentResponse(
 
     @param:Json(name = "data")
     val data: Data,
@@ -14,7 +14,7 @@ class AnonymousPaymentIntentResponse(
 )
 
 @JsonClass(generateAdapter = true)
-class Data(
+internal class Data(
 
     @param:Json(name = "paymentIntentId")
     val paymentIntentId: String,
