@@ -1,6 +1,8 @@
 package de.elvah.charge.features.sites.ui.utils
 
+import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
@@ -11,10 +13,10 @@ import kotlin.time.Duration
 internal object MockData {
     val chargePoints = List(10) {
         ChargePointUI(
-            "DE*KDL*E0000049$it",
-            0.42,
-            if (it % 2 == 0) "AC" else "DC",
-            if (it % 2 == 0) 22.0f else 300.0f,
+            shortenedEvseId = "DE*KDL*E0000049$it",
+            availability = ChargePointAvailability.AVAILABLE,
+            pricePerKwh = Price(0.42, "EUR"),
+            maxPowerInKW = if (it % 2 == 0) 22.0f else 300.0f,
         )
     }
 
@@ -76,6 +78,7 @@ internal object MockData {
                         maxPowerInKW = 22.0f,
                         type = if (evseIndex % 2 == 0) "AC" else "DC"
                     ),
+                    availability = ChargePointAvailability.AVAILABLE,
                     normalizedEvseId = "DEKDLE000004$siteIndex$evseIndex",
                 )
             },

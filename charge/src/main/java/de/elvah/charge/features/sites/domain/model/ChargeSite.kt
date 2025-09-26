@@ -19,6 +19,7 @@ data class ChargeSite(
         val evseId: String,
         val offer: Offer,
         val powerSpecification: PowerSpecification?,
+        val availability: ChargePointAvailability,
         val normalizedEvseId: String
     ) {
         data class Offer(
@@ -28,8 +29,7 @@ data class ChargeSite(
             val originalPrice: Price? = null,
             val campaignEndsAt: String? = null,
             val signedOffer: String? = null,
-
-            ) {
+        ) {
             data class Price(
                 val energyPricePerKWh: Double,
                 val baseFee: Int?,
@@ -48,4 +48,11 @@ data class ChargeSite(
         val maxPowerInKW: Float?,
         val type: String
     )
+}
+
+enum class ChargePointAvailability {
+    UNAVAILABLE,
+    AVAILABLE,
+    OUT_OF_SERVICE,
+    UNKNOWN,
 }

@@ -2,6 +2,7 @@ package de.elvah.charge.features.sites.data.mapper
 
 import de.elvah.charge.features.sites.data.remote.model.response.AddressDto
 import de.elvah.charge.features.sites.data.remote.model.response.BlockingFeeDto
+import de.elvah.charge.features.sites.data.remote.model.response.ChargePointAvailabilityDto
 import de.elvah.charge.features.sites.data.remote.model.response.ChargePointDto
 import de.elvah.charge.features.sites.data.remote.model.response.DailyPricingDto
 import de.elvah.charge.features.sites.data.remote.model.response.DayDto
@@ -12,6 +13,7 @@ import de.elvah.charge.features.sites.data.remote.model.response.ScheduledPricin
 import de.elvah.charge.features.sites.data.remote.model.response.SignedOfferDto
 import de.elvah.charge.features.sites.data.remote.model.response.SitesDto
 import de.elvah.charge.features.sites.data.remote.model.response.TimeSlotsItemDto
+import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 
@@ -48,6 +50,7 @@ internal fun ChargePointDto<OfferDto>.toOffer(): ChargeSite.ChargePoint = Charge
     evseId = evseId,
     offer = offer.toDomain(),
     powerSpecification = powerSpecification?.toDomain(),
+    availability = availability.toDomain(),
     normalizedEvseId = normalizedEvseId
 )
 
@@ -56,8 +59,17 @@ internal fun ChargePointDto<SignedOfferDto>.toDomain(): ChargeSite.ChargePoint =
         evseId = evseId,
         offer = offer.toDomain(),
         powerSpecification = powerSpecification?.toDomain(),
+        availability = availability.toDomain(),
         normalizedEvseId = normalizedEvseId
     )
+
+internal fun ChargePointAvailabilityDto.toDomain(): ChargePointAvailability =
+    when (this) {
+        ChargePointAvailabilityDto.UNAVAILABLE -> ChargePointAvailability.UNAVAILABLE
+        ChargePointAvailabilityDto.AVAILABLE -> ChargePointAvailability.AVAILABLE
+        ChargePointAvailabilityDto.OUT_OF_SERVICE -> ChargePointAvailability.OUT_OF_SERVICE
+        ChargePointAvailabilityDto.UNKNOWN -> ChargePointAvailability.UNKNOWN
+    }
 
 internal fun OfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSite.ChargePoint.Offer(
     price = price.toDomain(),
@@ -101,11 +113,12 @@ internal fun ScheduledPricingDto.toDomain(): ScheduledPricing = ScheduledPricing
     standardPrice = standardPrice.toScheduledPricingPrice()
 )
 
-internal fun DailyPricingDto.toDomain(): ScheduledPricing.DailyPricing = ScheduledPricing.DailyPricing(
-    yesterday = yesterday.toDomain(),
-    today = today.toDomain(),
-    tomorrow = tomorrow.toDomain()
-)
+internal fun DailyPricingDto.toDomain(): ScheduledPricing.DailyPricing =
+    ScheduledPricing.DailyPricing(
+        yesterday = yesterday.toDomain(),
+        today = today.toDomain(),
+        tomorrow = tomorrow.toDomain()
+    )
 
 internal fun DayDto.toDomain(): ScheduledPricing.Day = ScheduledPricing.Day(
     lowestPrice = lowestPrice.toScheduledPricingPrice(),

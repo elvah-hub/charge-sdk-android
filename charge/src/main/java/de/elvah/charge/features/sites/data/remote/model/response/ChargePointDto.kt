@@ -13,6 +13,9 @@ data class ChargePointDto<T>(
     @param:Json(name = "powerSpecification")
     val powerSpecification: PowerSpecificationDto?,
 
+    @param:Json(name = "availability")
+    val availability: ChargePointAvailabilityDto,
+
     @param:Json(name = "normalizedEvseId")
     val normalizedEvseId: String
 )

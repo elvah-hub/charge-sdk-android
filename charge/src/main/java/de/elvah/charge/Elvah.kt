@@ -3,6 +3,7 @@ package de.elvah.charge
 import android.content.Context
 import de.elvah.charge.features.adhoc_charging.data.local.DefaultChargingStore
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
+import de.elvah.charge.features.adhoc_charging.di.adHocChargingLocalModule
 import de.elvah.charge.features.adhoc_charging.di.adHocChargingUseCasesModule
 import de.elvah.charge.features.adhoc_charging.di.adHocViewModelModule
 import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
@@ -65,7 +66,7 @@ object Elvah {
     }
 
     private val localModule = module {
-
+        includes(adHocChargingLocalModule)
     }
 
     private val emptyModule = module {

@@ -1,70 +1,75 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
-import de.elvah.charge.features.sites.ui.model.ChargePointUI
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.SearchChargePointInputField
 import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.core.android.openMap
-import de.elvah.charge.platform.ui.components.BasicCard
-import de.elvah.charge.platform.ui.components.ButtonPrimary
-import de.elvah.charge.platform.ui.components.CopyLarge
-import de.elvah.charge.platform.ui.components.CopyMedium
-import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
-import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
-
+import de.elvah.charge.platform.ui.theme.copyMediumBold
+import de.elvah.charge.platform.ui.theme.copySmallBold
+import de.elvah.charge.platform.ui.theme.titleSmallBold
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 internal fun SiteDetailScreen(
     viewModel: SiteDetailViewModel,
+    onCloseClick: () -> Unit,
     onItemClick: (String) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     when (val state = uiState) {
         is SiteDetailState.Loading -> SiteDetailScreen_Loading()
-        is SiteDetailState.Success -> SiteDetailScreen_Content(state, onItemClick)
+
+        is SiteDetailState.Success -> SiteDetailScreen_Content(
+            state = state,
+            onCloseClick = onCloseClick,
+            onChargePointSearchInputChange = viewModel::onChargePointSearchInputChange,
+            onItemClick = onItemClick
+        )
+
         is SiteDetailState.Error -> SiteDetailScreen_Error()
     }
 }
@@ -72,197 +77,225 @@ internal fun SiteDetailScreen(
 @Composable
 private fun SiteDetailScreen_Content(
     state: SiteDetailState.Success,
+    onCloseClick: () -> Unit,
+    onChargePointSearchInputChange: (String) -> Unit,
     onItemClick: (String) -> Unit,
 ) {
-    Scaffold {
+    Scaffold(
+        contentWindowInsets = WindowInsets.displayCutout
+            .union(WindowInsets.systemBars),
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(innerPadding),
         ) {
-            Column(
+
+            OfferBannerAndClose(null, onCloseClick)
+
+            Spacer(Modifier.height(2.dp))
+
+            SiteDetailHeader(state)
+
+            Spacer(Modifier.height(16.dp))
+
+            SelectChargePointHeader(state, onChargePointSearchInputChange)
+
+            Spacer(Modifier.height(16.dp))
+
+            ChargePointsList(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .systemBarsPadding()
-                    .padding(16.dp)
-            ) {
-                TitleSmall(state.chargeSiteUI.cpoName)
-                Spacer(modifier = Modifier.size(6.dp))
-                CopyMedium(state.chargeSiteUI.address, color = MaterialTheme.colorScheme.secondary)
+                    .weight(1f),
+                chargePoints = state.chargeSiteUI.chargePoints,
+                onItemClick = onItemClick
+            )
 
-                Spacer(modifier = Modifier.size(20.dp))
+            @Suppress("ConstantConditionIf")
+            if (false) {
+                Spacer(Modifier.height(36.dp))
 
-                val context = LocalContext.current
-
-                ButtonPrimary(
-                    text = stringResource(R.string.route_label),
-                    icon = R.drawable.ic_directions,
-                    onClick = {
-                        with(state.chargeSiteUI) {
-                            context.openMap(lat, lng, cpoName)
-                        }
-                    }
+                Button(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    onClick = {}
                 )
 
-                Spacer(modifier = Modifier.size(24.dp))
-
-                CopyXLarge(
-                    text = stringResource(R.string.select_charge_point_label),
-                    fontWeight = FontWeight.W700,
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-
-                OfferBanner(modifier = Modifier.fillMaxWidth())
+                Spacer(Modifier.height(36.dp))
             }
-
-            ChargePointsList(state.chargeSiteUI.chargePoints, onItemClick = onItemClick)
         }
     }
 }
 
 @Composable
-private fun OfferBanner(modifier: Modifier = Modifier) {
-    BasicCard {
-        Row(
-            modifier = modifier
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painterResource(R.drawable.ic_discount),
-                null
-            )
-            CopyMedium(
-                stringResource(R.string.charging_discont_banner_label),
-                fontWeight = FontWeight.W700
-            )
-        }
-    }
-}
-
-@Composable
-internal fun ChargePointsList(
-    chargePoints: List<ChargePointUI>,
-    modifier: Modifier = Modifier,
-    onItemClick: (String) -> Unit
+private fun OfferBannerAndClose(
+    @Suppress("SameParameterValue")
+    offerEndDateTime: LocalDateTime?,
+    onCloseClick: () -> Unit,
 ) {
-    Column(modifier = modifier) {
-        var tabIndex by remember { mutableIntStateOf(0) }
-
-        ChargingTabs(tabIndex, onSelectedTab = { tabIndex = it }, Modifier.fillMaxWidth())
-
-        val filteredItems = chargePoints.groupBy { it.energyType }
-
-        val itemsShown = if (tabIndex == 0) {
-            filteredItems[
-                stringResource(R.string.ac_label)
-            ]
-        } else {
-            filteredItems[
-                stringResource(R.string.dc_label)
-            ]
-        } ?: emptyList()
-
-        if (itemsShown.isNotEmpty()) {
-            ChargePointsListContent(itemsShown, onItemClick, Modifier.fillMaxWidth())
-        } else {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        offerEndDateTime?.let {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
+                    .background(
+                        color = MaterialTheme.colorScheme.brand.copy(
+                            alpha = 0.1f,
+                        ),
+                    )
+                    .padding(
+                        vertical = 8.dp,
+                    )
             ) {
-                CopyLarge(stringResource(R.string.no_charge_points_available))
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(
+                            horizontal = 16.dp,
+                        ),
+                    text = "Offer ends in 13h 11m",
+                    style = copySmallBold,
+                    color = MaterialTheme.colorScheme.brand,
+                    textAlign = TextAlign.Center
+                )
             }
         }
-    }
-}
 
-@Composable
-private fun ChargingTabs(
-    selectedTab: Int,
-    onSelectedTab: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val tabs = listOf(
-        stringResource(R.string.ac_label),
-        stringResource(R.string.dc_label)
-    )
-
-    TabRow(
-        modifier = modifier,
-        selectedTabIndex = selectedTab,
-        contentColor = MaterialTheme.colorScheme.surface,
-        indicator = {
-            TabRowDefaults.SecondaryIndicator(
-                modifier = Modifier.tabIndicatorOffset(it[selectedTab]),
-                color = MaterialTheme.colorScheme.brand,
-            )
-        }
-    ) {
-        tabs.forEachIndexed { index, title ->
-            Tab(
-                text = { Text(title, color = MaterialTheme.colorScheme.primary) },
-                selected = selectedTab == index,
-                onClick = { onSelectedTab(index) },
-            )
-        }
-    }
-}
-
-@Composable
-private fun ChargePointsListContent(
-    items: List<ChargePointUI>,
-    onItemClick: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.surface)
-    ) {
-        itemsIndexed(items) { index, item ->
-            ChargePointItem(
-                chargePoint = item,
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(
+                    end = 12.dp,
+                    top = 16.dp,
+                )
+                .background(
+                    color = MaterialTheme.colorScheme.background,
+                    shape = CircleShape,
+                )
+                .clickable(
+                    onClick = onCloseClick,
+                )
+                .padding(
+                    all = 10.dp
+                ),
+        ) {
+            Icon(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .clickable {
-                        onItemClick(item.evseId)
-                    }
+                    .size(20.dp)
+                    .align(Alignment.Center),
+                painter = painterResource(id = R.drawable.ic_close),
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = null
             )
-            if (index != items.lastIndex) {
-                HorizontalDivider()
-            }
         }
     }
 }
 
 @Composable
-private fun ChargePointItem(chargePoint: ChargePointUI, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .padding(horizontal = 10.dp, vertical = 19.dp)
-            .padding(start = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+private fun SiteDetailHeader(
+    state: SiteDetailState.Success,
+) {
+    val context = LocalContext.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = 16.dp,
+            ),
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            CopyMedium(
-                chargePoint.evseId,
-                fontWeight = FontWeight.W700
+        Text(
+            text = state.chargeSiteUI.cpoName,
+            color = MaterialTheme.colorScheme.primary,
+            style = titleSmallBold
+        )
+
+        state.chargeSiteUI.address
+            .takeIf { it.isNotBlank() }
+            ?.let {
+                Row(
+                    modifier = Modifier
+                        .padding(top = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .clickable {
+                                with(state.chargeSiteUI) {
+                                    context.openMap(lat, lng, cpoName)
+                                }
+                            },
+                        text = it,
+                        color = MaterialTheme.colorScheme.secondary,
+                        textDecoration = TextDecoration.Underline,
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    Icon(
+                        painter = painterResource(R.drawable.ic_open_external),
+                        tint = MaterialTheme.colorScheme.secondary,
+                        contentDescription = null,
+                    )
+                }
+            }
+    }
+}
+
+@Composable
+private fun SelectChargePointHeader(
+    state: SiteDetailState.Success,
+    onChargePointSearchInputChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(
+                horizontal = 16.dp,
+            ),
+    ) {
+        CopyXLarge(
+            text = stringResource(R.string.select_charge_point_label),
+            fontWeight = FontWeight.W700,
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        SearchChargePointInputField(
+            searchInput = state.searchInput,
+            onSearchInputChange = onChargePointSearchInputChange,
+        )
+    }
+}
+
+@Composable
+private fun Button(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .clickable(
+                onClick = onClick,
             )
-            CopySmall(
-                chargePoint.energyValue.toString() + stringResource(R.string.kw_label),
-            )
-        }
-        Column {
-            CopyMedium(
-                chargePoint.pricePerKwh.toString() + stringResource(R.string.kwh_label),
-                fontWeight = FontWeight.W700
-            )
-        }
-        Icon(
-            painter = painterResource(R.drawable.ic_chevron_right),
-            null
+            .width(IntrinsicSize.Max),
+    ) {
+        Text(
+            text = "Back to map",
+            style = copyMediumBold,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth(),
+            thickness = 2.dp,
+            color = MaterialTheme.colorScheme.primary,
         )
     }
 }
@@ -273,9 +306,12 @@ private fun SiteDetailScreen_Content_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
             SiteDetailState.Success(
-                chargeSiteUI = MockData.siteUI
+                searchInput = "",
+                chargeSiteUI = MockData.siteUI,
             ),
-            onItemClick = { _ -> }
+            onCloseClick = {},
+            onChargePointSearchInputChange = {},
+            onItemClick = { _ -> },
         )
     }
 }
@@ -286,9 +322,12 @@ private fun SiteDetailScreen_Content_EmptyList_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
             SiteDetailState.Success(
-                chargeSiteUI = MockData.siteWithoutChargePoints
+                searchInput = "",
+                chargeSiteUI = MockData.siteWithoutChargePoints,
             ),
-            onItemClick = { _ -> }
+            onCloseClick = {},
+            onChargePointSearchInputChange = {},
+            onItemClick = { _ -> },
         )
     }
 }
