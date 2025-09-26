@@ -58,9 +58,9 @@ internal fun ChargePointsList(
 
 @Composable
 private fun ChargePointsListContent(
-    modifier: Modifier = Modifier,
     items: List<ChargePointUI>,
     onItemClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -85,11 +85,11 @@ private fun ChargePointsListContent(
 
 @Composable
 private fun ChargePointItemWithSeparator(
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(),
     chargePoint: ChargePointUI,
     onClick: () -> Unit,
     showSeparator: Boolean,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
     Column(
         modifier = modifier
