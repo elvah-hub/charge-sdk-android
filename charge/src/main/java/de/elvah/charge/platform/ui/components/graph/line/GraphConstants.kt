@@ -20,8 +20,8 @@ object GraphConstants {
     const val GRID_LINE_ALPHA = 0.3f
     
     // Chart layout
-    const val CHART_HEIGHT_MULTIPLIER = 0.9f
-    const val CHART_BOTTOM_MULTIPLIER = 0.95f
+    const val CHART_HEIGHT_MULTIPLIER = 0.8f
+    const val CHART_BOTTOM_MULTIPLIER = 0.85f
     const val CHART_VERTICAL_MARGIN_MULTIPLIER = 0.1f
     const val CHART_CONTENT_MULTIPLIER = 0.8f
     

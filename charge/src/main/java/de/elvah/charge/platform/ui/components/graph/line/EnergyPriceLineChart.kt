@@ -127,9 +127,9 @@ fun EnergyPriceLineChart(
                 }
                 currentDayData.copy(offers = updatedOffers, isSelected = false)
             } else {
-                // Regular price slot clicked - only deselect all offers and don't select regular price
+                // Regular price slot clicked - deselect all offers and select regular price
                 val updatedOffers = currentDayData.offers.map { it.copy(isSelected = false) }
-                currentDayData.copy(offers = updatedOffers, isSelected = false)
+                currentDayData.copy(offers = updatedOffers, isSelected = true)
             }
 
             // Update the daily data
@@ -144,6 +144,11 @@ fun EnergyPriceLineChart(
                 selectedPrice = selectedOffer?.discountedPrice ?: updatedDay.regularPrice
                 offerSelected = true
                 selectedPriceOffer = selectedOffer
+            } else if (updatedDay.isSelected) {
+                // Regular price is selected
+                selectedPrice = updatedDay.regularPrice
+                offerSelected = false
+                selectedPriceOffer = null
             } else {
                 // No selection - show current price
                 val currentTime = LocalTime.now()

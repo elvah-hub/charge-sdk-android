@@ -45,13 +45,14 @@ fun DrawScope.drawGridLines(
     val chartBottom = size.height * CHART_BOTTOM_MULTIPLIER
     
     // Text properties
-    val textColor = Color.Gray.copy(alpha = 0.7f)
-    val textSize = 10.sp.toPx()
+    val textColor = Color.Gray.copy(alpha = 0.8f)
+    val textSize = 12.sp.toPx()
     val textPaint = android.graphics.Paint().apply {
         color = textColor.toArgb()
         this.textSize = textSize
         textAlign = android.graphics.Paint.Align.CENTER
         isAntiAlias = true
+        isFakeBoldText = false
     }
 
     for (hour in 0..HOURS_IN_DAY step gridLineInterval) {
@@ -68,11 +69,11 @@ fun DrawScope.drawGridLines(
         
         // Draw hour text in the space below chart bottom
         if (hour < HOURS_IN_DAY) { // Don't draw text for the last line at hour 24
-            val textY = chartBottom + textSize + 8.dp.toPx()
+            val textY = chartBottom + textSize + 12.dp.toPx()
             // Make sure text fits within canvas bounds
             if (textY < size.height) {
                 drawContext.canvas.nativeCanvas.drawText(
-                    "${hour}:",
+                    "$hour",
                     x,
                     textY,
                     textPaint
