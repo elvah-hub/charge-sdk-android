@@ -90,16 +90,16 @@ fun EnergyPriceLineChart(
     var selectedType by remember { mutableStateOf(ChargeType.FAST) }
     var selectedPrice by remember {
         mutableDoubleStateOf(
-            getPriceAtTime(
+            getPriceAtTimeFromSlots(
                 dailyData[todayIndex],
                 LocalTime.of(LocalTime.now().hour, 0)
-            ).first
+            )
         )
     }
     var offerSelected by remember { mutableStateOf(false) }
     var selectedPriceOffer by remember {
         mutableStateOf(
-            getOfferAtTime(dailyData[todayIndex], LocalTime.of(LocalTime.now().hour, 0))
+            getOfferAtTimeFromSlots(dailyData[todayIndex], LocalTime.of(LocalTime.now().hour, 0))
         )
     }
 
@@ -111,26 +111,33 @@ fun EnergyPriceLineChart(
         { pageIndex, clickedTime ->
             val currentDayData = updatedDailyData[pageIndex]
 
-            // Find if clicked time is within an offer
-            val clickedOffer = getOfferAtTime(currentDayData, clickedTime)
+            // Find the clicked slot
+            val clickedSlot = getSlotAtTime(currentDayData, clickedTime)
 
-            val updatedDay = if (clickedOffer != null) {
-                // Toggle the clicked offer's selection
-                val updatedOffers = currentDayData.offers.map { offer ->
-                    if (offer.timeRange.startTime == clickedOffer.timeRange.startTime &&
-                        offer.timeRange.endTime == clickedOffer.timeRange.endTime
-                    ) {
-                        offer.copy(isSelected = !clickedOffer.isSelected)
-                    } else {
-                        offer.copy(isSelected = false) // Deselect all other offers
+            val updatedSlots = if (clickedSlot != null) {
+                currentDayData.slots.map { slot ->
+                    when {
+                        // Clicked on this slot - toggle its selection
+                        slot.startTime == clickedSlot.startTime && slot.endTime == clickedSlot.endTime -> {
+                            when (slot) {
+                                is PriceSlot.RegularPriceSlot -> slot.copy(isSelected = !slot.isSelected)
+                                is PriceSlot.OfferPriceSlot -> slot.copy(isSelected = !slot.isSelected)
+                            }
+                        }
+                        // Deselect all other slots
+                        else -> {
+                            when (slot) {
+                                is PriceSlot.RegularPriceSlot -> slot.copy(isSelected = false)
+                                is PriceSlot.OfferPriceSlot -> slot.copy(isSelected = false)
+                            }
+                        }
                     }
                 }
-                currentDayData.copy(offers = updatedOffers, isSelected = false)
             } else {
-                // Regular price slot clicked - deselect all offers and select regular price
-                val updatedOffers = currentDayData.offers.map { it.copy(isSelected = false) }
-                currentDayData.copy(offers = updatedOffers, isSelected = true)
+                currentDayData.slots
             }
+
+            val updatedDay = currentDayData.withUpdatedSlots(updatedSlots).copy(isSelected = false)
 
             // Update the daily data
             updatedDailyData = updatedDailyData.toMutableList().apply {
@@ -138,27 +145,33 @@ fun EnergyPriceLineChart(
             }
 
             // Update selected price based on current selection state
-            val hasSelectedOffer = updatedDay.offers.any { it.isSelected }
-            if (hasSelectedOffer) {
-                val selectedOffer = updatedDay.offers.find { it.isSelected }
-                selectedPrice = selectedOffer?.discountedPrice ?: updatedDay.regularPrice
-                offerSelected = true
-                selectedPriceOffer = selectedOffer
-            } else if (updatedDay.isSelected) {
-                // Regular price is selected
-                selectedPrice = updatedDay.regularPrice
-                offerSelected = false
-                selectedPriceOffer = null
+            val selectedSlot = updatedSlots.find { it.isSelected }
+            if (selectedSlot != null) {
+                selectedPrice = selectedSlot.price
+                offerSelected = selectedSlot is PriceSlot.OfferPriceSlot
+                selectedPriceOffer = if (selectedSlot is PriceSlot.OfferPriceSlot) {
+                    // Convert slot back to PriceOffer for display compatibility
+                    PriceOffer(
+                        timeRange = TimeRange(selectedSlot.startTime, selectedSlot.endTime),
+                        discountedPrice = selectedSlot.price,
+                        isSelected = true
+                    )
+                } else null
             } else {
                 // No selection - show current price
                 val currentTime = LocalTime.now()
                 val isToday = updatedDay.date == LocalDate.now()
                 if (isToday) {
-                    val (currentPrice, isCurrentOffer) = getPriceAtTime(updatedDay, currentTime)
-                    selectedPrice = currentPrice
-                    offerSelected = isCurrentOffer
-                    selectedPriceOffer =
-                        if (isCurrentOffer) getOfferAtTime(updatedDay, currentTime) else null
+                    val currentSlot = getSlotAtTime(updatedDay, currentTime)
+                    selectedPrice = currentSlot?.price ?: updatedDay.regularPrice
+                    offerSelected = currentSlot is PriceSlot.OfferPriceSlot
+                    selectedPriceOffer = if (currentSlot is PriceSlot.OfferPriceSlot) {
+                        PriceOffer(
+                            timeRange = TimeRange(currentSlot.startTime, currentSlot.endTime),
+                            discountedPrice = currentSlot.price,
+                            isSelected = false
+                        )
+                    } else null
                 } else {
                     selectedPrice = updatedDay.regularPrice
                     offerSelected = false
@@ -168,7 +181,7 @@ fun EnergyPriceLineChart(
         }
 
     val allPrices = updatedDailyData.flatMap { day ->
-        listOf(day.regularPrice) + day.offers.map { it.discountedPrice }
+        day.slots.map { it.price }
     }
     val maxPrice = allPrices.maxOf { it }
     val calculatedMinPrice = allPrices.minOf { it }
@@ -550,21 +563,29 @@ private fun DayLineChart(
     }
 }
 
-// Helper function to get offer at specific time for selection handling
-private fun getOfferAtTime(dayData: DailyPricingData, time: LocalTime): PriceOffer? {
-    return dayData.offers.find { offer ->
-        time >= offer.timeRange.startTime && time < offer.timeRange.endTime
+// Helper function to get slot at specific time
+private fun getSlotAtTime(dayData: DailyPricingData, time: LocalTime): PriceSlot? {
+    return dayData.slots.find { slot ->
+        time >= slot.startTime && time < slot.endTime
     }
 }
 
-// Helper function to get price at specific time
-private fun getPriceAtTime(dayData: DailyPricingData, time: LocalTime): Pair<Double, Boolean> {
-    for (offer in dayData.offers) {
-        if (time >= offer.timeRange.startTime && time < offer.timeRange.endTime) {
-            return offer.discountedPrice to true
-        }
-    }
-    return dayData.regularPrice to false
+// Helper function to get price at specific time from slots
+private fun getPriceAtTimeFromSlots(dayData: DailyPricingData, time: LocalTime): Double {
+    val slot = getSlotAtTime(dayData, time)
+    return slot?.price ?: dayData.regularPrice
+}
+
+// Helper function to get offer at specific time from slots (for backward compatibility)
+private fun getOfferAtTimeFromSlots(dayData: DailyPricingData, time: LocalTime): PriceOffer? {
+    val slot = getSlotAtTime(dayData, time)
+    return if (slot is PriceSlot.OfferPriceSlot) {
+        PriceOffer(
+            timeRange = TimeRange(slot.startTime, slot.endTime),
+            discountedPrice = slot.price,
+            isSelected = slot.isSelected
+        )
+    } else null
 }
 
 @PreviewLightDark

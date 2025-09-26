@@ -157,7 +157,8 @@ fun DrawScope.drawCurrentTimeMarker(
     val currentTimeIndex = (currentMinutes / minuteResolution).toFloat()
     val x = currentTimeIndex * stepWidth
 
-    val (currentPrice, _) = getPriceAtTime(dayData, currentTime)
+    val slot = getSlotAtTime(dayData, currentTime)
+    val currentPrice = slot?.price ?: dayData.regularPrice
     val normalizedPrice = ((currentPrice - minPrice) / priceRange).toFloat()
     val y = chartBottom - (normalizedPrice * chartHeight)
 
@@ -237,8 +238,10 @@ private fun drawStepLineChartPaths(context: StepLineDrawingContext) {
         val minuteOfHour = minute % 60
         val currentTime = LocalTime.of(hour, minuteOfHour)
 
-        val (currentPrice, isOffer) = getPriceAtTime(context.dayData, currentTime)
-        val isSelected = isTimeSlotSelected(context.dayData, currentTime)
+        val slot = getSlotAtTime(context.dayData, currentTime)
+        val currentPrice = slot?.price ?: context.dayData.regularPrice
+        val isOffer = slot is PriceSlot.OfferPriceSlot
+        val isSelected = slot?.isSelected ?: false
 
         val x = i * context.stepWidth
         val normalizedPrice = ((currentPrice - context.minPrice) / context.priceRange).toFloat()
@@ -365,22 +368,8 @@ private fun closeFillPaths(paths: DrawingPaths, dataPoints: Int, stepWidth: Floa
     ).forEach { it.close() }
 }
 
-private fun getPriceAtTime(dayData: DailyPricingData, time: LocalTime): Pair<Double, Boolean> {
-    for (offer in dayData.offers) {
-        if (time >= offer.timeRange.startTime && time < offer.timeRange.endTime) {
-            return offer.discountedPrice to true
-        }
-    }
-    return dayData.regularPrice to false
-}
-
-private fun isTimeSlotSelected(dayData: DailyPricingData, time: LocalTime): Boolean {
-    val offer = getOfferAtTime(dayData, time)
-    return offer?.isSelected ?: dayData.isSelected
-}
-
-private fun getOfferAtTime(dayData: DailyPricingData, time: LocalTime): PriceOffer? {
-    return dayData.offers.find { offer ->
-        time >= offer.timeRange.startTime && time < offer.timeRange.endTime
+private fun getSlotAtTime(dayData: DailyPricingData, time: LocalTime): PriceSlot? {
+    return dayData.slots.find { slot ->
+        time >= slot.startTime && time < slot.endTime
     }
 }
