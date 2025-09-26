@@ -5,7 +5,7 @@ import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val sitesViewModelModule = module {
+internal val sitesViewModelModule = module {
     viewModelOf(::SitesViewModel)
     viewModelOf(::PricingGraphViewModel)
 }

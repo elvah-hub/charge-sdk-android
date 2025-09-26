@@ -61,5 +61,5 @@ val ColorScheme.onBrand: Color
 
 
 @Composable
-fun shouldUseDarkColors(darkTheme: Boolean?): Boolean = darkTheme ?: isSystemInDarkTheme()
+internal fun shouldUseDarkColors(darkTheme: Boolean?): Boolean = darkTheme ?: isSystemInDarkTheme()
 

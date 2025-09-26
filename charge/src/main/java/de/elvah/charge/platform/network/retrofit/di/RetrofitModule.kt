@@ -32,7 +32,7 @@ private fun provideRetrofitFactory(
     )
 }
 
-val retrofitModule = module {
+internal val retrofitModule = module {
     single { provideMoshi() }
     single { provideRetrofitFactory(get(), get(), get(), get(), get(), get()) }
 }

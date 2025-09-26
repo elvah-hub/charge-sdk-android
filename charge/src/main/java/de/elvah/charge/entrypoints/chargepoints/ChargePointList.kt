@@ -52,7 +52,7 @@ fun ChargePointList(
     }
 }
 
-fun Context.goToChargePoint(evseId: String) {
+internal fun Context.goToChargePoint(evseId: String) {
     val deepLinkIntent = Intent(
         Intent.ACTION_VIEW,
         ChargingPointDetailRoute(

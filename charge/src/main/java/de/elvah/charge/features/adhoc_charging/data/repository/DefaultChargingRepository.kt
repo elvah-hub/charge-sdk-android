@@ -77,9 +77,7 @@ internal class DefaultChargingRepository(
         )
     }
 
-    private fun getToken() = runBlocking {
-        chargingStore.getChargingPrefs().first().token
-    }
+    private suspend fun getToken() = chargingStore.getChargingPrefs().first().token
 }
 
 private const val BEARER_TEMPLATE = "Bearer %s"

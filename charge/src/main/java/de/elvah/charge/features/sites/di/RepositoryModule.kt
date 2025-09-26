@@ -8,7 +8,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val sitesRepositoriesModule = module {
+internal val sitesRepositoriesModule = module {
     singleOf(::DefaultFiltersRepository) { bind<FiltersRepository>() }
     singleOf(::DefaultSitesRepository) { bind<SitesRepository>() }
 }
