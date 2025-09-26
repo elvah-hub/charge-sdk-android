@@ -13,7 +13,7 @@ private fun provideOkHttpClient(context: Context): OkHttpClient = OkHttpFactory(
     context = context,
 ).okHttp()
 
-val okHttpModule = module {
+internal val okHttpModule = module {
     single { provideOkHttpClient(get()) }
     single { provideHttpLoggingInterceptor() }
     single { provideApiKeyInterceptor(get()) }
