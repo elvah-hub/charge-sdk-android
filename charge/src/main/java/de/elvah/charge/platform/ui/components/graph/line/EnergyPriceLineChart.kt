@@ -21,64 +21,48 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import de.elvah.charge.R
 import de.elvah.charge.features.sites.ui.utils.MockData
+import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
+import de.elvah.charge.platform.ui.components.CopyXLarge
+import de.elvah.charge.platform.ui.components.DropdownMenuButton
 import de.elvah.charge.platform.ui.components.TitleSmall
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.BADGE_PADDING_HORIZONTAL
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.BADGE_PADDING_VERTICAL
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.CARD_ELEVATION
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.CARD_PADDING
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_ANIMATION_DURATION_MS
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_CHART_HEIGHT_DP
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_GRID_LINE_DOT_SIZE
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_GRID_LINE_INTERVAL
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_MINUTE_RESOLUTION
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.EQUAL_WEIGHT
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.GRID_TEXT_SIZE
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.HOURS_IN_DAY
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.ICON_SIZE_SMALL
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.OFFER_BACKGROUND_COLOR
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.ROUNDED_CORNER_RADIUS
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SECTION_SPACING
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SMALL_SPACING
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SPACER_SIZE
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SPACER_WIDTH
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.TINY_SPACING
-import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.SURFACE_ALPHA_70
-import de.elvah.charge.platform.ui.components.graph.line.drawGridLines
-import de.elvah.charge.platform.ui.components.graph.line.drawStepLineChart
 import de.elvah.charge.platform.ui.components.graph.line.utils.getClickedTimeByOffset
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -136,16 +120,16 @@ fun EnergyPriceLineChart(
                     if (offer.timeRange.startTime == clickedOffer.timeRange.startTime &&
                         offer.timeRange.endTime == clickedOffer.timeRange.endTime
                     ) {
-                        offer.copy(isSelected = true)
+                        offer.copy(isSelected = !clickedOffer.isSelected)
                     } else {
                         offer.copy(isSelected = false) // Deselect all other offers
                     }
                 }
                 currentDayData.copy(offers = updatedOffers, isSelected = false)
             } else {
-                // Regular price slot clicked - toggle day selection and deselect all offers
+                // Regular price slot clicked - only deselect all offers and don't select regular price
                 val updatedOffers = currentDayData.offers.map { it.copy(isSelected = false) }
-                currentDayData.copy(offers = updatedOffers, isSelected = !currentDayData.isSelected)
+                currentDayData.copy(offers = updatedOffers, isSelected = false)
             }
 
             // Update the daily data
@@ -153,18 +137,28 @@ fun EnergyPriceLineChart(
                 this[pageIndex] = updatedDay
             }
 
-            // Update selected price
-            val (newPrice, isOffer) = getPriceAtTime(updatedDay, clickedTime)
-            selectedPrice = newPrice
-
-            // Update offer selected state
-            offerSelected = isOffer
-
-            // Update selected price offer
-            selectedPriceOffer = if (isOffer) {
-                getOfferAtTime(updatedDay, clickedTime)
+            // Update selected price based on current selection state
+            val hasSelectedOffer = updatedDay.offers.any { it.isSelected }
+            if (hasSelectedOffer) {
+                val selectedOffer = updatedDay.offers.find { it.isSelected }
+                selectedPrice = selectedOffer?.discountedPrice ?: updatedDay.regularPrice
+                offerSelected = true
+                selectedPriceOffer = selectedOffer
             } else {
-                null
+                // No selection - show current price
+                val currentTime = LocalTime.now()
+                val isToday = updatedDay.date == LocalDate.now()
+                if (isToday) {
+                    val (currentPrice, isCurrentOffer) = getPriceAtTime(updatedDay, currentTime)
+                    selectedPrice = currentPrice
+                    offerSelected = isCurrentOffer
+                    selectedPriceOffer =
+                        if (isCurrentOffer) getOfferAtTime(updatedDay, currentTime) else null
+                } else {
+                    selectedPrice = updatedDay.regularPrice
+                    offerSelected = false
+                    selectedPriceOffer = null
+                }
             }
         }
 
@@ -193,68 +187,18 @@ fun EnergyPriceLineChart(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            LivePricingHeader(selectedType)
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            LivePricingPrice(
+                selectedPrice = selectedPrice,
+                offerSelected = offerSelected,
+                currency = updatedDailyData.first().currency,
+                regularPrice = updatedDailyData[pagerState.currentPage].regularPrice
+            )
 
-                CopySmall(
-                    stringResource(R.string.schedule_pricing__live_pricing__label),
-                    fontWeight = FontWeight.W700
-                )
-
-                TypeDropdownSelector(
-                    selectedOption = selectedType.name,
-                    options = listOf(ChargeType.FAST.name, ChargeType.SLOW.name),
-                    onOptionSelected = {}
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                TitleSmall(
-                    selectedPrice.toString() + dailyData.first().currency + " " + stringResource(R.string.kwh_label),
-                    color = if (offerSelected) {
-                        MaterialTheme.colorScheme.brand
-                    } else {
-                        MaterialTheme.colorScheme.primary
-                    }
-                )
-
-                Spacer(Modifier.size(10.dp))
-
-                if (offerSelected) {
-                    CopySmall(
-                        dailyData[pagerState.currentPage].regularPrice.toString() + dailyData.first().currency + " " + stringResource(
-                            R.string.kwh_label
-                        ),
-                        textDecoration = TextDecoration.LineThrough
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier.padding(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                DayLabel()
-
-                OfferBadge(
-                    priceOffer = selectedPriceOffer,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+            LivePriceTimeSlot(selectedPriceOffer, pagerState.currentPage)
 
             Spacer(modifier = Modifier.height(16.dp))
-
 
             HorizontalPager(
                 state = pagerState,
@@ -282,7 +226,88 @@ fun EnergyPriceLineChart(
 }
 
 @Composable
-fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
+private fun LivePriceTimeSlot(selectedPriceOffer: PriceOffer?, selectedPage: Int) {
+    Row(
+        modifier = Modifier.padding(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        DayLabel(selectedPage = selectedPage)
+
+        OfferBadge(
+            priceOffer = selectedPriceOffer,
+            modifier = Modifier.padding(start = 8.dp)
+        )
+    }
+}
+
+@Composable
+private fun LivePricingPrice(
+    selectedPrice: Double,
+    offerSelected: Boolean,
+    currency: String,
+    regularPrice: Double
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        TitleSmall(
+            text = "$selectedPrice$currency " + stringResource(
+                R.string.kwh_label
+            ),
+            color = if (offerSelected) {
+                MaterialTheme.colorScheme.brand
+            } else {
+                MaterialTheme.colorScheme.primary
+            }
+        )
+
+        if (offerSelected) {
+            CopySmall(
+                text = "$regularPrice$currency " + stringResource(
+                    R.string.kwh_label
+                ),
+                textDecoration = TextDecoration.LineThrough
+            )
+        }
+    }
+}
+
+@Composable
+private fun LivePricingHeader(selectedType: ChargeType) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        CopySmall(
+            text = stringResource(R.string.schedule_pricing__live_pricing__label),
+            fontWeight = FontWeight.W700
+        )
+
+        TypeDropdownSelector(
+            selectedOption = selectedType.name,
+            options = listOf(
+                PlugType(
+                    title = "CSS",
+                    subtitle = "Very fast (350kW)"
+                ),
+                PlugType(
+                    title = "Type 2",
+                    subtitle = "fast (22kW)"
+                ),
+            ),
+        )
+    }
+}
+
+@Composable
+private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .background(
@@ -351,12 +376,12 @@ fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun DayLabel(selectedPage: Int = 1) {
+fun DayLabel(selectedPage: Int) {
     val currentTime = LocalTime.now()
     CopySmall(
         text = when (selectedPage) {
             0 -> stringResource(R.string.schedule_pricing__yesterday)
-            1 -> stringResource(R.string.schedule_pricing__today)
+            1 -> "Now"
             2 -> stringResource(R.string.schedule_pricing__tomorrow)
             else -> "%2d:%02d"
         }.format(currentTime.hour, currentTime.minute),
@@ -364,41 +389,109 @@ fun DayLabel(selectedPage: Int = 1) {
     )
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TypeDropdownSelector(
     selectedOption: String,
-    options: List<String>,
-    onOptionSelected: (String) -> Unit
+    options: List<PlugType>,
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    val lockedSheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
 
-    Box {
-        TextButton(onClick = { expanded = true }) {
-            CopySmall(selectedOption)
-            Spacer(modifier = Modifier.width(6.dp))
-            Icon(
-                imageVector = Icons.Filled.ArrowDropDown,
-                tint = MaterialTheme.colorScheme.primary,
-                contentDescription = "Dropdown Arrow"
-            )
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option) },
-                    onClick = {
-                        onOptionSelected(option)
-                        expanded = false
-                    }
-                )
+    DropdownMenuButton(
+        selectedOption = selectedOption,
+        onClick = {
+            scope.launch {
+                lockedSheetState.show()
             }
         }
-    }
+    )
 
+    if (lockedSheetState.isVisible) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                scope.launch {
+                    lockedSheetState.hide()
+                }
+            }, sheetState = lockedSheetState
+        ) {
+            TypeModalContent(options, onCloseClick = {
+                scope.launch {
+                    lockedSheetState.hide()
+                }
+            }
+            )
+        }
+    }
+}
+
+@Composable
+private fun TypeModalContent(
+    options: List<PlugType>,
+    modifier: Modifier = Modifier,
+    onCloseClick: () -> Unit
+) {
+    Column(modifier = modifier) {
+        TypeModalContentHeader(onClick = onCloseClick)
+        TypeModalContentList(options)
+    }
+}
+
+@Composable
+private fun TypeModalContentHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Row(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CopyXLarge(
+            text = stringResource(R.string.schedule_pricing__live_pricing__label),
+            fontWeight = FontWeight.W700
+        )
+
+        CloseIcon(onClick = onClick)
+    }
+}
+
+@Composable
+private fun TypeModalContentList(options: List<PlugType>, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        options.forEach {
+            TypeModalContentListItem(it)
+        }
+    }
+}
+
+@Composable
+private fun TypeModalContentListItem(option: PlugType, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 18.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CopyMedium(
+            text = option.title,
+            modifier = Modifier,
+            fontWeight = FontWeight.W700
+        )
+        Spacer(modifier = Modifier.size(4.dp))
+        CopyMedium(
+            text = option.subtitle,
+            modifier = Modifier
+        )
+    }
+}
+
+data class PlugType(
+    val title: String,
+    val subtitle: String
+)
+
+@Composable
+private fun CloseIcon(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    IconButton(modifier = modifier, onClick = onClick) {
+        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+    }
 }
 
 @Composable
@@ -417,7 +510,7 @@ private fun DayLineChart(
     onSlotClick: (LocalTime) -> Unit
 ) {
     Column(modifier = modifier) {
-        // Line chart
+        // Line chart with extra space for hour labels
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -449,23 +542,6 @@ private fun DayLineChart(
             }
         }
 
-        // X-axis labels (hours)
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            for (hour in 0..23 step gridLineInterval) {
-                Text(
-                    text = "${hour}:00",
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
     }
 }
 

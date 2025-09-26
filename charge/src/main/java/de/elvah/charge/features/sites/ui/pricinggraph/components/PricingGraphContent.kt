@@ -50,8 +50,6 @@ internal fun PricingGraphContent(
                     .padding(vertical = 8.dp),
                 animated = true,
                 showVerticalGridLines = true,
-                gridLineInterval = 6,
-                minuteResolution = 30,
                 minYAxisPrice = minYAxisPrice,
                 gridLineDotSize = gridLineDotSize
             )

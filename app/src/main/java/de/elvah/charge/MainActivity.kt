@@ -63,6 +63,7 @@ class MainActivity : ComponentActivity() {
                         if (sites.isNotEmpty()) {
                             PricingGraph(
                                 siteId = sites.first().id,
+                                minYAxisPrice = 0.0
                             )
                         }
                     }

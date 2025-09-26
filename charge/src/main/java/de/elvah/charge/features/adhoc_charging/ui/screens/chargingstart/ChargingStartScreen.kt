@@ -275,20 +275,6 @@ private fun ChargingActions(modifier: Modifier = Modifier, onStartCharging: () -
         SwipeButton(stringResource(R.string.start_charging_process)) {
             onStartCharging()
         }
-        /*
-                SlideToBookButton(
-                    btnText = "Book Ride ₹199",
-                    outerBtnBackgroundColor = MaterialTheme.colorScheme.brand,
-                    sliderBtnBackgroundColor = MaterialTheme.colorScheme.brand,
-                    sliderPositionPx = sliderPositionPx,
-                    onDragUpdated = {
-                        sliderPositionPx = it
-                    },
-                    onBtnSwipe = onStartCharging,
-                    sliderBtnIcon = R.drawable.ic_plug
-                )
-
-         */
     }
 
 }

@@ -6,7 +6,10 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.CHART_BOTTOM_MULTIPLIER
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.CHART_HEIGHT_MULTIPLIER
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.CIRCLE_MARKER_INNER_RADIUS_DP
@@ -29,23 +32,53 @@ import java.time.LocalTime
 fun DrawScope.drawGridLines(
     showVerticalGridLines: Boolean,
     gridLineInterval: Int,
-    gridLineDotSize: Float
+    gridLineDotSize: Float,
 ) {
     if (!showVerticalGridLines) return
 
     val gridColor = Color.Gray.copy(alpha = GRID_LINE_ALPHA)
     val stepWidth = size.width / HOURS_IN_DAY
     val pathEffect = PathEffect.dashPathEffect(floatArrayOf(gridLineDotSize, gridLineDotSize), 0f)
+    
+    // Calculate chart area height using the same multiplier as the step chart
+    val chartHeight = size.height * CHART_HEIGHT_MULTIPLIER
+    val chartBottom = size.height * CHART_BOTTOM_MULTIPLIER
+    
+    // Text properties
+    val textColor = Color.Gray.copy(alpha = 0.7f)
+    val textSize = 10.sp.toPx()
+    val textPaint = android.graphics.Paint().apply {
+        color = textColor.toArgb()
+        this.textSize = textSize
+        textAlign = android.graphics.Paint.Align.CENTER
+        isAntiAlias = true
+    }
 
     for (hour in 0..HOURS_IN_DAY step gridLineInterval) {
         val x = hour * stepWidth
+        
+        // Draw grid line only up to chart bottom
         drawLine(
             color = gridColor,
             start = Offset(x, 0f),
-            end = Offset(x, size.height),
+            end = Offset(x, chartBottom),
             strokeWidth = GRID_LINE_STROKE_WIDTH_DP.dp.toPx(),
             pathEffect = pathEffect
         )
+        
+        // Draw hour text in the space below chart bottom
+        if (hour < HOURS_IN_DAY) { // Don't draw text for the last line at hour 24
+            val textY = chartBottom + textSize + 8.dp.toPx()
+            // Make sure text fits within canvas bounds
+            if (textY < size.height) {
+                drawContext.canvas.nativeCanvas.drawText(
+                    "${hour}:",
+                    x,
+                    textY,
+                    textPaint
+                )
+            }
+        }
     }
 }
 
@@ -186,7 +219,7 @@ private fun createDrawingPaths(): DrawingPaths = DrawingPaths()
 /**
  * Draws the step line chart paths (filled areas and lines)
  */
-private fun DrawScope.drawStepLineChartPaths(context: StepLineDrawingContext) {
+private fun drawStepLineChartPaths(context: StepLineDrawingContext) {
     val dataPoints = MINUTES_IN_DAY / context.minuteResolution
     var isFirstPoint = true
     var currentFillPath: Path? = null
@@ -238,7 +271,14 @@ private fun DrawScope.drawStepLineChartPaths(context: StepLineDrawingContext) {
         }
     }
 
-    closeFillPaths(context.paths, (dataPoints * context.progress).toInt() - 1, context.stepWidth, context.chartBottom)
+    // Add final horizontal line to complete the day (extend to the end of the chart)
+    if (!isFirstPoint) {
+        val finalIndex = (dataPoints * context.progress).toInt()
+        addHorizontalLine(context.paths, lastWasOffer, lastWasSelected, finalIndex, context.stepWidth, lastY)
+        currentFillPath?.lineTo(context.stepWidth * dataPoints, lastY)
+    }
+
+    closeFillPaths(context.paths, dataPoints, context.stepWidth, context.chartBottom)
 }
 
 /**
@@ -309,8 +349,8 @@ private fun addVerticalLineIfNeeded(verticalLinesPath: Path, x: Float, lastY: Fl
     }
 }
 
-private fun closeFillPaths(paths: DrawingPaths, lastIndex: Int, stepWidth: Float, chartBottom: Float) {
-    val lastX = lastIndex * stepWidth
+private fun closeFillPaths(paths: DrawingPaths, dataPoints: Int, stepWidth: Float, chartBottom: Float) {
+    val lastX = stepWidth * dataPoints
     paths.regularSelectedFill.lineTo(lastX, chartBottom)
     paths.regularUnselectedFill.lineTo(lastX, chartBottom)
     paths.offerSelectedFill.lineTo(lastX, chartBottom)
