@@ -151,7 +151,8 @@ fun CopySmall(
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.W400,
     textAlign: TextAlign = TextAlign.Start,
-    color: Color = MaterialTheme.colorScheme.secondary
+    color: Color = MaterialTheme.colorScheme.secondary,
+    textDecoration: TextDecoration = TextDecoration.None
 ) {
     Text(
         text,
@@ -159,6 +160,7 @@ fun CopySmall(
         style = copySmall,
         fontWeight = fontWeight,
         textAlign = textAlign,
-        color = color
+        color = color,
+        textDecoration = textDecoration
     )
 }

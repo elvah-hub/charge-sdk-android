@@ -4,10 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.entrypoints.DisplayBehavior
+import de.elvah.charge.entrypoints.banner.openSite
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphEffect
-import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphEvent
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphState
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphViewModel
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphContent
@@ -28,9 +29,13 @@ fun PricingGraph(
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
     onError: ((String) -> Unit)? = null,
     onRefreshSuccess: (() -> Unit)? = null,
+    minYAxisPrice: Double? = null,
+    gridLineDotSize: Float = 4f
 ) {
     val pricingGraphViewModel: PricingGraphViewModel = koinViewModel()
     val config: Config = koinInject()
+
+    val context = LocalContext.current
 
     val state by pricingGraphViewModel.state.collectAsStateWithLifecycle()
 
@@ -41,15 +46,19 @@ fun PricingGraph(
                 is PricingGraphEffect.ShowErrorToast -> {
                     onError?.invoke(effect.message)
                 }
+
                 PricingGraphEffect.ShowRefreshSuccessToast -> {
                     onRefreshSuccess?.invoke()
                 }
+
                 PricingGraphEffect.ShowLoadingIndicator -> {
                     // Could trigger additional loading UI if needed
                 }
+
                 PricingGraphEffect.HideLoadingIndicator -> {
                     // Could hide additional loading UI if needed
                 }
+
                 is PricingGraphEffect.NavigateToErrorScreen -> {
                     // Could trigger navigation if needed
                 }
@@ -73,7 +82,12 @@ fun PricingGraph(
             is PricingGraphState.Success -> {
                 PricingGraphContent(
                     scheduledPricing = currentState.scheduledPricing,
-                    modifier = modifier
+                    modifier = modifier,
+                    minYAxisPrice = minYAxisPrice,
+                    gridLineDotSize = gridLineDotSize,
+                    onChargeNowClick = {
+                        context.openSite(siteId)
+                    }
                 )
             }
 
@@ -95,31 +109,4 @@ fun PricingGraph(
             }
         }
     }
-}
-
-@Composable
-fun RefreshablePricingGraph(
-    siteId: String,
-    modifier: Modifier = Modifier,
-    display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
-    onError: ((String) -> Unit)? = null,
-    onRefreshSuccess: (() -> Unit)? = null,
-    onRefresh: (() -> Unit)? = null,
-) {
-    val pricingGraphViewModel: PricingGraphViewModel = koinViewModel()
-
-    LaunchedEffect(onRefresh) {
-        onRefresh?.let {
-            it.invoke()
-            pricingGraphViewModel.refreshData()
-        }
-    }
-
-    PricingGraph(
-        siteId = siteId,
-        modifier = modifier,
-        display = display,
-        onError = onError,
-        onRefreshSuccess = onRefreshSuccess
-    )
 }

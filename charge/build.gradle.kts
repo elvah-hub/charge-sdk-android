@@ -68,6 +68,8 @@ publishing {
     }
 }
 
+
+
 tasks.register("checkMinifyEnabled") {
     doLast {
         if (android.buildTypes.getByName("release").isMinifyEnabled) {

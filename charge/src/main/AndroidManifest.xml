@@ -12,10 +12,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".platform.simulator.ui.SimulatorActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ElvahChargeAndroid" />
     </application>
 
 </manifest>

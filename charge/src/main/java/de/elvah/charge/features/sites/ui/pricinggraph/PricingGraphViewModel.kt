@@ -17,36 +17,39 @@ internal class PricingGraphViewModel(
             is PricingGraphEvent.LoadPricing -> {
                 Reducer.Result(PricingGraphState.Loading(event.siteId), null)
             }
-            
+
             PricingGraphEvent.RefreshData -> when (previousState) {
                 is PricingGraphState.Loading -> Reducer.Result(previousState, null)
                 is PricingGraphState.Success -> Reducer.Result(
-                    PricingGraphState.Loading(previousState.siteId), 
+                    PricingGraphState.Loading(previousState.siteId),
                     PricingGraphEffect.ShowLoadingIndicator
                 )
+
                 is PricingGraphState.Error -> Reducer.Result(
-                    PricingGraphState.Loading(previousState.siteId), 
+                    PricingGraphState.Loading(previousState.siteId),
                     null
                 )
+
                 is PricingGraphState.Empty -> Reducer.Result(
-                    PricingGraphState.Loading(previousState.siteId), 
+                    PricingGraphState.Loading(previousState.siteId),
                     null
                 )
             }
-            
+
             PricingGraphEvent.RetryLoad -> when (previousState) {
                 is PricingGraphState.Loading -> Reducer.Result(previousState, null)
                 is PricingGraphState.Success -> Reducer.Result(previousState, null)
                 is PricingGraphState.Error -> Reducer.Result(
-                    PricingGraphState.Loading(previousState.siteId), 
+                    PricingGraphState.Loading(previousState.siteId),
                     null
                 )
+
                 is PricingGraphState.Empty -> Reducer.Result(
-                    PricingGraphState.Loading(previousState.siteId), 
+                    PricingGraphState.Loading(previousState.siteId),
                     null
                 )
             }
-            
+
             // Result events from use cases
             is PricingGraphEvent.LoadPricingSuccess -> {
                 Reducer.Result(
@@ -57,7 +60,7 @@ internal class PricingGraphViewModel(
                     PricingGraphEffect.HideLoadingIndicator
                 )
             }
-            
+
             is PricingGraphEvent.LoadPricingError -> {
                 Reducer.Result(
                     PricingGraphState.Error(
@@ -69,14 +72,14 @@ internal class PricingGraphViewModel(
                     )
                 )
             }
-            
+
             is PricingGraphEvent.LoadPricingEmpty -> {
                 Reducer.Result(
                     PricingGraphState.Empty(event.siteId),
                     PricingGraphEffect.HideLoadingIndicator
                 )
             }
-            
+
             is PricingGraphEvent.RefreshPricingSuccess -> {
                 Reducer.Result(
                     PricingGraphState.Success(
@@ -86,7 +89,7 @@ internal class PricingGraphViewModel(
                     PricingGraphEffect.ShowRefreshSuccessToast
                 )
             }
-            
+
             is PricingGraphEvent.RefreshPricingError -> {
                 // Keep the previous state but show error toast
                 Reducer.Result(
@@ -99,31 +102,53 @@ internal class PricingGraphViewModel(
         }
     }
 ) {
-    
+
     fun loadPricing(siteId: String) {
         sendEvent(PricingGraphEvent.LoadPricing(siteId), allowSideEffect = true)
         executeLoadPricing(siteId)
     }
-    
+
     fun refreshData() {
         sendEvent(PricingGraphEvent.RefreshData, allowSideEffect = true)
         when (val currentState = state.value) {
-            is PricingGraphState.Success -> executeLoadPricing(currentState.siteId, isRefresh = true)
-            is PricingGraphState.Error -> currentState.siteId?.let { executeLoadPricing(it, isRefresh = true) }
-            is PricingGraphState.Empty -> currentState.siteId?.let { executeLoadPricing(it, isRefresh = true) }
-            is PricingGraphState.Loading -> currentState.siteId?.let { executeLoadPricing(it, isRefresh = true) }
+            is PricingGraphState.Success -> executeLoadPricing(
+                currentState.siteId,
+                isRefresh = true
+            )
+
+            is PricingGraphState.Error -> currentState.siteId?.let {
+                executeLoadPricing(
+                    it,
+                    isRefresh = true
+                )
+            }
+
+            is PricingGraphState.Empty -> currentState.siteId?.let {
+                executeLoadPricing(
+                    it,
+                    isRefresh = true
+                )
+            }
+
+            is PricingGraphState.Loading -> currentState.siteId?.let {
+                executeLoadPricing(
+                    it,
+                    isRefresh = true
+                )
+            }
         }
     }
-    
+
     fun retryLoad() {
         sendEvent(PricingGraphEvent.RetryLoad, allowSideEffect = true)
         when (val currentState = state.value) {
             is PricingGraphState.Error -> currentState.siteId?.let { executeLoadPricing(it) }
             is PricingGraphState.Empty -> currentState.siteId?.let { executeLoadPricing(it) }
-            else -> { /* No retry needed for other states */ }
+            else -> { /* No retry needed for other states */
+            }
         }
     }
-    
+
     private fun executeLoadPricing(siteId: String, isRefresh: Boolean = false) {
         viewModelScope.launch {
             getSiteScheduledPricing(GetSiteScheduledPricing.Params(siteId = siteId))

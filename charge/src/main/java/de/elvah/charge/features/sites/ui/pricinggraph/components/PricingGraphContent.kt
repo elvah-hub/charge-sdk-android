@@ -1,10 +1,8 @@
 package de.elvah.charge.features.sites.ui.pricinggraph.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,14 +15,22 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import de.elvah.charge.R
+import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toChartData
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
+import de.elvah.charge.platform.ui.components.ButtonPrimary
+import de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart
 
 @Composable
 internal fun PricingGraphContent(
     scheduledPricing: ScheduledPricingUI,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    minYAxisPrice: Double? = null,
+    gridLineDotSize: Float = 4f,
+    onChargeNowClick: () -> Unit,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -36,23 +42,23 @@ internal fun PricingGraphContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Pricing Schedule",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.fillMaxWidth()
-            )
-            
-            // Placeholder for the graph - this is where the actual graph component will be placed
-            PricingGraphPlaceholder(
+            // Energy price line chart displaying the API data
+            EnergyPriceLineChart(
+                dailyData = scheduledPricing.toChartData(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .padding(vertical = 8.dp),
+                animated = true,
+                showVerticalGridLines = true,
+                minYAxisPrice = minYAxisPrice,
+                gridLineDotSize = gridLineDotSize
             )
-            
-            // Standard price info
-            StandardPriceInfo(
-                standardPrice = scheduledPricing.standardPrice,
-                modifier = Modifier.fillMaxWidth()
+
+            ButtonPrimary(
+                text = stringResource(id = R.string.discover_button),
+                icon = R.drawable.ic_bolt,
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onChargeNowClick
             )
         }
     }
@@ -127,54 +133,6 @@ internal fun PricingGraphEmpty(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-@Composable
-private fun PricingGraphPlaceholder(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .background(
-                MaterialTheme.colorScheme.surfaceVariant,
-                RoundedCornerShape(8.dp)
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Graph will be placed here",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun StandardPriceInfo(
-    standardPrice: ScheduledPricingUI.PriceUI,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Text(
-            text = "Standard Price",
-            style = MaterialTheme.typography.labelMedium
-        )
-        Text(
-            text = "${standardPrice.energyPricePerKWh} ${standardPrice.currency}/kWh",
-            style = MaterialTheme.typography.bodyMedium
-        )
-        standardPrice.baseFee?.let { baseFee ->
-            Text(
-                text = "Base fee: $baseFee ${standardPrice.currency}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
