@@ -377,31 +377,41 @@ private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.width(4.dp))
 
         if (priceOffer != null) {
-            CopySmall(
-                text = "%02d:%02d".format(
-                    priceOffer.timeRange.startTime.hour,
-                    priceOffer.timeRange.startTime.minute
-                ),
-                fontWeight = FontWeight.W700,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                contentDescription = null,
-                modifier = Modifier.size(12.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-
-            CopySmall(
-                text = "%02d:%02d".format(
-                    priceOffer.timeRange.endTime.hour,
-                    priceOffer.timeRange.endTime.minute
-                ),
-                fontWeight = FontWeight.W700,
-                color = MaterialTheme.colorScheme.primary
-            )
+            HourSlot(priceOffer.timeRange)
         }
+    }
+}
+
+@Composable
+private fun HourSlot(timeRange: TimeRange, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        CopySmall(
+            text = "%02d:%02d".format(
+                timeRange.startTime.hour,
+                timeRange.startTime.minute
+            ),
+            fontWeight = FontWeight.W700,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Icon(
+            imageVector = Icons.AutoMirrored.Default.ArrowForward,
+            contentDescription = null,
+            modifier = Modifier.size(12.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+
+        CopySmall(
+            text = "%02d:%02d".format(
+                timeRange.endTime.hour,
+                timeRange.endTime.minute
+            ),
+            fontWeight = FontWeight.W700,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
