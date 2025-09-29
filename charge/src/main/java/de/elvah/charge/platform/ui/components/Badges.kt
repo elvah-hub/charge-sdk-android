@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.elvah.charge.R
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 
 @Composable
 internal fun BrandBadge(
@@ -51,7 +51,7 @@ private fun BrandBadge_Preview() {
 internal fun ChargingBadge(
     progress: Int,
     modifier: Modifier = Modifier,
-    tint: Color = MaterialTheme.colorScheme.brand,
+    tint: Color = MaterialTheme.colorSchemeExtended.brand,
 ) {
     Row(
         modifier = modifier,

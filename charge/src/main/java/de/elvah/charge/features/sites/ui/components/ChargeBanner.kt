@@ -35,7 +35,7 @@ import de.elvah.charge.platform.ui.components.Chevron
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.time.Duration
@@ -199,7 +199,7 @@ private fun
         LiveCounter(chargeTime) {
             CopySmall(
                 text = it.toString(),
-                color = MaterialTheme.colorScheme.brand,
+                color = MaterialTheme.colorSchemeExtended.brand,
                 fontWeight = FontWeight.W700
             )
         }
@@ -229,7 +229,7 @@ private fun BestDealTimeLeft(timeLeft: String, modifier: Modifier = Modifier) {
     CopySmall(
         text = parseDate(timeLeft),
         modifier = modifier,
-        color = MaterialTheme.colorScheme.brand,
+        color = MaterialTheme.colorSchemeExtended.brand,
         fontWeight = FontWeight.W700
     )
 }

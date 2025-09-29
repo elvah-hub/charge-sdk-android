@@ -49,10 +49,8 @@ import de.elvah.charge.platform.ui.components.TickBanner
 import de.elvah.charge.platform.ui.components.TitleMedium
 import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
-import de.elvah.charge.platform.ui.theme.onBrand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import kotlinx.coroutines.launch
-
 
 @Composable
 internal fun ChargingStartScreen(
@@ -298,7 +296,7 @@ private fun ConnectVehicleMessage(modifier: Modifier = Modifier) {
 private fun ChargingIdBadge(id: String, modifier: Modifier = Modifier) {
     BasicCard(
         modifier = modifier,
-        backgroundColor = MaterialTheme.colorScheme.brand,
+        backgroundColor = MaterialTheme.colorSchemeExtended.brand,
         paddingValues = PaddingValues(10.dp)
     ) {
         Row(
@@ -307,14 +305,14 @@ private fun ChargingIdBadge(id: String, modifier: Modifier = Modifier) {
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_plug),
-                tint = MaterialTheme.colorScheme.onBrand,
+                tint = MaterialTheme.colorSchemeExtended.onBrand,
                 contentDescription = null
             )
             Text(
                 id,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.W600,
-                color = MaterialTheme.colorScheme.onBrand
+                color = MaterialTheme.colorSchemeExtended.onBrand,
             )
         }
     }

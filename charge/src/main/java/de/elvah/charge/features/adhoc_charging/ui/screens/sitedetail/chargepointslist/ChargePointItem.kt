@@ -30,10 +30,9 @@ import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.copyXLargeBold
-import de.elvah.charge.platform.ui.theme.decorativeStroke
 
 @Composable
 internal fun ChargePointItem(
@@ -120,7 +119,7 @@ private fun getAvailabilityColor(
     return when (availability) {
         ChargePointAvailability.AVAILABLE,
             -> {
-            MaterialTheme.colorScheme.brand
+            MaterialTheme.colorSchemeExtended.brand
         }
 
         ChargePointAvailability.OUT_OF_SERVICE,
@@ -140,14 +139,14 @@ private fun BadgeStatus(
     val backgroundColor = when (availability) {
         ChargePointAvailability.AVAILABLE,
             -> {
-            MaterialTheme.colorScheme.brand
+            MaterialTheme.colorSchemeExtended.brand
         }
 
         ChargePointAvailability.OUT_OF_SERVICE,
         ChargePointAvailability.UNAVAILABLE,
         ChargePointAvailability.UNKNOWN,
             -> {
-            decorativeStroke
+            MaterialTheme.colorSchemeExtended.decorativeStroke
         }
     }
 

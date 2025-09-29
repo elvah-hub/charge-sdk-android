@@ -25,9 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLargeBold
-import de.elvah.charge.platform.ui.theme.onBrand
 
 @Composable
 internal fun GooglePayButton(
@@ -64,8 +63,8 @@ internal fun ButtonPrimary(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.brand,
-            contentColor = MaterialTheme.colorScheme.onBrand
+            containerColor = MaterialTheme.colorSchemeExtended.brand,
+            contentColor = MaterialTheme.colorSchemeExtended.onBrand,
         )
     ) {
         icon?.let {
@@ -76,7 +75,7 @@ internal fun ButtonPrimary(
             text = text,
             modifier = Modifier.padding(vertical = 8.dp),
             style = copyLargeBold,
-            color = MaterialTheme.colorScheme.onBrand
+            color = MaterialTheme.colorSchemeExtended.onBrand,
         )
     }
 }
@@ -96,7 +95,7 @@ internal fun SecondaryButton(
     text: String,
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int? = null,
-    tint: Color = MaterialTheme.colorScheme.brand,
+    tint: Color = MaterialTheme.colorSchemeExtended.brand,
     onClick: () -> Unit,
 ) {
 

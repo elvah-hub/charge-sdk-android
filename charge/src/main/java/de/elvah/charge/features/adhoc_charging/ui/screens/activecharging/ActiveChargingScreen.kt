@@ -46,7 +46,7 @@ import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.components.TopAppBar
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyMedium
 import de.elvah.charge.platform.ui.theme.titleMediumBold
 import de.elvah.charge.platform.ui.theme.titleXLargeBold
@@ -280,7 +280,7 @@ internal fun ActiveCharging_Stopping(
 @Composable
 private fun CircularProgressWithTick(modifier: Modifier = Modifier) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.brand)
+        CircularProgressIndicator(Modifier.fillMaxSize(), color = MaterialTheme.colorSchemeExtended.brand)
         TickIcon(Modifier.fillMaxSize())
     }
 }
@@ -382,7 +382,7 @@ private fun WaitingChargingActions(
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(10.dp), color = MaterialTheme.colorScheme.brand
+                .height(10.dp), color = MaterialTheme.colorSchemeExtended.brand
         )
 
         ButtonTertiary(stringResource(R.string.support_button), onClick = onSupportClick)
@@ -402,7 +402,7 @@ private fun StopChargingActions(
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(10.dp), color = MaterialTheme.colorScheme.brand
+                .height(10.dp), color = MaterialTheme.colorSchemeExtended.brand
         )
         ButtonTertiary(stringResource(R.string.support_button), onClick = onSupportClick)
     }

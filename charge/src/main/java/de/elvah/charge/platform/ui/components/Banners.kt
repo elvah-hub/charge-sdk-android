@@ -12,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,9 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.onSuccess
-import de.elvah.charge.platform.ui.theme.primary
-import de.elvah.charge.platform.ui.theme.success
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import kotlinx.coroutines.delay
 
 
@@ -61,7 +60,7 @@ internal fun Banner(
 ) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = success)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorSchemeExtended.success)
     ) {
         Row(
             modifier = Modifier
@@ -72,12 +71,16 @@ internal fun Banner(
             Icon(
                 painter = painterResource(icon),
                 contentDescription = contentDescription,
-                tint = onSuccess
+                tint = MaterialTheme.colorSchemeExtended.onSuccess,
             )
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            Text(text, color = primary, fontWeight = FontWeight.W600)
+            Text(
+                text,
+                color = MaterialTheme.colorSchemeExtended.primary,
+                fontWeight = FontWeight.W600
+            )
 
             onCloseClick?.let {
                 Spacer(modifier = Modifier.weight(1f))
