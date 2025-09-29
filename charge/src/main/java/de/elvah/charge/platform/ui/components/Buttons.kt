@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.onBrand
 
@@ -64,7 +64,7 @@ internal fun ButtonPrimary(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.brand,
+            containerColor = MaterialTheme.colorSchemeExtended.brand,
             contentColor = MaterialTheme.colorScheme.onBrand
         )
     ) {
@@ -96,7 +96,7 @@ internal fun SecondaryButton(
     text: String,
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int? = null,
-    tint: Color = MaterialTheme.colorScheme.brand,
+    tint: Color = MaterialTheme.colorSchemeExtended.brand,
     onClick: () -> Unit,
 ) {
 

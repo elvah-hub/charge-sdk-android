@@ -5,27 +5,37 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.sin
@@ -58,7 +68,7 @@ internal fun EnergyPriceChart(
         initialPage = 1, // Start with today (middle page)
         pageCount = { dailyData.size }
     )
-    
+
     val allHourlyData = dailyData.flatMap { it.hourlyData }
     val maxPrice = allHourlyData.maxOf { it.price }
     val calculatedMinPrice = allHourlyData.minOf { it.price }
@@ -119,7 +129,7 @@ private fun DayChart(
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        
+
         // Hourly chart
         Box(
             modifier = Modifier
@@ -135,7 +145,7 @@ private fun DayChart(
                     gridLineDotSize = gridLineDotSize
                 )
             }
-            
+
             // Bars
             Row(
                 modifier = Modifier
@@ -165,7 +175,7 @@ private fun EnergyPriceBar(
     minPrice: Double,
     progress: Float,
     showHourLabel: Boolean = true,
-    barColor: Color = MaterialTheme.colorScheme.brand,
+    barColor: Color = MaterialTheme.colorSchemeExtended.brand,
     modifier: Modifier = Modifier
 ) {
     val barHeight = 120.dp
@@ -217,13 +227,13 @@ private fun DrawScope.drawGridLines(
     gridLineDotSize: Float = 4f
 ) {
     if (!showVerticalGridLines) return
-    
+
     val gridColor = Color.Gray.copy(alpha = 0.3f)
     val stepWidth = size.width / hourCount
-    
+
     // Create dotted path effect
     val pathEffect = PathEffect.dashPathEffect(floatArrayOf(gridLineDotSize, gridLineDotSize), 0f)
-    
+
     // Draw vertical dotted grid lines every gridLineInterval hours
     for (hour in 0 until hourCount step gridLineInterval) {
         val x = hour * stepWidth

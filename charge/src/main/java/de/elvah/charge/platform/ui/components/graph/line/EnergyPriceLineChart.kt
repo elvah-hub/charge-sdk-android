@@ -29,7 +29,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -61,7 +60,7 @@ import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_MINUTE_RESOLUTION
 import de.elvah.charge.platform.ui.components.graph.line.utils.getClickedTimeByOffset
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -278,7 +277,7 @@ private fun LivePricingPrice(
                 R.string.kwh_label
             ),
             color = if (offerSelected) {
-                MaterialTheme.colorScheme.brand
+                MaterialTheme.colorSchemeExtended.brand
             } else {
                 MaterialTheme.colorScheme.primary
             }
@@ -344,7 +343,7 @@ private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
                 R.drawable.ic_no_offer
             ), contentDescription = null,
             tint = if (priceOffer != null) {
-                MaterialTheme.colorScheme.brand
+                MaterialTheme.colorSchemeExtended.brand
             } else {
                 MaterialTheme.colorScheme.secondary
             }
@@ -358,7 +357,7 @@ private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
             },
             fontWeight = FontWeight.W700,
             color = if (priceOffer != null) {
-                MaterialTheme.colorScheme.brand
+                MaterialTheme.colorSchemeExtended.brand
             } else {
                 MaterialTheme.colorScheme.primary
             }
@@ -459,7 +458,9 @@ private fun TypeModalContent(
 @Composable
 private fun TypeModalContentHeader(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

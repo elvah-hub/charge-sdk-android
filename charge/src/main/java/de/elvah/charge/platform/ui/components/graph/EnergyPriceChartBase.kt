@@ -5,14 +5,25 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import java.time.LocalDate
 
 private data class EnergyPriceData1(
@@ -44,18 +55,18 @@ private fun EnergyPriceChart1(
     animated: Boolean = true
 ) {
     if (data.isEmpty()) return
-    
+
     val scrollState = rememberScrollState()
     val maxPrice = data.maxOf { it.price }
     val minPrice = data.minOf { it.price }
     val priceRange = maxPrice - minPrice
-    
+
     val animatedProgress by animateFloatAsState(
         targetValue = if (animated) 1f else 1f,
         animationSpec = tween(durationMillis = 1000),
         label = "chart_animation"
     )
-    
+
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -90,7 +101,7 @@ private fun EnergyPriceChart1(
                     )
                 }
             }
-            
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -123,21 +134,21 @@ private fun EnergyPriceBar(
     val density = LocalDensity.current
     val barHeight = 120.dp
     val barWidth = 32.dp
-    
+
     val normalizedHeight = if (maxPrice > minPrice) {
         ((data.price - minPrice) / (maxPrice - minPrice)).toFloat()
     } else {
         1f
     }
-    
+
     val currentHeight = (normalizedHeight * progress).coerceIn(0f, 1f)
-    
+
     val barColor = when {
         data.price < (minPrice + (maxPrice - minPrice) * 0.33) -> Color(0xFF4CAF50) // Green for low prices
         data.price < (minPrice + (maxPrice - minPrice) * 0.66) -> Color(0xFFFF9800) // Orange for medium prices
         else -> Color(0xFFF44336) // Red for high prices
     }
-    
+
     Column(
         modifier = modifier.width(barWidth),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -149,7 +160,7 @@ private fun EnergyPriceBar(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 4.dp)
         )
-        
+
         Box(
             modifier = Modifier
                 .width(barWidth)
@@ -164,7 +175,7 @@ private fun EnergyPriceBar(
                     .align(Alignment.BottomCenter)
             )
         }
-        
+
         Text(
             text = "${data.hour}:00",
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
@@ -182,19 +193,19 @@ internal fun EnergyPriceLineChart1(
     animated: Boolean = true
 ) {
     if (data.isEmpty()) return
-    
+
     val scrollState = rememberScrollState()
     val maxPrice = data.maxOf { it.price }
     val minPrice = data.minOf { it.price }
-    
+
     val animatedProgress by animateFloatAsState(
         targetValue = if (animated) 1f else 1f,
         animationSpec = tween(durationMillis = 1200),
         label = "line_chart_animation"
     )
-    
-    val brandColor = MaterialTheme.colorScheme.brand
-    
+
+    val brandColor = MaterialTheme.colorSchemeExtended.brand
+
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -213,7 +224,7 @@ internal fun EnergyPriceLineChart1(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            
+
             Box(
                 modifier = Modifier
                     .height(160.dp)
@@ -234,7 +245,7 @@ internal fun EnergyPriceLineChart1(
                     )
                 }
             }
-            
+
             Row(
                 modifier = Modifier
                     .horizontalScroll(scrollState)
@@ -264,16 +275,16 @@ private fun DrawScope.drawEnergyPriceLine(
     brandColor: Color
 ) {
     if (data.size < 2) return
-    
+
     val stepX = size.width / (data.size - 1)
     val priceRange = maxPrice - minPrice
-    
+
     val path = Path()
     val gradientPath = Path()
-    
+
     val visibleDataCount = (data.size * progress).toInt().coerceAtLeast(1)
     val visibleData = data.take(visibleDataCount)
-    
+
     visibleData.forEachIndexed { index, priceData ->
         val x = index * stepX
         val normalizedPrice = if (priceRange > 0) {
@@ -282,7 +293,7 @@ private fun DrawScope.drawEnergyPriceLine(
             0.5f
         }
         val y = size.height - (normalizedPrice * size.height * 0.8f) - size.height * 0.1f
-        
+
         if (index == 0) {
             path.moveTo(x, y)
             gradientPath.moveTo(x, size.height)
@@ -291,22 +302,22 @@ private fun DrawScope.drawEnergyPriceLine(
             path.lineTo(x, y)
             gradientPath.lineTo(x, y)
         }
-        
+
         drawCircle(
             color = brandColor,
             radius = 4.dp.toPx(),
             center = Offset(x, y)
         )
     }
-    
+
     gradientPath.lineTo(visibleData.lastIndex * stepX, size.height)
     gradientPath.close()
-    
+
     drawPath(
         path = gradientPath,
         color = brandColor.copy(alpha = 0.2f)
     )
-    
+
     drawPath(
         path = path,
         color = brandColor,
@@ -364,7 +375,7 @@ private fun EnergyPriceChartDarkPreview() {
                 dailyData = generateThreeDaySampleData(),
                 modifier = Modifier.fillMaxWidth()
             )
-            
+
             EnergyPriceLineChart1(
                 data = generateSampleEnergyData(),
                 modifier = Modifier.fillMaxWidth()
@@ -379,7 +390,9 @@ private fun EnergyPriceChartHighVariationPreview() {
     ElvahChargeTheme {
         EnergyPriceChart(
             dailyData = generateThreeDayHighVariationData(),
-            modifier = Modifier.fillMaxWidth().padding(16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         )
     }
 }
@@ -390,7 +403,9 @@ private fun EnergyPriceChartLowVariationPreview() {
     ElvahChargeTheme {
         EnergyPriceChart(
             dailyData = generateThreeDayLowVariationData(),
-            modifier = Modifier.fillMaxWidth().padding(16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         )
     }
 }

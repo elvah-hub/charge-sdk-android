@@ -3,7 +3,7 @@ package de.elvah.charge.platform.ui.components.graph.line
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 
 /**
  * Default graph colors following Jetpack Compose patterns.
@@ -13,10 +13,10 @@ internal object GraphColorDefaults {
 
     @Composable
     fun colors(
-        offerSelectedLine: Color = MaterialTheme.colorScheme.brand,
-        offerSelectedArea: Color = MaterialTheme.colorScheme.brand.copy(alpha = 0.6f),
-        offerUnselectedLine: Color = MaterialTheme.colorScheme.brand.copy(alpha = 0.6f),
-        offerUnselectedArea: Color = MaterialTheme.colorScheme.brand.copy(alpha = 0.3f),
+        offerSelectedLine: Color = MaterialTheme.colorSchemeExtended.brand,
+        offerSelectedArea: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.6f),
+        offerUnselectedLine: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.6f),
+        offerUnselectedArea: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.3f),
         regularSelectedLine: Color = Color.Companion.Gray.copy(alpha = 0.8f),
         regularSelectedArea: Color = Color.Companion.Gray.copy(alpha = 0.6f),
         regularUnselectedLine: Color = Color.Companion.Gray.copy(alpha = 0.4f),

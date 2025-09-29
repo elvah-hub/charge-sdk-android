@@ -8,7 +8,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeColors
 import de.elvah.charge.platform.ui.theme.colors.LocalColorSchemeExtended
-import de.elvah.charge.platform.ui.theme.colors.brandColor
 import de.elvah.charge.platform.ui.theme.colors.onBrandColor
 
 @Composable
@@ -27,10 +26,6 @@ internal fun ElvahChargeTheme(
         )
     }
 }
-
-internal val ColorScheme.brand: Color
-    get() = brandColor
-
 
 internal val ColorScheme.onBrand: Color
     get() = onBrandColor

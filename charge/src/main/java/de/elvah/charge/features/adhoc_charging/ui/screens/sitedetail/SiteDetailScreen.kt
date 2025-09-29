@@ -46,7 +46,7 @@ import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyMediumBold
 import de.elvah.charge.platform.ui.theme.copySmallBold
 import de.elvah.charge.platform.ui.theme.titleSmallBold
@@ -141,7 +141,7 @@ private fun OfferBannerAndClose(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = MaterialTheme.colorScheme.brand.copy(
+                        color = MaterialTheme.colorSchemeExtended.brand.copy(
                             alpha = 0.1f,
                         ),
                     )
@@ -157,7 +157,7 @@ private fun OfferBannerAndClose(
                         ),
                     text = "Offer ends in 13h 11m",
                     style = copySmallBold,
-                    color = MaterialTheme.colorScheme.brand,
+                    color = MaterialTheme.colorSchemeExtended.brand,
                     textAlign = TextAlign.Center
                 )
             }
