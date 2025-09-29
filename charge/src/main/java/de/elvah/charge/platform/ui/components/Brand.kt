@@ -16,7 +16,7 @@ import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
-fun CPOLogo(
+internal fun CPOLogo(
     url: String,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
@@ -25,7 +25,7 @@ fun CPOLogo(
 }
 
 @Composable
-fun ElvahLogo(modifier: Modifier = Modifier) {
+internal fun ElvahLogo(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,

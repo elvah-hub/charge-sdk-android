@@ -2,7 +2,7 @@ package de.elvah.charge.features.sites.data.remote.model.response
 
 import com.squareup.moshi.Json
 
-data class ChargePointDto<T>(
+internal data class ChargePointDto<T>(
 
     @param:Json(name = "evseId")
     val evseId: String,

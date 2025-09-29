@@ -235,7 +235,7 @@ private fun ChargingPointLockedModal_Preview() {
 }
 
 @Composable
-fun ChargingPointErrorModal(
+internal fun ChargingPointErrorModal(
     modifier: Modifier = Modifier,
     onCloseModal: () -> Unit,
 ) {
@@ -295,7 +295,7 @@ private fun ConnectVehicleMessage(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ChargingIdBadge(id: String, modifier: Modifier = Modifier) {
+private fun ChargingIdBadge(id: String, modifier: Modifier = Modifier) {
     BasicCard(
         modifier = modifier,
         backgroundColor = MaterialTheme.colorScheme.brand,

@@ -29,7 +29,7 @@ import java.time.LocalTime
 /**
  * Draws vertical grid lines on the chart canvas
  */
-fun DrawScope.drawGridLines(
+internal fun DrawScope.drawGridLines(
     showVerticalGridLines: Boolean,
     gridLineInterval: Int,
     gridLineDotSize: Float,
@@ -86,7 +86,7 @@ fun DrawScope.drawGridLines(
 /**
  * Draws the step line chart with filled areas for different pricing states
  */
-fun DrawScope.drawStepLineChart(
+internal fun DrawScope.drawStepLineChart(
     dayData: DailyPricingData,
     maxPrice: Double,
     minPrice: Double,
@@ -137,7 +137,7 @@ fun DrawScope.drawStepLineChart(
 /**
  * Draws the current time marker on today's chart
  */
-fun DrawScope.drawCurrentTimeMarker(
+internal fun DrawScope.drawCurrentTimeMarker(
     maxPrice: Double,
     minPrice: Double,
     minuteResolution: Int,

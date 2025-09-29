@@ -1,4 +1,4 @@
-package de.elvah.charge.entrypoints.chargepoints
+package de.elvah.charge.public_api.chargepoints
 
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
@@ -9,7 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.elvah.charge.entrypoints.DisplayBehavior
+import de.elvah.charge.public_api.DisplayBehavior
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
@@ -22,7 +22,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun ChargePointList(
+public fun ChargePointList(
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
 ) {

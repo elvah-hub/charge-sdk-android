@@ -1,5 +1,5 @@
 package de.elvah.charge.features.sites.domain.model
 
-class Campaign(
+internal class Campaign(
     val chargeSite: ChargeSite
 )

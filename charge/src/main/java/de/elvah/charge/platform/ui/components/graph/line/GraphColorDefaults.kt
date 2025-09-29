@@ -9,7 +9,7 @@ import de.elvah.charge.platform.ui.theme.brand
  * Default graph colors following Jetpack Compose patterns.
  * Uses brand color for offers and gray for regular pricing.
  */
-object GraphColorDefaults {
+internal object GraphColorDefaults {
 
     @Composable
     fun colors(

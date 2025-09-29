@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class PaymentSummaryDto(
+internal data class PaymentSummaryDto(
 
     @param:Json(name = "data")
     val data: Data,
@@ -14,7 +14,7 @@ data class PaymentSummaryDto(
 ) {
 
     @JsonClass(generateAdapter = true)
-    data class Data(
+    internal data class Data(
 
         @param:Json(name = "address")
         val address: Address,
@@ -36,7 +36,7 @@ data class PaymentSummaryDto(
     )
 
     @JsonClass(generateAdapter = true)
-    data class TotalCost(
+    internal data class TotalCost(
 
         @param:Json(name = "amount")
         val amount: Int,
@@ -46,7 +46,7 @@ data class PaymentSummaryDto(
     )
 
     @JsonClass(generateAdapter = true)
-    data class Address(
+    internal data class Address(
 
         @param:Json(name = "streetAddress")
         val streetAddress: String,

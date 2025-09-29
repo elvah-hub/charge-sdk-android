@@ -1,4 +1,4 @@
-package de.elvah.charge.entrypoints.banner
+package de.elvah.charge.public_api.banner
 
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.elvah.charge.entrypoints.DisplayBehavior
+import de.elvah.charge.public_api.DisplayBehavior
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
 import de.elvah.charge.features.sites.ui.SitesState
@@ -28,7 +28,7 @@ import org.koin.compose.koinInject
 
 
 @Composable
-fun ChargeBanner(
+public fun ChargeBanner(
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
     variant: BannerVariant = BannerVariant.DEFAULT,

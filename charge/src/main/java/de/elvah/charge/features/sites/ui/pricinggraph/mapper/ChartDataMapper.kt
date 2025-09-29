@@ -9,7 +9,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
-fun ScheduledPricingUI.toChartData(): List<DailyPricingData> {
+internal fun ScheduledPricingUI.toChartData(): List<DailyPricingData> {
     val today = LocalDate.now()
 
     return listOf(

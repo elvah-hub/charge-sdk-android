@@ -10,7 +10,7 @@ import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
-fun Chevron(onClick: () -> Unit = {}) {
+internal fun Chevron(onClick: () -> Unit = {}) {
     IconButton(onClick = onClick) {
         Icon(
             painter = painterResource(R.drawable.ic_chevron_right),

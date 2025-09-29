@@ -53,7 +53,7 @@ private val swipingBoxSize = 48.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SwipeButton(
+internal fun SwipeButton(
     text: String,
     onSwipeText: String? = null,
     modifier: Modifier = Modifier,

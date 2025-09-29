@@ -18,7 +18,7 @@ import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.decorativeStroke
 
 @Composable
-fun BasicCard(
+internal fun BasicCard(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     borderColor: Color = decorativeStroke,

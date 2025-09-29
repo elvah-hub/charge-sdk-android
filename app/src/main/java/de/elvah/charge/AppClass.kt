@@ -4,7 +4,7 @@ import android.app.Application
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
 
-class AppClass : Application() {
+public class AppClass : Application() {
     override fun onCreate() {
         super.onCreate()
         Elvah.initialize(

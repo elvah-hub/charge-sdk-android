@@ -1,4 +1,4 @@
-package de.elvah.charge.entrypoints.pricinggraph
+package de.elvah.charge.public_api.pricinggraph
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -6,8 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.elvah.charge.entrypoints.DisplayBehavior
-import de.elvah.charge.entrypoints.banner.openSite
+import de.elvah.charge.public_api.DisplayBehavior
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphEffect
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphState
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphViewModel
@@ -18,12 +17,13 @@ import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphLoa
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
+import de.elvah.charge.public_api.banner.openSite
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun PricingGraph(
+public fun PricingGraph(
     siteId: String,
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,

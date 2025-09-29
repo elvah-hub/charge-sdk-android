@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Json
 
 @JsonClass(generateAdapter = true)
-data class ScheduledPricingDto(
+internal data class ScheduledPricingDto(
 
 	@param:Json(name="dailyPricing")
 	val dailyPricing: DailyPricingDto,
@@ -14,7 +14,7 @@ data class ScheduledPricingDto(
 )
 
 @JsonClass(generateAdapter = true)
-data class TimeSlotsItemDto(
+internal data class TimeSlotsItemDto(
 
 	@param:Json(name="isDiscounted")
 	val isDiscounted: Boolean,
@@ -30,7 +30,7 @@ data class TimeSlotsItemDto(
 )
 
 @JsonClass(generateAdapter = true)
-data class DailyPricingDto(
+internal data class DailyPricingDto(
 
 	@param:Json(name="yesterday")
 	val yesterday: DayDto,
@@ -43,7 +43,7 @@ data class DailyPricingDto(
 )
 
 @JsonClass(generateAdapter = true)
-data class DayDto(
+internal data class DayDto(
 
 	@param:Json(name="lowestPrice")
 	val lowestPrice: PriceDto,

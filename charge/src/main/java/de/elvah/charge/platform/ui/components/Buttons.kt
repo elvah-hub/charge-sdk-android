@@ -30,7 +30,7 @@ import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.onBrand
 
 @Composable
-fun GooglePayButton(
+internal fun GooglePayButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -53,7 +53,7 @@ private fun GooglePayButton_Preview() {
 }
 
 @Composable
-fun ButtonPrimary(
+internal fun ButtonPrimary(
     text: String, modifier: Modifier = Modifier,
     @DrawableRes icon: Int? = null,
     onClick: () -> Unit,
@@ -92,7 +92,7 @@ private fun PrimaryButton_Preview() {
 
 
 @Composable
-fun SecondaryButton(
+internal fun SecondaryButton(
     text: String,
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int? = null,
@@ -135,7 +135,7 @@ private fun SecondaryButton_WithIcon_Preview() {
 
 
 @Composable
-fun ButtonTertiary(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+internal fun ButtonTertiary(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     TextButton(onClick, modifier) {
         val color = MaterialTheme.colorScheme.primary
         Text(

@@ -1,6 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.domain.model
 
-class PaymentIntent(
+internal class PaymentIntent(
     val clientSecret: String,
     val customerId: String,
     val ephemeralKeySecret: String,

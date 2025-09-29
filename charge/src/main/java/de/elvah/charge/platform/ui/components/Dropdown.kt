@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DropdownMenuButton(selectedOption:String, onClick: () -> Unit){
+internal fun DropdownMenuButton(selectedOption:String, onClick: () -> Unit){
     TextButton(
         onClick = onClick
     ) {
@@ -22,7 +22,7 @@ fun DropdownMenuButton(selectedOption:String, onClick: () -> Unit){
 
 
 @Composable
-fun DropdownLabel(selectedText: String) {
+internal fun DropdownLabel(selectedText: String) {
     CopySmall(selectedText)
     Spacer(modifier = Modifier.width(6.dp))
     Icon(

@@ -176,7 +176,7 @@ private fun EnergyPriceBar(
 }
 
 @Composable
-fun EnergyPriceLineChart1(
+internal fun EnergyPriceLineChart1(
     data: List<EnergyPriceData>,
     modifier: Modifier = Modifier,
     animated: Boolean = true

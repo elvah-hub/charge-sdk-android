@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(
+internal fun TopAppBar(
     title: String,
     onBackClick: (() -> Unit)? = null,
 ) {
@@ -27,7 +27,7 @@ fun TopAppBar(
 }
 
 @Composable
-fun BackIcon(onClick: () -> Unit) {
+internal fun BackIcon(onClick: () -> Unit) {
     IconButton(onClick) {
         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
     }

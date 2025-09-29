@@ -14,7 +14,7 @@ import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
-fun FullScreenError(modifier: Modifier = Modifier) {
+internal fun FullScreenError(modifier: Modifier = Modifier) {
     Surface {
         Box(modifier = modifier.fillMaxSize()) {
             Text(

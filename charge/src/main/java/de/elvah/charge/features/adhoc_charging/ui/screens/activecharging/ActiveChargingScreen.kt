@@ -286,7 +286,7 @@ private fun CircularProgressWithTick(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun TickIcon(modifier: Modifier = Modifier) {
+internal fun TickIcon(modifier: Modifier = Modifier) {
     Image(
         modifier = modifier.padding(24.dp),
         painter = painterResource(R.drawable.ic_green_tick),
@@ -334,7 +334,7 @@ private fun ChargingTimeText(time: String, modifier: Modifier = Modifier) {
 }
 
 
-fun getFormattedDuration(totalSeconds: Int): String {
+internal fun getFormattedDuration(totalSeconds: Int): String {
     val hours = (totalSeconds / 3600).toInt()
     val minutes = ((totalSeconds % 3600) / 60).toInt()
     val seconds = (totalSeconds % 60).toInt()

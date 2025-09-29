@@ -1,4 +1,4 @@
-package de.elvah.charge.entrypoints.banner
+package de.elvah.charge.public_api.banner
 
 import androidx.compose.ui.util.fastCoerceAtLeast
 import androidx.compose.ui.util.fastCoerceAtMost
@@ -8,19 +8,19 @@ import de.elvah.charge.features.sites.domain.usecase.ClearFilters
 import de.elvah.charge.features.sites.domain.usecase.UpdateFilters
 import org.koin.java.KoinJavaComponent
 
-class ChargeBannerSource() {
+public class ChargeBannerSource() {
 
     private val updateFilters: UpdateFilters by KoinJavaComponent.inject(UpdateFilters::class.java)
     private val clearFilters: ClearFilters by KoinJavaComponent.inject(ClearFilters::class.java)
 
-    suspend fun sitesAt(
+    public  suspend fun sitesAt(
         boundingBox: BoundingBox,
         offerType: OfferType? = null
     ) {
         updateFilters(boundingBox = boundingBox, offerType = offerType)
     }
 
-    suspend fun sitesAt(
+    public suspend fun sitesAt(
         latitude: Double,
         longitude: Double,
         radius: Double,
@@ -38,18 +38,18 @@ class ChargeBannerSource() {
         )
     }
 
-    suspend fun sitesAt(
+    public suspend fun sitesAt(
         evseIds: List<EvseId>,
         offerType: OfferType? = null
     ) {
         updateFilters(evseIds = evseIds, offerType = offerType)
     }
 
-    suspend fun resetFilters() {
+    public suspend fun resetFilters() {
         clearFilters()
     }
 }
 
 
 @JvmInline
-value class EvseId(val value: String)
+public value class EvseId(public val value: String)

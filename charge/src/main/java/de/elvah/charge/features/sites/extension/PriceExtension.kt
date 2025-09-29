@@ -6,7 +6,7 @@ import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
 
-fun Price.formatted(
+internal fun Price.formatted(
     includeCurrency: Boolean = true,
 ): String =
     value.formattedPrice(

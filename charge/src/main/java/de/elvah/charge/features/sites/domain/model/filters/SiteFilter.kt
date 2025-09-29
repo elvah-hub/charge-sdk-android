@@ -1,8 +1,8 @@
 package de.elvah.charge.features.sites.domain.model.filters
 
-import de.elvah.charge.entrypoints.banner.EvseId
+import de.elvah.charge.public_api.banner.EvseId
 
-data class SiteFilter(
+internal data class SiteFilter(
     val evseIds: List<EvseId> = emptyList(),
     var boundingBox: BoundingBox? = null,
     var campaignId: CampaignId? = null,

@@ -167,11 +167,6 @@ internal fun ChargeBanner_ActiveSession(
     }
 }
 
-data class ChargeBannerActiveSessionRender(
-    val id: String,
-    val chargeTime: Duration
-)
-
 @Composable
 private fun ChargeBannerHeader(timeLeft: String, modifier: Modifier = Modifier) {
     Row(

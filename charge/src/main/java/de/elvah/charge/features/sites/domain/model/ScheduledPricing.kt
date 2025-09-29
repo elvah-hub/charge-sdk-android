@@ -1,6 +1,6 @@
 package de.elvah.charge.features.sites.domain.model
 
-data class ScheduledPricing(
+internal data class ScheduledPricing(
     val dailyPricing: DailyPricing,
     val standardPrice: Price
 ) {

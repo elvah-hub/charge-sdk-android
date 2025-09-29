@@ -67,7 +67,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
-fun EnergyPriceLineChart(
+internal fun EnergyPriceLineChart(
     dailyData: List<DailyPricingData>,
     modifier: Modifier = Modifier,
     colors: GraphColors = GraphColorDefaults.colors(),
@@ -394,7 +394,7 @@ private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun DayLabel(selectedPage: Int) {
+internal fun DayLabel(selectedPage: Int) {
     val currentTime = LocalTime.now()
     CopySmall(
         text = when (selectedPage) {
@@ -500,7 +500,7 @@ private fun TypeModalContentListItem(option: PlugType, modifier: Modifier = Modi
     }
 }
 
-data class PlugType(
+internal data class PlugType(
     val title: String,
     val subtitle: String
 )

@@ -31,7 +31,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun ElvahChargeTheme(
+internal fun ElvahChargeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
@@ -53,12 +53,12 @@ fun ElvahChargeTheme(
     )
 }
 
-val ColorScheme.brand: Color
+internal val ColorScheme.brand: Color
     get() = brandColor
 
-val ColorScheme.onBrand: Color
-    get() = onBrandColor
 
+internal val ColorScheme.onBrand: Color
+    get() = onBrandColor
 
 @Composable
 internal fun shouldUseDarkColors(darkTheme: Boolean?): Boolean = darkTheme ?: isSystemInDarkTheme()
