@@ -15,13 +15,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.decorativeStroke
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 
 @Composable
 internal fun BasicCard(
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    borderColor: Color = decorativeStroke,
+    borderColor: Color = MaterialTheme.colorSchemeExtended.decorativeStroke,
     paddingValues: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 16.dp),
     content: @Composable ColumnScope.() -> Unit,
 ) {

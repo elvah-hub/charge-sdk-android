@@ -3,7 +3,8 @@ package de.elvah.charge.platform.ui.theme
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-
+import de.elvah.charge.platform.ui.theme.colors.primary
+import de.elvah.charge.platform.ui.theme.colors.secondary
 
 internal val titleXLarge = TextStyle(
     fontWeight = FontWeight.W400,

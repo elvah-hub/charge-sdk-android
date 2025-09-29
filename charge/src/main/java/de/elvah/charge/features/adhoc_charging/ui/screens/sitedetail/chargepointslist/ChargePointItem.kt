@@ -31,9 +31,9 @@ import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.copyXLargeBold
-import de.elvah.charge.platform.ui.theme.decorativeStroke
 
 @Composable
 internal fun ChargePointItem(
@@ -147,7 +147,7 @@ private fun BadgeStatus(
         ChargePointAvailability.UNAVAILABLE,
         ChargePointAvailability.UNKNOWN,
             -> {
-            decorativeStroke
+            MaterialTheme.colorSchemeExtended.decorativeStroke
         }
     }
 
