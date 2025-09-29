@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 
 
-val sitesUseCaseModule = module {
+internal val sitesUseCaseModule = module {
     factory { GetFilters(get()) }
     factory { GetBestSite(get(), Dispatchers.Default) }
     factory { GetSites(get()) }

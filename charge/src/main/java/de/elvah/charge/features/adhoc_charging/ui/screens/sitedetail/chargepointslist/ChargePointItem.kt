@@ -91,7 +91,7 @@ internal fun ChargePointItem(
     }
 }
 
-private fun getChargePointAvailabilityStatusTextResId(
+internal fun getChargePointAvailabilityStatusTextResId(
     availability: ChargePointAvailability,
 ): Int {
     return when (availability) {
