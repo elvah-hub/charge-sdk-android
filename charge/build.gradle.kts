@@ -1,8 +1,3 @@
-import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.kotlin
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -113,6 +108,8 @@ dependencies {
     implementation(libs.koin.androidx.compose.navigation)
 
     implementation(libs.bundles.networking)
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
 
     implementation(platform(libs.arrow.stack))
     implementation(libs.arrow.core)

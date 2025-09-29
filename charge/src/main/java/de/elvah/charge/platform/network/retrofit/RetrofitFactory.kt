@@ -1,5 +1,6 @@
 package de.elvah.charge.platform.network.retrofit
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.squareup.moshi.Moshi
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.UserAgentInterceptor
@@ -17,6 +18,7 @@ internal class RetrofitFactory(
     private val apiKeyInterceptor: ApiKeyInterceptor,
     private val distinctKeyInterceptor: Interceptor,
     private val userAgentInterceptor: UserAgentInterceptor,
+    private val chuckerInterceptor: ChuckerInterceptor,
     private val moshi: Moshi,
 ) {
 
@@ -32,6 +34,8 @@ internal class RetrofitFactory(
         httpClientBuilder.addInterceptor(distinctKeyInterceptor)
         httpClientBuilder.addInterceptor(userAgentInterceptor)
         httpClientBuilder.addInterceptor(httpLoggingInterceptor)
+        httpClientBuilder.addInterceptor(httpLoggingInterceptor)
+        httpClientBuilder.addInterceptor(chuckerInterceptor)
 
         return Retrofit.Builder()
             .baseUrl(baseUrl)
