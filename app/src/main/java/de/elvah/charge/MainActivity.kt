@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import de.elvah.charge.development.DevelopmentTools
 import de.elvah.charge.public_api.banner.ChargeBanner
 import de.elvah.charge.public_api.banner.ChargeBannerSource
 import de.elvah.charge.public_api.banner.EvseId
@@ -58,7 +59,12 @@ class MainActivity : ComponentActivity() {
                         }) {
                             Text("Open Deal at HNTCI*E*00001")
                         }
-                        
+                        Button({
+                            startActivity(DevelopmentTools.getHttpInspectorIntent())
+                        }) {
+                            Text("Open HTTP Inspector")
+                        }
+
                         // Test PricingGraph with sample site ID
                         if (sites.isNotEmpty()) {
                             PricingGraph(
