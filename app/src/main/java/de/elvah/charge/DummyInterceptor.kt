@@ -26,7 +26,7 @@ class DummyInterceptor : NetworkStorageInterceptor {
             body = null, // Could extract body if needed
             timestamp = System.currentTimeMillis(),
             responseCode = response.code,
-            responseBody = null // Could extract response body if needed
+            responseBody = null, // Could extract response body if needed
         )
         
         storedRequests.add(storedRequest)
