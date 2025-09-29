@@ -110,6 +110,8 @@ dependencies {
     implementation(libs.koin.androidx.compose.navigation)
 
     implementation(libs.bundles.networking)
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
 
     implementation(platform(libs.arrow.stack))
     implementation(libs.arrow.core)
