@@ -20,7 +20,7 @@ internal object ElvahChargeColors {
         onTertiary = canvas,
     )
 
-    private val LightColorSchemeExtended = ColorSchemeExtended(
+    internal val LightColorSchemeExtended = ColorSchemeExtended(
         primary = primary,
         decorativeStroke = decorativeStroke,
         brand = brandColor,
