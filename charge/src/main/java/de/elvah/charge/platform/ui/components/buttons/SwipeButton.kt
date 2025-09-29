@@ -1,4 +1,4 @@
-package de.elvah.charge.platform.ui.components
+package de.elvah.charge.platform.ui.components.buttons
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade

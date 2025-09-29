@@ -37,8 +37,8 @@ import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingPointErrorModal
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SupportContacts
-import de.elvah.charge.platform.ui.components.ButtonPrimary
-import de.elvah.charge.platform.ui.components.ButtonTertiary
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.ButtonTertiary
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.ElvahLogo

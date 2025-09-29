@@ -1,4 +1,4 @@
-package de.elvah.charge.platform.ui.components
+package de.elvah.charge.platform.ui.components.buttons
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
