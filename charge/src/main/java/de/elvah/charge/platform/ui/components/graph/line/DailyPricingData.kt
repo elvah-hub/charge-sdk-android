@@ -3,7 +3,7 @@ package de.elvah.charge.platform.ui.components.graph.line
 import java.time.LocalDate
 import java.time.LocalTime
 
-data class DailyPricingData(
+internal data class DailyPricingData(
     val date: LocalDate,
     val regularPrice: Double,
     val offers: List<PriceOffer> = emptyList(),

@@ -2,7 +2,7 @@ package de.elvah.charge.platform.ui.components.graph.line
 
 import java.time.LocalTime
 
-sealed class PriceSlot {
+internal sealed class PriceSlot {
     abstract val startTime: LocalTime
     abstract val endTime: LocalTime
     abstract val price: Double

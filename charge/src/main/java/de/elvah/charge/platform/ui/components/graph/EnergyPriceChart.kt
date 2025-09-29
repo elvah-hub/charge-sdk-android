@@ -30,20 +30,20 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.sin
 
-data class EnergyPriceData(
+internal data class EnergyPriceData(
     val hour: Int,
     val price: Double,
     val currency: String = "€"
 )
 
-data class DailyEnergyData(
+internal data class DailyEnergyData(
     val date: LocalDate,
     val hourlyData: List<EnergyPriceData>
 )
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun EnergyPriceChart(
+internal fun EnergyPriceChart(
     dailyData: List<DailyEnergyData>,
     modifier: Modifier = Modifier,
     animated: Boolean = true,

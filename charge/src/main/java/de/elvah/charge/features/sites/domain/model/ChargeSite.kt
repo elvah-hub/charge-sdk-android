@@ -50,7 +50,7 @@ public data class ChargeSite(
     )
 }
 
-enum class ChargePointAvailability {
+public enum class ChargePointAvailability {
     UNAVAILABLE,
     AVAILABLE,
     OUT_OF_SERVICE,

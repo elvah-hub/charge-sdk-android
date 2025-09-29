@@ -49,6 +49,8 @@ android {
         abiValidation {
             enabled.set(true)
         }
+
+        explicitApi()
     }
 
     publishing {
@@ -100,12 +102,6 @@ protobuf {
                 }
             }
         }
-    }
-}
-
-tasks.withType<KotlinJvmCompile>().configureEach {
-    compilerOptions {
-        freeCompilerArgs.add("-Xexplicit-api=strict")
     }
 }
 

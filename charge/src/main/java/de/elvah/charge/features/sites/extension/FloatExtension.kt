@@ -3,7 +3,7 @@ package de.elvah.charge.features.sites.extension
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-fun Float.formatKW(
+internal fun Float.formatKW(
     includeMinusEqualChar: Boolean = false,
 ): String {
     val pattern = StringBuilder()

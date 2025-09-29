@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
  * - Offer and Regular pricing types
  * - Selected and Unselected states
  */
-data class GraphColors(
+internal data class GraphColors(
     // Offer colors - selected state
     val offerSelectedLine: Color,
     val offerSelectedArea: Color,

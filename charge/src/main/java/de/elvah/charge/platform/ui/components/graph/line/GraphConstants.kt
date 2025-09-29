@@ -3,7 +3,7 @@ package de.elvah.charge.platform.ui.components.graph.line
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-object GraphConstants {
+internal object GraphConstants {
     // Chart dimensions
     const val DEFAULT_CHART_HEIGHT_DP = 200
     const val DEFAULT_BAR_HEIGHT_DP = 120
