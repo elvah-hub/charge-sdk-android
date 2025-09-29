@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLargeBold
-import de.elvah.charge.platform.ui.theme.onBrand
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
@@ -58,7 +57,7 @@ internal fun SwipeButton(
     onSwipeText: String? = null,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorSchemeExtended.brand,
-    contentColor: Color = MaterialTheme.colorScheme.onBrand,
+    contentColor: Color = MaterialTheme.colorSchemeExtended.onBrand,
     shouldMoveText: Boolean = true,
     onSwiped: () -> Unit,
 ) {

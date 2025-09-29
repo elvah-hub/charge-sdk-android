@@ -27,7 +27,6 @@ import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLargeBold
-import de.elvah.charge.platform.ui.theme.onBrand
 
 @Composable
 internal fun GooglePayButton(
@@ -65,7 +64,7 @@ internal fun ButtonPrimary(
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorSchemeExtended.brand,
-            contentColor = MaterialTheme.colorScheme.onBrand
+            contentColor = MaterialTheme.colorSchemeExtended.onBrand,
         )
     ) {
         icon?.let {
@@ -76,7 +75,7 @@ internal fun ButtonPrimary(
             text = text,
             modifier = Modifier.padding(vertical = 8.dp),
             style = copyLargeBold,
-            color = MaterialTheme.colorScheme.onBrand
+            color = MaterialTheme.colorSchemeExtended.onBrand,
         )
     }
 }

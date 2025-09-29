@@ -50,9 +50,7 @@ import de.elvah.charge.platform.ui.components.TitleMedium
 import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
-import de.elvah.charge.platform.ui.theme.onBrand
 import kotlinx.coroutines.launch
-
 
 @Composable
 internal fun ChargingStartScreen(
@@ -307,14 +305,14 @@ private fun ChargingIdBadge(id: String, modifier: Modifier = Modifier) {
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_plug),
-                tint = MaterialTheme.colorScheme.onBrand,
+                tint = MaterialTheme.colorSchemeExtended.onBrand,
                 contentDescription = null
             )
             Text(
                 id,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.W600,
-                color = MaterialTheme.colorScheme.onBrand
+                color = MaterialTheme.colorSchemeExtended.onBrand,
             )
         }
     }
