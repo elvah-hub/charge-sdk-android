@@ -36,7 +36,7 @@ internal fun ChargeSite.ChargePoint.toUI(commonPrefix: String): ChargePointUI = 
     evseId = EvseId(evseId),
     shortenedEvseId = evseId.removePrefix(commonPrefix),
     availability = availability,
-    pricePerKwh = Price(
+    standardPricePerKwh = Price(
         value = offer.price.energyPricePerKWh,
         currency = offer.price.currency,
     ),

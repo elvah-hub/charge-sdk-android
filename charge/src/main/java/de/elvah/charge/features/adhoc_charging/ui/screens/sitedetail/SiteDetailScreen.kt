@@ -114,7 +114,7 @@ private fun SiteDetailScreen_Content(
             ChargePointsList(
                 modifier = Modifier
                     .weight(1f),
-                chargePoints = state.chargeSiteUI.chargePoints,
+                chargePoints = state.pricingForChargePoints,
                 onItemClick = onItemClick
             )
 
@@ -314,6 +314,7 @@ private fun SiteDetailScreen_Content_Preview() {
             SiteDetailState.Success(
                 searchInput = "",
                 address = null,
+                pricingForChargePoints = listOf(),
                 chargeSiteUI = MockData.siteUI,
             ),
             onCloseClick = {},
@@ -332,6 +333,7 @@ private fun SiteDetailScreen_Content_EmptyList_Preview() {
             SiteDetailState.Success(
                 searchInput = "",
                 address = null,
+                pricingForChargePoints = listOf(),
                 chargeSiteUI = MockData.siteWithoutChargePoints,
             ),
             onCloseClick = {},

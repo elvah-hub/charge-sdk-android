@@ -8,7 +8,9 @@ import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state.BuildSiteDetailSuccessState
 import de.elvah.charge.features.sites.domain.extension.fullAddress
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
+import de.elvah.charge.features.sites.domain.usecase.GetSiteScheduledPricing
 import de.elvah.charge.features.sites.ui.mapper.toUI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,6 +23,7 @@ internal class SiteDetailViewModel(
     private val sitesRepository: SitesRepository,
     savedStateHandle: SavedStateHandle,
     private val buildSiteDetailSuccessState: BuildSiteDetailSuccessState,
+    private val getSiteScheduledPricing: GetSiteScheduledPricing,
 ) : ViewModel() {
 
     private val args: AdHocChargingScreens.SiteDetailRoute =
@@ -29,18 +32,22 @@ internal class SiteDetailViewModel(
     val siteId = args.siteId
 
     private val site = MutableStateFlow<ChargeSite?>(null)
+    private val pricing = MutableStateFlow<ScheduledPricing?>(null)
     private val chargePointSearchInput = MutableStateFlow("")
 
     val state = combine(
         site,
+        pricing,
         chargePointSearchInput,
-    ) { site, searchInput ->
+    ) { site, pricing, searchInput ->
         if (site == null) return@combine SiteDetailState.Error
+        if (pricing == null) return@combine SiteDetailState.Error
 
         buildSiteDetailSuccessState(
+            chargeSiteUI = site.toUI(),
+            pricing = pricing,
             searchInput = searchInput,
             address = site.address.fullAddress,
-            chargeSiteUI = site.toUI(),
         )
 
     }.stateIn(
@@ -51,10 +58,11 @@ internal class SiteDetailViewModel(
 
     init {
         viewModelScope.launch {
-            site.value = sitesRepository.getChargeSite(args.siteId).fold(
-                ifLeft = { null },
-                ifRight = { it }
-            )
+            site.value = sitesRepository.getChargeSite(args.siteId)
+                .fold({ null }, { it })
+
+            pricing.value = getSiteScheduledPricing(GetSiteScheduledPricing.Params(siteId = siteId))
+                .fold({ null }, { it })
         }
     }
 

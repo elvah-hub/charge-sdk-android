@@ -23,7 +23,7 @@ internal object MockData {
             evseId = EvseId("DE*KDL*E0000049$it"),
             shortenedEvseId = "DE*$it",
             availability = ChargePointAvailability.AVAILABLE,
-            pricePerKwh = Price(0.42, "EUR"),
+            standardPricePerKwh = Price(0.42, "EUR"),
             maxPowerInKW = if (it % 2 == 0) 22.0f else 300.0f,
         )
     }

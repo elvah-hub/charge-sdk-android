@@ -4,13 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.elvah.charge.public_api.DisplayBehavior
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
+import de.elvah.charge.public_api.DisplayBehavior
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -39,7 +39,7 @@ public fun ChargePointList(
             }
 
             is SiteDetailState.Success -> {
-                ChargePointsList(state.chargeSiteUI.chargePoints, onItemClick = { evseId -> })
+                ChargePointsList(state.pricingForChargePoints, onItemClick = { evseId -> })
             }
         }
     }

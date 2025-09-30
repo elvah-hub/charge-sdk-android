@@ -8,7 +8,7 @@ internal data class ChargePointUI(
     val evseId: EvseId,
     val shortenedEvseId: String,
     val availability: ChargePointAvailability,
-    val pricePerKwh: Price,
+    val standardPricePerKwh: Price,
     val maxPowerInKW: Float?,
 )
 

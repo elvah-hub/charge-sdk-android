@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
-import de.elvah.charge.features.sites.ui.model.ChargePointUI
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePointItemUI
 import de.elvah.charge.platform.ui.components.CopyLarge
 import de.elvah.charge.platform.ui.extension.horizontalElement
 import de.elvah.charge.platform.ui.extension.verticalElement
@@ -27,7 +27,7 @@ import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
 internal fun ChargePointsList(
-    chargePoints: List<ChargePointUI>,
+    chargePoints: List<ChargePointItemUI>,
     modifier: Modifier = Modifier,
     onItemClick: (String) -> Unit
 ) {
@@ -58,7 +58,7 @@ internal fun ChargePointsList(
 
 @Composable
 private fun ChargePointsListContent(
-    items: List<ChargePointUI>,
+    items: List<ChargePointItemUI>,
     onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -76,7 +76,7 @@ private fun ChargePointsListContent(
                 chargePoint = item,
                 showSeparator = index != items.lastIndex,
                 onClick = {
-                    onItemClick(item.evseId.value)
+                    onItemClick(item.chargePointUI.evseId.value)
                 },
             )
         }
@@ -85,7 +85,7 @@ private fun ChargePointsListContent(
 
 @Composable
 private fun ChargePointItemWithSeparator(
-    chargePoint: ChargePointUI,
+    chargePoint: ChargePointItemUI,
     onClick: () -> Unit,
     showSeparator: Boolean,
     modifier: Modifier = Modifier,
@@ -133,8 +133,8 @@ private fun EmptyListPreview() {
 }
 
 private val chargePointsMock = listOf(
-    chargePointUIMock,
-    chargePointUIMock,
-    chargePointUIMock,
-    chargePointUIMock,
+    chargePointItemUIMock,
+    chargePointItemUIMock,
+    chargePointItemUIMock,
+    chargePointItemUIMock,
 )

@@ -1,5 +1,7 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
+import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 
 internal sealed class SiteDetailState {
@@ -9,6 +11,14 @@ internal sealed class SiteDetailState {
     internal data class Success(
         val searchInput: String,
         val address: String?,
+        val pricingForChargePoints: List<ChargePointItemUI>,
         val chargeSiteUI: ChargeSiteUI,
     ) : SiteDetailState()
 }
+
+internal data class ChargePointItemUI(
+    val chargePointUI: ChargePointUI,
+    val standardPricePerKwh: Price,
+    val todayPricePerKwh: Price,
+    val hasDiscount: Boolean,
+)
