@@ -1,20 +1,24 @@
 package de.elvah.charge.platform.config
 
+import de.elvah.charge.platform.simulator.domain.model.SimulatorFlow
+
 public class Config(
     public val apiKey: String,
     public val darkTheme: Boolean? = null,
-    public val environment: Environment = Environment.Int,
+    environment: Environment? = null,
 ) {
+    public val environment: Environment = environment ?: detectEnvironmentFromApiKey(apiKey)
+    
     init {
-        checkApiKey()
+        validateApiKey()
     }
 
-    private fun checkApiKey() {
+    private fun validateApiKey() {
         if (apiKey.isEmpty()) {
             throw IllegalArgumentException("API key cannot be empty")
         }
 
-        when (environment) {
+        when (this.environment) {
             Environment.Int -> if (!apiKey.startsWith("evpk_test")) {
                 if (apiKey.startsWith("evpk_prod")) {
                     throw IllegalArgumentException("API Key error: You are using a production API key")
@@ -34,6 +38,14 @@ public class Config(
             }
 
             else -> {}
+        }
+    }
+
+    private fun detectEnvironmentFromApiKey(apiKey: String): Environment {
+        return when {
+            apiKey.startsWith("evpk_test") -> Environment.Int
+            apiKey.startsWith("evpk_prod") -> Environment.Production
+            else -> Environment.Simulator(SimulatorFlow.Default) // Default fallback
         }
     }
 }
