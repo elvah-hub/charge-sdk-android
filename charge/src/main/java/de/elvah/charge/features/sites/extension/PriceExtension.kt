@@ -1,12 +1,12 @@
 package de.elvah.charge.features.sites.extension
 
-import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.domain.model.Pricing
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
 
-internal fun Price.formatted(
+internal fun Pricing.formatted(
     includeCurrency: Boolean = true,
 ): String =
     value.formattedPrice(

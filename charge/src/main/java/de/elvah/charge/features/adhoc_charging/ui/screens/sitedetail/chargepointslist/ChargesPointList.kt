@@ -25,9 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
+import de.elvah.charge.features.adhoc_charging.ui.components.button.UnderlinedButton
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePointItemUI
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
-import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.UnderlinedButton
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.successStateMock
 import de.elvah.charge.platform.ui.components.CopyLarge
 import de.elvah.charge.platform.ui.components.CopyXLarge

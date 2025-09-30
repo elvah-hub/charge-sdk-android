@@ -46,54 +46,100 @@ internal fun formatTimeUntil(
     val minutes = (totalMinutes % 60).toInt()
     val seconds = (duration.inWholeSeconds % 60).toInt()
     val days = duration.inWholeDays.toInt()
+
+
+    return formatTimeLocalized(
+        context = context,
+        years = period.years,
+        months = period.months,
+        days = days,
+        hours = hours,
+        minutes = minutes,
+        seconds = seconds,
+    )
+}
+
+internal fun formatTotalOfMinutes(
+    context: Context,
+    totalMinutes: Int,
+): Pair<String, Duration?> {
+    val days = totalMinutes / (24 * 60)
+    val hours = (totalMinutes % (24 * 60)) / 60
+    val minutes = totalMinutes % 60
+
+    return formatTimeLocalized(
+        context = context,
+        years = 0,
+        months = 0,
+        days = days,
+        hours = hours,
+        minutes = minutes,
+        seconds = 0,
+    )
+}
+
+private fun formatTimeLocalized(
+    context: Context,
+    years: Int,
+    months: Int,
+    days: Int,
+    hours: Int,
+    minutes: Int,
+    seconds: Int,
+): Pair<String, Duration?> {
     val separator = " "
 
     return when {
-        period.years > 0 && period.months == 0 -> {
+        years > 0 && months == 0 -> {
             Pair(
                 first = context.resources.getQuantityString(
                     de.elvah.charge.R.plurals.generic_year,
-                    period.years,
+                    years,
+                    years,
                 ),
                 second = null,
             )
         }
 
-        period.years > 0 -> {
+        years > 0 -> {
             val yearText = context.resources.getQuantityString(
                 de.elvah.charge.R.plurals.generic_year,
-                period.years,
+                years,
+                years,
             )
 
             val monthText = context.resources.getQuantityString(
                 de.elvah.charge.R.plurals.generic_month,
-                period.months,
+                months,
+                months,
             )
 
             Pair(
                 first = listOfNotNull(
                     yearText,
-                    monthText.takeIf { period.months > 0 },
+                    monthText.takeIf { months > 0 },
                 ).joinToString(separator),
                 second = null,
             )
         }
 
-        period.months > 0 -> {
+        months > 0 -> {
             val monthText = context.resources.getQuantityString(
                 de.elvah.charge.R.plurals.generic_month,
-                period.months,
+                months,
+                months,
             )
 
             val dayText = context.resources.getQuantityString(
                 de.elvah.charge.R.plurals.generic_day,
-                period.days,
+                days,
+                days,
             )
 
             Pair(
                 listOfNotNull(
                     monthText,
-                    dayText.takeIf { period.days > 0 },
+                    dayText.takeIf { days > 0 },
                 ).joinToString(separator),
                 second = null,
             )
@@ -102,6 +148,7 @@ internal fun formatTimeUntil(
         days > 0 -> {
             val dayText = context.resources.getQuantityString(
                 de.elvah.charge.R.plurals.generic_day,
+                days,
                 days,
             )
 

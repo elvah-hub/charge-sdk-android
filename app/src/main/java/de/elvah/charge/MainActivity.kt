@@ -14,16 +14,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import de.elvah.charge.public_api.DisplayBehavior
 import de.elvah.charge.public_api.banner.ChargeBanner
 import de.elvah.charge.public_api.banner.ChargeBannerSource
 import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.public_api.pricinggraph.PricingGraph
 import de.elvah.charge.public_api.sites.GetSites
 import de.elvah.charge.public_api.sites.SitesManager
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private var chargeBannerSource: ChargeBannerSource = ChargeBannerSource()
@@ -35,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val context = LocalContext.current
+            val coroutineScope = rememberCoroutineScope()
             val sites by produceState(emptyList()) {
                 value = getSites(
                     GetSites.Params(
@@ -52,13 +56,42 @@ class MainActivity : ComponentActivity() {
                     contentAlignment = Alignment.Center
                 ) {
                     Column {
-                        ChargeBanner()
+                        Button({
+                            coroutineScope.launch {
+                                /*chargeBannerSource.sitesAt(
+                                    //latitude = 52.520008,
+                                    //longitude = 13.404954,
+                                    14.0785,
+                                    -87.1994,
+                                    radius = 50.0
+                                )*/
+
+                                /* chargeBannerSource.sitesAt(
+                                     boundingBox = BoundingBox(
+                                         minLat = 13.988097,
+                                         minLng = -87.292583,
+                                         maxLat = 14.168866,
+                                         maxLng = -87.106216
+                                     )
+                                 )*/
+
+                                chargeBannerSource.sitesAt(
+                                    latitude = 14.0838,
+                                    longitude = -87.197,
+                                    radius = 50.0,
+                                )
+                            }
+                        }) {
+                            Text("Load at location")
+                        }
                         Button({
                             SitesManager.openSite(context, sites.first().id)
                         }) {
                             Text("Open Deal at HNTCI*E*00001")
                         }
-                        
+                        ChargeBanner(
+                            display = DisplayBehavior.WHEN_CONTENT_AVAILABLE,
+                        )
                         // Test PricingGraph with sample site ID
                         if (sites.isNotEmpty()) {
                             PricingGraph(

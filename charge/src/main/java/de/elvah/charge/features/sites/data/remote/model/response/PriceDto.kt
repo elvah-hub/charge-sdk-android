@@ -10,11 +10,11 @@ internal data class PriceDto(
     val energyPricePerKWh: Double,
 
     @param:Json(name = "baseFee")
-    val baseFee: Int?,
+    val baseFee: Double?,
+
+    @param:Json(name = "blockingFee")
+    val blockingFee: BlockingFeeDto?,
 
     @param:Json(name = "currency")
     val currency: String,
-
-    @param:Json(name = "blockingFee")
-    val blockingFee: BlockingFeeDto?
 )

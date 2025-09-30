@@ -31,16 +31,11 @@ public data class ChargeSite(
             val signedOffer: String? = null,
         ) {
             public data class Price(
-                val energyPricePerKWh: Double,
-                val baseFee: Int?,
+                val energyPricePerKWh: Pricing,
+                val baseFee: Pricing?,
+                val blockingFee: BlockingFee?,
                 val currency: String,
-                val blockingFee: BlockingFee?
-            ) {
-                public data class BlockingFee(
-                    val pricePerMinute: Int,
-                    val startsAfterMinutes: Int
-                )
-            }
+            )
         }
     }
 

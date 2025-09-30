@@ -13,8 +13,11 @@ import de.elvah.charge.features.sites.data.remote.model.response.ScheduledPricin
 import de.elvah.charge.features.sites.data.remote.model.response.SignedOfferDto
 import de.elvah.charge.features.sites.data.remote.model.response.SitesDto
 import de.elvah.charge.features.sites.data.remote.model.response.TimeSlotsItemDto
+import de.elvah.charge.features.sites.domain.model.BlockingFee
+import de.elvah.charge.features.sites.domain.model.BlockingFeeTimeSlot
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 
 internal fun SitesDto<OfferDto>.toSite(): ChargeSite {
@@ -89,17 +92,19 @@ internal fun SignedOfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSit
 
 internal fun PriceDto.toDomain(): ChargeSite.ChargePoint.Offer.Price =
     ChargeSite.ChargePoint.Offer.Price(
-        energyPricePerKWh = energyPricePerKWh,
-        baseFee = baseFee,
+        energyPricePerKWh = Pricing(energyPricePerKWh, currency),
+        baseFee = baseFee?.let { Pricing(it, currency) },
+        blockingFee = blockingFee?.toDomain(currency),
         currency = currency,
-        blockingFee = blockingFee?.toDomain()
     )
 
-
-internal fun BlockingFeeDto.toDomain(): ChargeSite.ChargePoint.Offer.Price.BlockingFee =
-    ChargeSite.ChargePoint.Offer.Price.BlockingFee(
-        pricePerMinute = pricePerMinute,
-        startsAfterMinutes = startsAfterMinutes
+internal fun BlockingFeeDto.toDomain(currency: String): BlockingFee =
+    BlockingFee(
+        pricePerMinute = Pricing(pricePerMinute, currency),
+        startsAfterMinutes = startsAfterMinutes,
+        maxAmount = maxAmount?.let { Pricing(it, currency) },
+        timeSlots = timeSlots?.map { BlockingFeeTimeSlot(it.startTime, it.endTime) },
+        currency = currency,
     )
 
 internal fun PowerSpecificationDto.toDomain(): ChargeSite.PowerSpecification =
@@ -109,7 +114,7 @@ internal fun PowerSpecificationDto.toDomain(): ChargeSite.PowerSpecification =
 
 internal fun ScheduledPricingDto.toDomain(): ScheduledPricing = ScheduledPricing(
     dailyPricing = dailyPricing.toDomain(),
-    standardPrice = standardPrice.toScheduledPricingPrice()
+    standardPrice = standardPrice.toDomain()
 )
 
 internal fun DailyPricingDto.toDomain(): ScheduledPricing.DailyPricing =
@@ -120,27 +125,14 @@ internal fun DailyPricingDto.toDomain(): ScheduledPricing.DailyPricing =
     )
 
 internal fun DayDto.toDomain(): ScheduledPricing.Day = ScheduledPricing.Day(
-    lowestPrice = lowestPrice.toScheduledPricingPrice(),
+    lowestPrice = lowestPrice.toDomain(),
     trend = trend,
     timeSlots = timeSlots.map { it.toDomain() }
 )
 
 internal fun TimeSlotsItemDto.toDomain(): ScheduledPricing.TimeSlot = ScheduledPricing.TimeSlot(
     isDiscounted = isDiscounted,
-    price = price.toScheduledPricingPrice(),
+    price = price.toDomain(),
     from = from,
     to = to
 )
-
-internal fun PriceDto.toScheduledPricingPrice(): ScheduledPricing.Price = ScheduledPricing.Price(
-    energyPricePerKWh = energyPricePerKWh,
-    baseFee = baseFee,
-    currency = currency,
-    blockingFee = blockingFee?.toScheduledPricingBlockingFee()
-)
-
-internal fun BlockingFeeDto.toScheduledPricingBlockingFee(): ScheduledPricing.Price.BlockingFee =
-    ScheduledPricing.Price.BlockingFee(
-        pricePerMinute = pricePerMinute,
-        startsAfterMinutes = startsAfterMinutes
-    )

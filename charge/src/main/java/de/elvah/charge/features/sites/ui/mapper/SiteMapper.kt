@@ -1,7 +1,6 @@
 package de.elvah.charge.features.sites.ui.mapper
 
 import de.elvah.charge.features.sites.domain.model.ChargeSite
-import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.ui.model.AddressUI
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
@@ -18,7 +17,7 @@ internal fun ChargeSite.toUI(): ChargeSiteUI {
         address = address.toUI(),
         lat = location.first(),
         lng = location.last(),
-        pricePerKw = evses.first().offer.price.energyPricePerKWh,
+        pricePerKw = evses.first().offer.price.energyPricePerKWh.value,
         campaignEnd = evses.first().offer.campaignEndsAt.orEmpty(),
         chargePoints = evses.map { it.toUI(commonPrefix) }
     )
@@ -36,10 +35,7 @@ internal fun ChargeSite.ChargePoint.toUI(commonPrefix: String): ChargePointUI = 
     evseId = EvseId(evseId),
     shortenedEvseId = evseId.removePrefix(commonPrefix),
     availability = availability,
-    standardPricePerKwh = Price(
-        value = offer.price.energyPricePerKWh,
-        currency = offer.price.currency,
-    ),
+    standardPricePerKwh = offer.price.energyPricePerKWh,
     maxPowerInKW = powerSpecification?.maxPowerInKW,
     powerType = powerSpecification?.type,
 )
@@ -55,14 +51,14 @@ internal fun ChargeSite.toRender(): ChargeBannerRender {
             location.first(),
             location.last()
         ),
-        originalPrice = bestOffer.originalPrice?.energyPricePerKWh,
-        price = bestOffer.price.energyPricePerKWh,
+        originalPrice = bestOffer.originalPrice?.energyPricePerKWh?.value,
+        price = bestOffer.price.energyPricePerKWh.value,
         campaignEnd = evses.first().offer.campaignEndsAt.orEmpty(),
     )
 }
 
 internal fun ChargeSite.getBestOffer(): ChargeSite.ChargePoint.Offer =
-    this.evses.map { it to it.offer.price.energyPricePerKWh }.reduce { acc, pair ->
+    this.evses.map { it to it.offer.price.energyPricePerKWh.value }.reduce { acc, pair ->
         minOf(acc, pair, compareBy { it.second })
     }.first.offer
 

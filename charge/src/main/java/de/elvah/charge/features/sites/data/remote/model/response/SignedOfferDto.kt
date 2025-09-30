@@ -22,5 +22,5 @@ internal data class SignedOfferDto(
     val type: String,
 
     @param:Json(name = "expiresAt")
-    val expiresAt: String
+    val expiresAt: String,
 )

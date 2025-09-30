@@ -9,12 +9,12 @@ import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
+import de.elvah.charge.features.sites.domain.model.AdditionalCosts
 import de.elvah.charge.platform.core.arrow.extensions.toEither
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 
 internal class DefaultChargingRepository(
@@ -32,6 +32,14 @@ internal class DefaultChargingRepository(
 
     override suspend fun updateOrganisationDetails(organisationDetails: OrganisationDetails) {
         chargingStore.saveOrganisationDetails(organisationDetails)
+    }
+
+    override suspend fun getAdditionalCosts(): AdditionalCosts? {
+        return chargingStore.getAdditionalCosts()
+    }
+
+    override suspend fun storeAdditionalCosts(additionalCosts: AdditionalCosts?) {
+        chargingStore.storeAdditionalCosts(additionalCosts)
     }
 
     override suspend fun fetchChargingSession(): Either<Throwable, ChargingSession> {

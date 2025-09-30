@@ -121,6 +121,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.stripe.android)
     implementation(libs.coil3.coil.compose)
+    implementation(libs.coil3.network.okhttp)
 
     implementation(libs.kotlinx.datetime)
 

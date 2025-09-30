@@ -13,9 +13,11 @@ internal object ChargingSessionPrefsSerializer : Serializer<ChargingSessionPrefs
     override suspend fun readFrom(input: InputStream): ChargingSessionPrefs {
         try {
             return ChargingSessionPrefs.parseFrom(input)
+
         } catch (exception: InvalidProtocolBufferException) {
             throw CorruptionException("Cannot read proto.", exception)
         }
+
     }
 
     override suspend fun writeTo(

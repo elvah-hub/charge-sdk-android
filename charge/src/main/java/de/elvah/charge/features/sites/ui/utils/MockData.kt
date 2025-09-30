@@ -2,7 +2,7 @@ package de.elvah.charge.features.sites.ui.utils
 
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
-import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.model.AddressUI
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
@@ -23,7 +23,7 @@ internal object MockData {
             evseId = EvseId("DE*KDL*E0000049$it"),
             shortenedEvseId = "DE*$it",
             availability = ChargePointAvailability.AVAILABLE,
-            standardPricePerKwh = Price(0.42, "EUR"),
+            standardPricePerKwh = Pricing(0.42, "EUR"),
             maxPowerInKW = if (it % 2 == 0) 22.0f else 300.0f,
             powerType = "DC",
         )
@@ -77,12 +77,14 @@ internal object MockData {
                 ChargeSite.ChargePoint(
                     evseId = "DE*KDL*E000004$siteIndex$evseIndex",
                     offer = ChargeSite.ChargePoint.Offer(
-                        price = ChargeSite.ChargePoint.Offer.Price(
-                            energyPricePerKWh = 22.23,
-                            baseFee = 2847,
-                            currency = "nostra",
-                            blockingFee = null
-                        ),
+                        price = "EUR".let { currency ->
+                            ChargeSite.ChargePoint.Offer.Price(
+                                energyPricePerKWh = Pricing(22.23, currency),
+                                baseFee = Pricing(1.2, currency),
+                                blockingFee = null,
+                                currency = currency,
+                            )
+                        },
                         type = "fusce",
                         expiresAt = "posuere",
                         originalPrice = null,

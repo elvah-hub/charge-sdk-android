@@ -22,6 +22,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -34,11 +35,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
+import de.elvah.charge.features.adhoc_charging.ui.components.AdditionalCostsBanner
+import de.elvah.charge.features.adhoc_charging.ui.components.AdditionalCostsContent
+import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
+import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.additionalCostsUIMock
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingPointErrorModal
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SupportContacts
-import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
-import de.elvah.charge.platform.ui.components.buttons.ButtonTertiary
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.ElvahLogo
@@ -46,10 +49,14 @@ import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.components.TopAppBar
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.ButtonTertiary
+import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyMedium
 import de.elvah.charge.platform.ui.theme.titleMediumBold
 import de.elvah.charge.platform.ui.theme.titleXLargeBold
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -111,12 +118,12 @@ internal fun ActiveCharging_Success(
 ) {
     Scaffold(topBar = {
         TopAppBar(stringResource(R.string.charging_session_active_title), onBackClick)
-    }) {
+    }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .padding(it)
+                .padding(innerPadding)
                 .systemBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -146,6 +153,10 @@ internal fun ActiveCharging_Success(
             }
             Spacer(Modifier.weight(1f))
 
+            state.additionalCostsUI?.let {
+                AdditionalCostsLearnMoreSheet(it)
+            }
+
             ActiveChargingActions(onStopClick, onSupportClick)
 
             Spacer(Modifier.size(20.dp))
@@ -173,6 +184,46 @@ internal fun ActiveCharging_Success(
                     )
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AdditionalCostsLearnMoreSheet(
+    additionalCostsUI: AdditionalCostsUI,
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val additionalCostsSheetState = rememberModalBottomSheetState()
+
+    AdditionalCostsBanner(
+        onLearnMoreClicked = {
+            coroutineScope.launch { additionalCostsSheetState.show() }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp),
+    )
+
+    if (additionalCostsSheetState.isVisible) {
+        ModalBottomSheet(
+            onDismissRequest = { /*do nothing*/ },
+            sheetState = additionalCostsSheetState,
+            dragHandle = null,
+            scrimColor = MaterialTheme.colorScheme.primary.copy(
+                alpha = 0.32f,
+            ),
+            containerColor = MaterialTheme.colorScheme.background,
+        ) {
+            AdditionalCostsContent(
+                activationFee = additionalCostsUI.activationFee,
+                blockingFee = additionalCostsUI.blockingFee,
+                blockingFeeMaxPrice = additionalCostsUI.blockingFeeMaxPrice,
+                startsAfterMinutes = additionalCostsUI.startsAfterMinutes,
+                timeSlots = additionalCostsUI.timeSlots,
+                modifier = Modifier
+                    .padding(16.dp),
+            )
         }
     }
 }
@@ -280,7 +331,10 @@ internal fun ActiveCharging_Stopping(
 @Composable
 private fun CircularProgressWithTick(modifier: Modifier = Modifier) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(Modifier.fillMaxSize(), color = MaterialTheme.colorSchemeExtended.brand)
+        CircularProgressIndicator(
+            Modifier.fillMaxSize(),
+            color = MaterialTheme.colorSchemeExtended.brand
+        )
         TickIcon(Modifier.fillMaxSize())
     }
 }
@@ -411,17 +465,20 @@ private fun StopChargingActions(
 @Preview
 @Composable
 private fun ActiveCharging_Success_Preview() {
-    ActiveCharging_Success(
-        ActiveChargingState.Active(
-            activeChargingSessionUI = ActiveChargingSessionUI(
-                evseId = "",
-                status = "",
-                consumption = 0.0,
-                duration = 0,
-                cpoLogo = "",
-                error = false
-            )
-        ), {}, {}, {}, {})
+    ElvahChargeTheme {
+        ActiveCharging_Success(
+            ActiveChargingState.Active(
+                activeChargingSessionUI = ActiveChargingSessionUI(
+                    evseId = "",
+                    status = "",
+                    consumption = 0.0,
+                    duration = 0,
+                    cpoLogo = "",
+                    error = false
+                ),
+                additionalCostsUI = additionalCostsUIMock,
+            ), {}, {}, {}, {})
+    }
 }
 
 @Preview
