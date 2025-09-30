@@ -17,18 +17,8 @@ internal class BuildSiteDetailSuccessState(
         searchInput: String,
         ui: ChargeSiteUI
     ): SiteDetailState.Success {
-        val ids = ui.chargePoints
-            .map { it.shortenedEvseId }
-
-        val (common, unique) = getCommonAndUniquePrefixes(ids)
-
         val chargePoints = ui.chargePoints
             .mapIndexed { index, cp ->
-                val shortenedEvseId = unique.getOrNull(index)
-                    ?.takeIf { it.isNotBlank() }
-                // if there are no unique strings, means all elements have the same common text
-                    ?: common
-
                 val isFiltered = isChargePointFiltered(
                     searchInput = searchInput,
                     evseId = cp.shortenedEvseId,
@@ -37,15 +27,10 @@ internal class BuildSiteDetailSuccessState(
                     maxPowerInKW = cp.maxPowerInKW,
                 )
 
-                val updatedChargePoint = cp.copy(
-                    shortenedEvseId = shortenedEvseId,
-                )
-
                 Pair(
-                    updatedChargePoint,
+                    cp,
                     isFiltered,
                 )
-
             }
             .sortedBy { (cp, _) -> cp.shortenedEvseId }
             .filter { (_, isFiltered) -> isFiltered }
@@ -57,21 +42,6 @@ internal class BuildSiteDetailSuccessState(
                 chargePoints = chargePoints,
             ),
         )
-    }
-
-    private fun getCommonAndUniquePrefixes(
-        ids: List<String>,
-    ): Pair<String, List<String>> {
-        val commonPrefix = ids
-            .takeIf { it.isNotEmpty() }
-            ?.reduce { accumulator, nextElement ->
-                accumulator.commonPrefixWith(nextElement, true)
-            }
-            ?: ""
-
-        val uniqueStringList = ids.map { it.removePrefix(commonPrefix) }
-
-        return commonPrefix to uniqueStringList
     }
 
     private fun isChargePointFiltered(

@@ -28,10 +28,10 @@ internal class DefaultSitesRepository(
     }
 
     override fun updateChargeSite(site: ChargeSite) {
-        if (chargeSites.none { it.id == site.id }) {
-            chargeSites = chargeSites + site
+        chargeSites = if (chargeSites.none { it.id == site.id }) {
+            chargeSites + site
         } else {
-            chargeSites = chargeSites.map {
+            chargeSites.map {
                 if (it.id == site.id) {
                     site
                 } else {
