@@ -17,7 +17,6 @@ import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 
-
 internal fun SitesDto<OfferDto>.toSite(): ChargeSite {
     return ChargeSite(
         address = address.toDomain(),

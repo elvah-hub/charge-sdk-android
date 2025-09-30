@@ -2,7 +2,6 @@ package de.elvah.charge.platform.simulator.data.repository
 
 import arrow.core.Either
 import arrow.core.right
-import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
@@ -10,6 +9,7 @@ import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.simulator.domain.model.SimulatorFlow
+import de.elvah.charge.public_api.banner.EvseId
 
 internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesRepository {
 
@@ -120,6 +120,10 @@ internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesReposito
             dailyPricing = dailyPricing,
             standardPrice = standardPrice
         )
+    }
+
+    override suspend fun updateChargePointAvailabilities(siteId: String): Either<Throwable, List<ChargeSite.ChargePoint>> {
+        TODO("Not yet implemented")
     }
 
     companion object {

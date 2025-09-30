@@ -45,6 +45,7 @@ import de.elvah.charge.platform.core.android.openMap
 import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
+import de.elvah.charge.platform.ui.components.Timer
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyMediumBold
@@ -67,6 +68,7 @@ internal fun SiteDetailScreen(
             state = state,
             onCloseClick = onCloseClick,
             onChargePointSearchInputChange = viewModel::onChargePointSearchInputChange,
+            onRefreshAvailability = viewModel::refreshAvailability,
             onItemClick = onItemClick
         )
 
@@ -79,8 +81,14 @@ private fun SiteDetailScreen_Content(
     state: SiteDetailState.Success,
     onCloseClick: () -> Unit,
     onChargePointSearchInputChange: (String) -> Unit,
+    onRefreshAvailability: () -> Unit,
     onItemClick: (String) -> Unit,
 ) {
+    Timer(
+        intervalMillis = 60_000,
+        onComplete = onRefreshAvailability,
+    )
+
     Scaffold(
         contentWindowInsets = WindowInsets.displayCutout
             .union(WindowInsets.systemBars),
@@ -310,6 +318,7 @@ private fun SiteDetailScreen_Content_Preview() {
             ),
             onCloseClick = {},
             onChargePointSearchInputChange = {},
+            onRefreshAvailability = {},
             onItemClick = { _ -> },
         )
     }
@@ -327,6 +336,7 @@ private fun SiteDetailScreen_Content_EmptyList_Preview() {
             ),
             onCloseClick = {},
             onChargePointSearchInputChange = {},
+            onRefreshAvailability = {},
             onItemClick = { _ -> },
         )
     }
