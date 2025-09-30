@@ -212,36 +212,34 @@ private fun SiteDetailHeader(
             style = titleSmallBold
         )
 
-        state.chargeSiteUI.address
-            .takeIf { it.isNotBlank() }
-            ?.let {
-                Row(
+        state.address?.let {
+            Row(
+                modifier = Modifier
+                    .padding(top = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
                     modifier = Modifier
-                        .padding(top = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .clickable {
-                                with(state.chargeSiteUI) {
-                                    context.openMap(lat, lng, cpoName)
-                                }
-                            },
-                        text = it,
-                        color = MaterialTheme.colorScheme.secondary,
-                        textDecoration = TextDecoration.Underline,
-                    )
+                        .wrapContentWidth()
+                        .clickable {
+                            with(state.chargeSiteUI) {
+                                context.openMap(lat, lng, cpoName)
+                            }
+                        },
+                    text = it,
+                    color = MaterialTheme.colorScheme.secondary,
+                    textDecoration = TextDecoration.Underline,
+                )
 
-                    Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-                    Icon(
-                        painter = painterResource(R.drawable.ic_open_external),
-                        tint = MaterialTheme.colorScheme.secondary,
-                        contentDescription = null,
-                    )
-                }
+                Icon(
+                    painter = painterResource(R.drawable.ic_open_external),
+                    tint = MaterialTheme.colorScheme.secondary,
+                    contentDescription = null,
+                )
             }
+        }
     }
 }
 
@@ -307,6 +305,7 @@ private fun SiteDetailScreen_Content_Preview() {
         SiteDetailScreen_Content(
             SiteDetailState.Success(
                 searchInput = "",
+                address = null,
                 chargeSiteUI = MockData.siteUI,
             ),
             onCloseClick = {},
@@ -323,6 +322,7 @@ private fun SiteDetailScreen_Content_EmptyList_Preview() {
         SiteDetailScreen_Content(
             SiteDetailState.Success(
                 searchInput = "",
+                address = null,
                 chargeSiteUI = MockData.siteWithoutChargePoints,
             ),
             onCloseClick = {},

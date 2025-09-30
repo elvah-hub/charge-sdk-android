@@ -4,6 +4,7 @@ import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
+import de.elvah.charge.features.sites.ui.model.AddressUI
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
@@ -27,10 +28,16 @@ internal object MockData {
         )
     }
 
+    val addressUIMock = AddressUI(
+        streetAddress = listOf("Köpenicker Straße 145"),
+        postalCode = "12683",
+        locality = "Berlin"
+    )
+
     val siteUI = ChargeSiteUI(
         id = "1",
         cpoName = "Lidl Köpenicker Straße",
-        address = "Köpenicker Straße 145 12683 Berlin",
+        address = addressUIMock,
         lat = 6.7,
         lng = 8.9,
         pricePerKw = 0.42,

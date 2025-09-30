@@ -15,9 +15,10 @@ internal class BuildSiteDetailSuccessState(
 
     operator fun invoke(
         searchInput: String,
-        ui: ChargeSiteUI
+        address: String?,
+        chargeSiteUI: ChargeSiteUI
     ): SiteDetailState.Success {
-        val chargePoints = ui.chargePoints
+        val chargePoints = chargeSiteUI.chargePoints
             .mapIndexed { index, cp ->
                 val isFiltered = isChargePointFiltered(
                     searchInput = searchInput,
@@ -38,7 +39,8 @@ internal class BuildSiteDetailSuccessState(
 
         return SiteDetailState.Success(
             searchInput = searchInput,
-            chargeSiteUI = ui.copy(
+            address = address,
+            chargeSiteUI = chargeSiteUI.copy(
                 chargePoints = chargePoints,
             ),
         )

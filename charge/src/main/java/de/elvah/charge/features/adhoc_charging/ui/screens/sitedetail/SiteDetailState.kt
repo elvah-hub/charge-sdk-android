@@ -8,6 +8,7 @@ internal sealed class SiteDetailState {
 
     internal data class Success(
         val searchInput: String,
+        val address: String?,
         val chargeSiteUI: ChargeSiteUI,
     ) : SiteDetailState()
 }
