@@ -13,7 +13,7 @@ class ConfigTest {
             apiKey = "evpk_test_1234567890abcdef",
             environment = Environment.Int
         )
-        
+
         assertEquals("evpk_test_1234567890abcdef", config.apiKey)
         assertEquals(Environment.Int, config.environment)
         assertNull(config.darkTheme)
@@ -25,7 +25,7 @@ class ConfigTest {
             apiKey = "evpk_prod_1234567890abcdef",
             environment = Environment.Production
         )
-        
+
         assertEquals("evpk_prod_1234567890abcdef", config.apiKey)
         assertEquals(Environment.Production, config.environment)
         assertNull(config.darkTheme)
@@ -38,7 +38,7 @@ class ConfigTest {
             darkTheme = true,
             environment = Environment.Int
         )
-        
+
         assertEquals(true, config.darkTheme)
     }
 
@@ -48,7 +48,7 @@ class ConfigTest {
             apiKey = "any_key_works_in_simulator",
             environment = Environment.Simulator(SimulatorFlow.Default)
         )
-        
+
         assertEquals("any_key_works_in_simulator", config.apiKey)
     }
 
@@ -158,7 +158,7 @@ class ConfigTest {
             apiKey = "evpk_test",
             environment = Environment.Int
         )
-        
+
         assertEquals("evpk_test", config.apiKey)
     }
 
@@ -168,15 +168,43 @@ class ConfigTest {
             apiKey = "evpk_prod",
             environment = Environment.Production
         )
-        
+
         assertEquals("evpk_prod", config.apiKey)
     }
 
     @Test
-    fun `Config defaults to Int environment when not specified`() {
+    fun `Config auto-detects Int environment from test API key when not specified`() {
         val config = Config(apiKey = "evpk_test_default")
-        
+
         assertEquals(Environment.Int, config.environment)
+    }
+
+    @Test
+    fun `Config auto-detects Production environment from production API key when not specified`() {
+        val config = Config(apiKey = "evpk_prod_default")
+
+        assertEquals(Environment.Production, config.environment)
+    }
+
+    @Test()
+    fun `Config defaults to Simulator Default environment for invalid API key when not specified `() {
+        val config = Config(apiKey = "invalid_key")
+        assert(config.environment is Environment.Simulator)
+        assertEquals(
+            (config.environment as Environment.Simulator).simulatorFlow,
+            SimulatorFlow.Default
+        )
+
+    }
+
+    @Test
+    fun `Config respects explicitly provided environment over auto-detection`() {
+        val config = Config(
+            apiKey = "evpk_test_key",
+            environment = Environment.Simulator(SimulatorFlow.Default)
+        )
+
+        assertEquals(Environment.Simulator::class, config.environment::class)
     }
 
     @Test
@@ -186,7 +214,7 @@ class ConfigTest {
             apiKey = longApiKey,
             environment = Environment.Int
         )
-        
+
         assertEquals(longApiKey, config.apiKey)
     }
 
@@ -197,7 +225,7 @@ class ConfigTest {
             apiKey = longApiKey,
             environment = Environment.Production
         )
-        
+
         assertEquals(longApiKey, config.apiKey)
     }
 }
