@@ -76,7 +76,7 @@ private fun ChargePointsListContent(
                 chargePoint = item,
                 showSeparator = index != items.lastIndex,
                 onClick = {
-                    onItemClick(item.shortenedEvseId)
+                    onItemClick(item.evseId.value)
                 },
             )
         }

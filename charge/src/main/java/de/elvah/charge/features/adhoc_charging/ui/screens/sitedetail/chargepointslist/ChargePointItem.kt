@@ -33,6 +33,7 @@ import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.copyXLargeBold
+import de.elvah.charge.public_api.banner.EvseId
 
 @Composable
 internal fun ChargePointItem(
@@ -181,6 +182,7 @@ private fun ChargePointItemPreview() {
 }
 
 internal val chargePointUIMock = ChargePointUI(
+    evseId = EvseId(""),
     shortenedEvseId = "1*01",
     maxPowerInKW = 0.42f,
     availability = ChargePointAvailability.AVAILABLE,

@@ -11,6 +11,7 @@ import de.elvah.charge.features.sites.ui.model.Location
 import de.elvah.charge.platform.ui.components.graph.line.DailyPricingData
 import de.elvah.charge.platform.ui.components.graph.line.PriceOffer
 import de.elvah.charge.platform.ui.components.graph.line.TimeRange
+import de.elvah.charge.public_api.banner.EvseId
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration
@@ -18,7 +19,8 @@ import kotlin.time.Duration
 internal object MockData {
     val chargePoints = List(10) {
         ChargePointUI(
-            shortenedEvseId = "DE*KDL*E0000049$it",
+            evseId = EvseId("DE*KDL*E0000049$it"),
+            shortenedEvseId = "DE*$it",
             availability = ChargePointAvailability.AVAILABLE,
             pricePerKwh = Price(0.42, "EUR"),
             maxPowerInKW = if (it % 2 == 0) 22.0f else 300.0f,

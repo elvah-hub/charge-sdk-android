@@ -68,7 +68,7 @@ internal fun SearchChargePointInputField(
             },
             leadingIcon = {
                 Icon(
-                    modifier = modifier
+                    modifier = Modifier
                         .size(24.dp),
                     painter = painterResource(id = de.elvah.charge.R.drawable.ic_search),
                     tint = MaterialTheme.colorScheme.primary,

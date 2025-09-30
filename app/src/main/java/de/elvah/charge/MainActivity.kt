@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
             val sites by produceState(emptyList()) {
                 value = getSites(
                     GetSites.Params(
-                        evseIds = listOf(EvseId("HNTCI*E*00001"))
+                        evseIds = listOf(EvseId("DE*2GO*EEWE7418*1A*1"))
                     )
                 )
             }
