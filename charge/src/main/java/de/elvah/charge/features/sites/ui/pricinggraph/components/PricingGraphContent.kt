@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
 import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toChartData
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
-import de.elvah.charge.platform.ui.components.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart
 
 @Composable

@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,6 +55,7 @@ import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.DropdownMenuButton
 import de.elvah.charge.platform.ui.components.TitleSmall
+import de.elvah.charge.platform.ui.components.buttons.DaySelector
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_ANIMATION_DURATION_MS
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_GRID_LINE_DOT_SIZE
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_GRID_LINE_INTERVAL
@@ -77,6 +79,8 @@ internal fun EnergyPriceLineChart(
     minYAxisPrice: Double? = null,
     gridLineDotSize: Float = DEFAULT_GRID_LINE_DOT_SIZE
 ) {
+    val scope = rememberCoroutineScope()
+
     if (dailyData.isEmpty()) return
 
     // Default value is the today page and the slot based on the current hour
@@ -86,7 +90,7 @@ internal fun EnergyPriceLineChart(
         initialPage = todayIndex,
         pageCount = { dailyData.size }
     )
-    var selectedType by remember { mutableStateOf(ChargeType.FAST) }
+    var selectedType by remember { mutableStateOf(ChargeType.VERY_FAST) }
     var selectedPrice by remember {
         mutableDoubleStateOf(
             getPriceAtTimeFromSlots(
@@ -238,6 +242,14 @@ internal fun EnergyPriceLineChart(
                     }
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            DaySelector(pagerState.currentPage, modifier = Modifier.fillMaxWidth()) {
+                scope.launch {
+                    pagerState.animateScrollToPage(it)
+                }
+            }
         }
     }
 }
@@ -308,7 +320,7 @@ private fun LivePricingHeader(selectedType: ChargeType) {
         )
 
         TypeDropdownSelector(
-            selectedOption = selectedType.name,
+            selectedOption = selectedType.text,
             options = listOf(
                 PlugType(
                     title = "CSS",
@@ -325,7 +337,7 @@ private fun LivePricingHeader(selectedType: ChargeType) {
 
 @Composable
 private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
-    Row(
+    FlowRow(
         modifier = modifier
             .background(
                 color = if (priceOffer != null) {
@@ -336,7 +348,7 @@ private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(100.dp)
             )
             .padding(horizontal = 8.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically
+        itemVerticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = if (priceOffer != null) painterResource(R.drawable.ic_offer) else painterResource(
@@ -362,33 +374,44 @@ private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
                 MaterialTheme.colorScheme.primary
             }
         )
+        Spacer(modifier = Modifier.width(4.dp))
 
         if (priceOffer != null) {
-            CopySmall(
-                text = "%02d:%02d".format(
-                    priceOffer.timeRange.startTime.hour,
-                    priceOffer.timeRange.startTime.minute
-                ),
-                fontWeight = FontWeight.W700,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.ArrowForward,
-                contentDescription = null,
-                modifier = Modifier.size(12.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-
-            CopySmall(
-                text = "%02d:%02d".format(
-                    priceOffer.timeRange.endTime.hour,
-                    priceOffer.timeRange.endTime.minute
-                ),
-                fontWeight = FontWeight.W700,
-                color = MaterialTheme.colorScheme.primary
-            )
+            HourSlot(priceOffer.timeRange)
         }
+    }
+}
+
+@Composable
+private fun HourSlot(timeRange: TimeRange, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        CopySmall(
+            text = "%02d:%02d".format(
+                timeRange.startTime.hour,
+                timeRange.startTime.minute
+            ),
+            fontWeight = FontWeight.W700,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Icon(
+            imageVector = Icons.AutoMirrored.Default.ArrowForward,
+            contentDescription = null,
+            modifier = Modifier.size(12.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+
+        CopySmall(
+            text = "%02d:%02d".format(
+                timeRange.endTime.hour,
+                timeRange.endTime.minute
+            ),
+            fontWeight = FontWeight.W700,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 

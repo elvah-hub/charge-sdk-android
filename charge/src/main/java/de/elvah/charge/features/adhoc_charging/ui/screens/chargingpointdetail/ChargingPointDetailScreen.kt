@@ -41,7 +41,7 @@ import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.model.ChargePointDetail
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
 import de.elvah.charge.platform.ui.components.BasicCard
-import de.elvah.charge.platform.ui.components.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.CopyLarge
 import de.elvah.charge.platform.ui.components.CopySmall

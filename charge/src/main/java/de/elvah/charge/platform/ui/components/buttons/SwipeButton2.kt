@@ -1,4 +1,4 @@
-package de.elvah.charge.platform.ui.components
+package de.elvah.charge.platform.ui.components.buttons
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloatAsState
