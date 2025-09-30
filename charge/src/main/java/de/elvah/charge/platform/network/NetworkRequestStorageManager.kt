@@ -4,23 +4,23 @@ import de.elvah.charge.platform.network.discovery.NetworkStorageInterceptorRegis
 import de.elvah.charge.platform.network.storage.NetworkStorageInterceptor
 import de.elvah.charge.platform.network.storage.StoredNetworkRequest
 
-object NetworkRequestStorageManager {
+public object NetworkRequestStorageManager {
     
-    fun registerStorageInterceptor(interceptor: NetworkStorageInterceptor) {
+    public fun registerStorageInterceptor(interceptor: NetworkStorageInterceptor) {
         NetworkStorageInterceptorRegistry.register(interceptor)
     }
-    
-    fun getAllStoredRequests(): List<StoredNetworkRequest> {
+
+    public fun getAllStoredRequests(): List<StoredNetworkRequest> {
         return NetworkStorageInterceptorRegistry.getStorageInterceptors()
             .flatMap { it.getStoredRequests() }
             .sortedBy { it.timestamp }
     }
-    
-    fun clearAllStoredRequests() {
+
+    public fun clearAllStoredRequests() {
         NetworkStorageInterceptorRegistry.clearAllStoredRequests()
     }
-    
-    fun getStorageInterceptorsCount(): Int {
+
+    public fun getStorageInterceptorsCount(): Int {
         return NetworkStorageInterceptorRegistry.getStorageInterceptors().size
     }
 }

@@ -8,7 +8,7 @@ import okio.Buffer
 import java.util.concurrent.ConcurrentLinkedQueue
 
 @NetworkRequestStorage(priority = 1)
-class InMemoryNetworkStorageInterceptor : NetworkStorageInterceptor {
+public class InMemoryNetworkStorageInterceptor : NetworkStorageInterceptor {
     
     private val storedRequests = ConcurrentLinkedQueue<StoredNetworkRequest>()
     
