@@ -81,6 +81,8 @@ internal class BuildSiteDetailSuccessState(
                     evseId = itemUI.chargePointUI.shortenedEvseId,
                     availability = itemUI.chargePointUI.availability,
                     pricePerKwh = itemUI.standardPricePerKwh,
+                    todayPricePerKwh = itemUI.todayPricePerKwh,
+                    powerType = itemUI.powerType,
                     maxPowerInKW = itemUI.chargePointUI.maxPowerInKW,
                 )
 
@@ -108,6 +110,8 @@ internal class BuildSiteDetailSuccessState(
         evseId: String,
         availability: ChargePointAvailability,
         pricePerKwh: Price,
+        todayPricePerKwh: Price,
+        powerType: String?,
         maxPowerInKW: Float?,
     ): Boolean {
         // always include results if search input is empty
@@ -118,6 +122,7 @@ internal class BuildSiteDetailSuccessState(
         ).let { stringResId -> context.getString(stringResId) }
 
         val price = pricePerKwh.formatted()
+        val todayPrice = todayPricePerKwh.formatted()
 
         val maxPowerInKw = maxPowerInKW?.formatKW()
 
@@ -125,6 +130,8 @@ internal class BuildSiteDetailSuccessState(
             evseId,
             availability,
             price,
+            todayPrice,
+            powerType,
             maxPowerInKw,
         )
 
