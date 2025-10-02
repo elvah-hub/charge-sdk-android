@@ -10,7 +10,7 @@ internal sealed class SiteDetailState {
     data object Error : SiteDetailState()
 
     internal data class Success(
-        val campaignExpireAt: LocalDateTime?,
+        val discountExpiresAt: LocalDateTime?,
         val operatorName: String,
         val address: String?,
         val searchInput: String,

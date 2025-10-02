@@ -4,6 +4,8 @@ import android.content.Context
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePointItemUI
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.getChargePointAvailabilityStatusTextResId
+import de.elvah.charge.features.sites.domain.extension.getSlotAtTime
+import de.elvah.charge.features.sites.domain.extension.toUI
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.Price
@@ -11,10 +13,6 @@ import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
-import de.elvah.charge.features.sites.ui.utils.toLocalDateTime
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 internal class BuildSiteDetailSuccessState(
     private val context: Context
@@ -27,10 +25,11 @@ internal class BuildSiteDetailSuccessState(
         searchInput: String,
         address: String?,
     ): SiteDetailState.Success {
-        // TODO: use time slot table to determine when the discount will disappear
-        val campaignExpiresAt = chargeSite.evses
-            .mapNotNull { it.offer.campaignEndsAt?.toLocalDateTime() }
-            .maxOrNull()
+        val timeSlotUI = pricing.dailyPricing.today.timeSlots.getSlotAtTime()?.toUI()
+
+        val discountExpiresAt = timeSlotUI
+            ?.takeIf { it.isDiscounted }
+            ?.to
 
         val chargePoints = chargeSiteUI.chargePoints
             .map { cp ->
@@ -87,7 +86,7 @@ internal class BuildSiteDetailSuccessState(
             }
 
         return SiteDetailState.Success(
-            campaignExpireAt = campaignExpiresAt,
+            discountExpiresAt = discountExpiresAt,
             operatorName = chargeSiteUI.cpoName,
             address = address,
             searchInput = searchInput,
@@ -124,24 +123,5 @@ internal class BuildSiteDetailSuccessState(
         )
 
         return wordsToCheck.any { word -> word.contains(searchInput, ignoreCase = true) }
-    }
-
-
-    fun List<ScheduledPricing.TimeSlot>.getSlotAtTime(
-        now: LocalDateTime = LocalDateTime.now(),
-    ): ScheduledPricing.TimeSlot? {
-        val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-        val now = now.toLocalTime()
-
-        return find { timeSlot ->
-            val fromTime = LocalTime.parse(timeSlot.from, formatter)
-            val toTime = LocalTime.parse(timeSlot.to, formatter)
-
-            if (fromTime <= toTime) {
-                now in fromTime..toTime
-            } else {
-                now >= fromTime || now <= toTime
-            }
-        }
     }
 }

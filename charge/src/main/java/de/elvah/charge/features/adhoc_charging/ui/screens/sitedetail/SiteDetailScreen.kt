@@ -25,7 +25,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +45,7 @@ import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.SearchChargePointInputField
 import de.elvah.charge.features.sites.ui.utils.MockData
+import de.elvah.charge.features.sites.ui.utils.formatTimeUntil
 import de.elvah.charge.platform.core.android.openMap
 import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.FullScreenError
@@ -51,7 +56,8 @@ import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorS
 import de.elvah.charge.platform.ui.theme.copyMediumBold
 import de.elvah.charge.platform.ui.theme.copySmallBold
 import de.elvah.charge.platform.ui.theme.titleSmallBold
-import de.elvah.charge.platform.ui.util.formatTimeUntil
+import kotlinx.coroutines.delay
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
@@ -102,14 +108,10 @@ private fun SiteDetailScreen_Content(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            state.campaignExpireAt
-                ?.let { formatTimeUntil(it, true) }
-                ?.let {
-                    OfferBannerAndClose(
-                        text = "Offer ends in $it", // TODO: extract string resource
-                        onCloseClick
-                    )
-                }
+            OfferCountdownBanner(
+                discountExpiresAt = state.discountExpiresAt,
+                onCloseClick = onCloseClick,
+            )
 
             Spacer(Modifier.height(2.dp))
 
@@ -145,7 +147,39 @@ private fun SiteDetailScreen_Content(
 }
 
 @Composable
-private fun OfferBannerAndClose(
+private fun OfferCountdownBanner(
+    discountExpiresAt: LocalDateTime?,
+    onCloseClick: () -> Unit,
+) {
+    discountExpiresAt
+        ?.let { formatTimeUntil(it) }
+        ?.let { (initialFormattedTime, initialDuration) ->
+            var formattedTime by remember { mutableStateOf(initialFormattedTime) }
+            var duration by remember { mutableStateOf(initialDuration) }
+
+            LaunchedEffect(duration) {
+                duration?.let {
+                    while (true) {
+                        delay(it.inWholeSeconds)
+
+                        formatTimeUntil(discountExpiresAt)
+                            ?.let { (newFormattedTime, newDuration) ->
+                                formattedTime = newFormattedTime
+                                duration = newDuration
+                            }
+                    }
+                }
+            }
+
+            OfferCountdownBannerWithCloseButton(
+                text = "Offer ends in $formattedTime", // TODO: extract string resource
+                onCloseClick = onCloseClick,
+            )
+        }
+}
+
+@Composable
+private fun OfferCountdownBannerWithCloseButton(
     text: String,
     onCloseClick: () -> Unit,
 ) {
@@ -355,7 +389,7 @@ private fun SiteDetailScreen_Error() {
 
 @OptIn(ExperimentalTime::class)
 private val successStateMock = SiteDetailState.Success(
-    campaignExpireAt = Clock.System.now()
+    discountExpiresAt = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()),
     operatorName = "Lidl Köpenicker Straße",
     address = "Köpenicker Straße 145 12683 Berlin",
