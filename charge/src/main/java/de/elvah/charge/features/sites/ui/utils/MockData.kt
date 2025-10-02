@@ -25,6 +25,7 @@ internal object MockData {
             availability = ChargePointAvailability.AVAILABLE,
             standardPricePerKwh = Price(0.42, "EUR"),
             maxPowerInKW = if (it % 2 == 0) 22.0f else 300.0f,
+            powerType = "DC",
         )
     }
 

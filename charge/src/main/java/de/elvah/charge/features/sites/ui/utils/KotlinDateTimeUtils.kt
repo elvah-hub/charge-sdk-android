@@ -7,12 +7,12 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-internal fun String.toLocalDateTime(): LocalDateTime? {
+internal fun String.toLocalDateTime(
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
+): LocalDateTime? {
     return runCatching {
         Instant.parse(this)
-            .toLocalDateTime(
-                timeZone = TimeZone.currentSystemDefault(),
-            )
+            .toLocalDateTime(timeZone)
     }.getOrNull()
 }
 

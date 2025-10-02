@@ -11,7 +11,6 @@ import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.features.sites.domain.usecase.GetSiteScheduledPricing
-import de.elvah.charge.features.sites.ui.mapper.toUI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -45,7 +44,6 @@ internal class SiteDetailViewModel(
 
         buildSiteDetailSuccessState(
             chargeSite = site,
-            chargeSiteUI = site.toUI(),
             pricing = pricing,
             searchInput = searchInput,
             address = site.address.fullAddress,

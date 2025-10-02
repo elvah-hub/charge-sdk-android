@@ -44,7 +44,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.SearchChargePointInputField
-import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.features.sites.ui.utils.formatTimeUntil
 import de.elvah.charge.platform.core.android.openMap
 import de.elvah.charge.platform.ui.components.CopyXLarge
@@ -126,7 +125,7 @@ private fun SiteDetailScreen_Content(
             ChargePointsList(
                 modifier = Modifier
                     .weight(1f),
-                chargePoints = state.pricingForChargePoints,
+                chargePoints = state.chargePoints,
                 onItemClick = onItemClick
             )
 
@@ -271,9 +270,11 @@ private fun SiteDetailHeader(
                     modifier = Modifier
                         .wrapContentWidth()
                         .clickable {
-                            with(state.chargeSiteUI) {
-                                context.openMap(lat, lng, cpoName)
-                            }
+                            context.openMap(
+                                lat = state.coordinates.first,
+                                lng = state.coordinates.second,
+                                title = state.operatorName,
+                            )
                         },
                     text = it,
                     color = MaterialTheme.colorScheme.secondary,
@@ -367,7 +368,7 @@ private fun SiteDetailScreen_Content_EmptyList_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
             state = successStateMock.copy(
-                chargeSiteUI = MockData.siteWithoutChargePoints,
+                chargePoints = listOf(),
             ),
             onCloseClick = {},
             onChargePointSearchInputChange = {},
@@ -393,7 +394,7 @@ private val successStateMock = SiteDetailState.Success(
         .toLocalDateTime(TimeZone.currentSystemDefault()),
     operatorName = "Lidl Köpenicker Straße",
     address = "Köpenicker Straße 145 12683 Berlin",
+    coordinates = Pair(0.0, 0.0),
     searchInput = "",
-    pricingForChargePoints = listOf(),
-    chargeSiteUI = MockData.siteUI,
+    chargePoints = listOf(),
 )

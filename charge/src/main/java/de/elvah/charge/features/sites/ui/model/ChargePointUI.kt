@@ -10,6 +10,7 @@ internal data class ChargePointUI(
     val availability: ChargePointAvailability,
     val standardPricePerKwh: Price,
     val maxPowerInKW: Float?,
+    val powerType: String?,
 )
 
 internal data class SignedChargePointUI(

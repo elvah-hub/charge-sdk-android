@@ -41,6 +41,7 @@ internal fun ChargeSite.ChargePoint.toUI(commonPrefix: String): ChargePointUI = 
         currency = offer.price.currency,
     ),
     maxPowerInKW = powerSpecification?.maxPowerInKW,
+    powerType = powerSpecification?.type,
 )
 
 internal fun ChargeSite.toRender(): ChargeBannerRender {

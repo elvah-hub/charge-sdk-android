@@ -4,6 +4,7 @@ import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing.Price
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock.System
 import kotlin.time.ExperimentalTime
@@ -13,35 +14,41 @@ internal fun List<ScheduledPricing.TimeSlot>.getSlotAtTime(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
     dateTime: LocalDateTime = System.now().toLocalDateTime(timeZone),
 ): ScheduledPricing.TimeSlot? {
-    val currentTime = dateTime.time
-
     return find { timeSlot ->
         val from = timeSlot.from.timeSlotToLocalDateTime() ?: return@find false
         val to = timeSlot.to.timeSlotToLocalDateTime() ?: return@find false
 
-        currentTime >= from.time && currentTime < to.time
+        dateTime.time >= from.time && dateTime.time < to.time
     }
 }
 
-// TODO: check if we can extract this to be reused
-// Convert time strings with format "HH:mm:ss" to a local date time
+/**
+ * This method convert the times received from pricing-schedule (with format HH:mm:ss)
+ * to the device local time zone
+ */
 @OptIn(ExperimentalTime::class)
 private fun String.timeSlotToLocalDateTime(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
-    dateTime: LocalDateTime = System.now().toLocalDateTime(timeZone),
 ): LocalDateTime? {
+    val timeSlotTimeZone = TimeZone.UTC
+
+    val now = System.now().toLocalDateTime(timeZone)
+
     val (hour, minute, second) = this.split(":")
         .map { it.toInt() }
 
-    return LocalDateTime(
-        year = dateTime.year,
-        month = dateTime.month,
-        day = dateTime.day,
+    val utc = LocalDateTime(
+        year = now.year,
+        month = now.month,
+        day = now.day,
         hour = hour,
         minute = minute,
         second = second,
         nanosecond = 0,
     )
+
+    val localTimeZone = utc.toInstant(timeSlotTimeZone)
+    return localTimeZone.toLocalDateTime(timeZone)
 }
 
 internal data class TimeSlotUI(

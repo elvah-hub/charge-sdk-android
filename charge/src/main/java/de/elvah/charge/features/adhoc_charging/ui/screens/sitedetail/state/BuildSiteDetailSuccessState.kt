@@ -12,7 +12,7 @@ import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
-import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
+import de.elvah.charge.features.sites.ui.mapper.toUI
 
 internal class BuildSiteDetailSuccessState(
     private val context: Context
@@ -20,7 +20,6 @@ internal class BuildSiteDetailSuccessState(
 
     operator fun invoke(
         chargeSite: ChargeSite,
-        chargeSiteUI: ChargeSiteUI,
         pricing: ScheduledPricing,
         searchInput: String,
         address: String?,
@@ -31,69 +30,76 @@ internal class BuildSiteDetailSuccessState(
             ?.takeIf { it.isDiscounted }
             ?.to
 
-        val chargePoints = chargeSiteUI.chargePoints
-            .map { cp ->
+        val standardPrice = pricing.standardPrice.let {
+            Price(
+                value = it.energyPricePerKWh,
+                currency = it.currency,
+            )
+        }
+
+        /*
+        Pricing-Schedule returns the prices for the prevalent power type of the given site. We will
+         assign this prices to the corresponding charge point based on its power type.
+        Remaining charge points will depend on the original response to the sites offer, but will
+           update its price (when the discount time is expired) based on a check to the time slot
+           table provided from pricing-schedule.
+        */
+        val allChargePoints = chargeSite.toUI()
+            .chargePoints
+            .map { cpUI ->
+                if (cpUI.powerType != chargeSite.prevalentPowerType) {
+                    return@map ChargePointItemUI(
+                        chargePointUI = cpUI,
+                        standardPricePerKwh = standardPrice,
+                        todayPricePerKwh = standardPrice,
+                        hasDiscount = false,
+                        powerType = cpUI.powerType,
+                    )
+                }
+
+                val todayPricePerKwh = timeSlotUI?.let {
+                    Price(
+                        value = timeSlotUI.price.energyPricePerKWh,
+                        currency = timeSlotUI.price.currency,
+                    )
+                } ?: standardPrice
+
+
+                ChargePointItemUI(
+                    chargePointUI = cpUI,
+                    standardPricePerKwh = standardPrice,
+                    todayPricePerKwh = todayPricePerKwh,
+                    hasDiscount = timeSlotUI?.isDiscounted == true,
+                    powerType = cpUI.powerType,
+                )
+            }
+
+        val chargePoints = allChargePoints
+            .map { itemUI ->
                 val isFiltered = isChargePointFiltered(
                     searchInput = searchInput,
-                    evseId = cp.shortenedEvseId,
-                    availability = cp.availability,
-                    pricePerKwh = cp.standardPricePerKwh,
-                    maxPowerInKW = cp.maxPowerInKW,
+                    evseId = itemUI.chargePointUI.shortenedEvseId,
+                    availability = itemUI.chargePointUI.availability,
+                    pricePerKwh = itemUI.standardPricePerKwh,
+                    maxPowerInKW = itemUI.chargePointUI.maxPowerInKW,
                 )
 
                 Pair(
-                    cp,
+                    itemUI,
                     isFiltered,
                 )
             }
-            .sortedBy { (cp, _) -> cp.shortenedEvseId }
+            .sortedBy { (cp, _) -> cp.chargePointUI.shortenedEvseId }
             .filter { (_, isFiltered) -> isFiltered }
             .map { (cp, _) -> cp }
 
-        val pricingForChargePoints = chargePoints
-            .map {
-                val standardPrice = Price(
-                    value = pricing.standardPrice.energyPricePerKWh,
-                    currency = pricing.standardPrice.currency,
-                )
-
-                val priceAtCurrentTime = pricing.dailyPricing.today.timeSlots.getSlotAtTime()
-
-                when {
-                    priceAtCurrentTime != null -> {
-                        val todayPricePerKwh = Price(
-                            value = priceAtCurrentTime.price.energyPricePerKWh,
-                            currency = priceAtCurrentTime.price.currency,
-                        )
-
-                        ChargePointItemUI(
-                            chargePointUI = it,
-                            standardPricePerKwh = it.standardPricePerKwh,
-                            todayPricePerKwh = todayPricePerKwh,
-                            hasDiscount = priceAtCurrentTime.isDiscounted,
-                        )
-                    }
-
-                    else -> {
-                        ChargePointItemUI(
-                            chargePointUI = it,
-                            standardPricePerKwh = standardPrice,
-                            todayPricePerKwh = standardPrice,
-                            hasDiscount = false,
-                        )
-                    }
-                }
-            }
-
         return SiteDetailState.Success(
             discountExpiresAt = discountExpiresAt,
-            operatorName = chargeSiteUI.cpoName,
+            operatorName = chargeSite.operatorName,
             address = address,
+            coordinates = Pair(chargeSite.location.first(), chargeSite.location.last()),
             searchInput = searchInput,
-            pricingForChargePoints = pricingForChargePoints,
-            chargeSiteUI = chargeSiteUI.copy(
-                chargePoints = chargePoints,
-            ),
+            chargePoints = chargePoints,
         )
     }
 

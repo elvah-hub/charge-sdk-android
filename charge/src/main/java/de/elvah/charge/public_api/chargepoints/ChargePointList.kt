@@ -39,7 +39,7 @@ public fun ChargePointList(
             }
 
             is SiteDetailState.Success -> {
-                ChargePointsList(state.pricingForChargePoints, onItemClick = { evseId -> })
+                ChargePointsList(state.chargePoints, onItemClick = { evseId -> })
             }
         }
     }

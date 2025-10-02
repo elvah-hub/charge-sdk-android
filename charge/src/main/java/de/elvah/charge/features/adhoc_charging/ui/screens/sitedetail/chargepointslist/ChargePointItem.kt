@@ -72,11 +72,13 @@ internal fun ChargePointItem(
 
         Spacer(modifier = Modifier.weight(1.5f))
 
-        Column {
+        Column(
+            horizontalAlignment = Alignment.End,
+        ) {
             if (chargePoint.hasDiscount) {
                 Row {
                     CopyMedium(
-                        text = chargePoint.standardPricePerKwh.formatted(),
+                        text = chargePoint.todayPricePerKwh.formatted(),
                         fontWeight = FontWeight.W700
                     )
 
@@ -95,8 +97,13 @@ internal fun ChargePointItem(
                 )
             }
 
+            Spacer(Modifier.height(2.dp))
+
             CopySmall(
-                text = chargePoint.chargePointUI.maxPowerInKW?.formatKW().orEmpty(),
+                text = listOfNotNull(
+                    chargePoint.powerType,
+                    chargePoint.chargePointUI.maxPowerInKW?.formatKW(),
+                ).joinToString(" • "),
             )
         }
 
@@ -203,9 +210,10 @@ private fun ChargePointItemPreview() {
 internal val chargePointUIMock = ChargePointUI(
     evseId = EvseId(""),
     shortenedEvseId = "1*01",
-    maxPowerInKW = 0.42f,
     availability = ChargePointAvailability.AVAILABLE,
     standardPricePerKwh = Price(22.0, "EUR"),
+    maxPowerInKW = 0.42f,
+    powerType = "DC",
 )
 
 internal val chargePointItemUIMock = ChargePointItemUI(
@@ -213,4 +221,5 @@ internal val chargePointItemUIMock = ChargePointItemUI(
     standardPricePerKwh = chargePointUIMock.standardPricePerKwh,
     todayPricePerKwh = chargePointUIMock.standardPricePerKwh,
     hasDiscount = true,
+    powerType = "DC",
 )
