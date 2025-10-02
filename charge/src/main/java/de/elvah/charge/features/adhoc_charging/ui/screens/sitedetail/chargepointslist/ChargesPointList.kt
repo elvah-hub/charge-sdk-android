@@ -67,6 +67,8 @@ private fun ChargePointsListContent(
     ) {
         itemsIndexed(items) { index, item ->
             ChargePointItemWithSeparator(
+                modifier = Modifier
+                    .animateItem(),
                 contentPadding = PaddingValues(
                     top = 17.dp,
                     bottom = 12.dp,
