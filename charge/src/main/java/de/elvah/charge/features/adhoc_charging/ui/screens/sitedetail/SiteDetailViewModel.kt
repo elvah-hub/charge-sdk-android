@@ -62,24 +62,30 @@ internal class SiteDetailViewModel(
 
             pricing.value = getSiteScheduledPricing(GetSiteScheduledPricing.Params(siteId = siteId))
                 .fold({ null }, { it })
+
+            updateChargePointAvailabilities()
         }
     }
 
     internal fun refreshAvailability() {
         viewModelScope.launch {
-            sitesRepository.updateChargePointAvailabilities(
-                siteId = siteId,
-            ).fold(
-                ifLeft = { /* keep same data */ },
-                ifRight = { evses ->
-                    site.update {
-                        it?.copy(
-                            evses = evses,
-                        )
-                    }
-                }
-            )
+            updateChargePointAvailabilities()
         }
+    }
+
+    private suspend fun updateChargePointAvailabilities() {
+        sitesRepository.updateChargePointAvailabilities(
+            siteId = siteId,
+        ).fold(
+            ifLeft = { /* keep same data */ },
+            ifRight = { evses ->
+                site.update {
+                    it?.copy(
+                        evses = evses,
+                    )
+                }
+            }
+        )
     }
 
     internal fun onChargePointSearchInputChange(input: String) {
