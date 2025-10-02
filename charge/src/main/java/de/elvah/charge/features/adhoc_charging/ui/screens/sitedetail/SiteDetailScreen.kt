@@ -51,7 +51,11 @@ import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorS
 import de.elvah.charge.platform.ui.theme.copyMediumBold
 import de.elvah.charge.platform.ui.theme.copySmallBold
 import de.elvah.charge.platform.ui.theme.titleSmallBold
-import kotlinx.datetime.LocalDateTime
+import de.elvah.charge.platform.ui.util.formatTimeUntil
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @Composable
 internal fun SiteDetailScreen(
@@ -98,8 +102,14 @@ private fun SiteDetailScreen_Content(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-
-            OfferBannerAndClose(null, onCloseClick)
+            state.campaignExpireAt
+                ?.let { formatTimeUntil(it, true) }
+                ?.let {
+                    OfferBannerAndClose(
+                        text = "Offer ends in $it", // TODO: extract string resource
+                        onCloseClick
+                    )
+                }
 
             Spacer(Modifier.height(2.dp))
 
@@ -136,39 +146,36 @@ private fun SiteDetailScreen_Content(
 
 @Composable
 private fun OfferBannerAndClose(
-    @Suppress("SameParameterValue")
-    offerEndDateTime: LocalDateTime?,
+    text: String,
     onCloseClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        offerEndDateTime?.let {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorSchemeExtended.brand.copy(
-                            alpha = 0.1f,
-                        ),
-                    )
-                    .padding(
-                        vertical = 8.dp,
-                    )
-            ) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(
-                            horizontal = 16.dp,
-                        ),
-                    text = "Offer ends in 13h 11m",
-                    style = copySmallBold,
-                    color = MaterialTheme.colorSchemeExtended.brand,
-                    textAlign = TextAlign.Center
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorSchemeExtended.brand.copy(
+                        alpha = 0.1f,
+                    ),
                 )
-            }
+                .padding(
+                    vertical = 8.dp,
+                )
+        ) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(
+                        horizontal = 16.dp,
+                    ),
+                text = text,
+                style = copySmallBold,
+                color = MaterialTheme.colorSchemeExtended.brand,
+                textAlign = TextAlign.Center
+            )
         }
 
         Box(
@@ -215,7 +222,7 @@ private fun SiteDetailHeader(
             ),
     ) {
         Text(
-            text = state.chargeSiteUI.cpoName,
+            text = state.operatorName,
             color = MaterialTheme.colorScheme.primary,
             style = titleSmallBold
         )
@@ -311,12 +318,7 @@ private fun Button(
 private fun SiteDetailScreen_Content_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
-            SiteDetailState.Success(
-                searchInput = "",
-                address = null,
-                pricingForChargePoints = listOf(),
-                chargeSiteUI = MockData.siteUI,
-            ),
+            state = successStateMock,
             onCloseClick = {},
             onChargePointSearchInputChange = {},
             onRefreshAvailability = {},
@@ -330,10 +332,7 @@ private fun SiteDetailScreen_Content_Preview() {
 private fun SiteDetailScreen_Content_EmptyList_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
-            SiteDetailState.Success(
-                searchInput = "",
-                address = null,
-                pricingForChargePoints = listOf(),
+            state = successStateMock.copy(
                 chargeSiteUI = MockData.siteWithoutChargePoints,
             ),
             onCloseClick = {},
@@ -353,3 +352,14 @@ private fun SiteDetailScreen_Loading() {
 private fun SiteDetailScreen_Error() {
     FullScreenError()
 }
+
+@OptIn(ExperimentalTime::class)
+private val successStateMock = SiteDetailState.Success(
+    campaignExpireAt = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()),
+    operatorName = "Lidl Köpenicker Straße",
+    address = "Köpenicker Straße 145 12683 Berlin",
+    searchInput = "",
+    pricingForChargePoints = listOf(),
+    chargeSiteUI = MockData.siteUI,
+)

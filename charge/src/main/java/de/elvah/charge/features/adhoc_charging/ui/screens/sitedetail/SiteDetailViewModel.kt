@@ -44,6 +44,7 @@ internal class SiteDetailViewModel(
         if (pricing == null) return@combine SiteDetailState.Error
 
         buildSiteDetailSuccessState(
+            chargeSite = site,
             chargeSiteUI = site.toUI(),
             pricing = pricing,
             searchInput = searchInput,

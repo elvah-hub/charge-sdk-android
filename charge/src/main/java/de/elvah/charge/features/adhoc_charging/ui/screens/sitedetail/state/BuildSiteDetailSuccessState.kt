@@ -5,11 +5,13 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePoint
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.getChargePointAvailabilityStatusTextResId
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
+import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
+import de.elvah.charge.features.sites.ui.utils.toLocalDateTime
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -19,13 +21,19 @@ internal class BuildSiteDetailSuccessState(
 ) {
 
     operator fun invoke(
+        chargeSite: ChargeSite,
         chargeSiteUI: ChargeSiteUI,
         pricing: ScheduledPricing,
         searchInput: String,
         address: String?,
     ): SiteDetailState.Success {
+        // TODO: use time slot table to determine when the discount will disappear
+        val campaignExpiresAt = chargeSite.evses
+            .mapNotNull { it.offer.campaignEndsAt?.toLocalDateTime() }
+            .maxOrNull()
+
         val chargePoints = chargeSiteUI.chargePoints
-            .mapIndexed { index, cp ->
+            .map { cp ->
                 val isFiltered = isChargePointFiltered(
                     searchInput = searchInput,
                     evseId = cp.shortenedEvseId,
@@ -79,8 +87,10 @@ internal class BuildSiteDetailSuccessState(
             }
 
         return SiteDetailState.Success(
-            searchInput = searchInput,
+            campaignExpireAt = campaignExpiresAt,
+            operatorName = chargeSiteUI.cpoName,
             address = address,
+            searchInput = searchInput,
             pricingForChargePoints = pricingForChargePoints,
             chargeSiteUI = chargeSiteUI.copy(
                 chargePoints = chargePoints,
