@@ -86,7 +86,6 @@ internal fun ChargePointItem(
 
                     CopyMedium(
                         text = chargePoint.standardPricePerKwh.formatted(),
-                        fontWeight = FontWeight.W700,
                         textDecoration = TextDecoration.LineThrough,
                     )
                 }
