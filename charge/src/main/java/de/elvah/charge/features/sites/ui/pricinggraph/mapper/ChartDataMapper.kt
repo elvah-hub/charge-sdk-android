@@ -40,7 +40,7 @@ private fun ScheduledPricingUI.DayUI.toChartData(
     val offers = timeSlots
         .filter { it.isDiscounted }
         .mapNotNull { timeSlot ->
-            val timeRange = parseTimeRange(timeSlot.from, timeSlot.to)
+            val timeRange = parseTimeRange(timeSlot.fromText, timeSlot.toText)
             timeRange?.let { range ->
                 PriceOffer(
                     timeRange = range,

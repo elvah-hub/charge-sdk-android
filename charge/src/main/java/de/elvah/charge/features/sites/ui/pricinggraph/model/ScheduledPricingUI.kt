@@ -1,5 +1,7 @@
 package de.elvah.charge.features.sites.ui.pricinggraph.model
 
+import kotlinx.datetime.LocalDateTime
+
 internal data class ScheduledPricingUI(
     val dailyPricing: DailyPricingUI,
     val standardPrice: PriceUI
@@ -19,8 +21,10 @@ internal data class ScheduledPricingUI(
     data class TimeSlotUI(
         val isDiscounted: Boolean,
         val price: PriceUI,
-        val from: String,
-        val to: String
+        val from: LocalDateTime,
+        val fromText: String,
+        val to: LocalDateTime,
+        val toText: String,
     )
 
     data class PriceUI(

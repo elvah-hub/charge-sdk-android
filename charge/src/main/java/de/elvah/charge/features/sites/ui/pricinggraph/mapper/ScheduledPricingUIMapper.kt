@@ -1,7 +1,13 @@
 package de.elvah.charge.features.sites.ui.pricinggraph.mapper
 
+import de.elvah.charge.features.sites.domain.extension.timeSlotToLocalDateTime
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 internal fun ScheduledPricing.toUI(): ScheduledPricingUI = ScheduledPricingUI(
     dailyPricing = dailyPricing.toUI(),
@@ -21,13 +27,20 @@ internal fun ScheduledPricing.Day.toUI(): ScheduledPricingUI.DayUI = ScheduledPr
     timeSlots = timeSlots.map { it.toUI() }
 )
 
-internal fun ScheduledPricing.TimeSlot.toUI(): ScheduledPricingUI.TimeSlotUI =
-    ScheduledPricingUI.TimeSlotUI(
+@OptIn(ExperimentalTime::class)
+internal fun ScheduledPricing.TimeSlot.toUI(
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
+    defaultTime: LocalDateTime = Clock.System.now().toLocalDateTime(timeZone),
+): ScheduledPricingUI.TimeSlotUI {
+    return ScheduledPricingUI.TimeSlotUI(
         isDiscounted = isDiscounted,
         price = price.toUI(),
-        from = from,
-        to = to
+        from = from.timeSlotToLocalDateTime() ?: defaultTime,
+        fromText = from,
+        to = to.timeSlotToLocalDateTime() ?: defaultTime,
+        toText = to,
     )
+}
 
 internal fun ScheduledPricing.Price.toUI(): ScheduledPricingUI.PriceUI = ScheduledPricingUI.PriceUI(
     energyPricePerKWh = energyPricePerKWh,

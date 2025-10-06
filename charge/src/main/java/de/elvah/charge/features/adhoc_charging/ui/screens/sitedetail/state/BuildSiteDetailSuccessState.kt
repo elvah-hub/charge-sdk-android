@@ -4,7 +4,6 @@ import android.content.Context
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePointItemUI
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.getChargePointAvailabilityStatusTextResId
-import de.elvah.charge.features.sites.domain.extension.toUI
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.Price
@@ -12,6 +11,7 @@ import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.features.sites.ui.mapper.toUI
+import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toUI
 
 internal class BuildSiteDetailSuccessState(
     private val context: Context

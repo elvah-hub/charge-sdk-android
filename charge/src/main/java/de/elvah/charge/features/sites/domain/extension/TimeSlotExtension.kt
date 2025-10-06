@@ -1,7 +1,6 @@
 package de.elvah.charge.features.sites.domain.extension
 
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
-import de.elvah.charge.features.sites.domain.model.ScheduledPricing.Price
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -27,7 +26,7 @@ internal fun List<ScheduledPricing.TimeSlot>.getSlotAtTime(
  * to the device local time zone
  */
 @OptIn(ExperimentalTime::class)
-private fun String.timeSlotToLocalDateTime(
+internal fun String.timeSlotToLocalDateTime(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
 ): LocalDateTime? {
     val now = System.now().toLocalDateTime(timeZone)
@@ -47,24 +46,4 @@ private fun String.timeSlotToLocalDateTime(
 
     val localTimeZone = utc.toInstant(timeZone)
     return localTimeZone.toLocalDateTime(timeZone)
-}
-
-internal data class TimeSlotUI(
-    val isDiscounted: Boolean,
-    val price: Price,
-    val from: LocalDateTime,
-    val to: LocalDateTime,
-)
-
-@OptIn(ExperimentalTime::class)
-internal fun ScheduledPricing.TimeSlot.toUI(
-    timeZone: TimeZone = TimeZone.currentSystemDefault(),
-    defaultTime: LocalDateTime = System.now().toLocalDateTime(timeZone),
-): TimeSlotUI {
-    return TimeSlotUI(
-        isDiscounted = isDiscounted,
-        price = price,
-        from = from.timeSlotToLocalDateTime() ?: defaultTime,
-        to = to.timeSlotToLocalDateTime() ?: defaultTime,
-    )
 }
