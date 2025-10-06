@@ -49,11 +49,14 @@ internal class BuildSiteDetailSuccessState(
             .map { cpUI ->
                 if (cpUI.powerType != chargeSite.prevalentPowerType) {
                     return@map ChargePointItemUI(
-                        chargePointUI = cpUI,
+                        evseId = cpUI.evseId.value,
+                        shortenedEvseId = cpUI.shortenedEvseId,
+                        availability = cpUI.availability,
                         standardPricePerKwh = standardPrice,
                         todayPricePerKwh = standardPrice,
-                        hasDiscount = false,
+                        maxPowerInKW = cpUI.maxPowerInKW,
                         powerType = cpUI.powerType,
+                        hasDiscount = false,
                     )
                 }
 
@@ -64,13 +67,15 @@ internal class BuildSiteDetailSuccessState(
                     )
                 } ?: standardPrice
 
-
                 ChargePointItemUI(
-                    chargePointUI = cpUI,
+                    evseId = cpUI.evseId.value,
+                    shortenedEvseId = cpUI.shortenedEvseId,
+                    availability = cpUI.availability,
                     standardPricePerKwh = standardPrice,
                     todayPricePerKwh = todayPricePerKwh,
-                    hasDiscount = timeSlotUI?.isDiscounted == true,
+                    maxPowerInKW = cpUI.maxPowerInKW,
                     powerType = cpUI.powerType,
+                    hasDiscount = timeSlotUI?.isDiscounted == true,
                 )
             }
 
@@ -78,12 +83,12 @@ internal class BuildSiteDetailSuccessState(
             .map { itemUI ->
                 val isFiltered = isChargePointFiltered(
                     searchInput = searchInput,
-                    evseId = itemUI.chargePointUI.shortenedEvseId,
-                    availability = itemUI.chargePointUI.availability,
+                    evseId = itemUI.shortenedEvseId,
+                    availability = itemUI.availability,
                     pricePerKwh = itemUI.standardPricePerKwh,
                     todayPricePerKwh = itemUI.todayPricePerKwh,
                     powerType = itemUI.powerType,
-                    maxPowerInKW = itemUI.chargePointUI.maxPowerInKW,
+                    maxPowerInKW = itemUI.maxPowerInKW,
                 )
 
                 Pair(
@@ -91,7 +96,7 @@ internal class BuildSiteDetailSuccessState(
                     isFiltered,
                 )
             }
-            .sortedBy { (cp, _) -> cp.chargePointUI.shortenedEvseId }
+            .sortedBy { (cp, _) -> cp.shortenedEvseId }
             .filter { (_, isFiltered) -> isFiltered }
             .map { (cp, _) -> cp }
 

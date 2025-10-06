@@ -28,13 +28,11 @@ import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
-import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyXLargeBold
-import de.elvah.charge.public_api.banner.EvseId
 
 @Composable
 internal fun ChargePointItem(
@@ -43,7 +41,7 @@ internal fun ChargePointItem(
     chargePoint: ChargePointItemUI,
 ) {
     val statusTextResId = getChargePointAvailabilityStatusTextResId(
-        availability = chargePoint.chargePointUI.availability,
+        availability = chargePoint.availability,
     )
 
     Row(
@@ -54,8 +52,8 @@ internal fun ChargePointItem(
     ) {
         Column {
             BadgeStatus(
-                title = chargePoint.chargePointUI.shortenedEvseId,
-                availability = chargePoint.chargePointUI.availability,
+                title = chargePoint.shortenedEvseId,
+                availability = chargePoint.availability,
             )
 
             Spacer(Modifier.height(6.dp))
@@ -63,7 +61,7 @@ internal fun ChargePointItem(
             CopySmall(
                 text = stringResource(statusTextResId),
                 color = getAvailabilityColor(
-                    availability = chargePoint.chargePointUI.availability,
+                    availability = chargePoint.availability,
                 ),
             )
         }
@@ -100,7 +98,7 @@ internal fun ChargePointItem(
             CopySmall(
                 text = listOfNotNull(
                     chargePoint.powerType,
-                    chargePoint.chargePointUI.maxPowerInKW?.formatKW(),
+                    chargePoint.maxPowerInKW?.formatKW(),
                 ).joinToString(" • "),
             )
         }
@@ -205,19 +203,13 @@ private fun ChargePointItemPreview() {
     }
 }
 
-internal val chargePointUIMock = ChargePointUI(
-    evseId = EvseId(""),
+internal val chargePointItemUIMock = ChargePointItemUI(
+    evseId = "DE*1*01",
     shortenedEvseId = "1*01",
     availability = ChargePointAvailability.AVAILABLE,
     standardPricePerKwh = Price(22.0, "EUR"),
     maxPowerInKW = 0.42f,
     powerType = "DC",
-)
-
-internal val chargePointItemUIMock = ChargePointItemUI(
-    chargePointUI = chargePointUIMock,
-    standardPricePerKwh = chargePointUIMock.standardPricePerKwh,
-    todayPricePerKwh = chargePointUIMock.standardPricePerKwh,
+    todayPricePerKwh = Price(15.0, "EUR"),
     hasDiscount = true,
-    powerType = "DC",
 )

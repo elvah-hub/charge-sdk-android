@@ -1,7 +1,7 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
+import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Price
-import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import kotlinx.datetime.LocalDateTime
 
 internal sealed class SiteDetailState {
@@ -19,9 +19,12 @@ internal sealed class SiteDetailState {
 }
 
 internal data class ChargePointItemUI(
-    val chargePointUI: ChargePointUI,
+    val evseId: String,
+    val shortenedEvseId: String,
+    val availability: ChargePointAvailability,
     val standardPricePerKwh: Price,
     val todayPricePerKwh: Price,
-    val hasDiscount: Boolean,
+    val maxPowerInKW: Float?,
     val powerType: String?,
+    val hasDiscount: Boolean,
 )
