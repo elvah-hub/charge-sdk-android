@@ -162,23 +162,41 @@ private fun BadgeStatus(
     val backgroundColor = when (availability) {
         ChargePointAvailability.AVAILABLE,
             -> {
-            MaterialTheme.colorSchemeExtended.brand
+            MaterialTheme.colorSchemeExtended.brand.copy(
+                alpha = 0.2f,
+            )
         }
 
         ChargePointAvailability.OUT_OF_SERVICE,
         ChargePointAvailability.UNAVAILABLE,
         ChargePointAvailability.UNKNOWN,
             -> {
-            MaterialTheme.colorSchemeExtended.decorativeStroke
+            MaterialTheme.colorSchemeExtended.decorativeStroke.copy(
+                alpha = 0.2f,
+            )
+        }
+    }
+
+    val textColor = when (availability) {
+        ChargePointAvailability.AVAILABLE,
+        ChargePointAvailability.UNAVAILABLE,
+        ChargePointAvailability.UNKNOWN,
+            -> {
+            MaterialTheme.colorScheme.primary
+        }
+
+        ChargePointAvailability.OUT_OF_SERVICE,
+            -> {
+            MaterialTheme.colorScheme.primary.copy(
+                alpha = 0.4f,
+            )
         }
     }
 
     Text(
         modifier = Modifier
             .background(
-                color = backgroundColor.copy(
-                    alpha = 0.2f,
-                ),
+                color = backgroundColor,
                 shape = RoundedCornerShape(
                     size = 4.dp,
                 ),
@@ -189,7 +207,7 @@ private fun BadgeStatus(
             ),
         text = title,
         style = copyXLargeBold,
-        color = MaterialTheme.colorScheme.primary,
+        color = textColor,
     )
 }
 
@@ -199,6 +217,30 @@ private fun ChargePointItemPreview() {
     ElvahChargeTheme {
         ChargePointItem(
             chargePoint = chargePointItemUIMock,
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun OutOfServicePreview() {
+    ElvahChargeTheme {
+        ChargePointItem(
+            chargePoint = chargePointItemUIMock.copy(
+                availability = ChargePointAvailability.OUT_OF_SERVICE,
+            ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun OccupiedPreview() {
+    ElvahChargeTheme {
+        ChargePointItem(
+            chargePoint = chargePointItemUIMock.copy(
+                availability = ChargePointAvailability.UNAVAILABLE,
+            ),
         )
     }
 }
