@@ -4,7 +4,6 @@ import android.content.Context
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePointItemUI
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.getChargePointAvailabilityStatusTextResId
-import de.elvah.charge.features.sites.domain.extension.getSlotAtTime
 import de.elvah.charge.features.sites.domain.extension.toUI
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
@@ -21,10 +20,11 @@ internal class BuildSiteDetailSuccessState(
     operator fun invoke(
         chargeSite: ChargeSite,
         pricing: ScheduledPricing,
+        timeSlot: ScheduledPricing.TimeSlot?,
         searchInput: String,
         address: String?,
     ): SiteDetailState.Success {
-        val timeSlotUI = pricing.dailyPricing.today.timeSlots.getSlotAtTime()?.toUI()
+        val timeSlotUI = timeSlot?.toUI()
 
         val discountExpiresAt = timeSlotUI
             ?.takeIf { it.isDiscounted }
@@ -41,8 +41,8 @@ internal class BuildSiteDetailSuccessState(
         Pricing-Schedule returns the prices for the prevalent power type of the given site. We will
          assign this prices to the corresponding charge point based on its power type.
         Remaining charge points will depend on the original response to the sites offer, but will
-           update its price (when the discount time is expired) based on a check to the time slot
-           table provided from pricing-schedule.
+           update its price (when the discount time is expired) based on the information in the time slot
+           table (provided from pricing-schedule).
         */
         val allChargePoints = chargeSite.toUI()
             .chargePoints

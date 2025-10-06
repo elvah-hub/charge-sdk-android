@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state.BuildSiteDetailSuccessState
 import de.elvah.charge.features.sites.domain.extension.fullAddress
+import de.elvah.charge.features.sites.domain.extension.getSlotAtTime
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
@@ -33,18 +34,21 @@ internal class SiteDetailViewModel(
     private val site = MutableStateFlow<ChargeSite?>(null)
     private val pricing = MutableStateFlow<ScheduledPricing?>(null)
     private val chargePointSearchInput = MutableStateFlow("")
+    private val timeSlot = MutableStateFlow<ScheduledPricing.TimeSlot?>(null)
 
     val state = combine(
         site,
         pricing,
+        timeSlot,
         chargePointSearchInput,
-    ) { site, pricing, searchInput ->
+    ) { site, pricing, timeSlot, searchInput ->
         if (site == null) return@combine SiteDetailState.Error
         if (pricing == null) return@combine SiteDetailState.Error
 
         buildSiteDetailSuccessState(
             chargeSite = site,
             pricing = pricing,
+            timeSlot = timeSlot,
             searchInput = searchInput,
             address = site.address.fullAddress,
         )
@@ -62,6 +66,8 @@ internal class SiteDetailViewModel(
 
             pricing.value = getSiteScheduledPricing(GetSiteScheduledPricing.Params(siteId = siteId))
                 .fold({ null }, { it })
+
+            timeSlot.value = pricing.value?.dailyPricing?.today?.timeSlots?.getSlotAtTime()
 
             updateChargePointAvailabilities()
         }
@@ -90,5 +96,9 @@ internal class SiteDetailViewModel(
 
     internal fun onChargePointSearchInputChange(input: String) {
         chargePointSearchInput.value = input
+    }
+
+    internal fun updateTimeSlot() {
+        timeSlot.value = pricing.value?.dailyPricing?.today?.timeSlots?.getSlotAtTime()
     }
 }

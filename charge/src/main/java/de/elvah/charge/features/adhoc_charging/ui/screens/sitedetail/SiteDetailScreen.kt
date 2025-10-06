@@ -76,6 +76,7 @@ internal fun SiteDetailScreen(
         is SiteDetailState.Success -> SiteDetailScreen_Content(
             state = state,
             onCloseClick = onCloseClick,
+            onOfferExpired = viewModel::updateTimeSlot,
             onChargePointSearchInputChange = viewModel::onChargePointSearchInputChange,
             onRefreshAvailability = viewModel::refreshAvailability,
             onItemClick = onItemClick
@@ -89,6 +90,7 @@ internal fun SiteDetailScreen(
 private fun SiteDetailScreen_Content(
     state: SiteDetailState.Success,
     onCloseClick: () -> Unit,
+    onOfferExpired: () -> Unit,
     onChargePointSearchInputChange: (String) -> Unit,
     onRefreshAvailability: () -> Unit,
     onItemClick: (String) -> Unit,
@@ -110,6 +112,7 @@ private fun SiteDetailScreen_Content(
             OfferCountdownBanner(
                 discountExpiresAt = state.discountExpiresAt,
                 onCloseClick = onCloseClick,
+                onOfferExpired = onOfferExpired,
             )
 
             Spacer(Modifier.height(2.dp))
@@ -149,6 +152,7 @@ private fun SiteDetailScreen_Content(
 private fun OfferCountdownBanner(
     discountExpiresAt: LocalDateTime?,
     onCloseClick: () -> Unit,
+    onOfferExpired: () -> Unit,
 ) {
     discountExpiresAt
         ?.let { formatTimeUntil(it) }
@@ -161,11 +165,17 @@ private fun OfferCountdownBanner(
                     while (true) {
                         delay(it.inWholeSeconds)
 
-                        formatTimeUntil(discountExpiresAt)
-                            ?.let { (newFormattedTime, newDuration) ->
+                        val result = formatTimeUntil(discountExpiresAt)
+
+                        if (result != null) {
+                            result.let { (newFormattedTime, newDuration) ->
                                 formattedTime = newFormattedTime
                                 duration = newDuration
                             }
+                        } else {
+                            duration = null
+                            onOfferExpired()
+                        }
                     }
                 }
             }
@@ -355,6 +365,7 @@ private fun SiteDetailScreen_Content_Preview() {
         SiteDetailScreen_Content(
             state = successStateMock,
             onCloseClick = {},
+            onOfferExpired = {},
             onChargePointSearchInputChange = {},
             onRefreshAvailability = {},
             onItemClick = { _ -> },
@@ -371,6 +382,7 @@ private fun SiteDetailScreen_Content_EmptyList_Preview() {
                 chargePoints = listOf(),
             ),
             onCloseClick = {},
+            onOfferExpired = {},
             onChargePointSearchInputChange = {},
             onRefreshAvailability = {},
             onItemClick = { _ -> },
