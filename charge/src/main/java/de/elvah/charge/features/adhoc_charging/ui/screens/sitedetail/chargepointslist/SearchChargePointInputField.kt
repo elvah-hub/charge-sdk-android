@@ -18,12 +18,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLarge
@@ -66,7 +68,7 @@ internal fun SearchChargePointInputField(
             ),
             label = {
                 Text(
-                    text = "Type Charge point ID",
+                    text = stringResource(R.string.charge_points_search_input_hint),
                     style = copyLarge.copy(
                         color = MaterialTheme.colorScheme.secondary,
                     ),
@@ -78,7 +80,7 @@ internal fun SearchChargePointInputField(
                 Icon(
                     modifier = Modifier
                         .size(24.dp),
-                    painter = painterResource(id = de.elvah.charge.R.drawable.ic_search),
+                    painter = painterResource(id = R.drawable.ic_search),
                     tint = MaterialTheme.colorScheme.primary,
                     contentDescription = null,
                 )
@@ -91,7 +93,7 @@ internal fun SearchChargePointInputField(
                             onClick = { onSearchInputChange("") },
                             content = {
                                 Icon(
-                                    painter = painterResource(id = de.elvah.charge.R.drawable.ic_close_filled),
+                                    painter = painterResource(id = R.drawable.ic_close_filled),
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary,
                                 )

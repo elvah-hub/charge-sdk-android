@@ -1,5 +1,6 @@
 package de.elvah.charge.features.sites.ui.utils
 
+import android.content.Context
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.periodUntil
@@ -26,6 +27,7 @@ import kotlin.time.ExperimentalTime
  */
 @OptIn(ExperimentalTime::class)
 internal fun formatTimeUntil(
+    context: Context,
     target: LocalDateTime,
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
     now: LocalDateTime = Clock.System.now().toLocalDateTime(timeZone),
@@ -39,75 +41,130 @@ internal fun formatTimeUntil(
     val period = now.date.periodUntil(target.date)
 
     val totalHours = duration.inWholeHours
-    val hours = totalHours % 24
+    val hours = (totalHours % 24).toInt()
     val totalMinutes = duration.inWholeMinutes
-    val minutes = totalMinutes % 60
-    val seconds = duration.inWholeSeconds % 60
-    val days = duration.inWholeDays
+    val minutes = (totalMinutes % 60).toInt()
+    val seconds = (duration.inWholeSeconds % 60).toInt()
+    val days = duration.inWholeDays.toInt()
+    val separator = " "
 
-    // TODO: extract strings resources
     return when {
         period.years > 0 && period.months == 0 -> {
             Pair(
-                first = "${period.years} year",
+                first = context.resources.getQuantityString(
+                    de.elvah.charge.R.plurals.generic_year,
+                    period.years,
+                ),
                 second = null,
             )
         }
 
         period.years > 0 -> {
+            val yearText = context.resources.getQuantityString(
+                de.elvah.charge.R.plurals.generic_year,
+                period.years,
+            )
+
+            val monthText = context.resources.getQuantityString(
+                de.elvah.charge.R.plurals.generic_month,
+                period.months,
+            )
+
             Pair(
                 first = listOfNotNull(
-                    "${period.years} year",
-                    "${period.months} months".takeIf { period.months > 0 },
-                ).joinToString(", "),
+                    yearText,
+                    monthText.takeIf { period.months > 0 },
+                ).joinToString(separator),
                 second = null,
             )
         }
 
-
         period.months > 0 -> {
+            val monthText = context.resources.getQuantityString(
+                de.elvah.charge.R.plurals.generic_month,
+                period.months,
+            )
+
+            val dayText = context.resources.getQuantityString(
+                de.elvah.charge.R.plurals.generic_day,
+                period.days,
+            )
+
             Pair(
                 listOfNotNull(
-                    "${period.months} month",
-                    "${period.days} days".takeIf { period.days > 0 },
-                ).joinToString(", "),
+                    monthText,
+                    dayText.takeIf { period.days > 0 },
+                ).joinToString(separator),
                 second = null,
             )
         }
 
         days > 0 -> {
+            val dayText = context.resources.getQuantityString(
+                de.elvah.charge.R.plurals.generic_day,
+                days,
+            )
+
+            val hourText = context.resources.getString(
+                de.elvah.charge.R.string.generic_hour_abbreviation,
+                hours.toString(),
+            )
+
             Pair(
                 listOfNotNull(
-                    "$days day",
-                    "$hours hours".takeIf { hours > 0 },
-                ).joinToString(", "),
+                    dayText,
+                    hourText.takeIf { hours > 0 },
+                ).joinToString(separator),
                 second = 1.hours,
             )
         }
 
         hours > 0 -> {
+            val hourText = context.resources.getString(
+                de.elvah.charge.R.string.generic_hour_abbreviation,
+                hours.toString(),
+            )
+
+            val minuteText = context.resources.getString(
+                de.elvah.charge.R.string.generic_minutes_abbreviation,
+                minutes.toString(),
+            )
+
             Pair(
                 first = listOfNotNull(
-                    "$hours hours",
-                    "$minutes mins".takeIf { minutes > 0 },
-                ).joinToString(", "),
+                    hourText,
+                    minuteText.takeIf { minutes > 0 },
+                ).joinToString(separator),
                 second = 1.minutes,
             )
         }
 
         minutes > 0 -> {
+            val minuteText = context.resources.getString(
+                de.elvah.charge.R.string.generic_minutes_abbreviation,
+                minutes.toString(),
+            )
+
+            val secondText = context.resources.getString(
+                de.elvah.charge.R.string.generic_seconds_abbreviation,
+                seconds.toString(),
+            )
+
             Pair(
                 first = listOfNotNull(
-                    "$minutes mins",
-                    "$seconds secs".takeIf { seconds > 0 },
-                ).joinToString(" "),
+                    minuteText,
+                    secondText.takeIf { seconds > 0 },
+                ).joinToString(separator),
                 second = 1.seconds,
             )
         }
 
         else -> {
             Pair(
-                first = "$seconds secs",
+                first = context.resources.getString(
+                    de.elvah.charge.R.string.generic_seconds_abbreviation,
+                    seconds.toString(),
+                ),
                 second = 1.seconds,
             )
         }

@@ -53,6 +53,7 @@ internal fun ChargePointsList(
         when {
             state.noSearchResults -> {
                 NoSearchResultsContent(
+                    searchInput = state.searchInput,
                     onClearFilters = { onChargePointSearchInputChange("") },
                 )
             }
@@ -76,6 +77,7 @@ internal fun ChargePointsList(
 
 @Composable
 private fun NoSearchResultsContent(
+    searchInput: String,
     onClearFilters: () -> Unit,
 ) {
     Column(
@@ -90,7 +92,10 @@ private fun NoSearchResultsContent(
                 .padding(
                     horizontal = 32.dp,
                 ),
-            text = "nothing founded", // TODO: extract string resource
+            text = stringResource(
+                R.string.generic_no_search_results_for_input,
+                searchInput,
+            ),
             style = titleSmallBold,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
@@ -103,7 +108,7 @@ private fun NoSearchResultsContent(
                 .padding(
                     horizontal = 32.dp,
                 ),
-            text = "try again", // TODO: extract string resource
+            text = stringResource(R.string.generic_no_search_results_description),
             style = copyMedium,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
@@ -112,7 +117,7 @@ private fun NoSearchResultsContent(
         Spacer(Modifier.height(16.dp))
 
         UnderlinedButton(
-            text = "clear",
+            text = stringResource(R.string.generic_clear_filters),
             onClick = onClearFilters,
         )
     }

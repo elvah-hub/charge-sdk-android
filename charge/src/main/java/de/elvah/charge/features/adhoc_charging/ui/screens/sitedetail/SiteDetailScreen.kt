@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -153,8 +154,10 @@ private fun SiteDetailTopBar(
     onCloseClick: () -> Unit,
     onOfferExpired: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     val discount = discountExpiresAt
-        ?.let { formatTimeUntil(it) }
+        ?.let { formatTimeUntil(context, it) }
 
     Box(
         modifier = Modifier
@@ -169,7 +172,7 @@ private fun SiteDetailTopBar(
                     while (true) {
                         delay(it.inWholeSeconds)
 
-                        val result = formatTimeUntil(discountExpiresAt)
+                        val result = formatTimeUntil(context, discountExpiresAt)
 
                         if (result != null) {
                             result.let { (newFormattedTime, newDuration) ->
@@ -202,7 +205,7 @@ private fun SiteDetailTopBar(
                         .padding(
                             horizontal = 16.dp,
                         ),
-                    text = "Offer ends in $formattedTime", // TODO: extract string resource
+                    text = stringResource(R.string.offer_ends_in) + " " + formattedTime,
                     style = copySmallBold,
                     color = MaterialTheme.colorSchemeExtended.brand,
                     textAlign = TextAlign.Center

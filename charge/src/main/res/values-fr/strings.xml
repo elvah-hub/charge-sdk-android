@@ -4,6 +4,7 @@
   <string name="apple_maps">Cartes Apple</string>
   <string name="authorization_successful">Recharge autorisée</string>
   <string name="back">Retour</string>
+  <string name="base_pricing_label">Base Pricing</string>
   <string name="call">Appeler</string>
   <string name="campaign_banner__active_session_text">Gérer la charge</string>
   <string name="campaign_banner__ad_hoc" comment="campaign_banncampaign_banner__ad_hocer__ad_hoc">Ad-hoc</string>
@@ -22,9 +23,10 @@
   <string name="charge_label">Recharger</string>
   <string name="charge_offer_details__loading_error_message">L’offres n’a pas pu être chargé. Veuillez réessayer plus tard.</string>
   <string name="charge_payment__disclaimer">\'%1$s\' %2$s ainsi que %3$s appliquer</string>
-  <string name="charge_point__availability__available">Disponible maintenant</string>
+  <string name="charge_point__availability__available">Disponible</string>
   <string name="charge_point__availability__occupied">Occupé</string>
   <string name="charge_point__availability__out_of_service">Hors service</string>
+  <string name="charge_points_search_input_hint">Type charge point ID</string>
   <string name="charge_session__activation__title" comment="charge_session__activation_loading__title">Préparation</string>
   <string name="charge_session__activation_error__message">La session n’a pas pu être démarrée avec ce point de charge. Veuillez réessayer ou utiliser une autre prise.</string>
   <string name="charge_session__activation_error__title">Le point de charge a renvoyé une erreur</string>
@@ -73,9 +75,28 @@
   <string name="error_label">Erreur…</string>
   <string name="euros_kw_label">%1$s€/kWh</string>
   <string name="euros_label">€</string>
+  <string name="generic_clear_filters">Clear filters</string>
+  <string name="generic_clear_input">Clear input</string>
   <string name="generic_error__title">Une erreur s\'est produite</string>
   <string name="generic_error_bottom_sheet__message">Une erreur inattendue s\'est produite. Veuillez réessayer ou contacter notre support utilisateur.</string>
   <string name="generic_error_bottom_sheet__title">Oh, cela n\'a pas fonctionné!</string>
+  <string name="generic_hour_abbreviation">%sh</string>
+  <string name="generic_minutes_abbreviation">%smin</string>
+  <plurals name="generic_month">
+    <item quantity="one">%s month</item>
+    <item quantity="other">%s months</item>
+  </plurals>
+  <plurals name="generic_day">
+    <item quantity="one">%s day</item>
+    <item quantity="other">%s days</item>
+  </plurals>
+  <string name="generic_no_search_results_description">Check your search input and try again</string>
+  <string name="generic_no_search_results_for_input">No results for %s</string>
+  <string name="generic_seconds_abbreviation">%ss</string>
+  <plurals name="generic_year">
+    <item quantity="one">%s year</item>
+    <item quantity="other">%s years</item>
+  </plurals>
   <string name="google_maps">Google Maps</string>
   <string name="google_pay_button">Payer avec Google Pay</string>
   <string name="help_support_heading">Aide &amp; Support</string>
@@ -116,4 +137,10 @@
   <string name="try_again">Réessayer</string>
   <string name="understood">Compris</string>
   <string name="whatsapp">WhatsApp</string>
+  <string name="schedule_pricing__live_pricing__label">Live Pricing</string>
+  <string name="schedule_pricing__yesterday">Yesterday %2d:%02d</string>
+  <string name="schedule_pricing__today">Today %2d:%02d</string>
+  <string name="schedule_pricing__tomorrow">Tomorrow %2d:%02d</string>
+  <string name="no_offer_available">No offer available</string>
+  <string name="offer_available">Offer available:</string>
 </resources>

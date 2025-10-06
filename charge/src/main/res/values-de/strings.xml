@@ -22,9 +22,10 @@
   <string name="charge_label">Laden</string>
   <string name="charge_offer_details__loading_error_message">Die Angebote konnten nicht geladen werden. Bitte versuche es erneut.</string>
   <string name="charge_payment__disclaimer">\'%1$s\' %2$s sowie unsere %3$s gelten</string>
-  <string name="charge_point__availability__available">Jetzt verfügbar</string>
+  <string name="charge_point__availability__available">Verfügbar</string>
   <string name="charge_point__availability__occupied">Belegt</string>
   <string name="charge_point__availability__out_of_service">Außer Betrieb</string>
+  <string name="charge_points_search_input_hint">Type charge point ID</string>
   <string name="charge_session__activation__title" comment="charge_session__activation_loading__title">Wird initialisiert</string>
   <string name="charge_session__activation_error__message">Leider konnten wir die Ladung an dieser Station nicht starten. Bitte versuch es später erneut oder wähle einen anderen Ladepunkt.</string>
   <string name="charge_session__activation_error__title">Der Ladepunkt hat einen Fehler gemeldet</string>
@@ -73,9 +74,28 @@
   <string name="error_label">Fehler…</string>
   <string name="euros_kw_label">%1$s€/kWh</string>
   <string name="euros_label">€</string>
+  <string name="generic_clear_filters">Clear filters</string>
+  <string name="generic_clear_input">Clear input</string>
   <string name="generic_error__title">Ein Fehler ist aufgetreten</string>
   <string name="generic_error_bottom_sheet__message">Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut oder kontaktiere unseren Support.</string>
   <string name="generic_error_bottom_sheet__title">Oh, das hat nicht funktioniert!</string>
+  <string name="generic_hour_abbreviation">%sh</string>
+  <string name="generic_minutes_abbreviation">%smin</string>
+  <plurals name="generic_month">
+    <item quantity="one">%s month</item>
+    <item quantity="other">%s months</item>
+  </plurals>
+  <plurals name="generic_day">
+    <item quantity="one">%s day</item>
+    <item quantity="other">%s days</item>
+  </plurals>
+  <string name="generic_no_search_results_description">Check your search input and try again</string>
+  <string name="generic_no_search_results_for_input">No results for %s</string>
+  <string name="generic_seconds_abbreviation">%ss</string>
+  <plurals name="generic_year">
+    <item quantity="one">%s year</item>
+    <item quantity="other">%s years</item>
+  </plurals>
   <string name="google_maps">Google Maps</string>
   <string name="google_pay_button">Mit Google Pay bezahlen</string>
   <string name="help_support_heading">Hilfe und Support</string>
@@ -116,4 +136,10 @@
   <string name="try_again">Erneut versuchen</string>
   <string name="understood">Verstanden</string>
   <string name="whatsapp">WhatsApp</string>
+  <string name="schedule_pricing__live_pricing__label">Live Pricing</string>
+  <string name="schedule_pricing__yesterday">Yesterday %2d:%02d</string>
+  <string name="schedule_pricing__today">Today %2d:%02d</string>
+  <string name="schedule_pricing__tomorrow">Tomorrow %2d:%02d</string>
+  <string name="no_offer_available">No offer available</string>
+  <string name="offer_available">Offer available:</string>
 </resources>
