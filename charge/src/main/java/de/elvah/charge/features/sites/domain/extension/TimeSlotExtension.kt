@@ -30,8 +30,6 @@ internal fun List<ScheduledPricing.TimeSlot>.getSlotAtTime(
 private fun String.timeSlotToLocalDateTime(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
 ): LocalDateTime? {
-    val timeSlotTimeZone = TimeZone.UTC
-
     val now = System.now().toLocalDateTime(timeZone)
 
     val (hour, minute, second) = this.split(":")
@@ -47,7 +45,7 @@ private fun String.timeSlotToLocalDateTime(
         nanosecond = 0,
     )
 
-    val localTimeZone = utc.toInstant(timeSlotTimeZone)
+    val localTimeZone = utc.toInstant(timeZone)
     return localTimeZone.toLocalDateTime(timeZone)
 }
 
