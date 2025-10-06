@@ -12,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,7 +25,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.copyMediumBold
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
+import de.elvah.charge.platform.ui.theme.copyLarge
 
 @Composable
 internal fun SearchChargePointInputField(
@@ -56,10 +58,16 @@ internal fun SearchChargePointInputField(
             shape = RoundedCornerShape(
                 size = 8.dp,
             ),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorSchemeExtended.decorativeStroke,
+                unfocusedBorderColor = MaterialTheme.colorSchemeExtended.decorativeStroke.copy(
+                    alpha = 0.16f,
+                ),
+            ),
             label = {
                 Text(
                     text = "Type Charge point ID",
-                    style = copyMediumBold.copy(
+                    style = copyLarge.copy(
                         color = MaterialTheme.colorScheme.secondary,
                     ),
                     overflow = TextOverflow.Ellipsis,

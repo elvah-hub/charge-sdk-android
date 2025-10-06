@@ -33,7 +33,6 @@ import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
-import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.copyXLargeBold
 import de.elvah.charge.public_api.banner.EvseId
 
@@ -61,9 +60,8 @@ internal fun ChargePointItem(
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            CopySmall(
                 text = stringResource(statusTextResId),
-                style = copyLargeBold,
                 color = getAvailabilityColor(
                     availability = chargePoint.chargePointUI.availability,
                 ),
@@ -86,6 +84,7 @@ internal fun ChargePointItem(
 
                     CopyMedium(
                         text = chargePoint.standardPricePerKwh.formatted(),
+                        color = MaterialTheme.colorScheme.secondary,
                         textDecoration = TextDecoration.LineThrough,
                     )
                 }

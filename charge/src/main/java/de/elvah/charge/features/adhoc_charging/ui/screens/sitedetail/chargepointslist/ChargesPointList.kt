@@ -16,33 +16,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePointItemUI
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailState
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.successStateMock
 import de.elvah.charge.platform.ui.components.CopyLarge
+import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.extension.horizontalElement
 import de.elvah.charge.platform.ui.extension.verticalElement
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
 internal fun ChargePointsList(
-    chargePoints: List<ChargePointItemUI>,
+    state: SiteDetailState.Success,
     modifier: Modifier = Modifier,
+    onChargePointSearchInputChange: (String) -> Unit,
     onItemClick: (String) -> Unit
 ) {
     Column(
         modifier = modifier
             .background(MaterialTheme.colorScheme.background)
     ) {
-        if (chargePoints.isNotEmpty()) {
+        SelectChargePointHeader(state, onChargePointSearchInputChange)
+
+        if (state.chargePoints.isNotEmpty()) {
             ChargePointsListContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .imePadding(),
-                items = chargePoints,
+                items = state.chargePoints,
                 onItemClick = onItemClick,
             )
+
         } else {
             Box(
                 modifier = Modifier
@@ -53,6 +61,33 @@ internal fun ChargePointsList(
                 CopyLarge(stringResource(R.string.no_charge_points_available))
             }
         }
+    }
+}
+
+@Composable
+private fun SelectChargePointHeader(
+    state: SiteDetailState.Success,
+    onChargePointSearchInputChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(
+                horizontal = 16.dp,
+            ),
+    ) {
+        CopyXLarge(
+            modifier = Modifier
+                .padding(
+                    vertical = 12.dp,
+                ),
+            text = stringResource(R.string.select_charge_point_label),
+            fontWeight = FontWeight.W700,
+        )
+
+        SearchChargePointInputField(
+            searchInput = state.searchInput,
+            onSearchInputChange = onChargePointSearchInputChange,
+        )
     }
 }
 
@@ -117,7 +152,8 @@ private fun ChargePointItemWithSeparator(
 private fun ChargePointsListPreview() {
     ElvahChargeTheme {
         ChargePointsList(
-            chargePoints = chargePointsMock,
+            state = successStateMock,
+            onChargePointSearchInputChange = {},
             onItemClick = {},
         )
     }
@@ -128,15 +164,12 @@ private fun ChargePointsListPreview() {
 private fun EmptyListPreview() {
     ElvahChargeTheme {
         ChargePointsList(
-            chargePoints = listOf(),
+            modifier = Modifier,
+            state = successStateMock.copy(
+                chargePoints = listOf(),
+            ),
+            onChargePointSearchInputChange = {},
             onItemClick = {},
         )
     }
 }
-
-private val chargePointsMock = listOf(
-    chargePointItemUIMock,
-    chargePointItemUIMock,
-    chargePointItemUIMock,
-    chargePointItemUIMock,
-)

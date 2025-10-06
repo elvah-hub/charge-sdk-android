@@ -37,8 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -46,10 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
-import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.SearchChargePointInputField
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.chargePointItemUIMock
 import de.elvah.charge.features.sites.ui.utils.formatTimeUntil
 import de.elvah.charge.platform.core.android.openMap
-import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.Timer
@@ -82,7 +79,7 @@ internal fun SiteDetailScreen(
             onOfferExpired = viewModel::updateTimeSlot,
             onChargePointSearchInputChange = viewModel::onChargePointSearchInputChange,
             onRefreshAvailability = viewModel::refreshAvailability,
-            onItemClick = onItemClick
+            onItemClick = onItemClick,
         )
 
         is SiteDetailState.Error -> SiteDetailScreen_Error()
@@ -124,14 +121,11 @@ private fun SiteDetailScreen_Content(
 
             Spacer(Modifier.height(16.dp))
 
-            SelectChargePointHeader(state, onChargePointSearchInputChange)
-
-            Spacer(Modifier.height(16.dp))
-
             ChargePointsList(
                 modifier = Modifier
                     .weight(1f),
-                chargePoints = state.chargePoints,
+                state = state,
+                onChargePointSearchInputChange = onChargePointSearchInputChange,
                 onItemClick = onItemClick
             )
 
@@ -305,40 +299,17 @@ private fun SiteDetailHeader(
                     textDecoration = TextDecoration.Underline,
                 )
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.width(4.dp))
 
                 Icon(
+                    modifier = Modifier
+                        .size(16.dp),
                     painter = painterResource(R.drawable.ic_open_external),
                     tint = MaterialTheme.colorScheme.secondary,
                     contentDescription = null,
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun SelectChargePointHeader(
-    state: SiteDetailState.Success,
-    onChargePointSearchInputChange: (String) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .padding(
-                horizontal = 16.dp,
-            ),
-    ) {
-        CopyXLarge(
-            text = stringResource(R.string.select_charge_point_label),
-            fontWeight = FontWeight.W700,
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        SearchChargePointInputField(
-            searchInput = state.searchInput,
-            onSearchInputChange = onChargePointSearchInputChange,
-        )
     }
 }
 
@@ -431,8 +402,15 @@ private fun SiteDetailScreen_Error() {
     FullScreenError()
 }
 
+private val chargePointsMock = listOf(
+    chargePointItemUIMock,
+    chargePointItemUIMock,
+    chargePointItemUIMock,
+    chargePointItemUIMock,
+)
+
 @OptIn(ExperimentalTime::class)
-private val successStateMock = SiteDetailState.Success(
+internal val successStateMock = SiteDetailState.Success(
     discountExpiresAt = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault()).let {
             LocalDateTime(
@@ -448,5 +426,5 @@ private val successStateMock = SiteDetailState.Success(
     address = "Köpenicker Straße 145 12683 Berlin",
     coordinates = Pair(0.0, 0.0),
     searchInput = "",
-    chargePoints = listOf(),
+    chargePoints = chargePointsMock,
 )

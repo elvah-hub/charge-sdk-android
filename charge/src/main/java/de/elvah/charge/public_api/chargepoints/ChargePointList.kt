@@ -39,7 +39,10 @@ public fun ChargePointList(
             }
 
             is SiteDetailState.Success -> {
-                ChargePointsList(state.chargePoints, onItemClick = { evseId -> })
+                ChargePointsList(
+                    state = state,
+                    onChargePointSearchInputChange = siteDetailViewModel::onChargePointSearchInputChange,
+                    onItemClick = { evseId -> })
             }
         }
     }
