@@ -29,7 +29,7 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
         composable<SiteDetailRoute> {
             SiteDetailScreen(
                 viewModel = koinViewModel(),
-                onCloseClick = navController::navigateUp,
+                onCloseClick = onFinishClicked,
                 onItemClick = { evseId ->
                     navController.navigate(
                         ChargingPointDetailRoute(

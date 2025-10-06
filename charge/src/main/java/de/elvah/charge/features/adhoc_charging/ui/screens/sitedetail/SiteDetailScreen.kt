@@ -1,10 +1,12 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -32,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -109,7 +112,7 @@ private fun SiteDetailScreen_Content(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            OfferCountdownBanner(
+            SiteDetailTopBar(
                 discountExpiresAt = state.discountExpiresAt,
                 onCloseClick = onCloseClick,
                 onOfferExpired = onOfferExpired,
@@ -149,14 +152,19 @@ private fun SiteDetailScreen_Content(
 }
 
 @Composable
-private fun OfferCountdownBanner(
+private fun SiteDetailTopBar(
     discountExpiresAt: LocalDateTime?,
     onCloseClick: () -> Unit,
     onOfferExpired: () -> Unit,
 ) {
-    discountExpiresAt
+    val discount = discountExpiresAt
         ?.let { formatTimeUntil(it) }
-        ?.let { (initialFormattedTime, initialDuration) ->
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        discount?.let { (initialFormattedTime, initialDuration) ->
             var formattedTime by remember { mutableStateOf(initialFormattedTime) }
             var duration by remember { mutableStateOf(initialDuration) }
 
@@ -180,74 +188,80 @@ private fun OfferCountdownBanner(
                 }
             }
 
-            OfferCountdownBannerWithCloseButton(
-                text = "Offer ends in $formattedTime", // TODO: extract string resource
-                onCloseClick = onCloseClick,
-            )
-        }
-}
-
-@Composable
-private fun OfferCountdownBannerWithCloseButton(
-    text: String,
-    onCloseClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorSchemeExtended.brand.copy(
-                        alpha = 0.1f,
-                    ),
-                )
-                .padding(
-                    vertical = 8.dp,
-                )
-        ) {
-            Text(
+            Box(
                 modifier = Modifier
-                    .align(Alignment.Center)
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorSchemeExtended.brand.copy(
+                            alpha = 0.1f,
+                        ),
+                    )
                     .padding(
-                        horizontal = 16.dp,
-                    ),
-                text = text,
-                style = copySmallBold,
-                color = MaterialTheme.colorSchemeExtended.brand,
-                textAlign = TextAlign.Center
-            )
+                        vertical = 8.dp,
+                    )
+            ) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(
+                            horizontal = 16.dp,
+                        ),
+                    text = "Offer ends in $formattedTime", // TODO: extract string resource
+                    style = copySmallBold,
+                    color = MaterialTheme.colorSchemeExtended.brand,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
 
-        Box(
+        CloseButton(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(
-                    end = 12.dp,
-                    top = 16.dp,
-                )
-                .background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = CircleShape,
-                )
-                .clickable(
-                    onClick = onCloseClick,
-                )
-                .padding(
-                    all = 10.dp
+                    paddingValues = if (discount != null) {
+                        PaddingValues(end = 14.dp, top = 16.dp)
+                    } else {
+                        PaddingValues(end = 14.dp)
+                    },
                 ),
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(20.dp)
-                    .align(Alignment.Center),
-                painter = painterResource(id = R.drawable.ic_close),
-                tint = MaterialTheme.colorScheme.primary,
-                contentDescription = null
+            onClick = onCloseClick,
+        )
+    }
+}
+
+@Composable
+private fun CloseButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .size(48.dp)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorSchemeExtended.decorativeStroke,
+                shape = CircleShape
             )
-        }
+            .background(
+                color = MaterialTheme.colorScheme.background,
+                shape = CircleShape,
+            )
+            .clip(shape = CircleShape)
+            .clickable(
+                onClick = onClick,
+            )
+            .padding(
+                all = 10.dp
+            ),
+    ) {
+        Icon(
+            modifier = Modifier
+                .size(24.dp)
+                .align(Alignment.Center),
+            painter = painterResource(id = R.drawable.ic_close),
+            tint = MaterialTheme.colorScheme.primary,
+            contentDescription = null
+        )
     }
 }
 
@@ -375,6 +389,23 @@ private fun SiteDetailScreen_Content_Preview() {
 
 @PreviewLightDark
 @Composable
+private fun SiteDetailScreen_Content_NoDiscount_Preview() {
+    ElvahChargeTheme {
+        SiteDetailScreen_Content(
+            state = successStateMock.copy(
+                discountExpiresAt = null,
+            ),
+            onCloseClick = {},
+            onOfferExpired = {},
+            onChargePointSearchInputChange = {},
+            onRefreshAvailability = {},
+            onItemClick = { _ -> },
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
 private fun SiteDetailScreen_Content_EmptyList_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
@@ -403,7 +434,16 @@ private fun SiteDetailScreen_Error() {
 @OptIn(ExperimentalTime::class)
 private val successStateMock = SiteDetailState.Success(
     discountExpiresAt = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()),
+        .toLocalDateTime(TimeZone.currentSystemDefault()).let {
+            LocalDateTime(
+                year = it.year,
+                month = it.month,
+                day = it.day,
+                hour = it.hour,
+                minute = it.minute + 1,
+                second = it.second,
+            )
+        },
     operatorName = "Lidl Köpenicker Straße",
     address = "Köpenicker Straße 145 12683 Berlin",
     coordinates = Pair(0.0, 0.0),
