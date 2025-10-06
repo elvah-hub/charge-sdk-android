@@ -79,7 +79,7 @@ internal class BuildSiteDetailSuccessState(
                 )
             }
 
-        val chargePoints = allChargePoints
+        val filteredChargePoints = allChargePoints
             .map { itemUI ->
                 val isFiltered = isChargePointFiltered(
                     searchInput = searchInput,
@@ -106,7 +106,9 @@ internal class BuildSiteDetailSuccessState(
             address = address,
             coordinates = Pair(chargeSite.location.first(), chargeSite.location.last()),
             searchInput = searchInput,
-            chargePoints = chargePoints,
+            chargePoints = filteredChargePoints,
+            noSearchResults = filteredChargePoints.isEmpty(),
+            noStations = allChargePoints.isEmpty(),
         )
     }
 

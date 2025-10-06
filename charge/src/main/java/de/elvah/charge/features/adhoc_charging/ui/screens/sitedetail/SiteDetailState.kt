@@ -15,6 +15,8 @@ internal sealed class SiteDetailState {
         val coordinates: Pair<Double, Double>,
         val searchInput: String,
         val chargePoints: List<ChargePointItemUI>,
+        val noSearchResults: Boolean,
+        val noStations: Boolean,
     ) : SiteDetailState()
 }
 

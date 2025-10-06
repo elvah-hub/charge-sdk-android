@@ -52,6 +52,7 @@ import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.Timer
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
+import de.elvah.charge.platform.ui.theme.copyMedium
 import de.elvah.charge.platform.ui.theme.copyMediumBold
 import de.elvah.charge.platform.ui.theme.copySmallBold
 import de.elvah.charge.platform.ui.theme.titleSmallBold
@@ -133,9 +134,10 @@ private fun SiteDetailScreen_Content(
             if (false) {
                 Spacer(Modifier.height(36.dp))
 
-                Button(
+                UnderlinedButton(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
+                    text = "Back to map",
                     onClick = {}
                 )
 
@@ -296,6 +298,7 @@ private fun SiteDetailHeader(
                         },
                     text = it,
                     color = MaterialTheme.colorScheme.secondary,
+                    style = copyMedium,
                     textDecoration = TextDecoration.Underline,
                 )
 
@@ -314,7 +317,8 @@ private fun SiteDetailHeader(
 }
 
 @Composable
-private fun Button(
+internal fun UnderlinedButton(
+    text: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
@@ -326,7 +330,7 @@ private fun Button(
             .width(IntrinsicSize.Max),
     ) {
         Text(
-            text = "Back to map",
+            text = text,
             style = copyMediumBold,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
@@ -375,23 +379,6 @@ private fun SiteDetailScreen_Content_NoDiscount_Preview() {
     }
 }
 
-@PreviewLightDark
-@Composable
-private fun SiteDetailScreen_Content_EmptyList_Preview() {
-    ElvahChargeTheme {
-        SiteDetailScreen_Content(
-            state = successStateMock.copy(
-                chargePoints = listOf(),
-            ),
-            onCloseClick = {},
-            onOfferExpired = {},
-            onChargePointSearchInputChange = {},
-            onRefreshAvailability = {},
-            onItemClick = { _ -> },
-        )
-    }
-}
-
 @Composable
 private fun SiteDetailScreen_Loading() {
     FullScreenLoading()
@@ -427,4 +414,6 @@ internal val successStateMock = SiteDetailState.Success(
     coordinates = Pair(0.0, 0.0),
     searchInput = "",
     chargePoints = chargePointsMock,
+    noSearchResults = false,
+    noStations = false,
 )

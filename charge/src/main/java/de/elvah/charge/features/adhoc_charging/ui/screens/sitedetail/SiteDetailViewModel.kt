@@ -31,27 +31,32 @@ internal class SiteDetailViewModel(
 
     val siteId = args.siteId
 
+    private val loading = MutableStateFlow(false)
     private val site = MutableStateFlow<ChargeSite?>(null)
     private val pricing = MutableStateFlow<ScheduledPricing?>(null)
     private val chargePointSearchInput = MutableStateFlow("")
     private val timeSlot = MutableStateFlow<ScheduledPricing.TimeSlot?>(null)
 
     val state = combine(
+        loading,
         site,
         pricing,
         timeSlot,
         chargePointSearchInput,
-    ) { site, pricing, timeSlot, searchInput ->
-        if (site == null) return@combine SiteDetailState.Error
-        if (pricing == null) return@combine SiteDetailState.Error
+    ) { loading, site, pricing, timeSlot, searchInput ->
+        when {
+            loading -> SiteDetailState.Loading
 
-        buildSiteDetailSuccessState(
-            chargeSite = site,
-            pricing = pricing,
-            timeSlot = timeSlot,
-            searchInput = searchInput,
-            address = site.address.fullAddress,
-        )
+            site != null && pricing != null -> buildSiteDetailSuccessState(
+                chargeSite = site,
+                pricing = pricing,
+                timeSlot = timeSlot,
+                searchInput = searchInput,
+                address = site.address.fullAddress,
+            )
+
+            else -> SiteDetailState.Error
+        }
 
     }.stateIn(
         scope = viewModelScope,
@@ -61,6 +66,8 @@ internal class SiteDetailViewModel(
 
     init {
         viewModelScope.launch {
+            loading.value = true
+
             site.value = sitesRepository.getChargeSite(args.siteId)
                 .fold({ null }, { it })
 
@@ -70,6 +77,8 @@ internal class SiteDetailViewModel(
             timeSlot.value = pricing.value?.dailyPricing?.today?.timeSlots?.getSlotAtTime()
 
             updateChargePointAvailabilities()
+
+            loading.value = false
         }
     }
 
