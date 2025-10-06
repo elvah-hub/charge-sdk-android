@@ -130,20 +130,6 @@ private fun SiteDetailScreen_Content(
                 onChargePointSearchInputChange = onChargePointSearchInputChange,
                 onItemClick = onItemClick
             )
-
-            @Suppress("ConstantConditionIf")
-            if (false) {
-                Spacer(Modifier.height(36.dp))
-
-                UnderlinedButton(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    text = "Back to map",
-                    onClick = {}
-                )
-
-                Spacer(Modifier.height(36.dp))
-            }
         }
     }
 }
