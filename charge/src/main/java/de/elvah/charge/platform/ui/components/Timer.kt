@@ -16,7 +16,7 @@ import kotlinx.coroutines.delay
 @Composable
 internal fun Timer(
     intervalMillis: Long = 60_000,
-    onComplete: () -> Unit
+    onTick: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     var isActive by remember { mutableStateOf(true) }
@@ -43,7 +43,7 @@ internal fun Timer(
         while (isActive) {
             delay(intervalMillis)
             if (isActive) {
-                onComplete()
+                onTick()
             }
         }
     }

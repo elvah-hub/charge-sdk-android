@@ -99,7 +99,7 @@ private fun SiteDetailScreen_Content(
 ) {
     Timer(
         intervalMillis = 60_000,
-        onComplete = onRefreshAvailability,
+        onTick = onRefreshAvailability,
     )
 
     Scaffold(
