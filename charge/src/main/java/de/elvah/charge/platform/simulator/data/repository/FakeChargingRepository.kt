@@ -4,10 +4,11 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import de.elvah.charge.features.adhoc_charging.data.repository.SessionExceptions
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
+import de.elvah.charge.features.payments.domain.model.SummaryInfo
 import de.elvah.charge.features.sites.domain.model.AdditionalCosts
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
@@ -18,10 +19,8 @@ import de.elvah.charge.platform.simulator.domain.factory.SimulationStrategyFacto
 import de.elvah.charge.platform.simulator.domain.model.SimulationContext
 import de.elvah.charge.platform.simulator.domain.model.SimulatorFlow
 import de.elvah.charge.platform.simulator.domain.strategy.ChargingSimulationStrategy
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 
 internal class FakeChargingRepository(
@@ -32,10 +31,6 @@ internal class FakeChargingRepository(
         sessionFactory
     )
 ) : ChargingRepository {
-
-    private val _activeSessions: MutableSharedFlow<ChargingSession?> = MutableSharedFlow()
-    override val activeSessions: Flow<ChargingSession?>
-        get() = _activeSessions.asSharedFlow()
 
     private val currentContext = MutableStateFlow(SimulationContext())
 
@@ -57,7 +52,7 @@ internal class FakeChargingRepository(
         chargingStore.storeAdditionalCosts(additionalCosts)
     }
 
-    override suspend fun fetchChargingSession(): Either<Exception, ChargingSession> {
+    override suspend fun fetchChargingSession(): Either<Exception, ChargeSession> {
         return try {
             val context = currentContext.value
 
@@ -77,8 +72,6 @@ internal class FakeChargingRepository(
                     .incrementTime()
                     .withSession(session)
             }
-
-            _activeSessions.emit(session)
 
             session?.right() ?: NullPointerException("No session generated").left()
 
@@ -107,9 +100,17 @@ internal class FakeChargingRepository(
         }
     }
 
+    override suspend fun getSummary(): SummaryInfo? {
+        return chargingStore.getChargingPrefs().first().let {
+            SummaryInfo(
+                paymentId = it.paymentId,
+                logoUrl = it.logoUrl,
+            )
+        }
+    }
+
     override suspend fun resetSession() {
         chargingStore.resetSession()
-        _activeSessions.emit(null)
         resetSimulation()
     }
 

@@ -60,16 +60,16 @@ import de.elvah.charge.platform.ui.theme.copyXLargeBold
 
 @Composable
 internal fun ChargingPointDetailScreen(
-    chargingPointDetailViewModel: ChargingPointDetailViewModel,
+    viewModel: ChargingPointDetailViewModel,
     onBackClick: () -> Unit,
     onPaymentSuccess: (String, String) -> Unit,
 ) {
-    val state by chargingPointDetailViewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     when (val state = state) {
         is ChargingPointDetailState.Loading -> ChargingPointDetail_Loading()
         is ChargingPointDetailState.Error -> ChargingPointDetail_Error(onRetryClick = {
-            chargingPointDetailViewModel.onRetryClicked()
+            viewModel.onRetryClicked()
         })
 
         is ChargingPointDetailState.Success -> {

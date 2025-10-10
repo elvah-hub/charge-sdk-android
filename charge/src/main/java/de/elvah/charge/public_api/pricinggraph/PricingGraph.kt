@@ -5,25 +5,27 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.elvah.charge.components.common.DisplayContent
+import de.elvah.charge.components.pricinggraph.rememberPricingGraphSource
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphEffect
 import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphState
-import de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphViewModel
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphContent
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphEmpty
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphError
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphLoading
 import de.elvah.charge.features.sites.ui.utils.openSite
-import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import de.elvah.charge.public_api.DisplayBehavior
+import de.elvah.charge.public_api.sitessource.SitesSource
+import de.elvah.charge.public_api.sitessource.rememberSitesSource
 import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 @Composable
 public fun PricingGraph(
+    sitesSource: SitesSource,
     siteId: String,
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
@@ -33,16 +35,15 @@ public fun PricingGraph(
     minYAxisPrice: Double? = null,
     gridLineDotSize: Float = 4f
 ) {
-    val pricingGraphViewModel: PricingGraphViewModel = koinViewModel()
-    val config: Config = koinInject()
-
     val context = LocalContext.current
 
-    val state by pricingGraphViewModel.state.collectAsStateWithLifecycle()
+    val pricingGraphSource = rememberPricingGraphSource(sitesSource)
+
+    val state by pricingGraphSource.state.collectAsStateWithLifecycle()
 
     // Handle effects
-    LaunchedEffect(pricingGraphViewModel) {
-        pricingGraphViewModel.effects.collectLatest { effect ->
+    LaunchedEffect(pricingGraphSource) {
+        pricingGraphSource.effects.collectLatest { effect ->
             when (effect) {
                 is PricingGraphEffect.ShowErrorToast -> {
                     onError?.invoke(effect.message)
@@ -69,17 +70,17 @@ public fun PricingGraph(
 
     // Load pricing data when siteId changes
     LaunchedEffect(siteId) {
-        pricingGraphViewModel.loadPricing(siteId)
+        pricingGraphSource.loadPricing(siteId)
     }
 
     ElvahChargeTheme(
-        darkTheme = shouldUseDarkColors(config.darkTheme),
-        customLightColorScheme = config.customLightColorScheme,
-        customDarkColorScheme = config.customDarkColorScheme
+        darkTheme = shouldUseDarkColors(sitesSource.config.darkTheme),
+        customLightColorScheme = sitesSource.config.customLightColorScheme,
+        customDarkColorScheme = sitesSource.config.customDarkColorScheme,
     ) {
         when (val currentState = state) {
             is PricingGraphState.Loading -> {
-                if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
+                DisplayContent(displayBehaviour = display) {
                     PricingGraphLoading(modifier)
                 }
             }
@@ -93,16 +94,19 @@ public fun PricingGraph(
                     minYAxisPrice = minYAxisPrice,
                     gridLineDotSize = gridLineDotSize,
                     onChargeNowClick = {
-                        context.openSite(siteId)
+                        context.openSite(
+                            dealId = siteId,
+                            sourceInstanceId = sitesSource.instanceId,
+                        )
                     }
                 )
             }
 
             is PricingGraphState.Error -> {
-                if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
+                DisplayContent(displayBehaviour = display) {
                     PricingGraphError(
                         onRetry = {
-                            pricingGraphViewModel.retryLoad()
+                            pricingGraphSource.retryLoad()
                         },
                         modifier = modifier
                     )
@@ -110,10 +114,20 @@ public fun PricingGraph(
             }
 
             is PricingGraphState.Empty -> {
-                if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
+                DisplayContent(displayBehaviour = display) {
                     PricingGraphEmpty(modifier)
                 }
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PricingGraphPreview() {
+    PricingGraph(
+        sitesSource = rememberSitesSource(),
+        siteId = "testing2",
+        display = DisplayBehavior.WHEN_SOURCE_SET,
+    )
 }

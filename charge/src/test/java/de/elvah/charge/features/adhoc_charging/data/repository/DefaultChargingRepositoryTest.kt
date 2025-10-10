@@ -1,6 +1,5 @@
 package de.elvah.charge.features.adhoc_charging.data.repository
 
-import app.cash.turbine.test
 import de.elvah.charge.features.adhoc_charging.ChargingSessionPrefs
 import de.elvah.charge.features.adhoc_charging.data.remote.api.ChargingApi
 import de.elvah.charge.features.adhoc_charging.data.remote.model.response.ActiveChargeSessionsDto
@@ -15,7 +14,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
@@ -96,17 +94,6 @@ class DefaultChargingRepositoryTest {
             },
             ifRight = { fail("Expected failure but got success: $it") }
         )
-    }
-
-    @Test
-    fun `fetchChargingSession emits null to flow when API fails`() = runTest {
-        coEvery { chargingApi.getActiveChargeSessions(any()) } throws RuntimeException("API Error")
-
-        repository.fetchChargingSession()
-
-        repository.activeSessions.test {
-            assertNull("Expected null to be emitted when API fails", awaitItem())
-        }
     }
 
     @Test

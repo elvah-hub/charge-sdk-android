@@ -35,5 +35,3 @@ private val String.hoursAndMinutesText: String?
 
         return HOUR_MINUTE_FORMAT.format(hour, minute)
     }.getOrNull()
-
-private const val HOUR_MINUTE_FORMAT = "%02d:%02d"

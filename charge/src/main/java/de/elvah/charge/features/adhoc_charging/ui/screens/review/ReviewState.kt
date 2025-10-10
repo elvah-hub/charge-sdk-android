@@ -5,5 +5,9 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.review.model.PaymentSu
 internal sealed class ReviewState {
     data object Loading : ReviewState()
     data object Error : ReviewState()
-    data class Success(val summary: PaymentSummaryUI) : ReviewState()
+
+    data class Success(
+        val summary: PaymentSummaryUI?,
+        val isLoading: Boolean,
+    ) : ReviewState()
 }

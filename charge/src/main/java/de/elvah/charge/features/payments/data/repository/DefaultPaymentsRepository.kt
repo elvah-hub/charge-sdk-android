@@ -47,8 +47,13 @@ internal class DefaultPaymentsRepository(
         return runCatching {
             val sessionDetails = chargingStore.getChargingPrefs().first()
 
-            chargeSettlementApi.getPaymentSummary(paymentId)
-                .toDomain(sessionDetails.evseId, sessionDetails.cpoName)
+            chargeSettlementApi
+                .getPaymentSummary(paymentId)
+                .toDomain(
+                    evseId = sessionDetails.evseId,
+                    cpoName = sessionDetails.cpoName,
+                    logoUrl = sessionDetails.logoUrl,
+                )
         }.toEither()
     }
 }

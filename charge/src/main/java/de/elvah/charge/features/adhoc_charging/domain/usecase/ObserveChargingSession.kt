@@ -1,15 +1,14 @@
 package de.elvah.charge.features.adhoc_charging.domain.usecase
 
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
-import kotlinx.coroutines.flow.Flow
-
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeService
+import kotlinx.coroutines.flow.StateFlow
 
 internal class ObserveChargingSession(
-    private val chargingRepository: ChargingRepository,
+    private val chargeService: ChargeService,
 ) {
 
-    operator fun invoke(): Flow<ChargingSession?> {
-        return chargingRepository.activeSessions
+    operator fun invoke(): StateFlow<ChargeSession?> {
+        return chargeService.chargeSession
     }
 }

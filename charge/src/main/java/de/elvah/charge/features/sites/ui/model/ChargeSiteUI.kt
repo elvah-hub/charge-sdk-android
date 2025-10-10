@@ -18,7 +18,7 @@ internal data class AddressUI(
     val locality: String
 )
 
-internal data class ChargeBannerRender(
+public data class ChargeBannerRender(
     val id: String,
     val cpoName: String,
     val address: String,
@@ -28,7 +28,7 @@ internal data class ChargeBannerRender(
     val campaignEnd: String,
 )
 
-internal data class Location(
+public data class Location(
     val lat: Double,
     val lng: Double,
 )
