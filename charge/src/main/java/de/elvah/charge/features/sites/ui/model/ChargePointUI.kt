@@ -2,7 +2,7 @@ package de.elvah.charge.features.sites.ui.model
 
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Pricing
-import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.model.EvseId
 
 internal data class ChargePointUI(
     val evseId: EvseId,

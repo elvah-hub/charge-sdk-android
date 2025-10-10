@@ -12,8 +12,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 
-internal class DefaultFiltersRepository(
-) : FiltersRepository {
+internal class DefaultFiltersRepository() : FiltersRepository {
 
     private val _filters: MutableSharedFlow<SiteFilter> = MutableSharedFlow(replay = 1)
     private var currentFilter = SiteFilter()
@@ -21,7 +20,8 @@ internal class DefaultFiltersRepository(
     override val filters: Flow<SiteFilter> = _filters.asSharedFlow()
 
     override suspend fun updateFilters(filters: SiteFilter) {
-        _filters.emit(filters)
+        currentFilter = filters
+        _filters.emit(currentFilter)
     }
 
     override suspend fun updateBoundingBox(
@@ -30,36 +30,28 @@ internal class DefaultFiltersRepository(
         val updatedFilter = currentFilter.copy(
             boundingBox = boundingBox
         )
-        updateFilters(updatedFilter).also {
-            currentFilter = updatedFilter
-        }
+        updateFilters(updatedFilter)
     }
 
     override suspend fun updateCampaignId(campaignId: CampaignId) {
         val updatedFilter = currentFilter.copy(
             campaignId = campaignId
         )
-        updateFilters(updatedFilter).also {
-            currentFilter = updatedFilter
-        }
+        updateFilters(updatedFilter)
     }
 
     override suspend fun updateOrganisationId(organisationId: OrganisationId) {
         val updatedFilter = currentFilter.copy(
             organisationId = organisationId
         )
-        updateFilters(updatedFilter).also {
-            currentFilter = updatedFilter
-        }
+        updateFilters(updatedFilter)
     }
 
     override suspend fun updateOfferType(offerType: OfferType) {
         val updatedFilter = currentFilter.copy(
             offerType = offerType
         )
-        updateFilters(updatedFilter).also {
-            currentFilter = updatedFilter
-        }
+        updateFilters(updatedFilter)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

@@ -2,9 +2,9 @@ package de.elvah.charge.features.adhoc_charging.domain.model
 
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 
-internal class ChargingSession(
-    val evseId: String,
-    val status: SessionStatus,
-    val consumption: Double,
-    val duration: Int,
+public class ChargingSession(
+    public val evseId: String,
+    public val status: SessionStatus,
+    public val consumption: Double,
+    public val duration: Int,
 )

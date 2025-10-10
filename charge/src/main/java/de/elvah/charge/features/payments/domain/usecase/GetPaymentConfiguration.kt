@@ -9,10 +9,9 @@ import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
-
 internal class GetPaymentConfiguration(
     private val paymentsRepository: PaymentsRepository,
-    private val sitesRepository: SitesRepository,
+    private val sitesRepository: SitesRepository, // TODO: create a use case, see todo below
     private val chargingStore: ChargingStore,
 ) {
 
@@ -22,6 +21,10 @@ internal class GetPaymentConfiguration(
     ): Either<PaymentConfigErrors, PaymentConfiguration> =
         coroutineScope {
             val publishableKey = async { paymentsRepository.getPublishableKey() }
+
+            // TODO: sites repo always makes a request to get the signed offer, we could
+            // move this endpoint to a singleton repository and create a use case, this will
+            // always require a siteId and evseId
             val signedOffer = async { sitesRepository.getSignedOffer(siteId, evseId) }
 
             signedOffer.await().flatMap {

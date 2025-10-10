@@ -8,9 +8,10 @@ import androidx.core.net.toUri
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
 
-internal fun Context.openSite(dealId: String) {
+internal fun Context.openSite(dealId: String, sourceInstanceId: String? = null) {
     val intent =
         Intent(this, AdHocChargingActivity::class.java).apply {
+            putExtra(AdHocChargingActivity.ARG_SOURCE_INSTANCE_ID, sourceInstanceId)
             putExtra(AdHocChargingActivity.ARG_SITE_ID, dealId)
         }
     startActivity(intent)

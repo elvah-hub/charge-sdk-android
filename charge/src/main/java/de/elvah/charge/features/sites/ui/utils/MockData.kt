@@ -14,7 +14,7 @@ import de.elvah.charge.features.sites.ui.model.Location
 import de.elvah.charge.platform.ui.components.graph.line.DailyPricingData
 import de.elvah.charge.platform.ui.components.graph.line.PriceOffer
 import de.elvah.charge.platform.ui.components.graph.line.TimeRange
-import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.model.EvseId
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration

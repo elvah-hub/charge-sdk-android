@@ -11,20 +11,12 @@ import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.sites.domain.model.AdditionalCosts
 import de.elvah.charge.platform.core.arrow.extensions.toEither
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
-
 
 internal class DefaultChargingRepository(
     private val chargingApi: ChargingApi,
     private val chargingStore: ChargingStore
 ) : ChargingRepository {
-
-    private val _activeSessions: MutableSharedFlow<ChargingSession?> = MutableSharedFlow(replay = 1)
-    override val activeSessions: Flow<ChargingSession?>
-        get() = _activeSessions.asSharedFlow()
 
     override suspend fun updateChargingToken(token: String) {
         chargingStore.setToken(token)
@@ -48,13 +40,12 @@ internal class DefaultChargingRepository(
         return if (token.isNotEmpty()) {
             runCatching {
                 chargingApi.getActiveChargeSessions(BEARER_TEMPLATE.format(token))
-            }.map { it.toDomain() }.toEither().also {
-                it
             }
+                .map { it.toDomain() }
+                .toEither()
+                .also { it }
         } else {
             Either.Left(IllegalStateException("No token found"))
-        }.also {
-            _activeSessions.emit(it.getOrNull())
         }
     }
 
@@ -87,11 +78,11 @@ internal class DefaultChargingRepository(
 
     override suspend fun resetSession() {
         chargingStore.resetSession()
-        _activeSessions.tryEmit(null)
     }
 
     private suspend fun getToken() = chargingStore.getChargingPrefs().first().token
+
+    companion object {
+        private const val BEARER_TEMPLATE = "Bearer %s"
+    }
 }
-
-
-private const val BEARER_TEMPLATE = "Bearer %s"

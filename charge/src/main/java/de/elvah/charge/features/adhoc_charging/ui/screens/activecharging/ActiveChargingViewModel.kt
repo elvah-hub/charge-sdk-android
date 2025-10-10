@@ -2,8 +2,8 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.elvah.charge.features.adhoc_charging.data.service.ChargeService
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ClearLocalSessionData
-import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
@@ -11,17 +11,15 @@ import de.elvah.charge.features.payments.domain.usecase.GetAdditionalCosts
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 internal class ActiveChargingViewModel(
     private val observeChargingSession: ObserveChargingSession,
     private val stopChargingSession: StopChargingSession,
-    private val fetchChargingSession: FetchChargingSession,
+    private val chargeService: ChargeService,
     private val getOrganisationDetails: GetOrganisationDetails,
     private val getAdditionalCosts: GetAdditionalCosts,
     private val clearLocalSessionData: ClearLocalSessionData,
@@ -36,7 +34,6 @@ internal class ActiveChargingViewModel(
         viewModelScope.launch {
             val organisationDetails = getOrganisationDetails()
             organisationDetails?.let {
-                startPolling()
                 observeChargingSession().collect { chargeSession ->
                     val organisationDetails = getOrganisationDetails()
 
@@ -136,15 +133,6 @@ internal class ActiveChargingViewModel(
         }
     }
 
-    private fun startPolling() {
-        viewModelScope.launch {
-            while (isActive && state.value !is ActiveChargingState.Error) {
-                fetchChargingSession()
-                delay(DELAY_IN_MILLIS)
-            }
-        }
-    }
-
     fun onDismissError() {
         viewModelScope.launch {
             _state.update {
@@ -178,5 +166,3 @@ internal class ActiveChargingViewModel(
         }
     }
 }
-
-private const val DELAY_IN_MILLIS = 2000L

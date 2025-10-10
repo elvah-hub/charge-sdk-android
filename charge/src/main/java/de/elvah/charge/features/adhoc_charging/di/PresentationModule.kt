@@ -6,11 +6,20 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.Charging
 import de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
+import de.elvah.charge.public_api.sitessource.SitesSource
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 internal val adHocViewModelModule = module {
-    viewModelOf(::SiteDetailViewModel)
+    viewModel { (source: SitesSource) ->
+        SiteDetailViewModel(
+            source,
+            get(),
+            get(),
+        )
+    }
+
     viewModelOf(::ChargingPointDetailViewModel)
     viewModelOf(::ChargingStartViewModel)
     viewModelOf(::ActiveChargingViewModel)

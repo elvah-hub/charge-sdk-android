@@ -18,10 +18,7 @@ import de.elvah.charge.platform.simulator.domain.factory.SimulationStrategyFacto
 import de.elvah.charge.platform.simulator.domain.model.SimulationContext
 import de.elvah.charge.platform.simulator.domain.model.SimulatorFlow
 import de.elvah.charge.platform.simulator.domain.strategy.ChargingSimulationStrategy
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 
 internal class FakeChargingRepository(
@@ -32,10 +29,6 @@ internal class FakeChargingRepository(
         sessionFactory
     )
 ) : ChargingRepository {
-
-    private val _activeSessions: MutableSharedFlow<ChargingSession?> = MutableSharedFlow()
-    override val activeSessions: Flow<ChargingSession?>
-        get() = _activeSessions.asSharedFlow()
 
     private val currentContext = MutableStateFlow(SimulationContext())
 
@@ -78,8 +71,6 @@ internal class FakeChargingRepository(
                     .withSession(session)
             }
 
-            _activeSessions.emit(session)
-
             session?.right() ?: NullPointerException("No session generated").left()
 
         } catch (exception: Exception) {
@@ -109,7 +100,6 @@ internal class FakeChargingRepository(
 
     override suspend fun resetSession() {
         chargingStore.resetSession()
-        _activeSessions.emit(null)
         resetSimulation()
     }
 

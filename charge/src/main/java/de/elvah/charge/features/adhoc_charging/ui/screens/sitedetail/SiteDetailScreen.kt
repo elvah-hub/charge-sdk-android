@@ -1,5 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.elvah.charge.BuildConfig
 import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.components.OfferCounterBanner
 import de.elvah.charge.features.adhoc_charging.ui.components.button.CircularIconButton
@@ -32,6 +36,7 @@ import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.Timer
 import de.elvah.charge.platform.ui.components.site.SiteDetailHeader
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -85,6 +90,21 @@ private fun SiteDetailScreen_Content(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
+            // TODO: define style and translations
+            if (state.chargeSession != null && BuildConfig.DEBUG) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorSchemeExtended.brand)
+                        .padding(all = 7.dp),
+                ) {
+                    Text(
+                        "Charge session in progress..",
+                        color = MaterialTheme.colorSchemeExtended.onBrand,
+                    )
+                }
+            }
+
             SiteDetailTopBar(
                 discountExpiresAt = null,
                 onCloseClick = onCloseClick,

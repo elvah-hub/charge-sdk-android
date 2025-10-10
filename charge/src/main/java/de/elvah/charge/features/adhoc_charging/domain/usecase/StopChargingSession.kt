@@ -2,13 +2,13 @@ package de.elvah.charge.features.adhoc_charging.domain.usecase
 
 import arrow.core.Either
 import de.elvah.charge.features.adhoc_charging.data.repository.SessionExceptions
-import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
-
+import de.elvah.charge.features.adhoc_charging.data.service.ChargeService
 
 internal class StopChargingSession(
-    private val chargingRepository: ChargingRepository,
+    private val chargeService: ChargeService,
 ) {
 
-    suspend operator fun invoke(): Either<SessionExceptions, Boolean> =
-        chargingRepository.stopChargingSession()
+    suspend operator fun invoke(): Either<SessionExceptions, Boolean> {
+        return chargeService.stopChargingSession()
+    }
 }

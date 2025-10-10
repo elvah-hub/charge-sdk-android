@@ -3,6 +3,8 @@ package de.elvah.charge
 import android.content.Context
 import de.elvah.charge.features.adhoc_charging.data.local.DefaultChargingStore
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
+import de.elvah.charge.features.adhoc_charging.data.service.ChargeService
+import de.elvah.charge.features.adhoc_charging.data.service.ElvahChargeService
 import de.elvah.charge.features.adhoc_charging.di.adHocChargingLocalModule
 import de.elvah.charge.features.adhoc_charging.di.adHocChargingUseCasesModule
 import de.elvah.charge.features.adhoc_charging.di.adHocViewModelModule
@@ -17,13 +19,13 @@ import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
 import de.elvah.charge.features.sites.di.adaptersModule
 import de.elvah.charge.features.sites.di.sitesRepositoriesModule
 import de.elvah.charge.features.sites.di.sitesUseCaseModule
-import de.elvah.charge.features.sites.di.sitesViewModelModule
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.platform.network.ApiUrlBuilder
 import de.elvah.charge.platform.network.okhttp.di.okHttpModule
 import de.elvah.charge.platform.network.retrofit.di.retrofitModule
 import de.elvah.charge.platform.simulator.di.provideSimulatorModule
+import de.elvah.charge.public_api.di.componentsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -38,10 +40,11 @@ public object Elvah {
     }
 
     private val viewModelsModule = module {
-        includes(sitesViewModelModule, adHocViewModelModule)
+        includes(adHocViewModelModule)
     }
 
     private val repositoriesModule = module {
+        singleOf(::ElvahChargeService) { bind<ChargeService>() }
         singleOf(::DefaultChargingRepository) { bind<ChargingRepository>() }
         singleOf(::DefaultPaymentsRepository) { bind<PaymentsRepository>() }
         singleOf(::DefaultChargingStore) { bind<ChargingStore>() }
@@ -83,6 +86,7 @@ public object Elvah {
             androidContext(context)
             modules(
                 configModule(config),
+                componentsModule,
                 viewModelsModule,
                 useCaseModule,
                 networkModule,

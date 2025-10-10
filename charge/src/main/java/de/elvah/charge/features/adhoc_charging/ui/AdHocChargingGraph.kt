@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
+import de.elvah.charge.components.sitessource.InternalSitesSource
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingStartRoute
@@ -19,18 +20,27 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailScreen
 import de.elvah.charge.platform.ui.animation.slideFromBottom
 import de.elvah.charge.platform.ui.animation.slideToBottom
+import de.elvah.charge.public_api.sitessource.rememberSitesSource
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
-
+internal fun AdHocChargingGraph(
+    sourceInstanceId: String,
+    siteId: String,
+    onFinishClicked: () -> Unit,
+) {
     val navController = rememberNavController()
+
+    val source = rememberSitesSource(instanceId = sourceInstanceId)
 
     NavHost(navController, startDestination = SiteDetailRoute(siteId)) {
 
         composable<SiteDetailRoute> {
             SiteDetailScreen(
-                viewModel = koinViewModel(),
+                viewModel = koinViewModel {
+                    parametersOf(source)
+                },
                 onCloseClick = onFinishClicked,
                 onItemClick = { evseId ->
                     navController.navigate(
@@ -52,16 +62,24 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
             exitTransition = slideToBottom(),
             popExitTransition = slideToBottom(),
         ) {
-            ChargingPointDetailScreen(koinViewModel(), onBackClick = {
-                navController.navigateUp()
-            }, onPaymentSuccess = { shortenedEvseId, paymentId ->
-                navController.navigate(
-                    ChargingStartRoute(
-                        shortenedEvseId = shortenedEvseId,
-                        paymentId = paymentId
+            ChargingPointDetailScreen(
+                chargingPointDetailViewModel = koinViewModel {
+                    parametersOf(
+                        source as InternalSitesSource,
                     )
-                )
-            })
+                },
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                onPaymentSuccess = { shortenedEvseId, paymentId ->
+                    navController.navigate(
+                        ChargingStartRoute(
+                            shortenedEvseId = shortenedEvseId,
+                            paymentId = paymentId
+                        )
+                    )
+                },
+            )
         }
 
         composable<ChargingStartRoute> {

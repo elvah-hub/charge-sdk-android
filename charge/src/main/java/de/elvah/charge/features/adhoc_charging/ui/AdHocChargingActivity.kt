@@ -14,6 +14,7 @@ internal class AdHocChargingActivity : ComponentActivity() {
     private val config: Config by inject()
 
     companion object {
+        const val ARG_SOURCE_INSTANCE_ID = "sourceInstanceId"
         const val ARG_SITE_ID = "siteId"
     }
 
@@ -21,15 +22,16 @@ internal class AdHocChargingActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val sourceInstanceId = intent.extras?.getString(ARG_SOURCE_INSTANCE_ID).orEmpty()
         val siteId = intent.extras?.getString(ARG_SITE_ID).orEmpty()
 
         setContent {
             ElvahChargeTheme(
                 darkTheme = shouldUseDarkColors(config.darkTheme),
                 customLightColorScheme = config.customLightColorScheme,
-                customDarkColorScheme = config.customDarkColorScheme
+                customDarkColorScheme = config.customDarkColorScheme,
             ) {
-                AdHocChargingGraph(siteId) {
+                AdHocChargingGraph(sourceInstanceId, siteId) {
                     finish()
                 }
             }

@@ -11,7 +11,7 @@ import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.platform.core.arrow.extensions.toEither
-import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.model.EvseId
 
 internal class DefaultSitesRepository(
     private val sitesApi: SitesApi,
@@ -19,24 +19,14 @@ internal class DefaultSitesRepository(
 
     private var chargeSites: List<ChargeSite> = emptyList()
 
+    private var currentEvseIds: List<String>? = null
+    private var currentFilter: Map<String, String> = mapOf()
+
     override fun getChargeSite(siteId: String): Either<Throwable, ChargeSite> {
-        return chargeSites.firstOrNull { it.id == siteId }
+        return chargeSites
+            .find { site -> site.id == siteId }
             ?.right()
             ?: Either.Left(Exception("Site not found"))
-    }
-
-    override fun updateChargeSite(site: ChargeSite) {
-        chargeSites = if (chargeSites.none { it.id == site.id }) {
-            chargeSites + site
-        } else {
-            chargeSites.map {
-                if (it.id == site.id) {
-                    site
-                } else {
-                    it
-                }
-            }
-        }
     }
 
     override suspend fun getChargeSites(
@@ -47,19 +37,33 @@ internal class DefaultSitesRepository(
         evseIds: List<EvseId>?
     ): Either<Throwable, List<ChargeSite>> {
         return runCatching {
-            sitesApi.getSiteOffers(
-                evseIds?.map { it.value },
-                parseFilters(
-                    boundingBox,
-                    campaignId,
-                    organisationId,
-                    offerType,
-                )
-            ).data.map {
-                it.toDomain()
-            }.also {
-                chargeSites = it
+            val requestEvseIds = evseIds?.map { it.value }
+
+            val requestFilters = parseFilters(
+                boundingBox,
+                campaignId,
+                organisationId,
+                offerType,
+            )
+
+            when {
+                // TODO: include timestamp check to allow requesting to api again after x time
+                currentEvseIds == requestEvseIds && currentFilter == requestFilters -> chargeSites
+
+                else -> sitesApi
+                    .getSiteOffers(
+                        evseIds = requestEvseIds,
+                        filters = requestFilters,
+                    )
+                    .data
+                    .map { it.toDomain() }
+                    .also {
+                        currentFilter = requestFilters
+                        currentEvseIds = requestEvseIds
+                        chargeSites = it
+                    }
             }
+
         }.toEither()
     }
 
@@ -78,6 +82,7 @@ internal class DefaultSitesRepository(
     }
 
     override suspend fun getSiteScheduledPricing(siteId: String): Either<Throwable, ScheduledPricing> {
+        // TODO: cache information here, emit loading state if calling api.
         return sitesApi.getSiteScheduledPricing(siteId).map { it.data.toDomain() }
     }
 

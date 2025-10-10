@@ -13,6 +13,6 @@ public object SessionManager {
     }
 
     public suspend fun isSessionActive(): Boolean {
-        return getActiveChargingSession().isRight()
+        return getActiveChargingSession() != null
     }
 }

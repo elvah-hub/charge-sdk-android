@@ -1,5 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Pricing
 import kotlinx.datetime.LocalDateTime
@@ -17,7 +18,10 @@ internal sealed class SiteDetailState {
         val chargePoints: List<ChargePointItemUI>,
         val noSearchResults: Boolean,
         val noStations: Boolean,
-    ) : SiteDetailState()
+    ) : SiteDetailState() {
+        // TODO: add properly in the Success state
+        var chargeSession: ChargingSession? = null
+    }
 }
 
 internal data class ChargePointItemUI(
