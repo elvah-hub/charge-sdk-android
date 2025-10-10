@@ -1,5 +1,6 @@
 [versions]
 sdk = "0.3.5"
+sdkApiVersion = "2025-10-16.lithium"
 activityCompose = "1.10.1"
 agp = "8.12.2"
 appcompat = "1.7.1"

@@ -2,6 +2,7 @@ package de.elvah.charge.platform.network.retrofit
 
 import com.squareup.moshi.Moshi
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
+import de.elvah.charge.platform.network.retrofit.interceptor.ApiVersionInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.UserAgentInterceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -15,6 +16,7 @@ internal class RetrofitFactory(
     private val okHttpClient: OkHttpClient,
     private val httpLoggingInterceptor: HttpLoggingInterceptor,
     private val apiKeyInterceptor: ApiKeyInterceptor,
+    private val apiVersionInterceptor: ApiVersionInterceptor,
     private val distinctKeyInterceptor: Interceptor,
     private val userAgentInterceptor: UserAgentInterceptor,
     private val moshi: Moshi,
@@ -29,6 +31,7 @@ internal class RetrofitFactory(
         // needs to be the last in line in order to show headers that have been added
         // by interceptors
         httpClientBuilder.addInterceptor(apiKeyInterceptor)
+        httpClientBuilder.addInterceptor(apiVersionInterceptor)
         httpClientBuilder.addInterceptor(distinctKeyInterceptor)
         httpClientBuilder.addInterceptor(userAgentInterceptor)
         httpClientBuilder.addInterceptor(httpLoggingInterceptor)
