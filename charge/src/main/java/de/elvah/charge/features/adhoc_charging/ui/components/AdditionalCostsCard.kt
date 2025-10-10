@@ -187,11 +187,12 @@ internal fun AdditionalCostsContent(
                     Column {
                         list.forEach { timeSlot ->
                             Text(
-                                text = " • " + stringResource(
-                                    R.string.range_between_two_args_label,
-                                    timeSlot.startTime,
-                                    timeSlot.endTime,
-                                ),
+                                text = stringResource(R.string.bullet_point_symbol) +
+                                        stringResource(
+                                            R.string.range_between_two_args_label,
+                                            timeSlot.startTime,
+                                            timeSlot.endTime,
+                                        ),
                                 style = copyMedium,
                                 color = MaterialTheme.colorScheme.secondary,
                             )

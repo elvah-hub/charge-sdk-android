@@ -13,7 +13,7 @@ internal val invalidTimeSlots = listOf(
 
 internal val invalidBlockingFee = BlockingFee(
     pricePerMinute = invalidPricing,
-    startsAfterMinutes = -Int.MAX_VALUE,
+    startsAfterMinutes = -Int.MIN_VALUE,
     maxAmount = invalidPricing,
     timeSlots = invalidTimeSlots,
     currency = INVALID_TEXT,
