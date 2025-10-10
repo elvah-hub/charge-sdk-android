@@ -6,7 +6,7 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailS
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.getChargePointAvailabilityStatusTextResId
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
-import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
@@ -30,12 +30,7 @@ internal class BuildSiteDetailSuccessState(
             ?.takeIf { it.isDiscounted }
             ?.to
 
-        val standardPrice = pricing.standardPrice.let {
-            Price(
-                value = it.energyPricePerKWh,
-                currency = it.currency,
-            )
-        }
+        val standardPricePerKWh = pricing.standardPrice.energyPricePerKWh
 
         /*
         Pricing-Schedule returns the prices for the prevalent power type of the given site. We will
@@ -52,26 +47,22 @@ internal class BuildSiteDetailSuccessState(
                         evseId = cpUI.evseId.value,
                         shortenedEvseId = cpUI.shortenedEvseId,
                         availability = cpUI.availability,
-                        standardPricePerKwh = standardPrice,
-                        todayPricePerKwh = standardPrice,
+                        standardPricePerKwh = standardPricePerKWh,
+                        todayPricePerKwh = standardPricePerKWh,
                         maxPowerInKW = cpUI.maxPowerInKW,
                         powerType = cpUI.powerType,
                         hasDiscount = false,
                     )
                 }
 
-                val todayPricePerKwh = timeSlotUI?.let {
-                    Price(
-                        value = timeSlotUI.price.energyPricePerKWh,
-                        currency = timeSlotUI.price.currency,
-                    )
-                } ?: standardPrice
+                val todayPricePerKwh = timeSlotUI?.price?.energyPricePerKWh
+                    ?: standardPricePerKWh
 
                 ChargePointItemUI(
                     evseId = cpUI.evseId.value,
                     shortenedEvseId = cpUI.shortenedEvseId,
                     availability = cpUI.availability,
-                    standardPricePerKwh = standardPrice,
+                    standardPricePerKwh = standardPricePerKWh,
                     todayPricePerKwh = todayPricePerKwh,
                     maxPowerInKW = cpUI.maxPowerInKW,
                     powerType = cpUI.powerType,
@@ -116,8 +107,8 @@ internal class BuildSiteDetailSuccessState(
         searchInput: String,
         evseId: String,
         availability: ChargePointAvailability,
-        pricePerKwh: Price,
-        todayPricePerKwh: Price,
+        pricePerKwh: Pricing,
+        todayPricePerKwh: Pricing,
         powerType: String?,
         maxPowerInKW: Float?,
     ): Boolean {

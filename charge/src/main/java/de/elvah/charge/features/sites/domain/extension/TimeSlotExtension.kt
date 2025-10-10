@@ -29,21 +29,24 @@ internal fun List<ScheduledPricing.TimeSlot>.getSlotAtTime(
 internal fun String.timeSlotToLocalDateTime(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
 ): LocalDateTime? {
-    val now = System.now().toLocalDateTime(timeZone)
+    return runCatching {
+        val now = System.now().toLocalDateTime(timeZone)
 
-    val (hour, minute, second) = this.split(":")
-        .map { it.toInt() }
+        val (hour, minute, second) = this.split(":")
+            .map { it.toInt() }
 
-    val utc = LocalDateTime(
-        year = now.year,
-        month = now.month,
-        day = now.day,
-        hour = hour,
-        minute = minute,
-        second = second,
-        nanosecond = 0,
-    )
+        val timeSlotDateTime = LocalDateTime(
+            year = now.year,
+            month = now.month,
+            day = now.day,
+            hour = hour,
+            minute = minute,
+            second = second,
+            nanosecond = 0,
+        )
 
-    val localTimeZone = utc.toInstant(timeZone)
-    return localTimeZone.toLocalDateTime(timeZone)
+        val localTimeZone = timeSlotDateTime.toInstant(timeZone)
+        localTimeZone.toLocalDateTime(timeZone)
+
+    }.getOrNull()
 }

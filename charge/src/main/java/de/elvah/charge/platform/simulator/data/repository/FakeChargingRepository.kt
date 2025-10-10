@@ -8,6 +8,7 @@ import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
+import de.elvah.charge.features.sites.domain.model.AdditionalCosts
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.platform.simulator.domain.factory.ChargingSessionFactory
@@ -46,6 +47,14 @@ internal class FakeChargingRepository(
 
     override suspend fun updateOrganisationDetails(organisationDetails: OrganisationDetails) {
         chargingStore.saveOrganisationDetails(organisationDetails)
+    }
+
+    override suspend fun getAdditionalCosts(): AdditionalCosts? {
+        return chargingStore.getAdditionalCosts()
+    }
+
+    override suspend fun storeAdditionalCosts(additionalCosts: AdditionalCosts?) {
+        chargingStore.storeAdditionalCosts(additionalCosts)
     }
 
     override suspend fun fetchChargingSession(): Either<Exception, ChargingSession> {

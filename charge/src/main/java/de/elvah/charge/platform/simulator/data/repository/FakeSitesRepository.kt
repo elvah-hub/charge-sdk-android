@@ -2,8 +2,11 @@ package de.elvah.charge.platform.simulator.data.repository
 
 import arrow.core.Either
 import arrow.core.right
+import de.elvah.charge.features.sites.domain.model.BlockingFee
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.ChargeSite.ChargePoint.Offer.Price
+import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
@@ -61,16 +64,21 @@ internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesReposito
     }
 
     private fun createMockScheduledPricing(): ScheduledPricing {
-        val blockingFee = ScheduledPricing.Price.BlockingFee(
-            pricePerMinute = 5,
-            startsAfterMinutes = 240
+        val currency = "EUR"
+
+        val blockingFee = BlockingFee(
+            pricePerMinute = Pricing(5.0, currency),
+            startsAfterMinutes = 240,
+            maxAmount = Pricing(10.0, currency),
+            timeSlots = listOf(),
+            currency = currency,
         )
 
-        val standardPrice = ScheduledPricing.Price(
-            energyPricePerKWh = 0.35,
-            baseFee = 0,
-            currency = "EUR",
-            blockingFee = blockingFee
+        val standardPrice = Price(
+            energyPricePerKWh = Pricing(0.35, currency),
+            baseFee = Pricing(0.2, currency),
+            blockingFee = blockingFee,
+            currency = currency,
         )
 
         val timeSlots = listOf(
@@ -82,7 +90,9 @@ internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesReposito
             ),
             ScheduledPricing.TimeSlot(
                 isDiscounted = true,
-                price = standardPrice.copy(energyPricePerKWh = 0.25),
+                price = standardPrice.copy(
+                    energyPricePerKWh = standardPrice.energyPricePerKWh.copy(value = 0.25),
+                ),
                 from = "06:00",
                 to = "10:00"
             ),
@@ -94,7 +104,9 @@ internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesReposito
             ),
             ScheduledPricing.TimeSlot(
                 isDiscounted = true,
-                price = standardPrice.copy(energyPricePerKWh = 0.28),
+                price = standardPrice.copy(
+                    energyPricePerKWh = standardPrice.energyPricePerKWh.copy(value = 0.28),
+                ),
                 from = "14:00",
                 to = "18:00"
             ),
@@ -107,7 +119,9 @@ internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesReposito
         )
 
         val day = ScheduledPricing.Day(
-            lowestPrice = standardPrice.copy(energyPricePerKWh = 0.25),
+            lowestPrice = standardPrice.copy(
+                energyPricePerKWh = standardPrice.energyPricePerKWh.copy(value = 0.25),
+            ),
             trend = "down",
             timeSlots = timeSlots
         )

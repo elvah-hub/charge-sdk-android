@@ -1,5 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
+import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 
 internal sealed class ActiveChargingState {
@@ -7,6 +8,7 @@ internal sealed class ActiveChargingState {
     data object Error : ActiveChargingState()
     internal data class Active(
         val activeChargingSessionUI: ActiveChargingSessionUI,
+        val additionalCostsUI: AdditionalCostsUI?,
     ) : ActiveChargingState()
 
     internal data class Waiting(

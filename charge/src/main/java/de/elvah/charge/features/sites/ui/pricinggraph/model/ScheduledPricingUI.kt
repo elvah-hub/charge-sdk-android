@@ -1,5 +1,7 @@
 package de.elvah.charge.features.sites.ui.pricinggraph.model
 
+import de.elvah.charge.features.sites.domain.model.BlockingFeeTimeSlot
+import de.elvah.charge.features.sites.domain.model.Pricing
 import kotlinx.datetime.LocalDateTime
 
 internal data class ScheduledPricingUI(
@@ -28,14 +30,17 @@ internal data class ScheduledPricingUI(
     )
 
     data class PriceUI(
-        val energyPricePerKWh: Double,
-        val baseFee: Int?,
+        val energyPricePerKWh: Pricing,
+        val baseFee: Pricing?,
+        val blockingFee: BlockingFeeUI?,
         val currency: String,
-        val blockingFee: BlockingFeeUI?
     ) {
         data class BlockingFeeUI(
-            val pricePerMinute: Int,
-            val startsAfterMinutes: Int
+            val pricePerMinute: Pricing,
+            val startsAfterMinutes: Int,
+            val maxAmount: Pricing?,
+            val timeSlots: List<BlockingFeeTimeSlot>?,
+            val currency: String,
         )
     }
 }

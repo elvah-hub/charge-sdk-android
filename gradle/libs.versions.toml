@@ -4,6 +4,7 @@ activityCompose = "1.10.1"
 agp = "8.12.2"
 appcompat = "1.7.1"
 arrow = "2.1.2"
+coilNetworkOkhttp = "3.3.0"
 coilCompose = "3.2.0"
 composeBom = "2025.07.00"
 coreKtx = "1.16.0"
@@ -56,6 +57,7 @@ arrow-core = { module = "io.arrow-kt:arrow-core" }
 arrow-stack = { module = "io.arrow-kt:arrow-stack", version.ref = "arrow" }
 arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines" }
 coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil3-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit2" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }

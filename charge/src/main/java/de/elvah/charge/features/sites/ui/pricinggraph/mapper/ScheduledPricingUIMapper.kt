@@ -1,6 +1,8 @@
 package de.elvah.charge.features.sites.ui.pricinggraph.mapper
 
 import de.elvah.charge.features.sites.domain.extension.timeSlotToLocalDateTime
+import de.elvah.charge.features.sites.domain.model.BlockingFee
+import de.elvah.charge.features.sites.domain.model.ChargeSite.ChargePoint.Offer.Price
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
 import kotlinx.datetime.LocalDateTime
@@ -42,15 +44,18 @@ internal fun ScheduledPricing.TimeSlot.toUI(
     )
 }
 
-internal fun ScheduledPricing.Price.toUI(): ScheduledPricingUI.PriceUI = ScheduledPricingUI.PriceUI(
+internal fun Price.toUI(): ScheduledPricingUI.PriceUI = ScheduledPricingUI.PriceUI(
     energyPricePerKWh = energyPricePerKWh,
     baseFee = baseFee,
+    blockingFee = blockingFee?.toUI(),
     currency = currency,
-    blockingFee = blockingFee?.toUI()
 )
 
-internal fun ScheduledPricing.Price.BlockingFee.toUI(): ScheduledPricingUI.PriceUI.BlockingFeeUI =
+internal fun BlockingFee.toUI(): ScheduledPricingUI.PriceUI.BlockingFeeUI =
     ScheduledPricingUI.PriceUI.BlockingFeeUI(
         pricePerMinute = pricePerMinute,
-        startsAfterMinutes = startsAfterMinutes
+        startsAfterMinutes = startsAfterMinutes,
+        maxAmount = maxAmount,
+        timeSlots = timeSlots,
+        currency = currency,
     )

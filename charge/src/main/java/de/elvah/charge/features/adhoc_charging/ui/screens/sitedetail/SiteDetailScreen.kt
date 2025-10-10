@@ -1,11 +1,8 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,30 +17,23 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
+import de.elvah.charge.features.adhoc_charging.ui.components.OfferCounterBanner
+import de.elvah.charge.features.adhoc_charging.ui.components.button.CircularIconButton
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.chargePointItemUIMock
 import de.elvah.charge.features.sites.ui.utils.formatTimeUntil
@@ -52,12 +42,8 @@ import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.Timer
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyMedium
-import de.elvah.charge.platform.ui.theme.copyMediumBold
-import de.elvah.charge.platform.ui.theme.copySmallBold
 import de.elvah.charge.platform.ui.theme.titleSmallBold
-import kotlinx.coroutines.delay
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -149,57 +135,14 @@ private fun SiteDetailTopBar(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        discount?.let { (initialFormattedTime, initialDuration) ->
-            var formattedTime by remember { mutableStateOf(initialFormattedTime) }
-            var duration by remember { mutableStateOf(initialDuration) }
-
-            LaunchedEffect(duration) {
-                duration?.let {
-                    while (true) {
-                        delay(it.inWholeSeconds)
-
-                        val result = formatTimeUntil(context, discountExpiresAt)
-
-                        if (result != null) {
-                            result.let { (newFormattedTime, newDuration) ->
-                                formattedTime = newFormattedTime
-                                duration = newDuration
-                            }
-                        } else {
-                            duration = null
-                            onOfferExpired()
-                        }
-                    }
-                }
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorSchemeExtended.brand.copy(
-                            alpha = 0.1f,
-                        ),
-                    )
-                    .padding(
-                        vertical = 8.dp,
-                    )
-            ) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(
-                            horizontal = 16.dp,
-                        ),
-                    text = stringResource(R.string.offer_ends_in) + " " + formattedTime,
-                    style = copySmallBold,
-                    color = MaterialTheme.colorSchemeExtended.brand,
-                    textAlign = TextAlign.Center
-                )
-            }
+        discount?.let {
+            OfferCounterBanner(
+                discountExpiresAt = discountExpiresAt,
+                onOfferExpired = onOfferExpired,
+            )
         }
 
-        CloseButton(
+        CircularIconButton(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(
@@ -209,43 +152,8 @@ private fun SiteDetailTopBar(
                         PaddingValues(end = 14.dp)
                     },
                 ),
+            iconResId = R.drawable.ic_close,
             onClick = onCloseClick,
-        )
-    }
-}
-
-@Composable
-private fun CloseButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .size(48.dp)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorSchemeExtended.decorativeStroke,
-                shape = CircleShape
-            )
-            .background(
-                color = MaterialTheme.colorScheme.background,
-                shape = CircleShape,
-            )
-            .clip(shape = CircleShape)
-            .clickable(
-                onClick = onClick,
-            )
-            .padding(
-                all = 10.dp
-            ),
-    ) {
-        Icon(
-            modifier = Modifier
-                .size(24.dp)
-                .align(Alignment.Center),
-            painter = painterResource(id = R.drawable.ic_close),
-            tint = MaterialTheme.colorScheme.primary,
-            contentDescription = null
         )
     }
 }
@@ -302,37 +210,6 @@ private fun SiteDetailHeader(
                 )
             }
         }
-    }
-}
-
-@Composable
-internal fun UnderlinedButton(
-    text: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    Column(
-        modifier = modifier
-            .clickable(
-                onClick = onClick,
-            )
-            .width(IntrinsicSize.Max),
-    ) {
-        Text(
-            text = text,
-            style = copyMediumBold,
-            color = MaterialTheme.colorScheme.primary,
-            textAlign = TextAlign.Center,
-        )
-
-        Spacer(Modifier.height(4.dp))
-
-        HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth(),
-            thickness = 2.dp,
-            color = MaterialTheme.colorScheme.primary,
-        )
     }
 }
 

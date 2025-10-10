@@ -18,5 +18,4 @@ internal data class OfferDto(
 
     @param:Json(name = "campaignEndsAt")
     val campaignEndsAt: String?
-
 )

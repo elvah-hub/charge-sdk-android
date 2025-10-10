@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="ac_label">AC</string>
-  <string name="apple_maps">Cartes Apple</string>
+  <string name="activation_fee_label">Activation fee</string>
+  <string name="additional_costs_info_label">Additional costs apply at this charge point.</string>
+  <string name="additional_fee_label">Additional costs</string>
   <string name="authorization_successful">Recharge autorisée</string>
   <string name="back">Retour</string>
   <string name="base_pricing_label">Base Pricing</string>
+  <string name="blocking_fee_label">Blocking fee</string>
+  <string name="blocking_fee_starts_after_label">Starts after %s of connection.</string>
   <string name="call">Appeler</string>
   <string name="campaign_banner__active_session_text">Gérer la charge</string>
   <string name="campaign_banner__ad_hoc" comment="campaign_banncampaign_banner__ad_hocer__ad_hoc">Ad-hoc</string>
@@ -21,6 +25,7 @@
   <string name="charge">Recharger</string>
   <string name="charge_at_station_placeholder">Charger à la station %1$s pour </string>
   <string name="charge_label">Recharger</string>
+  <string name="charge_now_label">Charge now</string>
   <string name="charge_offer_details__loading_error_message">L’offres n’a pas pu être chargé. Veuillez réessayer plus tard.</string>
   <string name="charge_payment__disclaimer">\'%1$s\' %2$s ainsi que %3$s appliquer</string>
   <string name="charge_point__availability__available">Disponible</string>
@@ -51,6 +56,7 @@
   <string name="charging_discont_banner_label">Commencez à recharger avant la fin de l’offre pour profiter de la remise complète!</string>
   <string name="charging_duration_label">Durée de recharge</string>
   <string name="charging_label">Recharge…</string>
+  <string name="charging_partner_attribution_label">Charging is provided in partnership with</string>
   <string name="charging_session_active_title">Recharge en cours</string>
   <string name="close">Fermer</string>
   <string name="code_label">EVSE ID:</string>
@@ -77,6 +83,10 @@
   <string name="euros_label">€</string>
   <string name="generic_clear_filters">Clear filters</string>
   <string name="generic_clear_input">Clear input</string>
+  <plurals name="generic_day">
+    <item quantity="one">%s day</item>
+    <item quantity="other">%s days</item>
+  </plurals>
   <string name="generic_error__title">Une erreur s\'est produite</string>
   <string name="generic_error_bottom_sheet__message">Une erreur inattendue s\'est produite. Veuillez réessayer ou contacter notre support utilisateur.</string>
   <string name="generic_error_bottom_sheet__title">Oh, cela n\'a pas fonctionné!</string>
@@ -85,10 +95,6 @@
   <plurals name="generic_month">
     <item quantity="one">%s month</item>
     <item quantity="other">%s months</item>
-  </plurals>
-  <plurals name="generic_day">
-    <item quantity="one">%s day</item>
-    <item quantity="other">%s days</item>
   </plurals>
   <string name="generic_no_search_results_description">Check your search input and try again</string>
   <string name="generic_no_search_results_for_input">No results for %s</string>
@@ -107,14 +113,19 @@
   <string name="kw_charged_label">kWh rechargés</string>
   <string name="kw_label">kW</string>
   <string name="kwh_label">/kWh</string>
+  <string name="learn_more_label">Learn more</string>
+  <string name="legal_text_apply_label">apply</string>
+  <string name="max_price_label">(max %s)</string>
   <string name="no_charge_points_available">Pas de points de charge disponibles</string>
   <string name="offer_ends_in">Se termine dans </string>
   <string name="open_with">Ouvrir avec</string>
   <string name="pay_with_credit_card_button">Payer par carte bancaire</string>
   <string name="pay_with_credit_card_button__short">Payer maintenant</string>
   <string name="powered_by_label">Propulsé par</string>
+  <string name="price_per_minute_label">%s/min</string>
   <string name="privacy_policy_label">Politique de confidentialité</string>
   <string name="progress_percentage_template">%d %%</string>
+  <string name="range_between_two_args_label">between %1$s and %2$s</string>
   <string name="route_label">Itinéraire</string>
   <string name="select_charge_point_label">Sélectionner un point de charge</string>
   <string name="site">Site</string>

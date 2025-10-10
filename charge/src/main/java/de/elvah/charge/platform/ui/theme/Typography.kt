@@ -13,6 +13,7 @@ internal val titleXLarge = TextStyle(
     letterSpacing = (-0.03).sp,
     color = primary
 )
+
 internal val titleXLargeBold = titleXLarge.copy(
     fontWeight = FontWeight.W700,
 )
@@ -23,6 +24,12 @@ internal val titleLarge = TextStyle(
     lineHeight = 44.sp,
     letterSpacing = (-0.03).sp,
     color = primary
+)
+
+internal val titleLargeBold = titleLarge.copy(
+    fontWeight = FontWeight.W700,
+    lineHeight = 70.sp,
+    fontSize = 35.sp,
 )
 
 internal val titleMedium = TextStyle(

@@ -1,59 +1,63 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail
 
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.flowWithLifecycle
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import de.elvah.charge.R
-import de.elvah.charge.public_api.banner.EvseId
-import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.model.ChargePointDetail
+import de.elvah.charge.features.adhoc_charging.ui.components.AdditionalCostsCard
+import de.elvah.charge.features.adhoc_charging.ui.components.EnergyPriceBanner
+import de.elvah.charge.features.adhoc_charging.ui.components.ShortenedEvseBigBadge
+import de.elvah.charge.features.adhoc_charging.ui.components.button.CircularIconButton
+import de.elvah.charge.features.adhoc_charging.ui.components.button.UnderlinedButton
+import de.elvah.charge.features.adhoc_charging.ui.components.discountExpiresAtMock
+import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
-import de.elvah.charge.platform.ui.components.BasicCard
-import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
-import de.elvah.charge.platform.ui.components.CPOLogo
-import de.elvah.charge.platform.ui.components.CopyLarge
-import de.elvah.charge.platform.ui.components.CopySmall
-import de.elvah.charge.platform.ui.components.ElvahLogo
+import de.elvah.charge.features.sites.domain.model.BlockingFeeTimeSlot
+import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
+import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
-import de.elvah.charge.platform.ui.components.TitleSmall
-import de.elvah.charge.platform.ui.components.TopAppBar
-import de.elvah.charge.platform.ui.theme.copyLarge
-import de.elvah.charge.platform.ui.theme.copyLargeBold
+import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.copySmall
-import kotlinx.coroutines.flow.Flow
+import de.elvah.charge.platform.ui.theme.copyXLargeBold
 
 @Composable
 internal fun ChargingPointDetailScreen(
@@ -69,10 +73,9 @@ internal fun ChargingPointDetailScreen(
         is ChargingPointDetailState.Success -> {
             val paymentSheet = remember {
                 PaymentSheet.Builder(resultCallback = {
-                    onPaymentSheetResult(it)
                     if (it is PaymentSheetResult.Completed) {
                         onPaymentSuccess(
-                            state.render.evseId.value,
+                            state.evseId,
                             state.paymentIntentParams.paymentId
                         )
                     }
@@ -80,24 +83,23 @@ internal fun ChargingPointDetailScreen(
             }.build()
 
             ChargingPointDetail_Success(
-                state,
+                state = state,
                 onBackClick = onBackClick,
                 onAction = {
                     if (state.mocked) {
                         onPaymentSuccess(
-                            state.render.evseId.value,
+                            state.evseId,
                             state.paymentIntentParams.paymentId
                         )
                     } else {
                         val configuration = PaymentSheet.Configuration(
-                            merchantDisplayName = state.chargePointDetail.cpoName,
+                            merchantDisplayName = state.companyName,
                         )
 
-                        val currentClientSecret =
-                            state.paymentIntentParams.clientSecret
+                        val currentClientSecret = state.paymentIntentParams.clientSecret
                         presentPaymentSheet(paymentSheet, configuration, currentClientSecret)
                     }
-                }
+                },
             )
         }
     }
@@ -111,186 +113,212 @@ private fun ChargingPointDetail_Success(
     onAction: (ChargingPointDetailEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val scrollState = rememberScrollState()
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             ChargingPointDetailTopBar(
-                title = state.chargePointDetail.chargingPoint,
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                onActionClick = null, // necessary later to display support and stop charging options
             )
-        }
-    ) {
+        },
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 16.dp,
+                        vertical = 12.dp,
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                ChargingPointDetailActions(
+                    onPayWithCardClick = { onAction(ChargingPointDetailEvent.OnPayWithCardClicked) },
+                )
+
+                TermsAndConditions(
+                    companyName = state.companyName,
+                    termsOfServiceUrl = state.termsOfServiceUrl,
+                    privacyPolicyUrl = state.privacyPolicyUrl,
+                )
+
+                state.companyLogoUrl?.let {
+                    ChargingPartnerAttribution(
+                        logoUrl = it,
+                    )
+                }
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-                .padding(16.dp)
-                .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp)
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            BrandedChargePoint(
-                chargePoint = state.chargePointDetail,
-                logoUrl = state.render.logoUrl,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(25.dp)
+            ShortenedEvseBigBadge(
+                text = state.shortenedEvseId,
+                availability = state.availability,
             )
 
-            ChargingPointDetailTariffInfo(
-                modifier = Modifier,
-                price = state.render.price
+            EnergyPriceBanner(
+                discountExpiresAt = state.discountExpiresAt,
+                priceWithLineThrough = state.priceWithLineThrough,
+                priceToHighlight = state.priceToHighlight,
             )
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            ChargingPointDetailActions {
-                onAction(ChargingPointDetailEvent.OnPayWithCardClicked)
+            state.additionalCostsUI?.let {
+                AdditionalCostsCard(
+                    activationFee = it.activationFee,
+                    blockingFee = it.blockingFee,
+                    blockingFeeMaxPrice = it.blockingFeeMaxPrice,
+                    startsAfterMinutes = it.startsAfterMinutes,
+                    timeSlots = it.timeSlots,
+                )
             }
-
-            TermsAndConditions(
-                state.render.cpoName,
-                state.render.termsUrl,
-                state.render.privacyUrl
-            )
-
-            ElvahLogo(modifier.padding(top = 20.dp))
         }
     }
 }
 
 @Composable
 private fun TermsAndConditions(
-    cpoName: String,
-    termsUrl: String,
-    privacyUrl: String,
+    companyName: String,
+    termsOfServiceUrl: String,
+    privacyPolicyUrl: String,
     modifier: Modifier = Modifier,
 ) {
-    val termsAndConditionsText = buildAnnotatedString {
-        append(cpoName)
+    val fontStyle = copySmall.copy(
+        fontSize = 12.sp,
+        color = MaterialTheme.colorScheme.secondary,
+    )
 
+    val legalText = buildAnnotatedString {
+        append(companyName)
         append(" ")
 
         withLink(
             LinkAnnotation.Url(
-                termsUrl,
-                TextLinkStyles(
-                    copySmall.toSpanStyle().copy(
-                        textDecoration = TextDecoration.Underline,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                )
-            )
+                url = termsOfServiceUrl,
+                styles = TextLinkStyles(
+                    fontStyle.toSpanStyle().copy(
+                        textDecoration = if (termsOfServiceUrl.isNotBlank())
+                            TextDecoration.Underline else TextDecoration.None,
+                    ),
+                ),
+            ),
         ) {
             append(stringResource(R.string.terms_privacy_template_1))
         }
 
+        append(" ")
         append(stringResource(R.string.terms_privacy_template_2))
+        append(" ")
 
         withLink(
             LinkAnnotation.Url(
-                privacyUrl,
-                TextLinkStyles(
-                    copySmall.toSpanStyle().copy(
-                        textDecoration = TextDecoration.Underline,
-                        color = MaterialTheme.colorScheme.secondary
+                url = privacyPolicyUrl,
+                styles = TextLinkStyles(
+                    fontStyle.toSpanStyle().copy(
+                        textDecoration = if (privacyPolicyUrl.isNotBlank())
+                            TextDecoration.Underline else TextDecoration.None,
                     )
-                )
-            )
+                ),
+            ),
         ) {
             append(stringResource(R.string.terms_privacy_template_3))
         }
+
+        append(" ")
+        append(stringResource(R.string.legal_text_apply_label))
     }
 
     Text(
-        text = termsAndConditionsText,
-        style = copySmall,
+        text = legalText,
+        modifier = modifier,
+        style = fontStyle,
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.secondary,
-        modifier = modifier
-            .padding(horizontal = 64.dp)
-            .padding(top = 14.dp)
     )
 }
 
 @Composable
-private fun ChargingPointDetailTopBar(
-    title: String,
-    onBackClick: () -> Unit,
-) {
-    TopAppBar(title, onBackClick)
-}
-
-@Composable
-private fun BrandedChargePoint(
-    chargePoint: ChargePointDetail,
+private fun ChargingPartnerAttribution(
     logoUrl: String,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        CPOLogo(logoUrl)
-        Spacer(modifier = Modifier.size(24.dp))
-        ChargePointName(name = chargePoint.chargingPoint)
-        Spacer(modifier = Modifier.size(8.dp))
-        ChargePointType(type = "${chargePoint.type} - ${chargePoint.energy} kW")
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = stringResource(R.string.charging_partner_attribution_label),
+            style = copySmall,
+            color = MaterialTheme.colorScheme.secondary,
+            textAlign = TextAlign.Center,
+        )
+
+        Spacer(Modifier.height(7.dp))
+
+        AsyncImage(
+            modifier = Modifier
+                .size(
+                    width = 76.dp,
+                    height = 46.dp,
+                ),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(logoUrl)
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(R.drawable.ic_logo_elvah_composed),
+            contentDescription = null,
+        )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ChargePointName(
-    name: String,
-    modifier: Modifier = Modifier,
+private fun ChargingPointDetailTopBar(
+    onBackClick: () -> Unit,
+    onActionClick: (() -> Unit)?,
 ) {
-    TitleSmall(text = name, modifier = modifier)
+    TopAppBar(
+        modifier = Modifier
+            .padding(12.dp),
+        title = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.charge_now_label),
+                style = copyXLargeBold,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center,
+            )
+        },
+        navigationIcon = {
+            CircularIconButton(
+                iconResId = R.drawable.ic_chevron_bottom,
+                onClick = onBackClick,
+            )
+        },
+        actions = {
+            CircularIconButton(
+                modifier = Modifier
+                    .alpha(if (onActionClick != null) 1f else 0f),
+                iconResId = R.drawable.ic_three_dots_vertical,
+                enabled = onActionClick != null,
+                onClick = { onActionClick?.invoke() },
+            )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+        ),
+    )
 }
-
-@Composable
-private fun ChargePointType(
-    type: String,
-    modifier: Modifier = Modifier,
-) {
-    CopySmall(text = type, modifier = modifier)
-}
-
-@Composable
-private fun ChargingPointDetailTariffInfo(
-    price: Double,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(24.dp)) {
-        BasicCard {
-            Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                CopyLarge(stringResource(R.string.energy_label), fontWeight = FontWeight.W700)
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    val kwhLabel = stringResource(R.string.kwh_label)
-                    val priceText = buildAnnotatedString {
-                        withStyle(
-                            copyLargeBold.toSpanStyle()
-                                .copy(color = MaterialTheme.colorScheme.primary)
-                        ) {
-                            append(price.toString())
-                        }
-                        withStyle(
-                            copyLarge.toSpanStyle()
-                                .copy(color = MaterialTheme.colorScheme.secondary),
-                        ) {
-                            append(kwhLabel)
-                        }
-                    }
-                    Text(priceText)
-                }
-            }
-        }
-    }
-}
-
 
 @Composable
 private fun ChargingPointDetailActions(
@@ -301,11 +329,10 @@ private fun ChargingPointDetailActions(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-
-        ButtonPrimary(
-            stringResource(R.string.pay_with_credit_card_button),
+        // FIXME: multiple taps to this button can open multiple payment sheets
+        UnderlinedButton(
+            text = stringResource(R.string.pay_with_credit_card_button),
             onClick = onPayWithCardClick,
-            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -323,46 +350,32 @@ private fun ChargingPointDetail_Loading() {
 @PreviewLightDark
 @Composable
 private fun ChargingPointDetail_Success_Preview() {
-    ChargingPointDetail_Success(
-        state = ChargingPointDetailState.Success(
-            evseId = "",
-            chargePointDetail = ChargePointDetail(
-                chargingPoint = "Charge Point",
-                type = "Type",
-                offer = ChargePointDetail.Offer(
-                    current = 0.24,
-                    old = 0.5
+    ElvahChargeTheme {
+        ChargingPointDetail_Success(
+            state = ChargingPointDetailState.Success(
+                evseId = "DE*1*1A*1*03",
+                shortenedEvseId = "1*03",
+                availability = ChargePointAvailability.AVAILABLE,
+                discountExpiresAt = discountExpiresAtMock(),
+                priceWithLineThrough = Pricing(0.52, "EUR"),
+                priceToHighlight = Pricing(0.42, "EUR"),
+                additionalCostsUI = additionalCostsUIMock,
+                companyName = "elvah GmbH",
+                termsOfServiceUrl = "",
+                privacyPolicyUrl = "",
+                companyLogoUrl = "",
+                paymentIntentParams = PaymentConfiguration(
+                    publishableKey = "",
+                    accountId = "",
+                    clientSecret = "",
+                    paymentId = ""
                 ),
-                cpoName = "cpoName",
-                evseId = "evseId",
-                energy = "",
-                signedOffer = "",
-                termsUrl = "",
-                privacyUrl = ""
             ),
-            paymentIntentParams = PaymentConfiguration(
-                publishableKey = "",
-                accountId = "",
-                clientSecret = "",
-                paymentId = ""
-            ), logoUrl = "",
-            render = ChargePointDetailRender(
-                evseId = EvseId(""),
-                energyType = "",
-                energyValue = 0.0f,
-                price = 0.0,
-                originalPrice = 0.0,
-                logoUrl = "logoUrl",
-                cpoName = "cpoName",
-                termsUrl = "termsUrl",
-                privacyUrl = "privacyUrl"
-            )
-        ),
-        onBackClick = {},
-        onAction = {}
-    )
+            onBackClick = {},
+            onAction = {},
+        )
+    }
 }
-
 
 private fun presentPaymentSheet(
     paymentSheet: PaymentSheet,
@@ -375,38 +388,16 @@ private fun presentPaymentSheet(
     )
 }
 
-private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
-    when (paymentSheetResult) {
-        is PaymentSheetResult.Canceled -> {
-            Log.d("StripeResult", "Canceled")
-        }
-
-        is PaymentSheetResult.Failed -> {
-            Log.d("StripeResult", "Error: ${paymentSheetResult.error}")
-        }
-
-        is PaymentSheetResult.Completed -> {
-            // Display for example, an order confirmation screen
-            Log.d("StripeResult", "Completed")
-        }
-    }
-}
-
-/**
- * Remembers in the Composition a flow that only emits data when `lifecycle` is
- * at least in `minActiveState`. That's achieved using the `Flow.flowWithLifecycle` operator.
- *
- * Explanation: If flows with operators in composable functions are not remembered, operators
- * will _always_ be called and applied on every recomposition.
- */
-@Composable
-internal fun <T> rememberFlowWithLifecycle(
-    flow: Flow<T>,
-    lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
-    minActiveState: Lifecycle.State = Lifecycle.State.STARTED
-): Flow<T> = remember(flow, lifecycle) {
-    flow.flowWithLifecycle(
-        lifecycle = lifecycle,
-        minActiveState = minActiveState
+internal val additionalCostsUIMock = "EUR".let { currency ->
+    AdditionalCostsUI(
+        activationFee = Pricing(0.5, currency),
+        blockingFee = Pricing(0.5, currency),
+        blockingFeeMaxPrice = Pricing(0.1, currency),
+        startsAfterMinutes = 10,
+        timeSlots = listOf(
+            BlockingFeeTimeSlot("10:00", "11:00"),
+            BlockingFeeTimeSlot("12:00", "13:00"),
+            BlockingFeeTimeSlot("15:00", "16:00"),
+        ),
     )
 }

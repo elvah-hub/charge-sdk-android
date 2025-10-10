@@ -6,6 +6,8 @@ import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSessi
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StartChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
+import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
+import de.elvah.charge.features.payments.domain.usecase.GetAdditionalCosts
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import kotlinx.coroutines.cancel
@@ -22,6 +24,7 @@ internal class ActiveChargingViewModel(
     private val stopChargingSession: StopChargingSession,
     private val fetchChargingSession: FetchChargingSession,
     private val getOrganisationDetails: GetOrganisationDetails,
+    private val getAdditionalCosts: GetAdditionalCosts,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<ActiveChargingState>(ActiveChargingState.Loading)
@@ -68,23 +71,25 @@ internal class ActiveChargingViewModel(
 
                                     if (currentValue != null) {
                                         ActiveChargingState.Active(
-                                            currentValue.copy(
+                                            activeChargingSessionUI = currentValue.copy(
                                                 evseId = chargeSession.evseId,
                                                 status = chargeSession.status1.name,
                                                 consumption = chargeSession.consumption,
                                                 duration = chargeSession.duration
-                                            )
+                                            ),
+                                            additionalCostsUI = getAdditionalCosts()?.toUI(),
                                         )
                                     } else {
                                         ActiveChargingState.Active(
-                                            ActiveChargingSessionUI(
+                                            activeChargingSessionUI = ActiveChargingSessionUI(
                                                 evseId = chargeSession.evseId,
                                                 status = chargeSession.status1.name,
                                                 consumption = chargeSession.consumption,
                                                 duration = chargeSession.duration,
                                                 error = false,
                                                 cpoLogo = organisationDetails.logoUrl
-                                            )
+                                            ),
+                                            additionalCostsUI = getAdditionalCosts()?.toUI(),
                                         )
                                     }
                                 }
@@ -118,9 +123,10 @@ internal class ActiveChargingViewModel(
                         (state.value as ActiveChargingState.Active).activeChargingSessionUI
                     _state.update {
                         ActiveChargingState.Active(
-                            currentValue.copy(
+                            activeChargingSessionUI = currentValue.copy(
                                 error = true
-                            )
+                            ),
+                            additionalCostsUI = getAdditionalCosts()?.toUI(),
                         )
                     }
                 }
@@ -141,9 +147,10 @@ internal class ActiveChargingViewModel(
         viewModelScope.launch {
             _state.update {
                 ActiveChargingState.Active(
-                    (state.value as ActiveChargingState.Active).activeChargingSessionUI.copy(
+                    activeChargingSessionUI = (state.value as ActiveChargingState.Active).activeChargingSessionUI.copy(
                         error = false
-                    )
+                    ),
+                    additionalCostsUI = getAdditionalCosts()?.toUI(),
                 )
             }
         }

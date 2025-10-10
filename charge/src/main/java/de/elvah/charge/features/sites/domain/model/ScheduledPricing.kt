@@ -1,8 +1,10 @@
 package de.elvah.charge.features.sites.domain.model
 
+import de.elvah.charge.features.sites.domain.model.ChargeSite.ChargePoint.Offer.Price
+
 internal data class ScheduledPricing(
     val dailyPricing: DailyPricing,
-    val standardPrice: Price
+    val standardPrice: Price,
 ) {
     data class DailyPricing(
         val yesterday: Day,
@@ -22,16 +24,4 @@ internal data class ScheduledPricing(
         val from: String,
         val to: String
     )
-
-    data class Price(
-        val energyPricePerKWh: Double,
-        val baseFee: Int?,
-        val currency: String,
-        val blockingFee: BlockingFee?
-    ) {
-        data class BlockingFee(
-            val pricePerMinute: Int,
-            val startsAfterMinutes: Int
-        )
-    }
 }

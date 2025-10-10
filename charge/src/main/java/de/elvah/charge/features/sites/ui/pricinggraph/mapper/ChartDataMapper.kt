@@ -44,14 +44,14 @@ private fun ScheduledPricingUI.DayUI.toChartData(
             timeRange?.let { range ->
                 PriceOffer(
                     timeRange = range,
-                    discountedPrice = timeSlot.price.energyPricePerKWh
+                    discountedPrice = timeSlot.price.energyPricePerKWh.value,
                 )
             }
         }
 
     return DailyPricingData(
         date = date,
-        regularPrice = regularPrice,
+        regularPrice = regularPrice.value,
         offers = offers,
         currency = currency
     )

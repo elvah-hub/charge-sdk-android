@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePointItemUI
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
-import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.platform.ui.components.CopyMedium
@@ -249,9 +249,9 @@ internal val chargePointItemUIMock = ChargePointItemUI(
     evseId = "DE*1*01",
     shortenedEvseId = "1*01",
     availability = ChargePointAvailability.AVAILABLE,
-    standardPricePerKwh = Price(22.0, "EUR"),
+    standardPricePerKwh = Pricing(22.0, "EUR"),
     maxPowerInKW = 0.42f,
     powerType = "DC",
-    todayPricePerKwh = Price(15.0, "EUR"),
+    todayPricePerKwh = Pricing(15.0, "EUR"),
     hasDiscount = true,
 )
