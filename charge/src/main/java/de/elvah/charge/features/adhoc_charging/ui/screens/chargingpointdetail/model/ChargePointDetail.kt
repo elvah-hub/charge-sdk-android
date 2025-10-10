@@ -1,6 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.model
 
-class ChargePointDetail(
+internal class ChargePointDetail(
     val chargingPoint: String,
     val type: String,
     val offer: Offer,

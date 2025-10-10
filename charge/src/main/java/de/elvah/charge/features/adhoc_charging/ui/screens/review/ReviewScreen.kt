@@ -23,7 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.review.model.PaymentSummaryUI
 import de.elvah.charge.platform.ui.components.BasicCard
-import de.elvah.charge.platform.ui.components.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.CopyLarge
 import de.elvah.charge.platform.ui.components.CopyMedium

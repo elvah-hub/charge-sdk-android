@@ -2,7 +2,7 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 
-sealed class ActiveChargingState {
+internal sealed class ActiveChargingState {
     data object Loading : ActiveChargingState()
     data object Error : ActiveChargingState()
     internal data class Active(

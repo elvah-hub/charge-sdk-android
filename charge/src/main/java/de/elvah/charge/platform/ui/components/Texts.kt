@@ -18,7 +18,7 @@ import de.elvah.charge.platform.ui.theme.titleSmall
 import de.elvah.charge.platform.ui.theme.titleXLarge
 
 @Composable
-fun TitleXLarge(
+internal fun TitleXLarge(
     text: String,
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.W400,
@@ -36,7 +36,7 @@ fun TitleXLarge(
 }
 
 @Composable
-fun TitleLarge(
+internal fun TitleLarge(
     text: String,
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.W400,
@@ -54,7 +54,7 @@ fun TitleLarge(
 }
 
 @Composable
-fun TitleMedium(
+internal fun TitleMedium(
     text: String,
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.W400,
@@ -72,7 +72,7 @@ fun TitleMedium(
 }
 
 @Composable
-fun TitleSmall(
+internal fun TitleSmall(
     text: String,
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.W400,
@@ -90,7 +90,7 @@ fun TitleSmall(
 }
 
 @Composable
-fun CopyXLarge(
+internal fun CopyXLarge(
     text: String,
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.W400,
@@ -108,7 +108,7 @@ fun CopyXLarge(
 }
 
 @Composable
-fun CopyLarge(
+internal fun CopyLarge(
     text: String,
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.W400,
@@ -126,7 +126,7 @@ fun CopyLarge(
 }
 
 @Composable
-fun CopyMedium(
+internal fun CopyMedium(
     text: String,
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.W400,
@@ -146,12 +146,13 @@ fun CopyMedium(
 }
 
 @Composable
-fun CopySmall(
+internal fun CopySmall(
     text: String,
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.W400,
     textAlign: TextAlign = TextAlign.Start,
-    color: Color = MaterialTheme.colorScheme.secondary
+    color: Color = MaterialTheme.colorScheme.secondary,
+    textDecoration: TextDecoration = TextDecoration.None
 ) {
     Text(
         text,
@@ -159,6 +160,7 @@ fun CopySmall(
         style = copySmall,
         fontWeight = fontWeight,
         textAlign = textAlign,
-        color = color
+        color = color,
+        textDecoration = textDecoration
     )
 }

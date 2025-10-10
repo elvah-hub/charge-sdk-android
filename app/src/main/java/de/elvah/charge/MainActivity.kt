@@ -18,11 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import de.elvah.charge.entrypoints.banner.ChargeBanner
-import de.elvah.charge.entrypoints.banner.ChargeBannerSource
-import de.elvah.charge.entrypoints.banner.EvseId
-import de.elvah.charge.entrypoints.sites.GetSites
-import de.elvah.charge.entrypoints.sites.SitesManager
+import de.elvah.charge.public_api.banner.ChargeBanner
+import de.elvah.charge.public_api.banner.ChargeBannerSource
+import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.pricinggraph.PricingGraph
+import de.elvah.charge.public_api.sites.GetSites
+import de.elvah.charge.public_api.sites.SitesManager
 
 class MainActivity : ComponentActivity() {
     private var chargeBannerSource: ChargeBannerSource = ChargeBannerSource()
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity() {
             val sites by produceState(emptyList()) {
                 value = getSites(
                     GetSites.Params(
-                        evseIds = listOf(EvseId("HNTCI*E*00001"))
+                        evseIds = listOf(EvseId("DE*2GO*EEWE7418*1A*1"))
                     )
                 )
             }
@@ -56,6 +57,14 @@ class MainActivity : ComponentActivity() {
                             SitesManager.openSite(context, sites.first().id)
                         }) {
                             Text("Open Deal at HNTCI*E*00001")
+                        }
+                        
+                        // Test PricingGraph with sample site ID
+                        if (sites.isNotEmpty()) {
+                            PricingGraph(
+                                siteId = sites.first().id,
+                                minYAxisPrice = 0.0
+                            )
                         }
                     }
                 }

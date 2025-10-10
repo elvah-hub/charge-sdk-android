@@ -1,3 +1,8 @@
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.kotlin
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -14,6 +19,8 @@ android {
 
     defaultConfig {
         minSdk = 26
+
+        buildConfigField("String", "SDK_VERSION", "\"${libs.versions.sdk.get()}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -32,6 +39,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+
     }
 
     kotlin {
@@ -41,6 +49,8 @@ android {
         abiValidation {
             enabled.set(true)
         }
+
+        explicitApi()
     }
 
     publishing {
@@ -48,6 +58,8 @@ android {
             withSourcesJar()
         }
     }
+
+    android.buildFeatures.buildConfig = true
 }
 
 publishing {
@@ -55,7 +67,7 @@ publishing {
         register<MavenPublication>("release") {
             artifactId = "charge-sdk-android"
             groupId = "com.github.elvah-hub"
-            version = "0.3.5"
+            version = libs.versions.sdk.get()
 
             afterEvaluate {
                 from(components["release"])
@@ -63,6 +75,8 @@ publishing {
         }
     }
 }
+
+
 
 tasks.register("checkMinifyEnabled") {
     doLast {
@@ -90,7 +104,6 @@ protobuf {
         }
     }
 }
-
 
 dependencies {
     implementation(libs.androidx.navigation.compose)

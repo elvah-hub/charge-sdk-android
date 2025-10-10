@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import arrow.core.Either
-import de.elvah.charge.entrypoints.banner.EvseId
+import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Error
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Loading
@@ -127,7 +127,7 @@ internal class ChargingPointDetailViewModel(
     }
 }
 
-sealed class ChargingPointDetailEvent : Reducer.ViewEvent {
+internal sealed class ChargingPointDetailEvent : Reducer.ViewEvent {
     internal data class Initialize(
         val paymentConfiguration: PaymentConfiguration,
         val logoUrl: String,
@@ -138,6 +138,6 @@ sealed class ChargingPointDetailEvent : Reducer.ViewEvent {
     data object OnPaymentSuccess : ChargingPointDetailEvent()
 }
 
-sealed class ChargingPointDetailEffect : Reducer.ViewEffect {
+internal sealed class ChargingPointDetailEffect : Reducer.ViewEffect {
     class NavigateTo(val evseId: String) : ChargingPointDetailEffect()
 }

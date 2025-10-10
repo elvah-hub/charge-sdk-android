@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class PriceDto(
+internal data class PriceDto(
 
     @param:Json(name = "energyPricePerKWh")
     val energyPricePerKWh: Double,

@@ -60,7 +60,7 @@ internal class DefaultChargingStore(
     }
 }
 
-val Context.settingsDataStore: DataStore<ChargingSessionPrefs> by dataStore(
+private val Context.settingsDataStore: DataStore<ChargingSessionPrefs> by dataStore(
     fileName = "settings.pb",
     serializer = ChargingSessionPrefsSerializer
 )

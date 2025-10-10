@@ -1,14 +1,17 @@
 package de.elvah.charge.features.sites.ui.mapper
 
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 import de.elvah.charge.features.sites.ui.model.Location
+import de.elvah.charge.public_api.banner.EvseId
 
 
-internal fun ChargeSite.toUI(): ChargeSiteUI =
-    ChargeSiteUI(
+internal fun ChargeSite.toUI(): ChargeSiteUI {
+    val commonPrefix = getCommonPrefixes()
+    return ChargeSiteUI(
         id = id,
         cpoName = operatorName,
         address = address.streetAddress.joinToString { " " },
@@ -16,14 +19,20 @@ internal fun ChargeSite.toUI(): ChargeSiteUI =
         lng = location.last(),
         pricePerKw = evses.first().offer.price.energyPricePerKWh,
         campaignEnd = evses.first().offer.campaignEndsAt.orEmpty(),
-        chargePoints = evses.map { it.toUI() }
+        chargePoints = evses.map { it.toUI(commonPrefix) }
     )
+}
 
-internal fun ChargeSite.ChargePoint.toUI(): ChargePointUI = ChargePointUI(
-    evseId = evseId,
-    pricePerKwh = offer.price.energyPricePerKWh,
-    energyType = powerSpecification?.type.orEmpty(),
-    energyValue = powerSpecification?.maxPowerInKW,
+
+internal fun ChargeSite.ChargePoint.toUI(commonPrefix: String): ChargePointUI = ChargePointUI(
+    evseId = EvseId(evseId),
+    shortenedEvseId = evseId.removePrefix(commonPrefix),
+    availability = availability,
+    pricePerKwh = Price(
+        value = offer.price.energyPricePerKWh,
+        currency = offer.price.currency,
+    ),
+    maxPowerInKW = powerSpecification?.maxPowerInKW,
 )
 
 internal fun ChargeSite.toRender(): ChargeBannerRender {
@@ -48,3 +57,14 @@ internal fun ChargeSite.getBestOffer(): ChargeSite.ChargePoint.Offer =
         minOf(acc, pair, compareBy { it.second })
     }.first.offer
 
+private fun ChargeSite.getCommonPrefixes(
+): String {
+    val ids = evses.map { it.evseId }
+    val commonPrefix = ids
+        .takeIf { it.isNotEmpty() }
+        ?.reduce { accumulator, nextElement ->
+            accumulator.commonPrefixWith(nextElement, true)
+        }
+        ?: ""
+    return commonPrefix
+}

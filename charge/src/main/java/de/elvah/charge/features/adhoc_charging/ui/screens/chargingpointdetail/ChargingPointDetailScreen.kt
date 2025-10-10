@@ -37,11 +37,11 @@ import androidx.lifecycle.flowWithLifecycle
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import de.elvah.charge.R
-import de.elvah.charge.entrypoints.banner.EvseId
+import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.model.ChargePointDetail
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
 import de.elvah.charge.platform.ui.components.BasicCard
-import de.elvah.charge.platform.ui.components.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.CopyLarge
 import de.elvah.charge.platform.ui.components.CopySmall
@@ -213,7 +213,7 @@ private fun TermsAndConditions(
 }
 
 @Composable
-fun ChargingPointDetailTopBar(
+private fun ChargingPointDetailTopBar(
     title: String,
     onBackClick: () -> Unit,
 ) {
@@ -400,7 +400,7 @@ private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
  * will _always_ be called and applied on every recomposition.
  */
 @Composable
-fun <T> rememberFlowWithLifecycle(
+internal fun <T> rememberFlowWithLifecycle(
     flow: Flow<T>,
     lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
     minActiveState: Lifecycle.State = Lifecycle.State.STARTED

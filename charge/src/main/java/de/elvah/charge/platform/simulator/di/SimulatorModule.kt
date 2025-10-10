@@ -13,15 +13,12 @@ import de.elvah.charge.platform.simulator.domain.factory.DefaultSimulationStrate
 import de.elvah.charge.platform.simulator.domain.factory.SimulationStrategyFactory
 import de.elvah.charge.platform.simulator.domain.model.SimulatorFlow
 import de.elvah.charge.platform.simulator.domain.usecase.FakeInitStripeConfig
-import de.elvah.charge.platform.simulator.ui.SimulatorListViewModel
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 
-fun provideSimulatorModule(simulatorFlow: SimulatorFlow) = module {
-    viewModelOf(::SimulatorListViewModel)
+internal fun provideSimulatorModule(simulatorFlow: SimulatorFlow) = module {
     single {
         simulatorFlow
     }

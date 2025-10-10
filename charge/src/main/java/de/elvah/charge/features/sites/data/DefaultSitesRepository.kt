@@ -2,12 +2,13 @@ package de.elvah.charge.features.sites.data
 
 import arrow.core.Either
 import arrow.core.right
-import de.elvah.charge.entrypoints.banner.EvseId
+import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.features.sites.data.mapper.toDomain
 import de.elvah.charge.features.sites.data.mapper.toSite
 import de.elvah.charge.features.sites.data.remote.SitesApi
 import de.elvah.charge.features.sites.data.remote.model.request.SignedOfferRequest
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
@@ -27,10 +28,10 @@ internal class DefaultSitesRepository(
     }
 
     override fun updateChargeSite(site: ChargeSite) {
-        if (chargeSites.none { it.id == site.id }) {
-            chargeSites = chargeSites + site
+        chargeSites = if (chargeSites.none { it.id == site.id }) {
+            chargeSites + site
         } else {
-            chargeSites = chargeSites.map {
+            chargeSites.map {
                 if (it.id == site.id) {
                     site
                 } else {
@@ -78,6 +79,12 @@ internal class DefaultSitesRepository(
         }.toEither()
     }
 
+    override suspend fun getSiteScheduledPricing(siteId: String): Either<Throwable, ScheduledPricing> {
+        return runCatching {
+            sitesApi.getSiteScheduledPricing(siteId).data.toDomain()
+        }.toEither()
+    }
+
     private fun parseFilters(
         boundingBox: BoundingBox? = null,
         campaignId: String? = null,
@@ -111,6 +118,5 @@ internal class DefaultSitesRepository(
         const val CAMPAIGN_ID_KEY = "campaignId"
         const val ORGANISATION_ID_KEY = "organisationId"
         const val OFFER_TYPE_KEY = "offerType"
-        const val EVSE_IDS_KEY = "evseIds"
     }
 }

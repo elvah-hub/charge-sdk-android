@@ -2,8 +2,9 @@ package de.elvah.charge.platform.simulator.data.repository
 
 import arrow.core.Either
 import arrow.core.right
-import de.elvah.charge.entrypoints.banner.EvseId
+import de.elvah.charge.public_api.banner.EvseId
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
@@ -51,6 +52,74 @@ internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesReposito
         evseId: String
     ): Either<Exception, ChargeSite> {
         return MockData.chargeSites.first().right()
+    }
+
+    override suspend fun getSiteScheduledPricing(siteId: String): Either<Throwable, ScheduledPricing> {
+        return createMockScheduledPricing().right()
+    }
+
+    private fun createMockScheduledPricing(): ScheduledPricing {
+        val blockingFee = ScheduledPricing.Price.BlockingFee(
+            pricePerMinute = 5,
+            startsAfterMinutes = 240
+        )
+
+        val standardPrice = ScheduledPricing.Price(
+            energyPricePerKWh = 0.35,
+            baseFee = 0,
+            currency = "EUR",
+            blockingFee = blockingFee
+        )
+
+        val timeSlots = listOf(
+            ScheduledPricing.TimeSlot(
+                isDiscounted = false,
+                price = standardPrice,
+                from = "00:00",
+                to = "06:00"
+            ),
+            ScheduledPricing.TimeSlot(
+                isDiscounted = true,
+                price = standardPrice.copy(energyPricePerKWh = 0.25),
+                from = "06:00",
+                to = "10:00"
+            ),
+            ScheduledPricing.TimeSlot(
+                isDiscounted = false,
+                price = standardPrice,
+                from = "10:00",
+                to = "14:00"
+            ),
+            ScheduledPricing.TimeSlot(
+                isDiscounted = true,
+                price = standardPrice.copy(energyPricePerKWh = 0.28),
+                from = "14:00",
+                to = "18:00"
+            ),
+            ScheduledPricing.TimeSlot(
+                isDiscounted = false,
+                price = standardPrice,
+                from = "18:00",
+                to = "24:00"
+            )
+        )
+
+        val day = ScheduledPricing.Day(
+            lowestPrice = standardPrice.copy(energyPricePerKWh = 0.25),
+            trend = "down",
+            timeSlots = timeSlots
+        )
+
+        val dailyPricing = ScheduledPricing.DailyPricing(
+            yesterday = day.copy(trend = "up"),
+            today = day,
+            tomorrow = day.copy(trend = "stable")
+        )
+
+        return ScheduledPricing(
+            dailyPricing = dailyPricing,
+            standardPrice = standardPrice
+        )
     }
 
     companion object {

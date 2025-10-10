@@ -36,23 +36,21 @@ import de.elvah.charge.R
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SupportContacts
 import de.elvah.charge.platform.ui.components.BasicCard
-import de.elvah.charge.platform.ui.components.ButtonPrimary
-import de.elvah.charge.platform.ui.components.ButtonTertiary
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.ButtonTertiary
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.CopyLarge
 import de.elvah.charge.platform.ui.components.ElvahLogo
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.OrderedList
-import de.elvah.charge.platform.ui.components.SwipeButton
+import de.elvah.charge.platform.ui.components.buttons.SwipeButton
 import de.elvah.charge.platform.ui.components.TickBanner
 import de.elvah.charge.platform.ui.components.TitleMedium
 import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
-import de.elvah.charge.platform.ui.theme.onBrand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import kotlinx.coroutines.launch
-
 
 @Composable
 internal fun ChargingStartScreen(
@@ -235,7 +233,7 @@ private fun ChargingPointLockedModal_Preview() {
 }
 
 @Composable
-fun ChargingPointErrorModal(
+internal fun ChargingPointErrorModal(
     modifier: Modifier = Modifier,
     onCloseModal: () -> Unit,
 ) {
@@ -275,20 +273,6 @@ private fun ChargingActions(modifier: Modifier = Modifier, onStartCharging: () -
         SwipeButton(stringResource(R.string.start_charging_process)) {
             onStartCharging()
         }
-        /*
-                SlideToBookButton(
-                    btnText = "Book Ride ₹199",
-                    outerBtnBackgroundColor = MaterialTheme.colorScheme.brand,
-                    sliderBtnBackgroundColor = MaterialTheme.colorScheme.brand,
-                    sliderPositionPx = sliderPositionPx,
-                    onDragUpdated = {
-                        sliderPositionPx = it
-                    },
-                    onBtnSwipe = onStartCharging,
-                    sliderBtnIcon = R.drawable.ic_plug
-                )
-
-         */
     }
 
 }
@@ -309,10 +293,10 @@ private fun ConnectVehicleMessage(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ChargingIdBadge(id: String, modifier: Modifier = Modifier) {
+private fun ChargingIdBadge(id: String, modifier: Modifier = Modifier) {
     BasicCard(
         modifier = modifier,
-        backgroundColor = MaterialTheme.colorScheme.brand,
+        backgroundColor = MaterialTheme.colorSchemeExtended.brand,
         paddingValues = PaddingValues(10.dp)
     ) {
         Row(
@@ -321,14 +305,14 @@ fun ChargingIdBadge(id: String, modifier: Modifier = Modifier) {
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_plug),
-                tint = MaterialTheme.colorScheme.onBrand,
+                tint = MaterialTheme.colorSchemeExtended.onBrand,
                 contentDescription = null
             )
             Text(
                 id,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.W600,
-                color = MaterialTheme.colorScheme.onBrand
+                color = MaterialTheme.colorSchemeExtended.onBrand,
             )
         }
     }

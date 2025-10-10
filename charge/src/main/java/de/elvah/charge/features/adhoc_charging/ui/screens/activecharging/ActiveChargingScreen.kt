@@ -37,8 +37,8 @@ import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingPointErrorModal
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SupportContacts
-import de.elvah.charge.platform.ui.components.ButtonPrimary
-import de.elvah.charge.platform.ui.components.ButtonTertiary
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.ButtonTertiary
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.ElvahLogo
@@ -46,7 +46,7 @@ import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.components.TopAppBar
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyMedium
 import de.elvah.charge.platform.ui.theme.titleMediumBold
 import de.elvah.charge.platform.ui.theme.titleXLargeBold
@@ -280,13 +280,13 @@ internal fun ActiveCharging_Stopping(
 @Composable
 private fun CircularProgressWithTick(modifier: Modifier = Modifier) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.brand)
+        CircularProgressIndicator(Modifier.fillMaxSize(), color = MaterialTheme.colorSchemeExtended.brand)
         TickIcon(Modifier.fillMaxSize())
     }
 }
 
 @Composable
-fun TickIcon(modifier: Modifier = Modifier) {
+internal fun TickIcon(modifier: Modifier = Modifier) {
     Image(
         modifier = modifier.padding(24.dp),
         painter = painterResource(R.drawable.ic_green_tick),
@@ -334,7 +334,7 @@ private fun ChargingTimeText(time: String, modifier: Modifier = Modifier) {
 }
 
 
-fun getFormattedDuration(totalSeconds: Int): String {
+internal fun getFormattedDuration(totalSeconds: Int): String {
     val hours = (totalSeconds / 3600).toInt()
     val minutes = ((totalSeconds % 3600) / 60).toInt()
     val seconds = (totalSeconds % 60).toInt()
@@ -382,7 +382,7 @@ private fun WaitingChargingActions(
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(10.dp), color = MaterialTheme.colorScheme.brand
+                .height(10.dp), color = MaterialTheme.colorSchemeExtended.brand
         )
 
         ButtonTertiary(stringResource(R.string.support_button), onClick = onSupportClick)
@@ -402,7 +402,7 @@ private fun StopChargingActions(
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(10.dp), color = MaterialTheme.colorScheme.brand
+                .height(10.dp), color = MaterialTheme.colorSchemeExtended.brand
         )
         ButtonTertiary(stringResource(R.string.support_button), onClick = onSupportClick)
     }

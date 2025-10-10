@@ -14,7 +14,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 
-val paymentsUseCaseModule = module {
+internal val paymentsUseCaseModule = module {
     factoryOf(::GetOrganisationDetails)
     factoryOf(::GetPaymentConfiguration)
     factoryOf(::GetPaymentSummary)

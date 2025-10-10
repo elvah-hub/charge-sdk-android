@@ -1,6 +1,5 @@
 package de.elvah.charge.features.sites.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,12 +30,12 @@ import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.Location
 import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.features.sites.ui.utils.parseDate
-import de.elvah.charge.platform.ui.components.ButtonPrimary
-import de.elvah.charge.platform.ui.components.Chevron
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.Chevron
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.brand
+import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.time.Duration
@@ -168,11 +167,6 @@ internal fun ChargeBanner_ActiveSession(
     }
 }
 
-data class ChargeBannerActiveSessionRender(
-    val id: String,
-    val chargeTime: Duration
-)
-
 @Composable
 private fun ChargeBannerHeader(timeLeft: String, modifier: Modifier = Modifier) {
     Row(
@@ -205,7 +199,7 @@ private fun
         LiveCounter(chargeTime) {
             CopySmall(
                 text = it.toString(),
-                color = MaterialTheme.colorScheme.brand,
+                color = MaterialTheme.colorSchemeExtended.brand,
                 fontWeight = FontWeight.W700
             )
         }
@@ -219,11 +213,9 @@ private fun LiveCounter(
     content: @Composable (Duration) -> Unit
 ) {
     var counter by remember { mutableStateOf(initialValue) }
-    Log.d("ChargeBanner", "counter: $counter")
 
     LaunchedEffect(initialValue) {
         while (isActive) {
-            Log.d("ChargeBanner", "counter: $counter")
             delay(step)
             counter = counter.plus(step)
         }
@@ -237,7 +229,7 @@ private fun BestDealTimeLeft(timeLeft: String, modifier: Modifier = Modifier) {
     CopySmall(
         text = parseDate(timeLeft),
         modifier = modifier,
-        color = MaterialTheme.colorScheme.brand,
+        color = MaterialTheme.colorSchemeExtended.brand,
         fontWeight = FontWeight.W700
     )
 }

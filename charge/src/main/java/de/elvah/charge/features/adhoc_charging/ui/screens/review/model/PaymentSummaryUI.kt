@@ -1,6 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.review.model
 
-class PaymentSummaryUI(
+internal class PaymentSummaryUI(
     val evseId: String,
     val cpoName: String,
     val address: String,

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-inline fun <reified T> SavedStateHandle.asFlow(): Flow<T> {
+internal inline fun <reified T> SavedStateHandle.asFlow(): Flow<T> {
     val routeArgs: T = toRoute()
     return flow { emit(routeArgs) }
 }

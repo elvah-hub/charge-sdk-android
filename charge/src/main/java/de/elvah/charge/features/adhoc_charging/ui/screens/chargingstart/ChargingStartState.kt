@@ -2,7 +2,7 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart
 
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 
-sealed class ChargingStartState {
+internal sealed class ChargingStartState {
     data object Loading : ChargingStartState()
     data object Error : ChargingStartState()
     internal data class Success(
