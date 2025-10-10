@@ -2,6 +2,7 @@ package de.elvah.charge.features.sites.ui.mapper
 
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.Price
+import de.elvah.charge.features.sites.ui.model.AddressUI
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
@@ -14,7 +15,7 @@ internal fun ChargeSite.toUI(): ChargeSiteUI {
     return ChargeSiteUI(
         id = id,
         cpoName = operatorName,
-        address = address.streetAddress.joinToString { " " },
+        address = address.toUI(),
         lat = location.first(),
         lng = location.last(),
         pricePerKw = evses.first().offer.price.energyPricePerKWh,
@@ -23,16 +24,24 @@ internal fun ChargeSite.toUI(): ChargeSiteUI {
     )
 }
 
+internal fun ChargeSite.Address.toUI(): AddressUI =
+    AddressUI(
+        streetAddress = streetAddress,
+        postalCode = postalCode,
+        locality = locality,
+    )
+
 
 internal fun ChargeSite.ChargePoint.toUI(commonPrefix: String): ChargePointUI = ChargePointUI(
     evseId = EvseId(evseId),
     shortenedEvseId = evseId.removePrefix(commonPrefix),
     availability = availability,
-    pricePerKwh = Price(
+    standardPricePerKwh = Price(
         value = offer.price.energyPricePerKWh,
         currency = offer.price.currency,
     ),
     maxPowerInKW = powerSpecification?.maxPowerInKW,
+    powerType = powerSpecification?.type,
 )
 
 internal fun ChargeSite.toRender(): ChargeBannerRender {

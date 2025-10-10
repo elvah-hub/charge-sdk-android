@@ -12,7 +12,7 @@ public data class ChargeSite(
     public data class Address(
         val streetAddress: List<String?>,
         val postalCode: String,
-        val locality: String
+        val locality: String,
     )
 
     public data class ChargePoint(
@@ -29,7 +29,7 @@ public data class ChargeSite(
             val originalPrice: Price? = null,
             val campaignEndsAt: String? = null,
             val signedOffer: String? = null,
-            ) {
+        ) {
             public data class Price(
                 val energyPricePerKWh: Double,
                 val baseFee: Int?,

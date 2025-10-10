@@ -1,10 +1,12 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -25,13 +27,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -39,18 +45,24 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
-import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.SearchChargePointInputField
-import de.elvah.charge.features.sites.ui.utils.MockData
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.chargePointItemUIMock
+import de.elvah.charge.features.sites.ui.utils.formatTimeUntil
 import de.elvah.charge.platform.core.android.openMap
-import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
+import de.elvah.charge.platform.ui.components.Timer
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
+import de.elvah.charge.platform.ui.theme.copyMedium
 import de.elvah.charge.platform.ui.theme.copyMediumBold
 import de.elvah.charge.platform.ui.theme.copySmallBold
 import de.elvah.charge.platform.ui.theme.titleSmallBold
+import kotlinx.coroutines.delay
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @Composable
 internal fun SiteDetailScreen(
@@ -66,8 +78,10 @@ internal fun SiteDetailScreen(
         is SiteDetailState.Success -> SiteDetailScreen_Content(
             state = state,
             onCloseClick = onCloseClick,
+            onOfferExpired = viewModel::updateTimeSlot,
             onChargePointSearchInputChange = viewModel::onChargePointSearchInputChange,
-            onItemClick = onItemClick
+            onRefreshAvailability = viewModel::refreshAvailability,
+            onItemClick = onItemClick,
         )
 
         is SiteDetailState.Error -> SiteDetailScreen_Error()
@@ -78,9 +92,16 @@ internal fun SiteDetailScreen(
 private fun SiteDetailScreen_Content(
     state: SiteDetailState.Success,
     onCloseClick: () -> Unit,
+    onOfferExpired: () -> Unit,
     onChargePointSearchInputChange: (String) -> Unit,
+    onRefreshAvailability: () -> Unit,
     onItemClick: (String) -> Unit,
 ) {
+    Timer(
+        intervalMillis = 60_000,
+        onTick = onRefreshAvailability,
+    )
+
     Scaffold(
         contentWindowInsets = WindowInsets.displayCutout
             .union(WindowInsets.systemBars),
@@ -90,8 +111,11 @@ private fun SiteDetailScreen_Content(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-
-            OfferBannerAndClose(null, onCloseClick)
+            SiteDetailTopBar(
+                discountExpiresAt = state.discountExpiresAt,
+                onCloseClick = onCloseClick,
+                onOfferExpired = onOfferExpired,
+            )
 
             Spacer(Modifier.height(2.dp))
 
@@ -99,44 +123,56 @@ private fun SiteDetailScreen_Content(
 
             Spacer(Modifier.height(16.dp))
 
-            SelectChargePointHeader(state, onChargePointSearchInputChange)
-
-            Spacer(Modifier.height(16.dp))
-
             ChargePointsList(
                 modifier = Modifier
                     .weight(1f),
-                chargePoints = state.chargeSiteUI.chargePoints,
+                state = state,
+                onChargePointSearchInputChange = onChargePointSearchInputChange,
                 onItemClick = onItemClick
             )
-
-            @Suppress("ConstantConditionIf")
-            if (false) {
-                Spacer(Modifier.height(36.dp))
-
-                Button(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    onClick = {}
-                )
-
-                Spacer(Modifier.height(36.dp))
-            }
         }
     }
 }
 
 @Composable
-private fun OfferBannerAndClose(
-    @Suppress("SameParameterValue")
-    offerEndDateTime: LocalDateTime?,
+private fun SiteDetailTopBar(
+    discountExpiresAt: LocalDateTime?,
     onCloseClick: () -> Unit,
+    onOfferExpired: () -> Unit,
 ) {
+    val context = LocalContext.current
+
+    val discount = discountExpiresAt
+        ?.let { formatTimeUntil(context, it) }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        offerEndDateTime?.let {
+        discount?.let { (initialFormattedTime, initialDuration) ->
+            var formattedTime by remember { mutableStateOf(initialFormattedTime) }
+            var duration by remember { mutableStateOf(initialDuration) }
+
+            LaunchedEffect(duration) {
+                duration?.let {
+                    while (true) {
+                        delay(it.inWholeSeconds)
+
+                        val result = formatTimeUntil(context, discountExpiresAt)
+
+                        if (result != null) {
+                            result.let { (newFormattedTime, newDuration) ->
+                                formattedTime = newFormattedTime
+                                duration = newDuration
+                            }
+                        } else {
+                            duration = null
+                            onOfferExpired()
+                        }
+                    }
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -155,7 +191,7 @@ private fun OfferBannerAndClose(
                         .padding(
                             horizontal = 16.dp,
                         ),
-                    text = "Offer ends in 13h 11m",
+                    text = stringResource(R.string.offer_ends_in) + " " + formattedTime,
                     style = copySmallBold,
                     color = MaterialTheme.colorSchemeExtended.brand,
                     textAlign = TextAlign.Center
@@ -163,33 +199,54 @@ private fun OfferBannerAndClose(
             }
         }
 
-        Box(
+        CloseButton(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(
-                    end = 12.dp,
-                    top = 16.dp,
-                )
-                .background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = CircleShape,
-                )
-                .clickable(
-                    onClick = onCloseClick,
-                )
-                .padding(
-                    all = 10.dp
+                    paddingValues = if (discount != null) {
+                        PaddingValues(end = 14.dp, top = 16.dp)
+                    } else {
+                        PaddingValues(end = 14.dp)
+                    },
                 ),
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(20.dp)
-                    .align(Alignment.Center),
-                painter = painterResource(id = R.drawable.ic_close),
-                tint = MaterialTheme.colorScheme.primary,
-                contentDescription = null
+            onClick = onCloseClick,
+        )
+    }
+}
+
+@Composable
+private fun CloseButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .size(48.dp)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorSchemeExtended.decorativeStroke,
+                shape = CircleShape
             )
-        }
+            .background(
+                color = MaterialTheme.colorScheme.background,
+                shape = CircleShape,
+            )
+            .clip(shape = CircleShape)
+            .clickable(
+                onClick = onClick,
+            )
+            .padding(
+                all = 10.dp
+            ),
+    ) {
+        Icon(
+            modifier = Modifier
+                .size(24.dp)
+                .align(Alignment.Center),
+            painter = painterResource(id = R.drawable.ic_close),
+            tint = MaterialTheme.colorScheme.primary,
+            contentDescription = null
+        )
     }
 }
 
@@ -207,71 +264,50 @@ private fun SiteDetailHeader(
             ),
     ) {
         Text(
-            text = state.chargeSiteUI.cpoName,
+            text = state.operatorName,
             color = MaterialTheme.colorScheme.primary,
             style = titleSmallBold
         )
 
-        state.chargeSiteUI.address
-            .takeIf { it.isNotBlank() }
-            ?.let {
-                Row(
+        state.address?.let {
+            Row(
+                modifier = Modifier
+                    .padding(top = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
                     modifier = Modifier
-                        .padding(top = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .clickable {
-                                with(state.chargeSiteUI) {
-                                    context.openMap(lat, lng, cpoName)
-                                }
-                            },
-                        text = it,
-                        color = MaterialTheme.colorScheme.secondary,
-                        textDecoration = TextDecoration.Underline,
-                    )
+                        .wrapContentWidth()
+                        .clickable {
+                            context.openMap(
+                                lat = state.coordinates.first,
+                                lng = state.coordinates.second,
+                                title = state.operatorName,
+                            )
+                        },
+                    text = it,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = copyMedium,
+                    textDecoration = TextDecoration.Underline,
+                )
 
-                    Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.width(4.dp))
 
-                    Icon(
-                        painter = painterResource(R.drawable.ic_open_external),
-                        tint = MaterialTheme.colorScheme.secondary,
-                        contentDescription = null,
-                    )
-                }
+                Icon(
+                    modifier = Modifier
+                        .size(16.dp),
+                    painter = painterResource(R.drawable.ic_open_external),
+                    tint = MaterialTheme.colorScheme.secondary,
+                    contentDescription = null,
+                )
             }
+        }
     }
 }
 
 @Composable
-private fun SelectChargePointHeader(
-    state: SiteDetailState.Success,
-    onChargePointSearchInputChange: (String) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .padding(
-                horizontal = 16.dp,
-            ),
-    ) {
-        CopyXLarge(
-            text = stringResource(R.string.select_charge_point_label),
-            fontWeight = FontWeight.W700,
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        SearchChargePointInputField(
-            searchInput = state.searchInput,
-            onSearchInputChange = onChargePointSearchInputChange,
-        )
-    }
-}
-
-@Composable
-private fun Button(
+internal fun UnderlinedButton(
+    text: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
@@ -283,7 +319,7 @@ private fun Button(
             .width(IntrinsicSize.Max),
     ) {
         Text(
-            text = "Back to map",
+            text = text,
             style = copyMediumBold,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
@@ -305,12 +341,11 @@ private fun Button(
 private fun SiteDetailScreen_Content_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
-            SiteDetailState.Success(
-                searchInput = "",
-                chargeSiteUI = MockData.siteUI,
-            ),
+            state = successStateMock,
             onCloseClick = {},
+            onOfferExpired = {},
             onChargePointSearchInputChange = {},
+            onRefreshAvailability = {},
             onItemClick = { _ -> },
         )
     }
@@ -318,15 +353,16 @@ private fun SiteDetailScreen_Content_Preview() {
 
 @PreviewLightDark
 @Composable
-private fun SiteDetailScreen_Content_EmptyList_Preview() {
+private fun SiteDetailScreen_Content_NoDiscount_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
-            SiteDetailState.Success(
-                searchInput = "",
-                chargeSiteUI = MockData.siteWithoutChargePoints,
+            state = successStateMock.copy(
+                discountExpiresAt = null,
             ),
             onCloseClick = {},
+            onOfferExpired = {},
             onChargePointSearchInputChange = {},
+            onRefreshAvailability = {},
             onItemClick = { _ -> },
         )
     }
@@ -341,3 +377,32 @@ private fun SiteDetailScreen_Loading() {
 private fun SiteDetailScreen_Error() {
     FullScreenError()
 }
+
+private val chargePointsMock = listOf(
+    chargePointItemUIMock,
+    chargePointItemUIMock,
+    chargePointItemUIMock,
+    chargePointItemUIMock,
+)
+
+@OptIn(ExperimentalTime::class)
+internal val successStateMock = SiteDetailState.Success(
+    discountExpiresAt = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).let {
+            LocalDateTime(
+                year = it.year,
+                month = it.month,
+                day = it.day,
+                hour = it.hour,
+                minute = it.minute + 1,
+                second = it.second,
+            )
+        },
+    operatorName = "Lidl Köpenicker Straße",
+    address = "Köpenicker Straße 145 12683 Berlin",
+    coordinates = Pair(0.0, 0.0),
+    searchInput = "",
+    chargePoints = chargePointsMock,
+    noSearchResults = false,
+    noStations = false,
+)

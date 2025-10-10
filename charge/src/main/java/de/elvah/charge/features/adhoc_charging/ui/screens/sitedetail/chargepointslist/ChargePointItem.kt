@@ -19,27 +19,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.ChargePointItemUI
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.extension.formatKW
 import de.elvah.charge.features.sites.extension.formatted
-import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
-import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.copyXLargeBold
-import de.elvah.charge.public_api.banner.EvseId
 
 @Composable
 internal fun ChargePointItem(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
-    chargePoint: ChargePointUI,
+    chargePoint: ChargePointItemUI,
 ) {
     val statusTextResId = getChargePointAvailabilityStatusTextResId(
         availability = chargePoint.availability,
@@ -59,9 +58,8 @@ internal fun ChargePointItem(
 
             Spacer(Modifier.height(6.dp))
 
-            Text(
+            CopySmall(
                 text = stringResource(statusTextResId),
-                style = copyLargeBold,
                 color = getAvailabilityColor(
                     availability = chargePoint.availability,
                 ),
@@ -70,14 +68,38 @@ internal fun ChargePointItem(
 
         Spacer(modifier = Modifier.weight(1.5f))
 
-        Column {
-            CopyMedium(
-                text = chargePoint.pricePerKwh.formatted(),
-                fontWeight = FontWeight.W700
-            )
+        Column(
+            horizontalAlignment = Alignment.End,
+        ) {
+            if (chargePoint.hasDiscount) {
+                Row {
+                    CopyMedium(
+                        text = chargePoint.todayPricePerKwh.formatted(),
+                        fontWeight = FontWeight.W700
+                    )
+
+                    Spacer(Modifier.width(4.dp))
+
+                    CopyMedium(
+                        text = chargePoint.standardPricePerKwh.formatted(),
+                        color = MaterialTheme.colorScheme.secondary,
+                        textDecoration = TextDecoration.LineThrough,
+                    )
+                }
+            } else {
+                CopyMedium(
+                    text = chargePoint.standardPricePerKwh.formatted(),
+                    fontWeight = FontWeight.W700
+                )
+            }
+
+            Spacer(Modifier.height(2.dp))
 
             CopySmall(
-                text = chargePoint.maxPowerInKW?.formatKW().orEmpty(),
+                text = listOfNotNull(
+                    chargePoint.powerType,
+                    chargePoint.maxPowerInKW?.formatKW(),
+                ).joinToString(stringResource(R.string.bullet_point_symbol)),
             )
         }
 
@@ -140,23 +162,41 @@ private fun BadgeStatus(
     val backgroundColor = when (availability) {
         ChargePointAvailability.AVAILABLE,
             -> {
-            MaterialTheme.colorSchemeExtended.brand
+            MaterialTheme.colorSchemeExtended.brand.copy(
+                alpha = 0.2f,
+            )
         }
 
         ChargePointAvailability.OUT_OF_SERVICE,
         ChargePointAvailability.UNAVAILABLE,
         ChargePointAvailability.UNKNOWN,
             -> {
-            MaterialTheme.colorSchemeExtended.decorativeStroke
+            MaterialTheme.colorSchemeExtended.decorativeStroke.copy(
+                alpha = 0.2f,
+            )
+        }
+    }
+
+    val textColor = when (availability) {
+        ChargePointAvailability.AVAILABLE,
+        ChargePointAvailability.UNAVAILABLE,
+        ChargePointAvailability.UNKNOWN,
+            -> {
+            MaterialTheme.colorScheme.primary
+        }
+
+        ChargePointAvailability.OUT_OF_SERVICE,
+            -> {
+            MaterialTheme.colorScheme.primary.copy(
+                alpha = 0.4f,
+            )
         }
     }
 
     Text(
         modifier = Modifier
             .background(
-                color = backgroundColor.copy(
-                    alpha = 0.2f,
-                ),
+                color = backgroundColor,
                 shape = RoundedCornerShape(
                     size = 4.dp,
                 ),
@@ -167,7 +207,7 @@ private fun BadgeStatus(
             ),
         text = title,
         style = copyXLargeBold,
-        color = MaterialTheme.colorScheme.primary,
+        color = textColor,
     )
 }
 
@@ -176,15 +216,42 @@ private fun BadgeStatus(
 private fun ChargePointItemPreview() {
     ElvahChargeTheme {
         ChargePointItem(
-            chargePoint = chargePointUIMock,
+            chargePoint = chargePointItemUIMock,
         )
     }
 }
 
-internal val chargePointUIMock = ChargePointUI(
-    evseId = EvseId(""),
+@PreviewLightDark
+@Composable
+private fun OutOfServicePreview() {
+    ElvahChargeTheme {
+        ChargePointItem(
+            chargePoint = chargePointItemUIMock.copy(
+                availability = ChargePointAvailability.OUT_OF_SERVICE,
+            ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun OccupiedPreview() {
+    ElvahChargeTheme {
+        ChargePointItem(
+            chargePoint = chargePointItemUIMock.copy(
+                availability = ChargePointAvailability.UNAVAILABLE,
+            ),
+        )
+    }
+}
+
+internal val chargePointItemUIMock = ChargePointItemUI(
+    evseId = "DE*1*01",
     shortenedEvseId = "1*01",
-    maxPowerInKW = 0.42f,
     availability = ChargePointAvailability.AVAILABLE,
-    pricePerKwh = Price(22.0, "EUR"),
+    standardPricePerKwh = Price(22.0, "EUR"),
+    maxPowerInKW = 0.42f,
+    powerType = "DC",
+    todayPricePerKwh = Price(15.0, "EUR"),
+    hasDiscount = true,
 )

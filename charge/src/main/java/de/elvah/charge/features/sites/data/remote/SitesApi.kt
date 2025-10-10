@@ -5,6 +5,7 @@ import de.elvah.charge.features.sites.data.remote.model.response.OfferDto
 import de.elvah.charge.features.sites.data.remote.model.response.ScheduledPricingDto
 import de.elvah.charge.features.sites.data.remote.model.response.SignedOfferDto
 import de.elvah.charge.features.sites.data.remote.model.response.SitesDto
+import de.elvah.charge.features.sites.data.remote.model.response.chargepoint.availability.ChargePointAvailabilityResponse
 import de.elvah.charge.features.sites.data.remote.model.response.common.ApiListResponse
 import de.elvah.charge.features.sites.data.remote.model.response.common.ApiResponse
 import retrofit2.http.Body
@@ -33,4 +34,9 @@ internal interface SitesApi {
     suspend fun getSiteScheduledPricing(
         @Path("siteId") siteId: String
     ): ApiResponse<ScheduledPricingDto>
+
+    @GET("/discovery/sites/{siteId}/chargepoint-availabilities")
+    suspend fun getChargePointAvailabilities(
+        @Path("siteId") siteId: String,
+    ): ApiResponse<ChargePointAvailabilityResponse>
 }
