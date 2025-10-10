@@ -18,6 +18,7 @@ import org.koin.compose.koinInject
 public fun ChargePointList(
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
+    onItemClick: (evseId: String) -> Unit,
 ) {
     val siteDetailViewModel: SiteDetailViewModel = koinViewModel()
     val config: Config = koinInject()
@@ -42,7 +43,8 @@ public fun ChargePointList(
                 ChargePointsList(
                     state = state,
                     onChargePointSearchInputChange = siteDetailViewModel::onChargePointSearchInputChange,
-                    onItemClick = { evseId -> })
+                    onItemClick = onItemClick,
+                )
             }
         }
     }
