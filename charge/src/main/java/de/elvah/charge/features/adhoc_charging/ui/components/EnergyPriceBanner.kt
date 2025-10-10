@@ -26,8 +26,7 @@ import de.elvah.charge.R
 import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.features.sites.ui.utils.formatTimeUntil
-import de.elvah.charge.platform.ui.preview.BigFontScalePreview
-import de.elvah.charge.platform.ui.preview.MediumFontScalePreview
+import de.elvah.charge.platform.ui.preview.FontScalePreview
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.copyLarge
 import de.elvah.charge.platform.ui.theme.copyLargeBold
@@ -134,8 +133,7 @@ internal fun EnergyPriceBanner(
 }
 
 @PreviewLightDark
-@BigFontScalePreview
-@MediumFontScalePreview
+@FontScalePreview
 @Composable
 private fun EnergyPriceBannerPreview() {
     ElvahChargeTheme {
@@ -150,8 +148,7 @@ private fun EnergyPriceBannerPreview() {
 }
 
 @PreviewLightDark
-@BigFontScalePreview
-@MediumFontScalePreview
+@FontScalePreview
 @Composable
 private fun WithoutDiscountPreview() {
     ElvahChargeTheme {

@@ -25,8 +25,7 @@ import de.elvah.charge.features.sites.domain.model.BlockingFeeTimeSlot
 import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.extension.formatted
 import de.elvah.charge.features.sites.ui.utils.formatTotalOfMinutes
-import de.elvah.charge.platform.ui.preview.BigFontScalePreview
-import de.elvah.charge.platform.ui.preview.MediumFontScalePreview
+import de.elvah.charge.platform.ui.preview.FontScalePreview
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLargeBold
@@ -205,8 +204,7 @@ internal fun AdditionalCostsContent(
 }
 
 @PreviewLightDark
-@BigFontScalePreview
-@MediumFontScalePreview
+@FontScalePreview
 @Composable
 private fun AdditionalCostsCardPreview() {
     ElvahChargeTheme {
