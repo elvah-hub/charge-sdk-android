@@ -99,7 +99,7 @@ internal fun ChargePointItem(
                 text = listOfNotNull(
                     chargePoint.powerType,
                     chargePoint.maxPowerInKW?.formatKW(),
-                ).joinToString(" • "),
+                ).joinToString(stringResource(R.string.bullet_point_symbol)),
             )
         }
 

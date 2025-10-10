@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="bullet_point_symbol" translatable="false">" • "</string>
   <string name="ac_label">AC</string>
   <string name="apple_maps">Apple Maps</string>
   <string name="authorization_successful">Authorization successful</string>
