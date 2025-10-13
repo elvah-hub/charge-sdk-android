@@ -55,6 +55,7 @@ import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
+import de.elvah.charge.platform.ui.components.onDebounceClick
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.copySmall
 import de.elvah.charge.platform.ui.theme.copyXLargeBold
@@ -329,10 +330,9 @@ private fun ChargingPointDetailActions(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        // FIXME: multiple taps to this button can open multiple payment sheets
         UnderlinedButton(
             text = stringResource(R.string.pay_with_credit_card_button),
-            onClick = onPayWithCardClick,
+            onClick = onDebounceClick(onClick = onPayWithCardClick),
         )
     }
 }
