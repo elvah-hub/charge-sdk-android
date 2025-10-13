@@ -13,6 +13,7 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.Ch
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
+import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors
 import de.elvah.charge.features.payments.domain.usecase.StoreAdditionalCosts
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.features.sites.domain.model.AdditionalCosts
@@ -128,18 +129,39 @@ internal class ChargingPointDetailViewModel(
     }
 
     private suspend fun executeInitializeStripe(siteId: String, evseId: String) {
-        val result: Either<Throwable, PaymentConfiguration> =
+        val result: Either<PaymentConfigErrors, PaymentConfiguration> =
             getPaymentConfiguration(siteId, evseId)
         val logoUrl = getOrganisationDetails()?.logoUrl.orEmpty()
 
         result.fold(
             ifLeft = {
-                Log.d("ChargingPointDetailViewModel", "Error getting payment configuration", it)
+                Log.d(
+                    "ChargingPointDetailViewModel",
+                    "Error getting payment configuration",
+                    it.throwable?.cause
+                )
+                when (it) {
+                    is PaymentConfigErrors.NoOfferFound -> {
+
+                    }
+
+                    is PaymentConfigErrors.NoPublishableKey -> {
+
+                    }
+                }
+
             }, ifRight = { paymentIntentValue ->
                 initStripeConfig(paymentIntentValue.publishableKey, paymentIntentValue.accountId)
                 sendEvent(ChargingPointDetailEvent.Initialize(paymentIntentValue, logoUrl))
             }
         )
+    }
+
+    internal fun onRetryClicked() {
+        viewModelScope.launch {
+            val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
+            executeInitializeStripe(route.siteId, route.evseId)
+        }
     }
 }
 
