@@ -14,8 +14,8 @@ internal fun provideApi(
 
     return retrofitFactory
         .retrofit(
-            baseUrl,
-            SitesApi::class.java,
+            baseUrl = baseUrl,
+            service = SitesApi::class.java,
         )
 }
 

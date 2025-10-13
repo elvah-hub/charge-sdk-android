@@ -2,8 +2,9 @@ package de.elvah.charge.platform.network.retrofit.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.RetrofitFactory
+import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
+import de.elvah.charge.platform.network.retrofit.interceptor.ApiVersionInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.UserAgentInterceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -19,6 +20,7 @@ private fun provideRetrofitFactory(
     moshi: Moshi,
     httpLoggingInterceptor: HttpLoggingInterceptor,
     apiKeyInterceptor: ApiKeyInterceptor,
+    apiVersionInterceptor: ApiVersionInterceptor,
     userAgentInterceptor: UserAgentInterceptor,
     distinctKeyInterceptor: Interceptor
 ): RetrofitFactory {
@@ -27,6 +29,7 @@ private fun provideRetrofitFactory(
         httpLoggingInterceptor = httpLoggingInterceptor,
         moshi = moshi,
         apiKeyInterceptor = apiKeyInterceptor,
+        apiVersionInterceptor = apiVersionInterceptor,
         distinctKeyInterceptor = distinctKeyInterceptor,
         userAgentInterceptor = userAgentInterceptor,
     )
@@ -34,5 +37,5 @@ private fun provideRetrofitFactory(
 
 internal val retrofitModule = module {
     single { provideMoshi() }
-    single { provideRetrofitFactory(get(), get(), get(), get(), get(), get()) }
+    single { provideRetrofitFactory(get(), get(), get(), get(), get(), get(), get()) }
 }
