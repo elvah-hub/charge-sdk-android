@@ -31,7 +31,7 @@ private fun provideRetrofitFactory(
     apiKeyInterceptor: ApiKeyInterceptor,
     apiVersionInterceptor: ApiVersionInterceptor,
     integrateClientInterceptor: IntegrateClientInterceptor,
-    distinctKeyInterceptor: Interceptor
+    distinctKeyInterceptor: Interceptor,
 ): RetrofitFactory {
     return RetrofitFactory(
         okHttpClient = okHttpClient,

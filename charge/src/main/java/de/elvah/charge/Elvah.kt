@@ -91,9 +91,8 @@ public object Elvah {
                 okHttpModule,
                 retrofitModule,
                 sitesRepositoriesModule,
-                simulatorModule
+                simulatorModule,
             )
         }
     }
 }
-

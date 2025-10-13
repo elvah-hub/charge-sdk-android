@@ -16,7 +16,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
-
 internal class RetrofitFactory(
     private val okHttpClient: OkHttpClient,
     private val httpLoggingInterceptor: HttpLoggingInterceptor,

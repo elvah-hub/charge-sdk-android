@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import de.elvah.charge.dev.HTTPInspectorButton
+import de.elvah.charge.dev.HttpInspectorButton
 import de.elvah.charge.public_api.DisplayBehavior
 import de.elvah.charge.public_api.banner.ChargeBanner
 import de.elvah.charge.public_api.banner.ChargeBannerSource
@@ -92,7 +92,7 @@ class MainActivity : ComponentActivity() {
                             Text("Open Deal at ${evseId.value}")
                         }
 
-                        HTTPInspectorButton()
+                        HttpInspectorButton(this@MainActivity)
 
                         ChargeBanner(
                             display = DisplayBehavior.WHEN_CONTENT_AVAILABLE,

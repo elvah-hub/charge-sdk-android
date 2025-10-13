@@ -1,9 +1,9 @@
 package de.elvah.charge.dev
 
+import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 
 @Composable
-fun HTTPInspectorButton() {
+fun HttpInspectorButton(@Suppress("unused") context: Context) {
     // noop
 }
