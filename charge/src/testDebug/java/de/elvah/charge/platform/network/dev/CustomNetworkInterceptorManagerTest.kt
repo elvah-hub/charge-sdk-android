@@ -1,4 +1,4 @@
-package de.elvah.charge.platform.network
+package de.elvah.charge.platform.network.dev
 
 import de.elvah.charge.platform.network.annotations.NetworkInterceptor
 import de.elvah.charge.platform.network.discovery.NetworkInterceptorRegistry
