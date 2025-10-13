@@ -1,6 +1,7 @@
 package de.elvah.charge.platform.network.retrofit
 
 import com.squareup.moshi.Moshi
+import de.elvah.charge.platform.network.retrofit.adapter.EitherCallAdapterFactory
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiVersionInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.IntegrateClientInterceptor
@@ -39,6 +40,7 @@ internal class RetrofitFactory(
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(httpClientBuilder.build())
+            .addCallAdapterFactory(EitherCallAdapterFactory.create())
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
