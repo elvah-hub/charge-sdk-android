@@ -7,7 +7,6 @@ import com.squareup.moshi.Moshi
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.OfferPreviewCampaignDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.OfferPreviewStandardDto
-import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.OfferUnknownDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.SignedOfferCampaignDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.SignedOfferStandardDto
 import okio.Buffer
@@ -32,9 +31,6 @@ internal class OfferTypeAdapter : JsonAdapter<OfferTypeDto>() {
         val json = buffer.readUtf8()
         val jsonObject = moshi.adapter(Map::class.java)
             .fromJson(json)
-            ?: return null
-
-        val type = jsonObject["type"] as? String
             ?: return null
 
         val isOfferPreviewCampaign = jsonObject.containsKey("campaignEndsAt") &&
@@ -64,11 +60,7 @@ internal class OfferTypeAdapter : JsonAdapter<OfferTypeDto>() {
             isOfferPreviewStandard -> offerPreviewStandardAdapter.fromJson(json)
             isSignedOfferCampaign -> signedOfferCampaignAdapter.fromJson(json)
             isSignedOfferStandard -> signedOfferStandardAdapter.fromJson(json)
-            else -> OfferUnknownDto(
-                rawJson = json,
-                reason = "Unknown offer type: $type",
-                type = type,
-            )
+            else -> throw Exception("Unknown offer type for: $json")
         }
     }
 
@@ -78,7 +70,6 @@ internal class OfferTypeAdapter : JsonAdapter<OfferTypeDto>() {
             is OfferPreviewCampaignDto -> offerPreviewCampaignAdapter.toJson(writer, value)
             is SignedOfferStandardDto -> signedOfferStandardAdapter.toJson(writer, value)
             is SignedOfferCampaignDto -> signedOfferCampaignAdapter.toJson(writer, value)
-            is OfferUnknownDto -> writer.value("Unknown offer: ${value.reason}")
             null -> writer.nullValue()
         }
     }

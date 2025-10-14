@@ -75,11 +75,4 @@ internal sealed interface OfferTypeDto {
         @param:Json(name = "type")
         val type: String,
     ) : OfferTypeDto
-
-    @JsonClass(generateAdapter = true)
-    data class OfferUnknownDto(
-        val rawJson: String,
-        val reason: String? = null,
-        val type: String,
-    ) : OfferTypeDto
 }

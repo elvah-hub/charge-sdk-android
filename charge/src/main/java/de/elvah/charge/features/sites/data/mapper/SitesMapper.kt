@@ -4,14 +4,11 @@ import de.elvah.charge.features.sites.data.remote.model.response.site.EvseDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.OfferPreviewCampaignDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.OfferPreviewStandardDto
-import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.OfferUnknownDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.SignedOfferCampaignDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.OfferTypeDto.SignedOfferStandardDto
 import de.elvah.charge.features.sites.data.remote.model.response.site.SitesDto
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.Offer
-import de.elvah.charge.features.sites.domain.model.Price
-import de.elvah.charge.features.sites.domain.model.Pricing
 
 internal fun SitesDto.toDomain(): ChargeSite {
     return ChargeSite(
@@ -63,14 +60,5 @@ internal fun OfferTypeDto.toDomain(): Offer = when (this) {
         type = type,
         expiresAt = expiresAt,
         campaignEndsAt = campaignEndsAt,
-    )
-
-    // TODO: thrown an exception. this will be based on the api version
-    is OfferUnknownDto -> Offer(
-        price = Price(Pricing(0.0, "EUR"), null, null, "EUR"),
-        originalPrice = null,
-        type = type,
-        expiresAt = "",
-        campaignEndsAt = null,
     )
 }
