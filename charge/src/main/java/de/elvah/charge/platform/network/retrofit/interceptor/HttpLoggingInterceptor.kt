@@ -4,5 +4,5 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 internal fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
     HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.HEADERS
     }
