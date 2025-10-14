@@ -42,13 +42,13 @@ internal class ChargingPointDetailViewModel(
         when (event) {
             ChargingPointDetailEvent.OnGooglePayClicked -> when (previousState) {
                 is Loading -> Reducer.Result(Loading(evseId), null)
-                is Error -> Reducer.Result(Error(evseId, previousState.message), null)
+                is Error -> Reducer.Result(Error(evseId, previousState.paymentConfigErrors), null)
                 is Success -> Reducer.Result(previousState.copy(), null)
             }
 
             ChargingPointDetailEvent.OnPayWithCardClicked -> when (previousState) {
                 is Loading -> Reducer.Result(Loading(evseId), null)
-                is Error -> Reducer.Result(Error(evseId, previousState.message), null)
+                is Error -> Reducer.Result(Error(evseId, previousState.paymentConfigErrors), null)
                 is Success -> Reducer.Result(previousState.copy(), null)
             }
 
@@ -57,7 +57,14 @@ internal class ChargingPointDetailViewModel(
 
                 sitesRepository.getChargeSite(route.siteId)
                     .fold(
-                        ifLeft = { Reducer.Result(Error(evseId, it.message.orEmpty())) },
+                        ifLeft = {
+                            Reducer.Result(
+                                Error(
+                                    evseId,
+                                    PaymentConfigErrors.NoOfferFound(it.cause)
+                                )
+                            )
+                        },
                         ifRight = { site ->
                             val siteUI = site.toUI()
 
@@ -118,6 +125,15 @@ internal class ChargingPointDetailViewModel(
                     ChargingPointDetailEffect.NavigateTo(previousState.evseId)
                 )
             }
+
+            is ChargingPointDetailEvent.OnError -> {
+                Reducer.Result(
+                    Error(
+                        previousState.evseId,
+                        event.paymentConfigErrors
+                    ), null
+                )
+            }
         }
     }
 ) {
@@ -140,16 +156,7 @@ internal class ChargingPointDetailViewModel(
                     "Error getting payment configuration",
                     it.throwable?.cause
                 )
-                when (it) {
-                    is PaymentConfigErrors.NoOfferFound -> {
-
-                    }
-
-                    is PaymentConfigErrors.NoPublishableKey -> {
-
-                    }
-                }
-
+                sendEvent(ChargingPointDetailEvent.OnError(it))
             }, ifRight = { paymentIntentValue ->
                 initStripeConfig(paymentIntentValue.publishableKey, paymentIntentValue.accountId)
                 sendEvent(ChargingPointDetailEvent.Initialize(paymentIntentValue, logoUrl))
@@ -163,19 +170,4 @@ internal class ChargingPointDetailViewModel(
             executeInitializeStripe(route.siteId, route.evseId)
         }
     }
-}
-
-internal sealed class ChargingPointDetailEvent : Reducer.ViewEvent {
-    internal data class Initialize(
-        val paymentConfiguration: PaymentConfiguration,
-        val logoUrl: String,
-    ) : ChargingPointDetailEvent()
-
-    data object OnGooglePayClicked : ChargingPointDetailEvent()
-    data object OnPayWithCardClicked : ChargingPointDetailEvent()
-    data object OnPaymentSuccess : ChargingPointDetailEvent()
-}
-
-internal sealed class ChargingPointDetailEffect : Reducer.ViewEffect {
-    class NavigateTo(val evseId: String) : ChargingPointDetailEffect()
 }

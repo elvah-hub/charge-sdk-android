@@ -15,10 +15,10 @@ internal data class DailyPricingData(
         private fun generateSlots(regularPrice: Double, offers: List<PriceOffer>): List<PriceSlot> {
             val slots = mutableListOf<PriceSlot>()
             val sortedOffers = offers.sortedBy { it.timeRange.startTime }
-            
+
             var currentTime = LocalTime.of(0, 0)
             val endOfDay = LocalTime.of(23, 59, 59)
-            
+
             for (offer in sortedOffers) {
                 // Add regular price slot before offer if there's a gap
                 if (currentTime.isBefore(offer.timeRange.startTime)) {
@@ -31,7 +31,7 @@ internal data class DailyPricingData(
                         )
                     )
                 }
-                
+
                 // Add offer slot
                 slots.add(
                     PriceSlot.OfferPriceSlot(
@@ -42,10 +42,10 @@ internal data class DailyPricingData(
                         isSelected = offer.isSelected
                     )
                 )
-                
+
                 currentTime = offer.timeRange.endTime
             }
-            
+
             // Add remaining regular price slot until end of day
             if (currentTime.isBefore(endOfDay)) {
                 slots.add(
@@ -57,11 +57,11 @@ internal data class DailyPricingData(
                     )
                 )
             }
-            
+
             return slots
         }
     }
-    
+
     // Helper function to create a new instance with updated slots
     fun withUpdatedSlots(updatedSlots: List<PriceSlot>): DailyPricingData {
         return copy(slots = updatedSlots)

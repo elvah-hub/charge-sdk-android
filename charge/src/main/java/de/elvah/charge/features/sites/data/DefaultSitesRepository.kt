@@ -79,9 +79,7 @@ internal class DefaultSitesRepository(
     }
 
     override suspend fun getSiteScheduledPricing(siteId: String): Either<Throwable, ScheduledPricing> {
-        return runCatching {
-            sitesApi.getSiteScheduledPricing(siteId).data.toDomain()
-        }.toEither()
+        return sitesApi.getSiteScheduledPricing(siteId).map { it.data.toDomain() }
     }
 
     private fun parseFilters(

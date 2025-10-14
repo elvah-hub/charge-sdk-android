@@ -5,6 +5,8 @@ import de.elvah.charge.platform.network.retrofit.adapter.EitherCallAdapterFactor
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiVersionInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.IntegrateClientInterceptor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -40,7 +42,12 @@ internal class RetrofitFactory(
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(httpClientBuilder.build())
-            .addCallAdapterFactory(EitherCallAdapterFactory.create())
+            .addCallAdapterFactory(
+                EitherCallAdapterFactory.create(
+                    CoroutineScope(Dispatchers.IO),
+                    moshi
+                )
+            )
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

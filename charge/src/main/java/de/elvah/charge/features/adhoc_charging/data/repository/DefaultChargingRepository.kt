@@ -89,5 +89,4 @@ internal class DefaultChargingRepository(
 }
 
 
-
 private const val BEARER_TEMPLATE = "Bearer %s"

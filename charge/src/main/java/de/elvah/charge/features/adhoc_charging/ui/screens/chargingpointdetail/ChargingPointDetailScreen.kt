@@ -73,6 +73,7 @@ internal fun ChargingPointDetailScreen(
         is ChargingPointDetailState.Error -> ChargingPointDetail_Error(onRetryClick = {
             chargingPointDetailViewModel.onRetryClicked()
         })
+
         is ChargingPointDetailState.Success -> {
             val paymentSheet = remember {
                 PaymentSheet.Builder(resultCallback = {

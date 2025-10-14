@@ -3,6 +3,7 @@ package de.elvah.charge.platform.network.retrofit.adapter.internals
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import de.elvah.charge.platform.network.error.NetworkErrorParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -10,10 +11,8 @@ import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.awaitResponse
-import java.io.IOException
 import java.lang.reflect.Type
 
 /**
@@ -25,11 +24,13 @@ import java.lang.reflect.Type
  * @property proxy The original Retrofit call to delegate to
  * @property paramType The parameter type for the response
  * @property coroutineScope The coroutine scope for executing async calls
+ * @property errorParser The parser for converting HTTP errors to custom exceptions
  */
 internal class EitherCall<T : Any>(
     private val proxy: Call<T>,
     private val paramType: Type,
     private val coroutineScope: CoroutineScope,
+    private val errorParser: NetworkErrorParser,
 ) : Call<Either<Throwable, T?>> {
 
     override fun enqueue(callback: Callback<Either<Throwable, T?>>) {
@@ -39,7 +40,7 @@ internal class EitherCall<T : Any>(
                 val result = if (response.isSuccessful) {
                     response.body().right()
                 } else {
-                    HttpException(response).left()
+                    errorParser.parseError(response).left()
                 }
                 callback.onResponse(this@EitherCall, Response.success(result))
             } catch (throwable: Throwable) {
@@ -56,7 +57,7 @@ internal class EitherCall<T : Any>(
                 val result = if (response.isSuccessful) {
                     response.body().right()
                 } else {
-                    HttpException(response).left()
+                    errorParser.parseError(response).left()
                 }
                 Response.success(result)
             } catch (throwable: Throwable) {
@@ -74,7 +75,7 @@ internal class EitherCall<T : Any>(
     override fun isCanceled(): Boolean = proxy.isCanceled
 
     override fun clone(): Call<Either<Throwable, T?>> {
-        return EitherCall(proxy.clone(), paramType, coroutineScope)
+        return EitherCall(proxy.clone(), paramType, coroutineScope, errorParser)
     }
 
     override fun request(): Request = proxy.request()

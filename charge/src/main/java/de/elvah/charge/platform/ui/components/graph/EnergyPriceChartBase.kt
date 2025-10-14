@@ -59,7 +59,7 @@ private fun EnergyPriceChart1(
     val scrollState = rememberScrollState()
     val maxPrice = data.maxOf { it.price }
     val minPrice = data.minOf { it.price }
-    val priceRange = maxPrice - minPrice
+    maxPrice - minPrice
 
     val animatedProgress by animateFloatAsState(
         targetValue = if (animated) 1f else 1f,
@@ -131,7 +131,7 @@ private fun EnergyPriceBar(
     progress: Float,
     modifier: Modifier = Modifier
 ) {
-    val density = LocalDensity.current
+    LocalDensity.current
     val barHeight = 120.dp
     val barWidth = 32.dp
 
