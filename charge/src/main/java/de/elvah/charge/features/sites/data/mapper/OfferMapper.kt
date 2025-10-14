@@ -14,6 +14,7 @@ internal fun OfferTypeDto.toDomain(): Offer = when (this) {
         type = type,
         expiresAt = expiresAt,
         campaignEndsAt = null,
+        signedOffer = null,
     )
 
     is OfferPreviewCampaignDto -> Offer(
@@ -22,6 +23,7 @@ internal fun OfferTypeDto.toDomain(): Offer = when (this) {
         type = type,
         expiresAt = expiresAt,
         campaignEndsAt = campaignEndsAt,
+        signedOffer = null,
     )
 
     is SignedOfferStandardDto -> Offer(
@@ -30,6 +32,7 @@ internal fun OfferTypeDto.toDomain(): Offer = when (this) {
         type = type,
         expiresAt = expiresAt,
         campaignEndsAt = null,
+        signedOffer = signedOffer,
     )
 
     is SignedOfferCampaignDto -> Offer(
@@ -38,5 +41,6 @@ internal fun OfferTypeDto.toDomain(): Offer = when (this) {
         type = type,
         expiresAt = expiresAt,
         campaignEndsAt = campaignEndsAt,
+        signedOffer = signedOffer,
     )
 }

@@ -4,7 +4,7 @@ public data class Offer(
     val price: Price,
     val type: String,
     val expiresAt: String,
-    val originalPrice: Price? = null,
-    val campaignEndsAt: String? = null,
-    val signedOffer: String? = null,
+    val originalPrice: Price?,
+    val campaignEndsAt: String?,
+    val signedOffer: String?,
 )

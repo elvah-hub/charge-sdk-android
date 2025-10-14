@@ -33,16 +33,6 @@ internal class OfferTypeAdapter : JsonAdapter<OfferTypeDto>() {
             .fromJson(json)
             ?: return null
 
-        val isOfferPreviewCampaign = jsonObject.containsKey("campaignEndsAt") &&
-                jsonObject.containsKey("expiresAt") &&
-                jsonObject.containsKey("originalPrice") &&
-                jsonObject.containsKey("price") &&
-                jsonObject.containsKey("type")
-
-        val isOfferPreviewStandard = jsonObject.containsKey("expiresAt") &&
-                jsonObject.containsKey("price") &&
-                jsonObject.containsKey("type")
-
         val isSignedOfferCampaign = jsonObject.containsKey("campaignEndsAt") &&
                 jsonObject.containsKey("expiresAt") &&
                 jsonObject.containsKey("originalPrice") &&
@@ -55,11 +45,22 @@ internal class OfferTypeAdapter : JsonAdapter<OfferTypeDto>() {
                 jsonObject.containsKey("signedOffer") &&
                 jsonObject.containsKey("type")
 
+        val isOfferPreviewCampaign = jsonObject.containsKey("campaignEndsAt") &&
+                jsonObject.containsKey("expiresAt") &&
+                jsonObject.containsKey("originalPrice") &&
+                jsonObject.containsKey("price") &&
+                jsonObject.containsKey("type")
+
+        val isOfferPreviewStandard = jsonObject.containsKey("expiresAt") &&
+                jsonObject.containsKey("price") &&
+                jsonObject.containsKey("type")
+
+
         return when {
-            isOfferPreviewCampaign -> offerPreviewCampaignAdapter.fromJson(json)
-            isOfferPreviewStandard -> offerPreviewStandardAdapter.fromJson(json)
             isSignedOfferCampaign -> signedOfferCampaignAdapter.fromJson(json)
             isSignedOfferStandard -> signedOfferStandardAdapter.fromJson(json)
+            isOfferPreviewCampaign -> offerPreviewCampaignAdapter.fromJson(json)
+            isOfferPreviewStandard -> offerPreviewStandardAdapter.fromJson(json)
             else -> throw Exception("Unknown offer type for: $json")
         }
     }
