@@ -9,6 +9,7 @@ import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.adhoc_charging.ChargingSessionPrefs
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SupportContacts
+import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -72,7 +73,7 @@ class DefaultChargingRepositoryTest {
             ifLeft = { fail("Expected success but got failure: $it") },
             ifRight = { session ->
                 assertEquals("DE*KDL*E0000040", session.evseId)
-                assertEquals("CHARGING", session.status)
+                assertEquals(SessionStatus.CHARGING, session.status)
                 assertEquals(15.5, session.consumption, 0.001)
                 assertEquals(120, session.duration)
             }

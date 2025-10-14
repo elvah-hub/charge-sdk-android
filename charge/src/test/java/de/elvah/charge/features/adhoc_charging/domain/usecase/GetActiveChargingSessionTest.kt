@@ -36,10 +36,9 @@ class GetActiveChargingSessionTest {
             ifLeft = { fail("Expected success but got failure: $it") },
             ifRight = { session ->
                 assertEquals("DE*KDL*E0000040", session.evseId)
-                assertEquals("CHARGING", session.status)
                 assertEquals(15.5, session.consumption, 0.001)
                 assertEquals(120, session.duration)
-                assertEquals(SessionStatus.CHARGING, session.status1)
+                assertEquals(SessionStatus.CHARGING, session.status)
             }
         )
         
@@ -113,10 +112,9 @@ class GetActiveChargingSessionTest {
         sessionStates.forEach { status ->
             val session = ChargingSession(
                 evseId = "DE*TEST*E000001",
-                status = status.name,
+                status = status,
                 consumption = 10.0,
                 duration = 60,
-                status1 = status
             )
             
             coEvery { chargingRepository.fetchChargingSession() } returns session.right()
@@ -127,7 +125,7 @@ class GetActiveChargingSessionTest {
             result.fold(
                 ifLeft = { fail("Expected success but got failure for $status") },
                 ifRight = { returnedSession ->
-                    assertEquals("Session status mismatch", status, returnedSession.status1)
+                    assertEquals("Session status mismatch", status, returnedSession.status)
                 }
             )
         }
@@ -148,10 +146,9 @@ class GetActiveChargingSessionTest {
     fun `invoke handles zero consumption and duration`() = runTest {
         val session = ChargingSession(
             evseId = "DE*ZERO*E000000",
-            status = "START_REQUESTED",
             consumption = 0.0,
             duration = 0,
-            status1 = SessionStatus.START_REQUESTED
+            status = SessionStatus.START_REQUESTED
         )
         coEvery { chargingRepository.fetchChargingSession() } returns session.right()
         
@@ -169,9 +166,8 @@ class GetActiveChargingSessionTest {
 
     private fun createTestChargingSession() = ChargingSession(
         evseId = "DE*KDL*E0000040",
-        status = "CHARGING",
         consumption = 15.5,
         duration = 120,
-        status1 = SessionStatus.CHARGING
+        status = SessionStatus.CHARGING
     )
 }
