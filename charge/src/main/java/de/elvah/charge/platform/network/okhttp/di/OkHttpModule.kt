@@ -6,7 +6,7 @@ import de.elvah.charge.platform.network.retrofit.interceptor.provideApiKeyInterc
 import de.elvah.charge.platform.network.retrofit.interceptor.provideApiVersionInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.provideDistinctKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.provideHttpLoggingInterceptor
-import de.elvah.charge.platform.network.retrofit.interceptor.provideUserAgentInterceptor
+import de.elvah.charge.platform.network.retrofit.interceptor.provideIntegrateClientInterceptor
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 
@@ -19,6 +19,6 @@ internal val okHttpModule = module {
     single { provideHttpLoggingInterceptor() }
     single { provideApiKeyInterceptor(get()) }
     single { provideApiVersionInterceptor() }
-    single { provideUserAgentInterceptor() }
+    single { provideIntegrateClientInterceptor() }
     single { provideDistinctKeyInterceptor() }
 }

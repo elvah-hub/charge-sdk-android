@@ -7,7 +7,7 @@ import okhttp3.Response
 
 internal interface ApiKeyInterceptor : Interceptor {
     companion object {
-        const val API_KEY_HEADER = "x-api-key"
+        const val API_KEY_HEADER = "X-Api-Key"
     }
 }
 
