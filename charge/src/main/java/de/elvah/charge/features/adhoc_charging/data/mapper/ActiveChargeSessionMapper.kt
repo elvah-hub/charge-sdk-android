@@ -6,11 +6,9 @@ import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 
 internal fun ActiveChargeSessionsDto.toDomain() = ChargingSession(
     evseId = data.evseId,
-    status = data.status,
+    status = parseStatus(data.status),
     consumption = data.consumption ?: 0.0,
     duration = data.duration ?: 0,
-    status1 = parseStatus(data.status)
-
 )
 
 private fun parseStatus(status: String): SessionStatus = when (status) {

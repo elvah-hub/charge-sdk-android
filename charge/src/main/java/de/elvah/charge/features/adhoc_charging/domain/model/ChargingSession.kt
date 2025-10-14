@@ -4,8 +4,7 @@ import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 
 internal class ChargingSession(
     val evseId: String,
-    val status: String,
-    val status1: SessionStatus,
+    val status: SessionStatus,
     val consumption: Double,
     val duration: Int,
 )

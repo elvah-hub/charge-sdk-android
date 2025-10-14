@@ -43,12 +43,11 @@ internal class ActiveChargingViewModel(
                     val organisationDetails = getOrganisationDetails()
 
                     organisationDetails?.let { organisationDetails ->
-                        when (chargeSession?.status1) {
+                        when (chargeSession?.status) {
                             SessionStatus.START_REQUESTED, SessionStatus.STARTED, null -> {
                                 _state.update {
                                     ActiveChargingState.Waiting(organisationDetails)
                                 }
-
                             }
 
                             SessionStatus.STOP_REQUESTED -> {
@@ -73,7 +72,7 @@ internal class ActiveChargingViewModel(
                                         ActiveChargingState.Active(
                                             activeChargingSessionUI = currentValue.copy(
                                                 evseId = chargeSession.evseId,
-                                                status = chargeSession.status1.name,
+                                                status = chargeSession.status.name,
                                                 consumption = chargeSession.consumption,
                                                 duration = chargeSession.duration
                                             ),
@@ -83,7 +82,7 @@ internal class ActiveChargingViewModel(
                                         ActiveChargingState.Active(
                                             activeChargingSessionUI = ActiveChargingSessionUI(
                                                 evseId = chargeSession.evseId,
-                                                status = chargeSession.status1.name,
+                                                status = chargeSession.status.name,
                                                 consumption = chargeSession.consumption,
                                                 duration = chargeSession.duration,
                                                 error = false,

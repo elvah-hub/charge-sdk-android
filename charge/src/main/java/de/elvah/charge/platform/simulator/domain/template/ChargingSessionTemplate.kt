@@ -135,7 +135,6 @@ internal abstract class ChargingSessionTemplate(
                 status(current.status)
                 consumption(current.consumption)
                 duration(current.duration + 3)
-                status(current.status1)
             }
         }
     }

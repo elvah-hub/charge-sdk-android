@@ -13,11 +13,11 @@ import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphCon
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphEmpty
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphError
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphLoading
+import de.elvah.charge.features.sites.ui.utils.openSite
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import de.elvah.charge.public_api.DisplayBehavior
-import de.elvah.charge.public_api.banner.openSite
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
