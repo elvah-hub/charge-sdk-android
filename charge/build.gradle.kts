@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.serializable)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.protobuf)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -149,4 +150,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    ksp(libs.moshi.codegen)
 }
