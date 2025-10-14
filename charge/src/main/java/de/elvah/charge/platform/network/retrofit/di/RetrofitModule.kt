@@ -5,7 +5,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.elvah.charge.platform.network.retrofit.RetrofitFactory
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiVersionInterceptor
-import de.elvah.charge.platform.network.retrofit.interceptor.UserAgentInterceptor
+import de.elvah.charge.platform.network.retrofit.interceptor.IntegrateClientInterceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,7 +21,7 @@ private fun provideRetrofitFactory(
     httpLoggingInterceptor: HttpLoggingInterceptor,
     apiKeyInterceptor: ApiKeyInterceptor,
     apiVersionInterceptor: ApiVersionInterceptor,
-    userAgentInterceptor: UserAgentInterceptor,
+    integrateClientInterceptor: IntegrateClientInterceptor,
     distinctKeyInterceptor: Interceptor
 ): RetrofitFactory {
     return RetrofitFactory(
@@ -31,7 +31,7 @@ private fun provideRetrofitFactory(
         apiKeyInterceptor = apiKeyInterceptor,
         apiVersionInterceptor = apiVersionInterceptor,
         distinctKeyInterceptor = distinctKeyInterceptor,
-        userAgentInterceptor = userAgentInterceptor,
+        integrateClientInterceptor = integrateClientInterceptor,
     )
 }
 
