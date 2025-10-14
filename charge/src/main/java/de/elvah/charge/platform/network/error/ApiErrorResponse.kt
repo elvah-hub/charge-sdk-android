@@ -20,4 +20,5 @@ internal data class ApiError(
     @param:Json(name = "status") val status: String,
     @param:Json(name = "title") val title: String,
     @param:Json(name = "code") val code: String,
+    @param:Json(name = "detail") val detail: String,
 )

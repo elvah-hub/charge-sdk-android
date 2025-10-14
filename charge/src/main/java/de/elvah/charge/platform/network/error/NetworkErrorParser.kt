@@ -25,7 +25,7 @@ internal class NetworkErrorParser(
         val errorBody = response.errorBody()?.string()
 
         return when (response.code()) {
-            HttpURLConnection.HTTP_GONE -> parseGoneError(response, errorBody)
+            HttpURLConnection.HTTP_BAD_REQUEST -> parseBadRequestError(response, errorBody)
             else -> NetworkError.GenericHttpException(
                 response = response,
                 code = response.code(),
@@ -34,7 +34,7 @@ internal class NetworkErrorParser(
         }
     }
 
-    private fun parseGoneError(response: Response<*>, errorBody: String?): NetworkError {
+    private fun parseBadRequestError(response: Response<*>, errorBody: String?): NetworkError {
         if (errorBody.isNullOrBlank()) {
             return NetworkError.GenericHttpException(
                 response = response,
@@ -45,11 +45,26 @@ internal class NetworkErrorParser(
 
         return try {
             val apiErrorResponse = apiErrorAdapter.fromJson(errorBody)
-            if (apiErrorResponse != null && isOutdatedSdkError(apiErrorResponse)) {
-                NetworkError.OutdatedSdkException(
-                    response = response,
-                    errorResponse = apiErrorResponse
-                )
+            if (apiErrorResponse != null) {
+                when (getApiVersionErrorType(apiErrorResponse)) {
+                    ApiVersionErrorType.INVALID -> NetworkError.InvalidVersionException(
+                        response = response,
+                        errorResponse = apiErrorResponse
+                    )
+                    ApiVersionErrorType.TOO_OLD -> NetworkError.VersionTooOldException(
+                        response = response,
+                        errorResponse = apiErrorResponse
+                    )
+                    ApiVersionErrorType.TOO_NEW -> NetworkError.VersionTooNewException(
+                        response = response,
+                        errorResponse = apiErrorResponse
+                    )
+                    ApiVersionErrorType.NONE -> NetworkError.GenericHttpException(
+                        response = response,
+                        code = response.code(),
+                        errorBody = errorBody
+                    )
+                }
             } else {
                 NetworkError.GenericHttpException(
                     response = response,
@@ -67,11 +82,18 @@ internal class NetworkErrorParser(
         }
     }
 
-    private fun isOutdatedSdkError(apiErrorResponse: ApiErrorResponse): Boolean {
-        return apiErrorResponse.errors.any { error ->
-            error.status == "GONE" &&
-                    error.code == "410" &&
-                    error.title.contains("API Version no longer supported", ignoreCase = true)
-        }
+    private fun getApiVersionErrorType(apiErrorResponse: ApiErrorResponse): ApiVersionErrorType {
+        return apiErrorResponse.errors.firstOrNull()?.let { error ->
+            when (error.code) {
+                "api.version.invalid" -> ApiVersionErrorType.INVALID
+                "api.version.too_old" -> ApiVersionErrorType.TOO_OLD
+                "api.version.too_new" -> ApiVersionErrorType.TOO_NEW
+                else -> ApiVersionErrorType.NONE
+            }
+        } ?: ApiVersionErrorType.NONE
+    }
+
+    private enum class ApiVersionErrorType {
+        INVALID, TOO_OLD, TOO_NEW, NONE
     }
 }
