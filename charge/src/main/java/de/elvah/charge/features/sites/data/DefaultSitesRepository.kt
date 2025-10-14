@@ -68,7 +68,7 @@ internal class DefaultSitesRepository(
         evseId: String
     ): Either<Throwable, ChargeSite> {
         return runCatching {
-            sitesApi.getSignedOffer(
+            sitesApi.getSiteOffer(
                 siteId = siteId,
                 signedOfferRequest = SignedOfferRequest(
                     evseIds = listOf(evseId)
