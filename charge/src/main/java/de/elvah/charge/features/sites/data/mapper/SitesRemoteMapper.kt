@@ -17,6 +17,8 @@ import de.elvah.charge.features.sites.domain.model.BlockingFee
 import de.elvah.charge.features.sites.domain.model.BlockingFeeTimeSlot
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.Offer
+import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 
@@ -73,7 +75,7 @@ internal fun ChargePointAvailabilityDto.toDomain(): ChargePointAvailability =
         ChargePointAvailabilityDto.UNKNOWN -> ChargePointAvailability.UNKNOWN
     }
 
-internal fun OfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSite.ChargePoint.Offer(
+internal fun OfferDto.toDomain(): Offer = Offer(
     price = price.toDomain(),
     originalPrice = originalPrice?.toDomain(),
     type = type,
@@ -81,7 +83,7 @@ internal fun OfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSite.Char
     campaignEndsAt = campaignEndsAt,
 )
 
-internal fun SignedOfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSite.ChargePoint.Offer(
+internal fun SignedOfferDto.toDomain(): Offer = Offer(
     price = price.toDomain(),
     type = type,
     expiresAt = expiresAt,
@@ -90,8 +92,8 @@ internal fun SignedOfferDto.toDomain(): ChargeSite.ChargePoint.Offer = ChargeSit
     signedOffer = signedOffer
 )
 
-internal fun PriceDto.toDomain(): ChargeSite.ChargePoint.Offer.Price =
-    ChargeSite.ChargePoint.Offer.Price(
+internal fun PriceDto.toDomain(): Price =
+    Price(
         energyPricePerKWh = Pricing(energyPricePerKWh, currency),
         baseFee = baseFee?.let { Pricing(it, currency) },
         blockingFee = blockingFee?.toDomain(currency),

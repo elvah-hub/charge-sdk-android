@@ -1,7 +1,5 @@
 package de.elvah.charge.features.sites.domain.model
 
-import de.elvah.charge.features.sites.domain.model.ChargeSite.ChargePoint.Offer.Price
-
 internal data class ScheduledPricing(
     val dailyPricing: DailyPricing,
     val standardPrice: Price,
