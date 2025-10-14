@@ -25,6 +25,12 @@ internal interface SitesApi {
         @QueryMap filters: Map<String, String>
     ): ApiListResponse<SitesDto<OfferDto>>
 
+    @GET("/discovery/sites-offers")
+    suspend fun getSiteOffers(
+        @Query("evseIds") evseIds: List<String>? = null,
+        @QueryMap filters: Map<String, String>
+    ): ApiListResponse<de.elvah.charge.features.sites.data.remote.model.response.site.SitesDto>
+
     @POST("/discovery/sites-offers/{siteId}")
     suspend fun getSignedOffer(
         @Path("siteId") siteId: String,
