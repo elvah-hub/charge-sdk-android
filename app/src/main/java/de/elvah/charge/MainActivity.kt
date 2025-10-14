@@ -36,13 +36,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val evseId = EvseId("DE*2GO*EEWE7418*1A*1")
         setContent {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
             val sites by produceState(emptyList()) {
                 value = getSites(
                     GetSites.Params(
-                        evseIds = listOf(EvseId("DE*2GO*EEWE7418*1A*1"))
+                        evseIds = listOf(evseId)
                     )
                 )
             }
@@ -87,7 +88,7 @@ class MainActivity : ComponentActivity() {
                         Button({
                             SitesManager.openSite(context, sites.first().id)
                         }) {
-                            Text("Open Deal at HNTCI*E*00001")
+                            Text("Open Deal at ${evseId.value}")
                         }
                         ChargeBanner(
                             display = DisplayBehavior.WHEN_CONTENT_AVAILABLE,

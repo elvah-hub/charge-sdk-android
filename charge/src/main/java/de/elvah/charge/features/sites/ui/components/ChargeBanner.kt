@@ -30,10 +30,10 @@ import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.Location
 import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.features.sites.ui.utils.parseDate
-import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
-import de.elvah.charge.platform.ui.components.buttons.Chevron
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
+import de.elvah.charge.platform.ui.components.buttons.Chevron
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import kotlinx.coroutines.delay

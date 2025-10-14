@@ -8,7 +8,7 @@ public class Config(
     environment: Environment? = null,
 ) {
     public val environment: Environment = environment ?: detectEnvironmentFromApiKey(apiKey)
-    
+
     init {
         validateApiKey()
     }

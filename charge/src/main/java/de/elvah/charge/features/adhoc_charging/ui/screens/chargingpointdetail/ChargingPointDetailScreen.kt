@@ -70,7 +70,10 @@ internal fun ChargingPointDetailScreen(
 
     when (val state = state) {
         is ChargingPointDetailState.Loading -> ChargingPointDetail_Loading()
-        is ChargingPointDetailState.Error -> ChargingPointDetail_Error()
+        is ChargingPointDetailState.Error -> ChargingPointDetail_Error(onRetryClick = {
+            chargingPointDetailViewModel.onRetryClicked()
+        })
+
         is ChargingPointDetailState.Success -> {
             val paymentSheet = remember {
                 PaymentSheet.Builder(resultCallback = {
@@ -338,8 +341,8 @@ private fun ChargingPointDetailActions(
 }
 
 @Composable
-private fun ChargingPointDetail_Error() {
-    FullScreenError()
+private fun ChargingPointDetail_Error(onRetryClick: () -> Unit) {
+    FullScreenError(onRetryClick = onRetryClick)
 }
 
 @Composable

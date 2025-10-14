@@ -88,4 +88,5 @@ internal class DefaultChargingRepository(
     private suspend fun getToken() = chargingStore.getChargingPrefs().first().token
 }
 
+
 private const val BEARER_TEMPLATE = "Bearer %s"

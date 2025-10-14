@@ -39,11 +39,11 @@ internal fun DrawScope.drawGridLines(
     val gridColor = Color.Gray.copy(alpha = GRID_LINE_ALPHA)
     val stepWidth = size.width / HOURS_IN_DAY
     val pathEffect = PathEffect.dashPathEffect(floatArrayOf(gridLineDotSize, gridLineDotSize), 0f)
-    
+
     // Calculate chart area height using the same multiplier as the step chart
-    val chartHeight = size.height * CHART_HEIGHT_MULTIPLIER
+    size.height * CHART_HEIGHT_MULTIPLIER
     val chartBottom = size.height * CHART_BOTTOM_MULTIPLIER
-    
+
     // Text properties
     val textColor = Color.Gray.copy(alpha = 0.8f)
     val textSize = 12.sp.toPx()
@@ -57,7 +57,7 @@ internal fun DrawScope.drawGridLines(
 
     for (hour in 0..HOURS_IN_DAY step gridLineInterval) {
         val x = hour * stepWidth
-        
+
         // Draw grid line only up to chart bottom
         drawLine(
             color = gridColor,
@@ -66,7 +66,7 @@ internal fun DrawScope.drawGridLines(
             strokeWidth = GRID_LINE_STROKE_WIDTH_DP.dp.toPx(),
             pathEffect = pathEffect
         )
-        
+
         // Draw hour text in the space below chart bottom
         if (hour < HOURS_IN_DAY) { // Don't draw text for the last line at hour 24
             val textY = chartBottom + textSize + 12.dp.toPx()
@@ -255,11 +255,18 @@ private fun drawStepLineChartPaths(context: StepLineDrawingContext) {
             lastWasSelected = isSelected
             lastY = y
         } else {
-            addHorizontalLine(context.paths, lastWasOffer, lastWasSelected, i, context.stepWidth, lastY)
+            addHorizontalLine(
+                context.paths,
+                lastWasOffer,
+                lastWasSelected,
+                i,
+                context.stepWidth,
+                lastY
+            )
             addVerticalLineIfNeeded(context.paths.verticalLines, x, lastY, y)
-            
+
             currentFillPath?.lineTo(x, lastY)
-            
+
             val stateChanged = (isOffer != lastWasOffer) || (isSelected != lastWasSelected)
             if (stateChanged) {
                 currentFillPath?.lineTo(x, context.chartBottom)
@@ -278,7 +285,14 @@ private fun drawStepLineChartPaths(context: StepLineDrawingContext) {
     // Add final horizontal line to complete the day (extend to the end of the chart)
     if (!isFirstPoint) {
         val finalIndex = (dataPoints * context.progress).toInt()
-        addHorizontalLine(context.paths, lastWasOffer, lastWasSelected, finalIndex, context.stepWidth, lastY)
+        addHorizontalLine(
+            context.paths,
+            lastWasOffer,
+            lastWasSelected,
+            finalIndex,
+            context.stepWidth,
+            lastY
+        )
         currentFillPath?.lineTo(context.stepWidth * dataPoints, lastY)
     }
 
@@ -298,10 +312,26 @@ private fun DrawScope.drawStepLineChartLines(context: StepLineDrawingContext) {
     drawPath(context.paths.offerUnselectedFill, context.colors.offerUnselectedArea)
 
     // Draw horizontal lines
-    drawPath(context.paths.regularSelectedHorizontal, context.colors.regularSelectedLine, style = strokeStyle)
-    drawPath(context.paths.regularUnselectedHorizontal, context.colors.regularUnselectedLine, style = strokeStyle)
-    drawPath(context.paths.offerSelectedHorizontal, context.colors.offerSelectedLine, style = strokeStyle)
-    drawPath(context.paths.offerUnselectedHorizontal, context.colors.offerUnselectedLine, style = strokeStyle)
+    drawPath(
+        context.paths.regularSelectedHorizontal,
+        context.colors.regularSelectedLine,
+        style = strokeStyle
+    )
+    drawPath(
+        context.paths.regularUnselectedHorizontal,
+        context.colors.regularUnselectedLine,
+        style = strokeStyle
+    )
+    drawPath(
+        context.paths.offerSelectedHorizontal,
+        context.colors.offerSelectedLine,
+        style = strokeStyle
+    )
+    drawPath(
+        context.paths.offerUnselectedHorizontal,
+        context.colors.offerUnselectedLine,
+        style = strokeStyle
+    )
 
     // Draw vertical lines
     drawPath(context.paths.verticalLines, context.colors.verticalLine, style = strokeStyle)
@@ -317,7 +347,11 @@ private fun initializeFillPaths(paths: DrawingPaths, chartBottom: Float) {
     paths.offerUnselectedFill.moveTo(0f, chartBottom)
 }
 
-private fun selectInitialFillPath(paths: DrawingPaths, isOffer: Boolean, isSelected: Boolean): Path {
+private fun selectInitialFillPath(
+    paths: DrawingPaths,
+    isOffer: Boolean,
+    isSelected: Boolean
+): Path {
     return when {
         isOffer && isSelected -> paths.offerSelectedFill
         isOffer && !isSelected -> paths.offerUnselectedFill
@@ -335,7 +369,14 @@ private fun selectFillPath(paths: DrawingPaths, isOffer: Boolean, isSelected: Bo
     }
 }
 
-private fun addHorizontalLine(paths: DrawingPaths, lastWasOffer: Boolean, lastWasSelected: Boolean, i: Int, stepWidth: Float, lastY: Float) {
+private fun addHorizontalLine(
+    paths: DrawingPaths,
+    lastWasOffer: Boolean,
+    lastWasSelected: Boolean,
+    i: Int,
+    stepWidth: Float,
+    lastY: Float
+) {
     val horizontalPath = when {
         lastWasOffer && lastWasSelected -> paths.offerSelectedHorizontal
         lastWasOffer && !lastWasSelected -> paths.offerUnselectedHorizontal
@@ -353,7 +394,12 @@ private fun addVerticalLineIfNeeded(verticalLinesPath: Path, x: Float, lastY: Fl
     }
 }
 
-private fun closeFillPaths(paths: DrawingPaths, dataPoints: Int, stepWidth: Float, chartBottom: Float) {
+private fun closeFillPaths(
+    paths: DrawingPaths,
+    dataPoints: Int,
+    stepWidth: Float,
+    chartBottom: Float
+) {
     val lastX = stepWidth * dataPoints
     paths.regularSelectedFill.lineTo(lastX, chartBottom)
     paths.regularUnselectedFill.lineTo(lastX, chartBottom)

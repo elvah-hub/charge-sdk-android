@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.elvah.charge.public_api.DisplayBehavior
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
 import de.elvah.charge.features.sites.ui.SitesState
@@ -23,6 +22,7 @@ import de.elvah.charge.features.sites.ui.components.ChargeBanner_Loading
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
+import de.elvah.charge.public_api.DisplayBehavior
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 

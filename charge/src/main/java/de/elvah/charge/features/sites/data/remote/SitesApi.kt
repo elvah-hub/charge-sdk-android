@@ -1,5 +1,6 @@
 package de.elvah.charge.features.sites.data.remote
 
+import arrow.core.Either
 import de.elvah.charge.features.sites.data.remote.model.request.SignedOfferRequest
 import de.elvah.charge.features.sites.data.remote.model.response.OfferDto
 import de.elvah.charge.features.sites.data.remote.model.response.ScheduledPricingDto
@@ -33,7 +34,7 @@ internal interface SitesApi {
     @GET("/discovery/sites/{siteId}/pricing-schedule")
     suspend fun getSiteScheduledPricing(
         @Path("siteId") siteId: String
-    ): ApiResponse<ScheduledPricingDto>
+    ): Either<Throwable, ApiResponse<ScheduledPricingDto>>
 
     @GET("/discovery/sites/{siteId}/chargepoint-availabilities")
     suspend fun getChargePointAvailabilities(

@@ -13,7 +13,7 @@ public class ChargeBannerSource() {
     private val updateFilters: UpdateFilters by KoinJavaComponent.inject(UpdateFilters::class.java)
     private val clearFilters: ClearFilters by KoinJavaComponent.inject(ClearFilters::class.java)
 
-    public  suspend fun sitesAt(
+    public suspend fun sitesAt(
         boundingBox: BoundingBox,
         offerType: OfferType? = null
     ) {

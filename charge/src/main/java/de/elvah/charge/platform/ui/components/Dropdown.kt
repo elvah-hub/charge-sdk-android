@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun DropdownMenuButton(selectedOption:String, onClick: () -> Unit){
+internal fun DropdownMenuButton(selectedOption: String, onClick: () -> Unit) {
     TextButton(
         onClick = onClick
     ) {

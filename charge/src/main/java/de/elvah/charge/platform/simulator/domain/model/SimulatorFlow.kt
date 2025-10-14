@@ -18,7 +18,9 @@ import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
  * @property description A human-readable description of what the flow simulates.
  */
 public sealed class SimulatorFlow(public val name: String, public val description: String) {
-    public object Default : SimulatorFlow("default", "Standard successful charge flow with typical timing")
+    public object Default :
+        SimulatorFlow("default", "Standard successful charge flow with typical timing")
+
     public object StartFails : SimulatorFlow("startFails", "Simulates start request failures")
     public object StartRejected :
         SimulatorFlow("startRejected", "Start request is rejected by the charge point")

@@ -23,7 +23,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.screens.review.model.PaymentSummaryUI
 import de.elvah.charge.platform.ui.components.BasicCard
-import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.CopyLarge
 import de.elvah.charge.platform.ui.components.CopyMedium
@@ -32,6 +31,7 @@ import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.TitleMedium
 import de.elvah.charge.platform.ui.components.TitleSmall
+import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
