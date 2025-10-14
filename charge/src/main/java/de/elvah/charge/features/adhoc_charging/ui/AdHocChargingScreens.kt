@@ -17,7 +17,7 @@ internal sealed class AdHocChargingScreens {
 
     @Serializable
     data class ChargingStartRoute(
-        val evseId: String,
+        val shortenedEvseId: String,
         val paymentId: String,
     ) : AdHocChargingScreens()
 

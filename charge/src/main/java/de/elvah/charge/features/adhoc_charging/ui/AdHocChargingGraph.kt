@@ -54,8 +54,13 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
         ) {
             ChargingPointDetailScreen(koinViewModel(), onBackClick = {
                 navController.navigateUp()
-            }, onPaymentSuccess = { evseId, paymentId ->
-                navController.navigate(ChargingStartRoute(evseId, paymentId))
+            }, onPaymentSuccess = { shortenedEvseId, paymentId ->
+                navController.navigate(
+                    ChargingStartRoute(
+                        shortenedEvseId = shortenedEvseId,
+                        paymentId = paymentId
+                    )
+                )
             })
         }
 

@@ -79,7 +79,7 @@ internal fun ChargingPointDetailScreen(
                 PaymentSheet.Builder(resultCallback = {
                     if (it is PaymentSheetResult.Completed) {
                         onPaymentSuccess(
-                            state.evseId,
+                            state.shortenedEvseId,
                             state.paymentIntentParams.paymentId
                         )
                     }
@@ -92,7 +92,7 @@ internal fun ChargingPointDetailScreen(
                 onAction = {
                     if (state.mocked) {
                         onPaymentSuccess(
-                            state.evseId,
+                            state.shortenedEvseId,
                             state.paymentIntentParams.paymentId
                         )
                     } else {

@@ -31,44 +31,12 @@ import de.elvah.charge.platform.ui.theme.titleLargeBold
 @Composable
 internal fun ShortenedEvseBigBadge(
     text: String,
-    availability: ChargePointAvailability,
     modifier: Modifier = Modifier,
+    availability: ChargePointAvailability = ChargePointAvailability.AVAILABLE,
     darkMode: Boolean = isSystemInDarkTheme(),
 ) {
-    val backgroundColor = when (availability) {
-        ChargePointAvailability.AVAILABLE,
-            -> {
-            MaterialTheme.colorSchemeExtended.brand.copy(
-                alpha = 0.1f,
-            )
-        }
-
-        ChargePointAvailability.OUT_OF_SERVICE,
-        ChargePointAvailability.UNAVAILABLE,
-        ChargePointAvailability.UNKNOWN,
-            -> {
-            MaterialTheme.colorSchemeExtended.decorativeStroke.copy(
-                alpha = 0.1f,
-            )
-        }
-    }
-
-    val textColor = when (availability) {
-        ChargePointAvailability.AVAILABLE,
-        ChargePointAvailability.UNAVAILABLE,
-        ChargePointAvailability.UNKNOWN,
-            -> {
-            MaterialTheme.colorScheme.primary
-        }
-
-        ChargePointAvailability.OUT_OF_SERVICE,
-            -> {
-            MaterialTheme.colorScheme.primary.copy(
-                alpha = 0.4f,
-            )
-        }
-    }
-
+    val backgroundColor = getBackgroundColor(availability)
+    val textColor = getTextColor(availability)
     val shape = RoundedCornerShape(8.dp)
 
     Box(
@@ -123,6 +91,43 @@ internal fun ShortenedEvseBigBadge(
     }
 }
 
+@Composable
+private fun getTextColor(availability: ChargePointAvailability) = when (availability) {
+    ChargePointAvailability.AVAILABLE,
+    ChargePointAvailability.UNAVAILABLE,
+    ChargePointAvailability.UNKNOWN,
+        -> {
+        MaterialTheme.colorScheme.primary
+    }
+
+    ChargePointAvailability.OUT_OF_SERVICE,
+        -> {
+        MaterialTheme.colorScheme.primary.copy(
+            alpha = TEXT_ALPHA,
+        )
+    }
+}
+
+@Composable
+private fun getBackgroundColor(availability: ChargePointAvailability) = when (availability) {
+    ChargePointAvailability.AVAILABLE,
+        -> {
+        MaterialTheme.colorSchemeExtended.brand.copy(
+            alpha = BACKGROUND_ALPHA,
+        )
+    }
+
+    ChargePointAvailability.OUT_OF_SERVICE,
+    ChargePointAvailability.UNAVAILABLE,
+    ChargePointAvailability.UNKNOWN,
+        -> {
+        MaterialTheme.colorSchemeExtended.decorativeStroke.copy(
+            alpha = BACKGROUND_ALPHA,
+        )
+    }
+}
+
+
 @PreviewLightDark
 @Composable
 private fun ShortenedEvseBigBadgePreview() {
@@ -155,4 +160,7 @@ private fun LongTextPreview() {
         )
     }
 }
+
+private const val BACKGROUND_ALPHA = 0.1F
+private const val TEXT_ALPHA = 0.4F
 
