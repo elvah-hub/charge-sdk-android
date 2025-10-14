@@ -14,7 +14,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
-
 internal interface SitesApi {
 
     @GET("/discovery/sites-offers")
