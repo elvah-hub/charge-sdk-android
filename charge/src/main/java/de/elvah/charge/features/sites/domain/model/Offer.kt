@@ -1,6 +1,5 @@
 package de.elvah.charge.features.sites.domain.model
 
-@Deprecated("Use OfferType.kt instead.")
 public data class Offer(
     val price: Price,
     val type: String,
