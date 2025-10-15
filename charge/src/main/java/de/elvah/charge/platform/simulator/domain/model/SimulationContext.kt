@@ -52,5 +52,5 @@ internal data class SimulationContext(
      * Gets the current session status safely.
      */
     val currentStatus: SessionStatus?
-        get() = currentSession?.status1
+        get() = currentSession?.status
 }

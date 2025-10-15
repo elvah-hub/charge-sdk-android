@@ -39,10 +39,9 @@ internal class DefaultChargingSessionFactory : ChargingSessionFactory {
     override fun createDefaultSession(): ChargingSession {
         return ChargingSession(
             evseId = DEFAULT_EVSE_ID,
-            status = DEFAULT_STATUS,
+            status = SessionStatus.START_REQUESTED,
             consumption = 0.0,
             duration = 0,
-            status1 = SessionStatus.START_REQUESTED
         )
     }
 }
@@ -54,10 +53,9 @@ internal class DefaultChargingSessionFactory : ChargingSessionFactory {
 internal class ChargingSessionBuilder {
 
     private var evseId: String = "DE*KDL*E0000040"
-    private var status: String = "auctor"
     private var consumption: Double = 0.0
     private var duration: Int = 0
-    private var status1: SessionStatus = SessionStatus.START_REQUESTED
+    private var status: SessionStatus = SessionStatus.START_REQUESTED
 
     /**
      * Sets the EVSE ID for the charging session.
@@ -68,17 +66,10 @@ internal class ChargingSessionBuilder {
     }
 
     /**
-     * Sets the status string for the charging session.
-     */
-    fun status(status: String): ChargingSessionBuilder = apply {
-        this.status = status
-    }
-
-    /**
      * Sets the status enum for the charging session.
      */
-    fun status(status1: SessionStatus): ChargingSessionBuilder = apply {
-        this.status1 = status1
+    fun status(status: SessionStatus): ChargingSessionBuilder = apply {
+        this.status = status
     }
 
     /**
@@ -106,7 +97,6 @@ internal class ChargingSessionBuilder {
             status = status,
             consumption = consumption,
             duration = duration,
-            status1 = status1
         )
     }
 }
