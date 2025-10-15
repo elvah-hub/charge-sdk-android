@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.serializable)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.protobuf)
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.ksp)
 }
 
 android {
