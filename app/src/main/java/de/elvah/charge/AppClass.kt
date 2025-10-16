@@ -12,7 +12,7 @@ class AppClass : Application() {
             this,
             Config(
                 "evpk_test_Syx9tZW1LGcIA7Js0BADiFg7HVDpUGk2CDYPd6zLKOqrSfEI0GIVzInH7W4WfoATHcPnEW7O3uP0GrsGL0IpeUjBf72BuYwanBJ4EUZTv",
-                // environment = Environment.Simulator(SimulatorFlow.StartRejected)
+                environment = Environment.Simulator(SimulatorFlow.StartRequestedDelayed)
             ),
         )
     }

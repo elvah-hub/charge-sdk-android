@@ -1,5 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.components
 
+import android.widget.Space
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -79,6 +80,10 @@ internal fun ChargingSessionDelayBanner(
             modifier = modifier
         )
     }
+
+    if (!isVisible){
+        Spacer(Modifier.size(20.dp))
+    }
 }
 
 @Composable
@@ -96,9 +101,9 @@ private fun ChargingDelayBannerContent(
     ) {
         Column(
             modifier = Modifier.padding(top = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             BannerHeader()
+            Spacer(Modifier.size(12.dp))
             Text(
                 text = stringResource(R.string.charging_delay_banner_description),
                 style = copyMedium,

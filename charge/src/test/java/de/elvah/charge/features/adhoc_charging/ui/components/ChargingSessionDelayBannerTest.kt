@@ -6,9 +6,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
 internal class ChargingSessionDelayBannerTest {
@@ -21,19 +21,19 @@ internal class ChargingSessionDelayBannerTest {
         var bannerVisible = false
         val sessionStatus = SessionStatus.STARTED
         val delayTimeSeconds = 2L // Short delay for testing
-        
+
         // When - Simulate the banner logic
         if (shouldShowBanner(sessionStatus)) {
             // Simulate the delay logic from LaunchedEffect
             delay(delayTimeSeconds * 1000)
             bannerVisible = true
         }
-        
+
         // Fast forward time
         advanceTimeBy(delayTimeSeconds * 1000)
-        
+
         // Then
-        assertTrue(bannerVisible, "Banner should be visible after delay for STARTED status")
+        assertTrue("Banner should be visible after delay for STARTED status", bannerVisible)
     }
 
     @Test
@@ -42,17 +42,17 @@ internal class ChargingSessionDelayBannerTest {
         var bannerVisible = false
         val sessionStatus = SessionStatus.START_REQUESTED
         val delayTimeSeconds = 2L
-        
+
         // When
         if (shouldShowBanner(sessionStatus)) {
             delay(delayTimeSeconds * 1000)
             bannerVisible = true
         }
-        
+
         advanceTimeBy(delayTimeSeconds * 1000)
-        
+
         // Then
-        assertTrue(bannerVisible, "Banner should be visible after delay for START_REQUESTED status")
+        assertTrue("Banner should be visible after delay for START_REQUESTED status", bannerVisible)
     }
 
     @Test
@@ -61,17 +61,17 @@ internal class ChargingSessionDelayBannerTest {
         var bannerVisible = false
         val sessionStatus = SessionStatus.STOP_REQUESTED
         val delayTimeSeconds = 2L
-        
+
         // When
         if (shouldShowBanner(sessionStatus)) {
             delay(delayTimeSeconds * 1000)
             bannerVisible = true
         }
-        
+
         advanceTimeBy(delayTimeSeconds * 1000)
-        
+
         // Then
-        assertTrue(bannerVisible, "Banner should be visible after delay for STOP_REQUESTED status")
+        assertTrue("Banner should be visible after delay for STOP_REQUESTED status", bannerVisible)
     }
 
     @Test
@@ -80,17 +80,17 @@ internal class ChargingSessionDelayBannerTest {
         var bannerVisible = false
         val sessionStatus = SessionStatus.CHARGING
         val delayTimeSeconds = 2L
-        
+
         // When
         if (shouldShowBanner(sessionStatus)) {
             delay(delayTimeSeconds * 1000)
             bannerVisible = true
         }
-        
+
         advanceTimeBy(delayTimeSeconds * 1000)
-        
+
         // Then
-        assertFalse(bannerVisible, "Banner should NOT be visible for CHARGING status")
+        assertFalse("Banner should NOT be visible for CHARGING status", bannerVisible)
     }
 
     @Test
@@ -99,17 +99,17 @@ internal class ChargingSessionDelayBannerTest {
         var bannerVisible = false
         val sessionStatus = SessionStatus.START_REJECTED
         val delayTimeSeconds = 2L
-        
+
         // When
         if (shouldShowBanner(sessionStatus)) {
             delay(delayTimeSeconds * 1000)
             bannerVisible = true
         }
-        
+
         advanceTimeBy(delayTimeSeconds * 1000)
-        
+
         // Then
-        assertFalse(bannerVisible, "Banner should NOT be visible for START_REJECTED status")
+        assertFalse("Banner should NOT be visible for START_REJECTED status", bannerVisible)
     }
 
     @Test
@@ -118,45 +118,45 @@ internal class ChargingSessionDelayBannerTest {
         var bannerVisible = false
         val sessionStatus = SessionStatus.STOPPED
         val delayTimeSeconds = 2L
-        
+
         // When
         if (shouldShowBanner(sessionStatus)) {
             delay(delayTimeSeconds * 1000)
             bannerVisible = true
         }
-        
+
         advanceTimeBy(delayTimeSeconds * 1000)
-        
+
         // Then
-        assertFalse(bannerVisible, "Banner should NOT be visible for STOPPED status")
+        assertFalse("Banner should NOT be visible for STOPPED status", bannerVisible)
     }
 
     @Test
     fun `should hide banner when status changes from valid to invalid`() = runTest(testDispatcher) {
         // Given
         var bannerVisible = false
-        
+
         // Initially valid status
         var sessionStatus = SessionStatus.STARTED
         val delayTimeSeconds = 2L
-        
+
         // When - First show banner for valid status
         if (shouldShowBanner(sessionStatus)) {
             delay(delayTimeSeconds * 1000)
             bannerVisible = true
         }
-        
+
         advanceTimeBy(delayTimeSeconds * 1000)
-        assertTrue(bannerVisible, "Banner should be visible for valid status")
-        
+        assertTrue("Banner should be visible for valid status", bannerVisible)
+
         // When - Status changes to invalid
         sessionStatus = SessionStatus.CHARGING
         if (!shouldShowBanner(sessionStatus)) {
             bannerVisible = false
         }
-        
+
         // Then
-        assertFalse(bannerVisible, "Banner should be hidden when status becomes invalid")
+        assertFalse("Banner should be hidden when status becomes invalid", bannerVisible)
     }
 
     private fun shouldShowBanner(sessionStatus: SessionStatus): Boolean {

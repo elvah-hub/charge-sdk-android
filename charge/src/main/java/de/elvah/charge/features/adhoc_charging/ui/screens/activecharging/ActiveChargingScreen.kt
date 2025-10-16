@@ -237,7 +237,6 @@ internal fun ActiveCharging_Success(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             
-            Spacer(Modifier.size(20.dp))
 
             Column(
                 modifier = Modifier,
