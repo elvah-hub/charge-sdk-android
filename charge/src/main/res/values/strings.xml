@@ -158,4 +158,7 @@
     <string name="retry">Retry</string>
     <string name="charging_start__title">Start charging now</string>
     <string name="charging_start__description">Connect your electric vehicle on the charging point and start the charging process.</string>
+    <string name="charging_delay_banner_title">Need help?</string>
+    <string name="charging_delay_banner_description">We’re here if you face issues during charging.</string>
+    <string name="contact_support_button">Contact support</string>
 </resources>

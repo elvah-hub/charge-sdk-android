@@ -107,6 +107,12 @@ internal class FakeChargingRepository(
         }
     }
 
+    override suspend fun resetSession() {
+        chargingStore.resetSession()
+        _activeSessions.emit(null)
+        resetSimulation()
+    }
+
     /**
      * Initializes the simulation strategy based on current configuration.
      */

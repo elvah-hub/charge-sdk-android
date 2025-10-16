@@ -154,4 +154,7 @@
   <string name="schedule_pricing__tomorrow">Tomorrow %2d:%02d</string>
   <string name="no_offer_available">No offer available</string>
   <string name="offer_available">Offer available:</string>
+  <string name="charging_delay_banner_title">Session taking longer than expected?</string>
+  <string name="charging_delay_banner_description">Don\'t worry, this can happen sometimes. You can stop the session or contact support for help.</string>
+  <string name="contact_support_button">Contact support</string>
 </resources>

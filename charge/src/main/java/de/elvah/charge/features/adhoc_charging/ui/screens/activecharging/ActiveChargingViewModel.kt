@@ -2,10 +2,12 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ClearLocalSessionData
 import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
+import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
 import de.elvah.charge.features.payments.domain.usecase.GetAdditionalCosts
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
@@ -23,10 +25,13 @@ internal class ActiveChargingViewModel(
     private val fetchChargingSession: FetchChargingSession,
     private val getOrganisationDetails: GetOrganisationDetails,
     private val getAdditionalCosts: GetAdditionalCosts,
+    private val clearLocalSessionData: ClearLocalSessionData,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<ActiveChargingState>(ActiveChargingState.Loading)
     val state = _state.asStateFlow()
+
+    private var lastActiveSession: ActiveChargingSessionUI? = null
 
     init {
         viewModelScope.launch {
@@ -51,7 +56,8 @@ internal class ActiveChargingViewModel(
                                                 status = it.status,
                                                 consumption = it.consumption,
                                                 duration = it.duration,
-                                                error = (_state.value as? ActiveChargingState.Success)?.activeChargingSessionUI?.error ?: false,
+                                                error = (_state.value as? ActiveChargingState.Success)?.activeChargingSessionUI?.error
+                                                    ?: false,
                                                 cpoLogo = organisationDetails.logoUrl
                                             ),
                                             additionalCostsUI = getAdditionalCosts()?.toUI(),
@@ -62,6 +68,9 @@ internal class ActiveChargingViewModel(
                                         cpoLogo = organisationDetails.logoUrl
                                     )
                                 }
+
+                                lastActiveSession =
+                                    (state.value as? ActiveChargingState.Success)?.activeChargingSessionUI
                             }
 
                             SessionStatus.STOP_REJECTED,
@@ -113,6 +122,21 @@ internal class ActiveChargingViewModel(
         }
     }
 
+    fun forceStopChargingAndClear() {
+        viewModelScope.launch {
+            stopChargingSession()
+
+            // Clear all local data immediately
+            clearLocalSessionData()
+
+            // Set state to stopped to trigger activity finish
+            val organisationDetails = getOrganisationDetails()
+            organisationDetails?.let { orgDetails ->
+                _state.update { ActiveChargingState.Stopped(orgDetails) }
+            }
+        }
+    }
+
     private fun startPolling() {
         viewModelScope.launch {
             while (isActive && state.value !is ActiveChargingState.Error) {
@@ -132,6 +156,25 @@ internal class ActiveChargingViewModel(
                     additionalCostsUI = getAdditionalCosts()?.toUI(),
                     organisationDetails = getOrganisationDetails()!!
                 )
+            }
+        }
+    }
+
+    fun retry(status: SessionStatus) {
+        viewModelScope.launch {
+            if (status == SessionStatus.STOP_REQUESTED) {
+                stopChargingSession()
+                getOrganisationDetails()?.let { it1 ->
+                    lastActiveSession?.let { activeChargingSessionUI ->
+                        _state.update {
+                            ActiveChargingState.Success(
+                                activeChargingSessionUI = activeChargingSessionUI,
+                                additionalCostsUI = null,
+                                organisationDetails = it1
+                            )
+                        }
+                    }
+                }
             }
         }
     }
