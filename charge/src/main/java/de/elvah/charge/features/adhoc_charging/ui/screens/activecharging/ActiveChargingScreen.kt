@@ -59,7 +59,10 @@ import de.elvah.charge.features.adhoc_charging.ui.components.AdditionalCostsBann
 import de.elvah.charge.features.adhoc_charging.ui.components.AdditionalCostsContent
 import de.elvah.charge.features.adhoc_charging.ui.components.ChargingSessionDelayBanner
 import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
+import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.additionalCostsUIMock
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingPointErrorModal
+import de.elvah.charge.features.payments.domain.model.OrganisationDetails
+import de.elvah.charge.features.payments.domain.model.SupportContacts
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.DismissableTopAppBar
@@ -89,12 +92,12 @@ internal fun ActiveChargingScreen(
 
     when (val state = state) {
         is ActiveChargingState.Loading -> ActiveCharging_Loading()
-        is ActiveChargingState.Error -> ActiveCharging_Error(state) { 
+        is ActiveChargingState.Error -> ActiveCharging_Error(state) {
             viewModel.retry(it)
         }
+
         is ActiveChargingState.Success -> ActiveCharging_Success(
             state = state,
-            viewModel = viewModel,
             onSupportClick = onSupportClick,
             onStopClick = {
                 viewModel.stopCharging()
@@ -102,6 +105,9 @@ internal fun ActiveChargingScreen(
             onBackClick = onDismissClick,
             onDismissError = {
                 viewModel.onDismissError()
+            },
+            onHardCloseClick = {
+                viewModel.forceStopChargingAndClear()
             }
         )
 
@@ -177,11 +183,11 @@ private fun ActiveCharging_Error(
 @Composable
 internal fun ActiveCharging_Success(
     state: ActiveChargingState.Success,
-    viewModel: ActiveChargingViewModel,
     onSupportClick: () -> Unit,
     onStopClick: () -> Unit,
     onBackClick: () -> Unit,
-    onDismissError: () -> Unit
+    onDismissError: () -> Unit,
+    onHardCloseClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -223,20 +229,17 @@ internal fun ActiveCharging_Success(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .padding(innerPadding)
-                .systemBarsPadding(),
+                .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             ChargingSessionDelayBanner(
                 sessionStatus = state.activeChargingSessionUI.status,
-                onStopChargingClick = {
-                    viewModel.forceStopChargingAndClear()
-                },
+                onStopChargingClick = onHardCloseClick,
                 onContactSupportClick = onSupportClick,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            
+
 
             Column(
                 modifier = Modifier,
@@ -272,7 +275,12 @@ internal fun ActiveCharging_Success(
 @Composable
 private fun ActiveCharging_Error_Preview() {
     ElvahChargeTheme {
-        ActiveCharging_Error(state = ActiveChargingState.Error(SessionStatus.START_REJECTED, "")) { }
+        ActiveCharging_Error(
+            state = ActiveChargingState.Error(
+                SessionStatus.START_REJECTED,
+                ""
+            )
+        ) { }
     }
 }
 
@@ -578,14 +586,37 @@ private fun ActiveChargingActions(
     }
 }
 
-// Preview disabled due to ViewModel dependency complexity
-// @PreviewLightDark
-// @Composable
-// private fun ActiveCharging_Success_Preview() {
-//     ElvahChargeTheme {
-//         // Preview implementation would require complex mocking
-//     }
-// }
+@PreviewLightDark
+@Composable
+private fun ActiveCharging_Success_Preview() {
+    ElvahChargeTheme {
+        ActiveCharging_Success(
+            state = ActiveChargingState.Success(
+                activeChargingSessionUI = ActiveChargingSessionUI(
+                    evseId = "",
+                    status = SessionStatus.CHARGING,
+                    consumption = 0.0,
+                    duration = 0,
+                    cpoLogo = "",
+                    error = false
+                ),
+                additionalCostsUI = additionalCostsUIMock,
+                organisationDetails = OrganisationDetails(
+                    privacyUrl = "",
+                    termsOfConditionUrl = "",
+                    companyName = "",
+                    logoUrl = "",
+                    supportContacts = SupportContacts()
+                )
+            ),
+            onSupportClick = {},
+            onStopClick = {},
+            onBackClick = {},
+            onDismissError = {},
+            onHardCloseClick = {}
+        )
+    }
+}
 
 
 @Composable
