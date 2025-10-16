@@ -1,5 +1,6 @@
 package de.elvah.charge.features.sites.ui.pricinggraph
 
+import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
 import de.elvah.charge.platform.core.mvi.Reducer
 
@@ -12,7 +13,8 @@ internal sealed class PricingGraphEvent : Reducer.ViewEvent {
     // Result events from use cases
     data class LoadPricingSuccess(
         val siteId: String,
-        val scheduledPricing: ScheduledPricingUI
+        val scheduledPricing: ScheduledPricingUI,
+        val siteDetail: ChargeSiteUI
     ) : PricingGraphEvent()
 
     data class LoadPricingError(
@@ -26,7 +28,8 @@ internal sealed class PricingGraphEvent : Reducer.ViewEvent {
 
     data class RefreshPricingSuccess(
         val siteId: String,
-        val scheduledPricing: ScheduledPricingUI
+        val scheduledPricing: ScheduledPricingUI,
+        val siteDetail: ChargeSiteUI
     ) : PricingGraphEvent()
 
     data class RefreshPricingError(

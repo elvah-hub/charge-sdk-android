@@ -41,6 +41,7 @@ import de.elvah.charge.platform.core.android.openMap
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.Timer
+import de.elvah.charge.platform.ui.components.site.SiteDetailHeader
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.copyMedium
 import de.elvah.charge.platform.ui.theme.titleSmallBold
@@ -105,7 +106,12 @@ private fun SiteDetailScreen_Content(
 
             Spacer(Modifier.height(2.dp))
 
-            SiteDetailHeader(state)
+            SiteDetailHeader(
+                operatorName = state.operatorName,
+                address = state.address,
+                coordinates = state.coordinates,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
 
             Spacer(Modifier.height(16.dp))
 
@@ -158,60 +164,7 @@ private fun SiteDetailTopBar(
     }
 }
 
-@Composable
-private fun SiteDetailHeader(
-    state: SiteDetailState.Success,
-) {
-    val context = LocalContext.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = 16.dp,
-            ),
-    ) {
-        Text(
-            text = state.operatorName,
-            color = MaterialTheme.colorScheme.primary,
-            style = titleSmallBold
-        )
-
-        state.address?.let {
-            Row(
-                modifier = Modifier
-                    .padding(top = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .clickable {
-                            context.openMap(
-                                lat = state.coordinates.first,
-                                lng = state.coordinates.second,
-                                title = state.operatorName,
-                            )
-                        },
-                    text = it,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = copyMedium,
-                    textDecoration = TextDecoration.Underline,
-                )
-
-                Spacer(Modifier.width(4.dp))
-
-                Icon(
-                    modifier = Modifier
-                        .size(16.dp),
-                    painter = painterResource(R.drawable.ic_open_external),
-                    tint = MaterialTheme.colorScheme.secondary,
-                    contentDescription = null,
-                )
-            }
-        }
-    }
-}
 
 @PreviewLightDark
 @Composable
