@@ -34,10 +34,10 @@ internal class BuildSiteDetailSuccessState(
 
         /*
         Pricing-Schedule returns the prices for the prevalent power type of the given site. We will
-         assign this prices to the corresponding charge point based on its power type.
+        assign this prices to the corresponding charge point based on its power type.
         Remaining charge points will depend on the original response to the sites offer, but will
-           update its price (when the discount time is expired) based on the information in the time slot
-           table (provided from pricing-schedule).
+        update its price (when the discount time is expired) based on the information in the time slot
+        table (provided from pricing-schedule).
         */
         val allChargePoints = chargeSite.toUI()
             .chargePoints

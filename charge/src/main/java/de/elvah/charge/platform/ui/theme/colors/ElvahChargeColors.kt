@@ -27,6 +27,8 @@ internal object ElvahChargeColors {
         onBrand = onBrandColor,
         success = success,
         onSuccess = onSuccess,
+        error = error,
+        onError = onError
     )
 
     private val DarkColorScheme = darkColorScheme(
@@ -45,6 +47,8 @@ internal object ElvahChargeColors {
         onBrand = onBrandColor,
         success = success,
         onSuccess = onSuccess,
+        error = error,
+        onError = onError
     )
 
     @Composable

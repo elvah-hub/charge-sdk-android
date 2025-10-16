@@ -85,6 +85,11 @@ internal class DefaultChargingRepository(
         )
     }
 
+    override suspend fun resetSession() {
+        chargingStore.resetSession()
+        _activeSessions.tryEmit(null)
+    }
+
     private suspend fun getToken() = chargingStore.getChargingPrefs().first().token
 }
 

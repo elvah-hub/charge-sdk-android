@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,7 +35,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val evseId = EvseId("DE*2GO*EEWE7418*1A*1")
+        val evseId = EvseId("HNTCI*E*00001")
         setContent {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
@@ -85,15 +84,17 @@ class MainActivity : ComponentActivity() {
                         }) {
                             Text("Load at location")
                         }
-                        Button({
-                            SitesManager.openSite(context, sites.first().id)
-                        }) {
+                        Button(
+                            {
+                                SitesManager.openSite(context, sites.first().id)
+                            }) {
                             Text("Open Deal at ${evseId.value}")
                         }
+
                         ChargeBanner(
                             display = DisplayBehavior.WHEN_CONTENT_AVAILABLE,
                         )
-                        // Test PricingGraph with sample site ID
+
                         if (sites.isNotEmpty()) {
                             PricingGraph(
                                 siteId = sites.first().id,
@@ -102,35 +103,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-            }
-            LaunchedEffect(Unit) {
-
-                /*  chargeBannerSource.sitesAt(
-                      latitude = 53.075833333333,
-                      longitude = 8.8072222222222,
-                      radius = 10.0
-                  )
-
-                 */
-
-                /*
-                  campaignSource.sitesAt(
-                      BoundingBox(
-                          minLat = -87.0,
-                          minLng = 14.0,
-                          maxLat = -86.0,
-                          maxLng = 15.0
-                      )
-                  )
-
-                 */
-
-                /*
-                campaignSource.sitesAt(
-                    evseIds = listOf(EvseId("HNTCI*E*00001"))
-                )
-
-                 */
             }
         }
     }

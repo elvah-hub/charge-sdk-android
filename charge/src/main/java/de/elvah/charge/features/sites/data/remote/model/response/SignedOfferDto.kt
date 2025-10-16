@@ -13,7 +13,7 @@ internal data class SignedOfferDto(
     val price: PriceDto,
 
     @param:Json(name = "campaignEndsAt")
-    val campaignEndsAt: String,
+    val campaignEndsAt: String?,
 
     @param:Json(name = "signedOffer")
     val signedOffer: String,

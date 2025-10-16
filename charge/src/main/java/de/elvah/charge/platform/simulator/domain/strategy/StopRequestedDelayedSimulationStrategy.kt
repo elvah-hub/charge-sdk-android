@@ -6,10 +6,10 @@ import de.elvah.charge.platform.simulator.domain.factory.ChargingSessionFactory
 import de.elvah.charge.platform.simulator.domain.model.SimulationContext
 
 /**
- * Default simulation strategy implementing normal charging flow.
- * Progresses through states: START_REQUESTED -> STARTED -> CHARGING -> STOP_REQUESTED -> STOPPED
+ * Simulation strategy for Stop Requested Delayed scenario.
+ * Stays in STOP_REQUESTED state for more than 30 seconds to trigger delayed banner.
  */
-internal class DefaultSimulationStrategy(
+internal class StopRequestedDelayedSimulationStrategy(
     private val sessionFactory: ChargingSessionFactory
 ) : ChargingSimulationStrategy {
 
@@ -39,11 +39,6 @@ internal class DefaultSimulationStrategy(
                 } else {
                     context.currentSession?.incrementDuration()
                 }
-
-            }
-
-            SessionStatus.START_REJECTED -> {
-                context.currentSession?.incrementDuration()
             }
 
             SessionStatus.CHARGING -> {
@@ -56,11 +51,16 @@ internal class DefaultSimulationStrategy(
             }
 
             SessionStatus.STOP_REQUESTED -> {
-                sessionFactory.createSession {
-                    evseId(context.evseId)
-                    status(SessionStatus.STOPPED)
-                    consumption(Math.random() + context.sessionCounter)
-                    duration(context.sessionCounter * 3)
+                // Stay in STOP_REQUESTED for more than 30 seconds (35 seconds)
+                if (context.secondsSinceLastChange > 35) {
+                    sessionFactory.createSession {
+                        evseId(context.evseId)
+                        status(SessionStatus.STOPPED)
+                        consumption(Math.random() + context.sessionCounter)
+                        duration(context.sessionCounter * 3)
+                    }
+                } else {
+                    context.currentSession?.incrementDuration()
                 }
             }
 
@@ -84,7 +84,7 @@ internal class DefaultSimulationStrategy(
     }
 
     override fun reset() {
-        // Default strategy has no internal state to reset
+        // No internal state to reset
     }
 
     private fun ChargingSession?.incrementDuration(): ChargingSession? = this?.let {

@@ -1,5 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.di
 
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ClearLocalSessionData
 import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.GetActiveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.HasActiveChargingSession
@@ -11,6 +12,7 @@ import org.koin.dsl.module
 
 
 internal val adHocChargingUseCasesModule = module {
+    factoryOf(::ClearLocalSessionData)
     factoryOf(::FetchChargingSession)
     factoryOf(::GetActiveChargingSession)
     factoryOf(::HasActiveChargingSession)

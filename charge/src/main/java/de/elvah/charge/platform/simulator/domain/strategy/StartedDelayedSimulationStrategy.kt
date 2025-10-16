@@ -6,10 +6,10 @@ import de.elvah.charge.platform.simulator.domain.factory.ChargingSessionFactory
 import de.elvah.charge.platform.simulator.domain.model.SimulationContext
 
 /**
- * Default simulation strategy implementing normal charging flow.
- * Progresses through states: START_REQUESTED -> STARTED -> CHARGING -> STOP_REQUESTED -> STOPPED
+ * Simulation strategy for Started Delayed scenario.
+ * Stays in STARTED state for more than 30 seconds to trigger delayed banner.
  */
-internal class DefaultSimulationStrategy(
+internal class StartedDelayedSimulationStrategy(
     private val sessionFactory: ChargingSessionFactory
 ) : ChargingSimulationStrategy {
 
@@ -29,7 +29,8 @@ internal class DefaultSimulationStrategy(
             }
 
             SessionStatus.STARTED -> {
-                if (context.secondsSinceLastChange > 4) {
+                // Stay in STARTED for more than 30 seconds (35 seconds)
+                if (context.secondsSinceLastChange > 35) {
                     sessionFactory.createSession {
                         evseId(context.evseId)
                         status(SessionStatus.CHARGING)
@@ -39,11 +40,6 @@ internal class DefaultSimulationStrategy(
                 } else {
                     context.currentSession?.incrementDuration()
                 }
-
-            }
-
-            SessionStatus.START_REJECTED -> {
-                context.currentSession?.incrementDuration()
             }
 
             SessionStatus.CHARGING -> {
@@ -84,7 +80,7 @@ internal class DefaultSimulationStrategy(
     }
 
     override fun reset() {
-        // Default strategy has no internal state to reset
+        // No internal state to reset
     }
 
     private fun ChargingSession?.incrementDuration(): ChargingSession? = this?.let {
