@@ -8,6 +8,9 @@ internal val onBrandColor = Color(0xFFFFFFFF)
 internal val decorativeStroke = Color(0x2986868B)
 internal val success = Color(0xFFC7F8C0)
 internal val onSuccess = Color(0xFF123F00)
+internal val error = Color(0xFFFFD7D7)
+internal val onError = Color(0xFFE01710)
+
 
 // Light Colors
 internal val primary = Color(0xFF000000)

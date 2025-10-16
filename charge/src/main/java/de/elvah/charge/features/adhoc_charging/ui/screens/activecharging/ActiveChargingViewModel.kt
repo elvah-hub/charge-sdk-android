@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.usecase.StartChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
 import de.elvah.charge.features.payments.domain.usecase.GetAdditionalCosts
@@ -20,7 +19,6 @@ import kotlinx.coroutines.launch
 
 internal class ActiveChargingViewModel(
     private val observeChargingSession: ObserveChargingSession,
-    private val startChargingSession: StartChargingSession,
     private val stopChargingSession: StopChargingSession,
     private val fetchChargingSession: FetchChargingSession,
     private val getOrganisationDetails: GetOrganisationDetails,
@@ -32,65 +30,47 @@ internal class ActiveChargingViewModel(
 
     init {
         viewModelScope.launch {
-            startChargingSession()
-
             val organisationDetails = getOrganisationDetails()
             organisationDetails?.let {
-                _state.value = ActiveChargingState.Waiting(organisationDetails)
                 startPolling()
-
                 observeChargingSession().collect { chargeSession ->
                     val organisationDetails = getOrganisationDetails()
 
                     organisationDetails?.let { organisationDetails ->
                         when (chargeSession?.status) {
-                            SessionStatus.START_REQUESTED, SessionStatus.STARTED, null -> {
+                            SessionStatus.START_REQUESTED,
+                            SessionStatus.STARTED,
+                            SessionStatus.CHARGING,
+                            SessionStatus.STOP_REQUESTED,
+                            null -> {
                                 _state.update {
-                                    ActiveChargingState.Waiting(organisationDetails)
-                                }
-                            }
-
-                            SessionStatus.STOP_REQUESTED -> {
-                                _state.update {
-                                    ActiveChargingState.Stopping(organisationDetails)
+                                    chargeSession?.let {
+                                        ActiveChargingState.Success(
+                                            activeChargingSessionUI = ActiveChargingSessionUI(
+                                                evseId = it.evseId,
+                                                status = it.status,
+                                                consumption = it.consumption,
+                                                duration = it.duration,
+                                                error = (_state.value as? ActiveChargingState.Success)?.activeChargingSessionUI?.error ?: false,
+                                                cpoLogo = organisationDetails.logoUrl
+                                            ),
+                                            additionalCostsUI = getAdditionalCosts()?.toUI(),
+                                            organisationDetails = organisationDetails
+                                        )
+                                    } ?: ActiveChargingState.Error(
+                                        status = SessionStatus.START_REQUESTED,
+                                        cpoLogo = organisationDetails.logoUrl
+                                    )
                                 }
                             }
 
                             SessionStatus.STOP_REJECTED,
                             SessionStatus.START_REJECTED -> {
                                 _state.update {
-                                    ActiveChargingState.Error
-                                }
-                            }
-
-                            SessionStatus.CHARGING -> {
-                                _state.update {
-                                    val currentValue =
-                                        (state.value as? ActiveChargingState.Active)?.activeChargingSessionUI
-
-                                    if (currentValue != null) {
-                                        ActiveChargingState.Active(
-                                            activeChargingSessionUI = currentValue.copy(
-                                                evseId = chargeSession.evseId,
-                                                status = chargeSession.status.name,
-                                                consumption = chargeSession.consumption,
-                                                duration = chargeSession.duration
-                                            ),
-                                            additionalCostsUI = getAdditionalCosts()?.toUI(),
-                                        )
-                                    } else {
-                                        ActiveChargingState.Active(
-                                            activeChargingSessionUI = ActiveChargingSessionUI(
-                                                evseId = chargeSession.evseId,
-                                                status = chargeSession.status.name,
-                                                consumption = chargeSession.consumption,
-                                                duration = chargeSession.duration,
-                                                error = false,
-                                                cpoLogo = organisationDetails.logoUrl
-                                            ),
-                                            additionalCostsUI = getAdditionalCosts()?.toUI(),
-                                        )
-                                    }
+                                    ActiveChargingState.Error(
+                                        status = chargeSession.status,
+                                        cpoLogo = organisationDetails.logoUrl
+                                    )
                                 }
                             }
 
@@ -114,18 +94,18 @@ internal class ActiveChargingViewModel(
             val organisationDetails = getOrganisationDetails()
 
             organisationDetails?.let {
-
                 if (result.isRight()) {
-                    _state.value = ActiveChargingState.Stopping(organisationDetails)
+
                 } else {
                     val currentValue =
-                        (state.value as ActiveChargingState.Active).activeChargingSessionUI
+                        (state.value as ActiveChargingState.Success).activeChargingSessionUI
                     _state.update {
-                        ActiveChargingState.Active(
+                        ActiveChargingState.Success(
                             activeChargingSessionUI = currentValue.copy(
                                 error = true
                             ),
                             additionalCostsUI = getAdditionalCosts()?.toUI(),
+                            organisationDetails = organisationDetails
                         )
                     }
                 }
@@ -145,11 +125,12 @@ internal class ActiveChargingViewModel(
     fun onDismissError() {
         viewModelScope.launch {
             _state.update {
-                ActiveChargingState.Active(
-                    activeChargingSessionUI = (state.value as ActiveChargingState.Active).activeChargingSessionUI.copy(
+                ActiveChargingState.Success(
+                    activeChargingSessionUI = (state.value as ActiveChargingState.Success).activeChargingSessionUI.copy(
                         error = false
                     ),
                     additionalCostsUI = getAdditionalCosts()?.toUI(),
+                    organisationDetails = getOrganisationDetails()!!
                 )
             }
         }

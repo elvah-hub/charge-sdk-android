@@ -22,9 +22,9 @@ internal fun FullScreenError(
     modifier: Modifier = Modifier,
     onRetryClick: (() -> Unit)? = null
 ) {
-    Surface {
+    Surface(modifier) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {

@@ -9,4 +9,6 @@ internal data class ColorSchemeExtended(
     val onBrand: Color,
     val success: Color,
     val onSuccess: Color,
+    val error: Color,
+    val onError: Color
 )

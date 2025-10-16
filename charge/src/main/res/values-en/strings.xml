@@ -57,7 +57,7 @@
   <string name="charging_duration_label">Charging duration</string>
   <string name="charging_label">Charging…</string>
   <string name="charging_partner_attribution_label">Charging is provided in partnership with</string>
-  <string name="charging_session_active_title">Charging session is active</string>
+  <string name="charging_session_active_title">Charge now</string>
   <string name="close">Close</string>
   <string name="code_label">EVSE ID:</string>
   <string name="connect_vehicle">Connect your electric vehicle now and start the charging process.</string>

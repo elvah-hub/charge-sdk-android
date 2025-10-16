@@ -81,7 +81,7 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
                     navController.navigate(HelpAndSupportRoute)
                 }, onStopClick = {
                     navController.navigate(ReviewRoute)
-                }
+                }, onDismissClick = onFinishClicked
             )
         }
 
