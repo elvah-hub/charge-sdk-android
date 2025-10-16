@@ -82,6 +82,7 @@ public fun PricingGraph(
             is PricingGraphState.Success -> {
                 PricingGraphContent(
                     scheduledPricing = currentState.scheduledPricing,
+                    chargeSite = currentState.siteDetail,
                     modifier = modifier,
                     minYAxisPrice = minYAxisPrice,
                     gridLineDotSize = gridLineDotSize,

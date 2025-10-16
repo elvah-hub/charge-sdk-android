@@ -19,14 +19,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
+import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.usecase.GetSite
+import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toChartData
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
 import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart
+import de.elvah.charge.platform.ui.components.site.SiteDetailHeader
 
 @Composable
 internal fun PricingGraphContent(
     scheduledPricing: ScheduledPricingUI,
+    chargeSite: ChargeSiteUI,
     modifier: Modifier = Modifier,
     minYAxisPrice: Double? = null,
     gridLineDotSize: Float = 4f,
@@ -45,6 +50,7 @@ internal fun PricingGraphContent(
             // Energy price line chart displaying the API data
             EnergyPriceLineChart(
                 dailyData = scheduledPricing.toChartData(),
+                chargeSite = chargeSite,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),

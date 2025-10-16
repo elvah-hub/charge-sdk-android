@@ -13,7 +13,7 @@ import kotlin.time.ExperimentalTime
 
 internal fun ScheduledPricing.toUI(): ScheduledPricingUI = ScheduledPricingUI(
     dailyPricing = dailyPricing.toUI(),
-    standardPrice = standardPrice.toUI()
+    standardPrice = standardPrice.toUI(),
 )
 
 internal fun ScheduledPricing.DailyPricing.toUI(): ScheduledPricingUI.DailyPricingUI =

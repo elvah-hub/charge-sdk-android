@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
+import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
@@ -61,6 +62,7 @@ import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_GRID_LINE_INTERVAL
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_MINUTE_RESOLUTION
 import de.elvah.charge.platform.ui.components.graph.line.utils.getClickedTimeByOffset
+import de.elvah.charge.platform.ui.components.site.SiteDetailHeader
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.colors.primary
@@ -73,6 +75,7 @@ import java.time.LocalTime
 internal fun EnergyPriceLineChart(
     dailyData: List<DailyPricingData>,
     modifier: Modifier = Modifier,
+    chargeSite: ChargeSiteUI? = null,
     colors: GraphColors = GraphColorDefaults.colors(),
     animated: Boolean = true,
     showVerticalGridLines: Boolean = true,
@@ -210,6 +213,14 @@ internal fun EnergyPriceLineChart(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            chargeSite?.let {
+                SiteDetailHeader(
+                    operatorName = chargeSite.cpoName,
+                    address = chargeSite.address.streetAddress.joinToString(separator = " "),
+                    coordinates = Pair(chargeSite.lat, chargeSite.lng)
+                )
+            }
+
             LivePricingHeader(selectedType)
 
             LivePricingPrice(

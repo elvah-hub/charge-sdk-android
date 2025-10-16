@@ -1,14 +1,21 @@
 package de.elvah.charge.features.sites.ui.pricinggraph
 
 import androidx.lifecycle.viewModelScope
+import de.elvah.charge.features.sites.domain.usecase.GetSite
 import de.elvah.charge.features.sites.domain.usecase.GetSiteScheduledPricing
+import de.elvah.charge.features.sites.ui.mapper.toUI
 import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toUI
 import de.elvah.charge.platform.core.mvi.MVIBaseViewModel
 import de.elvah.charge.platform.core.mvi.Reducer
+import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.sites.GetSites
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 internal class PricingGraphViewModel(
-    private val getSiteScheduledPricing: GetSiteScheduledPricing
+    private val getSiteScheduledPricing: GetSiteScheduledPricing,
+    private val getSite: GetSite,
 ) : MVIBaseViewModel<PricingGraphState, PricingGraphEvent, PricingGraphEffect>(
     initialState = PricingGraphState.Loading(null),
     reducer = Reducer { previousState, event ->
@@ -55,8 +62,10 @@ internal class PricingGraphViewModel(
                 Reducer.Result(
                     PricingGraphState.Success(
                         siteId = event.siteId,
-                        scheduledPricing = event.scheduledPricing
-                    ),
+                        scheduledPricing = event.scheduledPricing,
+                        siteDetail = event.siteDetail,
+
+                        ),
                     PricingGraphEffect.HideLoadingIndicator
                 )
             }
@@ -84,7 +93,8 @@ internal class PricingGraphViewModel(
                 Reducer.Result(
                     PricingGraphState.Success(
                         siteId = event.siteId,
-                        scheduledPricing = event.scheduledPricing
+                        scheduledPricing = event.scheduledPricing,
+                        siteDetail = event.siteDetail
                     ),
                     PricingGraphEffect.ShowRefreshSuccessToast
                 )
@@ -168,17 +178,29 @@ internal class PricingGraphViewModel(
                     },
                     ifRight = { scheduledPricing ->
                         val scheduledPricingUI = scheduledPricing.toUI()
-                        if (isRefresh) {
-                            sendEvent(
-                                PricingGraphEvent.RefreshPricingSuccess(siteId, scheduledPricingUI),
-                                allowSideEffect = true
-                            )
-                        } else {
-                            sendEvent(
-                                PricingGraphEvent.LoadPricingSuccess(siteId, scheduledPricingUI),
-                                allowSideEffect = true
-                            )
-                        }
+                        val siteDetail = getSite(GetSite.Params(EvseId(siteId)))
+
+                        siteDetail.fold(
+                            ifLeft = { throwable ->
+
+                            },
+                            ifRight = { chargeSite ->
+                                if (isRefresh) {
+                                    sendEvent(
+                                        PricingGraphEvent.RefreshPricingSuccess(siteId, scheduledPricingUI, chargeSite.toUI()),
+                                        allowSideEffect = true
+                                    )
+                                } else {
+                                    sendEvent(
+                                        PricingGraphEvent.LoadPricingSuccess(siteId, scheduledPricingUI, chargeSite.toUI()),
+                                        allowSideEffect = true
+                                    )
+                                }
+                            }
+                        )
+
+
+
                     }
                 )
         }
