@@ -7,6 +7,7 @@ internal data class ColorSchemeExtended(
     val decorativeStroke: Color,
     val brand: Color,
     val onBrand: Color,
+    val brandLight: Color,
     val success: Color,
     val onSuccess: Color,
 )

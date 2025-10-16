@@ -63,6 +63,8 @@ import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_
 import de.elvah.charge.platform.ui.components.graph.line.utils.getClickedTimeByOffset
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
+import de.elvah.charge.platform.ui.theme.colors.primary
+import de.elvah.charge.platform.ui.theme.colors.primaryDark
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -341,9 +343,9 @@ private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
         modifier = modifier
             .background(
                 color = if (priceOffer != null) {
-                    Color(0x1A279138)
+                    MaterialTheme.colorSchemeExtended.brandLight
                 } else {
-                    Color.Gray
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.07f)
                 },
                 shape = RoundedCornerShape(100.dp)
             )
@@ -394,14 +396,15 @@ private fun HourSlot(timeRange: TimeRange, modifier: Modifier = Modifier) {
                 timeRange.startTime.minute
             ),
             fontWeight = FontWeight.W700,
-            color = MaterialTheme.colorScheme.primary
+            color = primary
         )
 
         Icon(
             imageVector = Icons.AutoMirrored.Default.ArrowForward,
             contentDescription = null,
             modifier = Modifier.size(12.dp),
-            tint = MaterialTheme.colorScheme.primary
+            tint = primary
+
         )
 
         CopySmall(
@@ -410,7 +413,7 @@ private fun HourSlot(timeRange: TimeRange, modifier: Modifier = Modifier) {
                 timeRange.endTime.minute
             ),
             fontWeight = FontWeight.W700,
-            color = MaterialTheme.colorScheme.primary
+            color = primary
         )
     }
 }

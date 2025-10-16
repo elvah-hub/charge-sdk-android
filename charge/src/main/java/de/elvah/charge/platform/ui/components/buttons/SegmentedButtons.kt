@@ -7,6 +7,8 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
 internal fun DaySelector(
@@ -26,7 +28,10 @@ internal fun DaySelector(
                     count = options.size
                 ),
                 colors = SegmentedButtonDefaults.colors(
-                    activeContainerColor = MaterialTheme.colorScheme.secondary
+                    activeContainerColor = MaterialTheme.colorScheme.background,
+                    activeContentColor = MaterialTheme.colorScheme.primary,
+                    inactiveContainerColor = MaterialTheme.colorScheme.secondary,
+                    inactiveContentColor = MaterialTheme.colorScheme.onSecondary,
                 ),
                 onClick = {
                     onDaySelected(index)
@@ -36,5 +41,13 @@ internal fun DaySelector(
                 label = { Text(label) }
             )
         }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun DaySelector_Preview(){
+    ElvahChargeTheme {
+        DaySelector(1) { }
     }
 }

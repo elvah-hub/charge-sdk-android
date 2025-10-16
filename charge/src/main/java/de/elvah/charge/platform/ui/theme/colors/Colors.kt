@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 // General Colors
 internal val brandColor = Color(0xFF279138)
 internal val onBrandColor = Color(0xFFFFFFFF)
+internal val brandLight = Color(0xFFE3F1E5)
 internal val decorativeStroke = Color(0x2986868B)
 internal val success = Color(0xFFC7F8C0)
 internal val onSuccess = Color(0xFF123F00)

@@ -25,6 +25,7 @@ internal object ElvahChargeColors {
         decorativeStroke = decorativeStroke,
         brand = brandColor,
         onBrand = onBrandColor,
+        brandLight = brandLight,
         success = success,
         onSuccess = onSuccess,
     )
@@ -43,6 +44,7 @@ internal object ElvahChargeColors {
         decorativeStroke = decorativeStroke,
         brand = brandColor,
         onBrand = onBrandColor,
+        brandLight = brandLight,
         success = success,
         onSuccess = onSuccess,
     )
