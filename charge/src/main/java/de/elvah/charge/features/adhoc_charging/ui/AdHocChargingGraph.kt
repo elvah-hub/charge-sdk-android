@@ -93,9 +93,7 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
         composable<ReviewRoute> {
             ReviewScreen(
                 viewModel = koinViewModel(),
-                onDoneClick = {
-                    onFinishClicked
-                },
+                onDoneClick = onFinishClicked,
                 onDismissClick = onFinishClicked,
                 onContactSupport = {
                     navController.navigate(HelpAndSupportRoute)
