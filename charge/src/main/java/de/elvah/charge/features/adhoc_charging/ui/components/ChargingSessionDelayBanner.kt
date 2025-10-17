@@ -1,6 +1,5 @@
 package de.elvah.charge.features.adhoc_charging.ui.components
 
-import android.widget.Space
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -28,16 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
-import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.buttons.ButtonTertiary
-import de.elvah.charge.platform.ui.components.buttons.SecondaryButton
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.copyLargeBold
 import de.elvah.charge.platform.ui.theme.copyMedium
 import kotlinx.coroutines.delay
@@ -81,7 +76,7 @@ internal fun ChargingSessionDelayBanner(
         )
     }
 
-    if (!isVisible){
+    if (!isVisible) {
         Spacer(Modifier.size(20.dp))
     }
 }

@@ -8,9 +8,6 @@ import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toUI
 import de.elvah.charge.platform.core.mvi.MVIBaseViewModel
 import de.elvah.charge.platform.core.mvi.Reducer
 import de.elvah.charge.public_api.banner.EvseId
-import de.elvah.charge.public_api.sites.GetSites
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 internal class PricingGraphViewModel(
@@ -187,18 +184,25 @@ internal class PricingGraphViewModel(
                             ifRight = { chargeSite ->
                                 if (isRefresh) {
                                     sendEvent(
-                                        PricingGraphEvent.RefreshPricingSuccess(siteId, scheduledPricingUI, chargeSite.toUI()),
+                                        PricingGraphEvent.RefreshPricingSuccess(
+                                            siteId,
+                                            scheduledPricingUI,
+                                            chargeSite.toUI()
+                                        ),
                                         allowSideEffect = true
                                     )
                                 } else {
                                     sendEvent(
-                                        PricingGraphEvent.LoadPricingSuccess(siteId, scheduledPricingUI, chargeSite.toUI()),
+                                        PricingGraphEvent.LoadPricingSuccess(
+                                            siteId,
+                                            scheduledPricingUI,
+                                            chargeSite.toUI()
+                                        ),
                                         allowSideEffect = true
                                     )
                                 }
                             }
                         )
-
 
 
                     }

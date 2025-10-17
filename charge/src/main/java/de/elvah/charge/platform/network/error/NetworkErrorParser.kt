@@ -51,14 +51,17 @@ internal class NetworkErrorParser(
                         response = response,
                         errorResponse = apiErrorResponse
                     )
+
                     ApiVersionErrorType.TOO_OLD -> NetworkError.VersionTooOldException(
                         response = response,
                         errorResponse = apiErrorResponse
                     )
+
                     ApiVersionErrorType.TOO_NEW -> NetworkError.VersionTooNewException(
                         response = response,
                         errorResponse = apiErrorResponse
                     )
+
                     ApiVersionErrorType.NONE -> NetworkError.GenericHttpException(
                         response = response,
                         code = response.code(),

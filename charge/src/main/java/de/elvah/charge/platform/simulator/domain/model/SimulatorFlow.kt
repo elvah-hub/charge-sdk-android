@@ -33,13 +33,22 @@ public sealed class SimulatorFlow(public val name: String, public val descriptio
         SimulatorFlow("interruptedCharge", "Charge session gets unexpectedly interrupted")
 
     public object StartRequestedDelayed :
-        SimulatorFlow("startRequestedDelayed", "Start request delayed for 30+ seconds to show delayed banner")
+        SimulatorFlow(
+            "startRequestedDelayed",
+            "Start request delayed for 30+ seconds to show delayed banner"
+        )
 
     public object StartedDelayed :
-        SimulatorFlow("startedDelayed", "Started state delayed for 30+ seconds to show delayed banner")
+        SimulatorFlow(
+            "startedDelayed",
+            "Started state delayed for 30+ seconds to show delayed banner"
+        )
 
     public object StopRequestedDelayed :
-        SimulatorFlow("stopRequestedDelayed", "Stop request delayed for 30+ seconds to show delayed banner")
+        SimulatorFlow(
+            "stopRequestedDelayed",
+            "Stop request delayed for 30+ seconds to show delayed banner"
+        )
 
     internal data class Custom(
         val onSessionStart: () -> Unit,
