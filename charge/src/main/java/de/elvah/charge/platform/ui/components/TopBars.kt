@@ -143,7 +143,7 @@ internal fun BackIcon(onClick: () -> Unit) {
 internal fun MinifyIcon(onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.background(MaterialTheme.colorScheme.background, shape = CircleShape)
+        modifier = Modifier.padding(start = 16.dp).background(MaterialTheme.colorScheme.background, shape = CircleShape)
     ) {
         Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = "Back")
     }
