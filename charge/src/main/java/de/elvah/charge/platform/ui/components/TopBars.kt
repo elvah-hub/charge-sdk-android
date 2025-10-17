@@ -68,7 +68,7 @@ internal fun DismissableTopAppBar(
             }
         } ?: {},
         actions = {
-            actions[true]?.map {
+            actions[false].orEmpty().map {
                 IconButton(
                     onClick = it.onClick,
                     modifier = Modifier.background(
@@ -76,12 +76,12 @@ internal fun DismissableTopAppBar(
                         shape = CircleShape
                     )
                 ) {
-                    it.leadingIcon
+                    it.leadingIcon()
                 }
             }
 
-            if (actions[false].orEmpty().isNotEmpty()) {
-                DropdownMenuWithDetails(actions[false].orEmpty())
+            if (actions[true].orEmpty().isNotEmpty()) {
+                DropdownMenuWithDetails(actions[true].orEmpty())
             }
         }
     )
@@ -181,10 +181,12 @@ private fun DismissableTopAppBarWithActions_Preview() {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close",
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     },
                     onClick = {},
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
+                    inMenu = true
                 ),
 
                 MenuItem(
@@ -193,6 +195,7 @@ private fun DismissableTopAppBarWithActions_Preview() {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Close",
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     },
                     onClick = {},

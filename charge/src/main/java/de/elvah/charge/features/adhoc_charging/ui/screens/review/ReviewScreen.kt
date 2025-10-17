@@ -1,7 +1,5 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.review
 
-import android.widget.Space
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,12 +34,10 @@ import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.components.CopyXLarge
 import de.elvah.charge.platform.ui.components.DismissableTopAppBar
-import de.elvah.charge.platform.ui.components.ElvahLogo
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.MenuItem
 import de.elvah.charge.platform.ui.components.TitleMedium
-import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
@@ -58,7 +54,13 @@ internal fun ReviewScreen(
 
     when (val state = uiState) {
         is ReviewState.Loading -> ReviewScreen_Loading()
-        is ReviewState.Success -> ReviewScreen_Content(state, onDoneClick, onDismissClick, onContactSupport)
+        is ReviewState.Success -> ReviewScreen_Content(
+            state,
+            onDoneClick,
+            onDismissClick,
+            onContactSupport
+        )
+
         is ReviewState.Error -> ReviewScreen_Error()
     }
 }
@@ -82,7 +84,8 @@ private fun ReviewScreen_Content(
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.ic_support_agent),
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
                             )
                         },
                         onClick = onContactSupport,
