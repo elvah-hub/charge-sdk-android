@@ -20,7 +20,7 @@ import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorS
 @Composable
 internal fun BasicCard(
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
     borderColor: Color = MaterialTheme.colorSchemeExtended.decorativeStroke,
     paddingValues: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 16.dp),
     content: @Composable ColumnScope.() -> Unit,

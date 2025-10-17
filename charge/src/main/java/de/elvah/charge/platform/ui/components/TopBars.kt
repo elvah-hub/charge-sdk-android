@@ -1,17 +1,16 @@
 package de.elvah.charge.platform.ui.components
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -21,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +56,8 @@ internal fun DismissableTopAppBar(
     onDismissClick: (() -> Unit)? = null,
     menuItems: List<MenuItem> = emptyList(),
 ) {
+    val actions = menuItems.groupBy { it.inMenu }
+
     CenterAlignedTopAppBar(
         title = {
             Text(title)
@@ -68,8 +68,20 @@ internal fun DismissableTopAppBar(
             }
         } ?: {},
         actions = {
-            if (menuItems.isNotEmpty()) {
-                DropdownMenuWithDetails(menuItems)
+            actions[false].orEmpty().map {
+                IconButton(
+                    onClick = it.onClick,
+                    modifier = Modifier.background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = CircleShape
+                    )
+                ) {
+                    it.leadingIcon()
+                }
+            }
+
+            if (actions[true].orEmpty().isNotEmpty()) {
+                DropdownMenuWithDetails(actions[true].orEmpty())
             }
         }
     )
@@ -115,7 +127,8 @@ internal data class MenuItem(
     val text: String,
     val leadingIcon: @Composable () -> Unit,
     val onClick: () -> Unit,
-    val tint: Color
+    val tint: Color,
+    val inMenu: Boolean = true
 )
 
 
@@ -130,7 +143,7 @@ internal fun BackIcon(onClick: () -> Unit) {
 internal fun MinifyIcon(onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.background(MaterialTheme.colorScheme.background, shape = CircleShape)
+        modifier = Modifier.padding(start = 16.dp).background(MaterialTheme.colorScheme.background, shape = CircleShape)
     ) {
         Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = "Back")
     }
@@ -155,5 +168,44 @@ private fun DismissableTopAppBar_Preview() {
         DismissableTopAppBar(title = "TopBar title", onDismissClick = {})
     }
 }
+
+@PreviewLightDark
+@Composable
+private fun DismissableTopAppBarWithActions_Preview() {
+    ElvahChargeTheme {
+        DismissableTopAppBar(
+            title = "TopBar title", onDismissClick = {}, menuItems = listOf(
+                MenuItem(
+                    text = "Action 1",
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    onClick = {},
+                    tint = MaterialTheme.colorScheme.primary,
+                    inMenu = true
+                ),
+
+                MenuItem(
+                    text = "Action 2",
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Close",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    onClick = {},
+                    tint = MaterialTheme.colorScheme.primary,
+                    inMenu = false
+                )
+            )
+        )
+    }
+}
+
 
 
