@@ -161,4 +161,5 @@
     <string name="charging_delay_banner_title">Need help?</string>
     <string name="charging_delay_banner_description">We’re here if you face issues during charging.</string>
     <string name="contact_support_button">Contact support</string>
+    <string name="review_title">Charging session stopped</string>
 </resources>
