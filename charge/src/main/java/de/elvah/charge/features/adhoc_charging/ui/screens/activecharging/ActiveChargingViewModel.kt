@@ -7,7 +7,6 @@ import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSessi
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
-import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
 import de.elvah.charge.features.payments.domain.usecase.GetAdditionalCosts
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus

@@ -104,10 +104,6 @@ private fun ReviewScreen_Content(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(Modifier.size(40.dp))
-            CPOLogo(state.summary.cpoLogo)
-
             Spacer(Modifier.size(32.dp))
             Icon(
                 painter = painterResource(R.drawable.ic_green_tick),

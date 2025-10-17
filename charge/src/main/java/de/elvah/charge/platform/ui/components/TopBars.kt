@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -143,7 +142,9 @@ internal fun BackIcon(onClick: () -> Unit) {
 internal fun MinifyIcon(onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.padding(start = 16.dp).background(MaterialTheme.colorScheme.background, shape = CircleShape)
+        modifier = Modifier
+            .padding(start = 16.dp)
+            .background(MaterialTheme.colorScheme.background, shape = CircleShape)
     ) {
         Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = "Back")
     }

@@ -135,7 +135,7 @@ private fun Banner_Preview() {
 
 @PreviewLightDark
 @Composable
-private fun ErrorBanner_Preview(){
+private fun ErrorBanner_Preview() {
     ElvahChargeTheme {
         ErrorBanner(text = "Error", onCloseClick = {})
     }

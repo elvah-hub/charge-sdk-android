@@ -46,7 +46,7 @@ internal fun DaySelector(
 
 @PreviewLightDark
 @Composable
-private fun DaySelector_Preview(){
+private fun DaySelector_Preview() {
     ElvahChargeTheme {
         DaySelector(1) { }
     }
