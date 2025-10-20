@@ -5,7 +5,7 @@ import okhttp3.Interceptor
 import kotlin.reflect.full.findAnnotation
 
 public object NetworkInterceptorRegistry {
-    
+
     private val registeredInterceptors = mutableListOf<Interceptor>()
 
     public fun register(interceptor: Interceptor) {
@@ -13,9 +13,7 @@ public object NetworkInterceptorRegistry {
     }
 
     public fun getCustomInterceptors(): List<Interceptor> {
-        return registeredInterceptors.filter { interceptor ->
-            interceptor::class.findAnnotation<NetworkInterceptor>() != null
-        }.sortedBy { interceptor ->
+        return registeredInterceptors.sortedBy { interceptor ->
             interceptor::class.findAnnotation<NetworkInterceptor>()?.priority ?: 0
         }
     }
