@@ -12,7 +12,6 @@ fun getChuckerInterceptor(context: Context): ChuckerInterceptor {
         retentionPeriod = RetentionManager.Period.ONE_HOUR
     )
 
-
     return ChuckerInterceptor.Builder(context)
         .collector(chuckerCollector)
         .alwaysReadResponseBody(true)

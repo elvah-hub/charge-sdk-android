@@ -1,5 +1,6 @@
 package de.elvah.charge.platform.network.dev
 
+import de.elvah.charge.platform.network.CustomNetworkInterceptorManager
 import de.elvah.charge.platform.network.annotations.NetworkInterceptor
 import de.elvah.charge.platform.network.discovery.NetworkInterceptorRegistry
 import io.mockk.mockk
@@ -25,19 +26,19 @@ class CustomNetworkInterceptorManagerTest {
     @Test
     fun `registerInterceptor delegates to registry`() {
         val interceptor = TestCustomInterceptor()
-        
+
         CustomNetworkInterceptorManager.registerInterceptor(interceptor)
-        
+
         assertEquals(1, CustomNetworkInterceptorManager.getCustomInterceptorsCount())
     }
 
     @Test
     fun `getCustomInterceptorsCount returns correct count`() {
         assertEquals(0, CustomNetworkInterceptorManager.getCustomInterceptorsCount())
-        
+
         CustomNetworkInterceptorManager.registerInterceptor(TestCustomInterceptor())
         assertEquals(1, CustomNetworkInterceptorManager.getCustomInterceptorsCount())
-        
+
         CustomNetworkInterceptorManager.registerInterceptor(TestCustomInterceptor())
         assertEquals(2, CustomNetworkInterceptorManager.getCustomInterceptorsCount())
     }
@@ -46,11 +47,11 @@ class CustomNetworkInterceptorManagerTest {
     fun `clearAllInterceptors clears all interceptors`() {
         CustomNetworkInterceptorManager.registerInterceptor(TestCustomInterceptor())
         CustomNetworkInterceptorManager.registerInterceptor(TestCustomInterceptor())
-        
+
         assertEquals(2, CustomNetworkInterceptorManager.getCustomInterceptorsCount())
-        
+
         CustomNetworkInterceptorManager.clearAllInterceptors()
-        
+
         assertEquals(0, CustomNetworkInterceptorManager.getCustomInterceptorsCount())
     }
 

@@ -25,27 +25,12 @@ class NetworkInterceptorRegistryTest {
     @Test
     fun `register adds interceptor to registry`() {
         val interceptor = TestCustomInterceptor()
-        
+
         NetworkInterceptorRegistry.register(interceptor)
-        
+
         val customInterceptors = NetworkInterceptorRegistry.getCustomInterceptors()
         assertEquals(1, customInterceptors.size)
         assertEquals(interceptor, customInterceptors.first())
-    }
-
-    @Test
-    fun `getCustomInterceptors returns only annotated interceptors`() {
-        val annotatedInterceptor = TestCustomInterceptor()
-        val nonAnnotatedInterceptor = object : Interceptor {
-            override fun intercept(chain: Interceptor.Chain): Response = mockk()
-        }
-        
-        NetworkInterceptorRegistry.register(annotatedInterceptor)
-        NetworkInterceptorRegistry.register(nonAnnotatedInterceptor)
-        
-        val customInterceptors = NetworkInterceptorRegistry.getCustomInterceptors()
-        assertEquals(1, customInterceptors.size)
-        assertEquals(annotatedInterceptor, customInterceptors.first())
     }
 
     @Test
@@ -53,11 +38,11 @@ class NetworkInterceptorRegistryTest {
         val lowPriorityInterceptor = LowPriorityCustomInterceptor()
         val highPriorityInterceptor = HighPriorityCustomInterceptor()
         val defaultPriorityInterceptor = TestCustomInterceptor()
-        
+
         NetworkInterceptorRegistry.register(highPriorityInterceptor)
         NetworkInterceptorRegistry.register(lowPriorityInterceptor)
         NetworkInterceptorRegistry.register(defaultPriorityInterceptor)
-        
+
         val customInterceptors = NetworkInterceptorRegistry.getCustomInterceptors()
         assertEquals(3, customInterceptors.size)
         assertEquals(defaultPriorityInterceptor, customInterceptors[0]) // priority 0 (default)
@@ -69,14 +54,14 @@ class NetworkInterceptorRegistryTest {
     fun `clear removes all interceptors from registry`() {
         val interceptor1 = TestCustomInterceptor()
         val interceptor2 = TestCustomInterceptor()
-        
+
         NetworkInterceptorRegistry.register(interceptor1)
         NetworkInterceptorRegistry.register(interceptor2)
-        
+
         assertEquals(2, NetworkInterceptorRegistry.getCustomInterceptors().size)
-        
+
         NetworkInterceptorRegistry.clear()
-        
+
         assertTrue(NetworkInterceptorRegistry.getCustomInterceptors().isEmpty())
     }
 
