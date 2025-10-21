@@ -2,10 +2,8 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -260,15 +258,6 @@ private fun ChargingPartnerAttribution(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = stringResource(R.string.charging_partner_attribution_label),
-            style = copySmall,
-            color = MaterialTheme.colorScheme.secondary,
-            textAlign = TextAlign.Center,
-        )
-
-        Spacer(Modifier.height(7.dp))
-
         AsyncImage(
             modifier = Modifier
                 .size(

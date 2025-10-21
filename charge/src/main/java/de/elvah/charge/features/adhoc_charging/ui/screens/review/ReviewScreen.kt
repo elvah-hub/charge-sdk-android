@@ -117,7 +117,7 @@ private fun ReviewScreen_Content(
             Spacer(Modifier.size(32.dp))
 
             Text(
-                text = stringResource(R.string.review_title),
+                text = stringResource(R.string.charge_session_stopped_label),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )

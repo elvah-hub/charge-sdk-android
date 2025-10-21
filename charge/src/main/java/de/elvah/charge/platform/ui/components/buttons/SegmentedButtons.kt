@@ -7,7 +7,9 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
@@ -18,7 +20,13 @@ internal fun DaySelector(
     Unit = {},
     onDaySelected: (Int) -> Unit
 ) {
-    val options = listOf("Yesterday", "Today", "Tomorrow")
+    val options = listOf(
+        R.string.generic_yesterday,
+        R.string.generic_today,
+        R.string.generic_tomorrow,
+    ).map {
+        stringResource(it)
+    }
 
     SingleChoiceSegmentedButtonRow(modifier = modifier) {
         options.forEachIndexed { index, label ->

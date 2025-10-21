@@ -36,7 +36,7 @@ internal fun FullScreenError(
 
             onRetryClick?.let {
                 ButtonPrimary(
-                    text = stringResource(R.string.retry),
+                    text = stringResource(R.string.try_again),
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter),
