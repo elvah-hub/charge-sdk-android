@@ -5,7 +5,7 @@ import arrow.core.right
 import de.elvah.charge.features.sites.domain.model.BlockingFee
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
-import de.elvah.charge.features.sites.domain.model.ChargeSite.ChargePoint.Offer.Price
+import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox

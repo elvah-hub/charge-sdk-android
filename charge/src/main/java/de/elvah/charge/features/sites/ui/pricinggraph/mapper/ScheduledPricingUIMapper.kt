@@ -2,7 +2,7 @@ package de.elvah.charge.features.sites.ui.pricinggraph.mapper
 
 import de.elvah.charge.features.sites.domain.extension.timeSlotToLocalDateTime
 import de.elvah.charge.features.sites.domain.model.BlockingFee
-import de.elvah.charge.features.sites.domain.model.ChargeSite.ChargePoint.Offer.Price
+import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
 import kotlinx.datetime.LocalDateTime

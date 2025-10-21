@@ -2,6 +2,8 @@ package de.elvah.charge.features.sites.ui.utils
 
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.Offer
+import de.elvah.charge.features.sites.domain.model.Price
 import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.model.AddressUI
@@ -76,9 +78,9 @@ internal object MockData {
             evses = List(10) { evseIndex ->
                 ChargeSite.ChargePoint(
                     evseId = "DE*KDL*E000004$siteIndex$evseIndex",
-                    offer = ChargeSite.ChargePoint.Offer(
+                    offer = Offer(
                         price = "EUR".let { currency ->
-                            ChargeSite.ChargePoint.Offer.Price(
+                            Price(
                                 energyPricePerKWh = Pricing(22.23, currency),
                                 baseFee = Pricing(1.2, currency),
                                 blockingFee = null,

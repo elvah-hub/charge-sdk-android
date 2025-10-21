@@ -6,13 +6,22 @@ import de.elvah.charge.platform.network.retrofit.RetrofitFactory
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiVersionInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.IntegrateClientInterceptor
+import de.elvah.charge.platform.network.retrofit.model.AdapterHolder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 
-private fun provideMoshi(): Moshi = Moshi.Builder()
-    .addLast(KotlinJsonAdapterFactory())
+private fun provideMoshi(
+    adapters: List<AdapterHolder>,
+): Moshi = Moshi.Builder()
+    .apply {
+        adapters.forEach {
+            add(it.type, it.jsonAdapter)
+        }
+
+        addLast(KotlinJsonAdapterFactory())
+    }
     .build()
 
 private fun provideRetrofitFactory(
@@ -36,6 +45,6 @@ private fun provideRetrofitFactory(
 }
 
 internal val retrofitModule = module {
-    single { provideMoshi() }
+    single { provideMoshi(getAll()) }
     single { provideRetrofitFactory(get(), get(), get(), get(), get(), get(), get()) }
 }

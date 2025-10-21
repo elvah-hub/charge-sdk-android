@@ -1,13 +1,13 @@
 package de.elvah.charge.features.sites.ui.mapper
 
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.Offer
 import de.elvah.charge.features.sites.ui.model.AddressUI
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 import de.elvah.charge.features.sites.ui.model.Location
 import de.elvah.charge.public_api.banner.EvseId
-
 
 internal fun ChargeSite.toUI(): ChargeSiteUI {
     val commonPrefix = getCommonPrefixes()
@@ -57,7 +57,7 @@ internal fun ChargeSite.toRender(): ChargeBannerRender {
     )
 }
 
-internal fun ChargeSite.getBestOffer(): ChargeSite.ChargePoint.Offer =
+internal fun ChargeSite.getBestOffer(): Offer =
     this.evses.map { it to it.offer.price.energyPricePerKWh.value }.reduce { acc, pair ->
         minOf(acc, pair, compareBy { it.second })
     }.first.offer

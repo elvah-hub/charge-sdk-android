@@ -86,7 +86,7 @@ private fun SiteDetailScreen_Content(
                 .padding(innerPadding),
         ) {
             SiteDetailTopBar(
-                discountExpiresAt = state.discountExpiresAt,
+                discountExpiresAt = null,
                 onCloseClick = onCloseClick,
                 onOfferExpired = onOfferExpired,
             )
