@@ -2,6 +2,7 @@ package de.elvah.charge
 
 import android.app.Application
 import de.elvah.charge.platform.config.Config
+import de.elvah.charge.platform.config.Environment
 
 class AppClass : Application() {
     override fun onCreate() {
