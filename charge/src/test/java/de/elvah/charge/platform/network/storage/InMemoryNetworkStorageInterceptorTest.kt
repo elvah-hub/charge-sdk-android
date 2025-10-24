@@ -31,8 +31,9 @@ class InMemoryNetworkStorageInterceptorTest {
             .get()
             .addHeader("Authorization", "Bearer token")
             .build()
-            
-        val responseBody = "{\"result\": \"success\"}".toResponseBody("application/json".toMediaType())
+
+        val responseBody =
+            "{\"result\": \"success\"}".toResponseBody("application/json".toMediaType())
         val response = Response.Builder()
             .request(request)
             .protocol(okhttp3.Protocol.HTTP_1_1)
@@ -65,7 +66,7 @@ class InMemoryNetworkStorageInterceptorTest {
             .url("https://api.example.com/submit")
             .post(requestBody)
             .build()
-            
+
         val response = Response.Builder()
             .request(request)
             .protocol(okhttp3.Protocol.HTTP_1_1)
@@ -92,14 +93,14 @@ class InMemoryNetworkStorageInterceptorTest {
     fun `intercept handles multiple requests`() {
         val request1 = Request.Builder().url("https://api.example.com/test1").get().build()
         val request2 = Request.Builder().url("https://api.example.com/test2").get().build()
-        
+
         val response1 = Response.Builder()
             .request(request1)
             .protocol(okhttp3.Protocol.HTTP_1_1)
             .code(200)
             .message("OK")
             .build()
-            
+
         val response2 = Response.Builder()
             .request(request2)
             .protocol(okhttp3.Protocol.HTTP_1_1)
@@ -116,10 +117,10 @@ class InMemoryNetworkStorageInterceptorTest {
 
         val storedRequests = interceptor.getStoredRequests()
         assertEquals(2, storedRequests.size)
-        
+
         assertEquals("https://api.example.com/test1", storedRequests[0].url)
         assertEquals(200, storedRequests[0].responseCode)
-        
+
         assertEquals("https://api.example.com/test2", storedRequests[1].url)
         assertEquals(404, storedRequests[1].responseCode)
     }
@@ -148,7 +149,7 @@ class InMemoryNetworkStorageInterceptorTest {
     fun `stored requests are thread-safe`() {
         val numRequests = 100
         val threads = mutableListOf<Thread>()
-        
+
         repeat(numRequests) { i ->
             val thread = Thread {
                 val request = Request.Builder().url("https://api.example.com/test$i").get().build()
@@ -158,17 +159,17 @@ class InMemoryNetworkStorageInterceptorTest {
                     .code(200)
                     .message("OK")
                     .build()
-                
+
                 val chainMock = mockk<Interceptor.Chain>()
                 every { chainMock.request() } returns request
                 every { chainMock.proceed(request) } returns response
-                
+
                 interceptor.intercept(chainMock)
             }
             threads.add(thread)
             thread.start()
         }
-        
+
         threads.forEach { it.join() }
         assertEquals(numRequests, interceptor.getStoredRequests().size)
     }

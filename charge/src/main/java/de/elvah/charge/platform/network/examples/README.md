@@ -3,9 +3,11 @@
 This feature allows hosting applications to register custom interceptors for various purposes:
 
 ## 1. Network Request Storage Feature
+
 Store all network requests for testing and debugging purposes.
 
-## 2. Custom Network Interceptors  
+## 2. Custom Network Interceptors
+
 Add custom logic to network requests without storage requirements.
 
 ## Usage
@@ -146,7 +148,8 @@ CustomNetworkInterceptorManager.clearAllInterceptors()
 
 ## Priority System
 
-Both storage and custom interceptors support priority ordering. Interceptors with lower priority values are executed first:
+Both storage and custom interceptors support priority ordering. Interceptors with lower priority
+values are executed first:
 
 ```kotlin
 @NetworkInterceptor(priority = 0) // Executed first
@@ -162,6 +165,7 @@ class LowPriorityInterceptor : Interceptor { ... }
 ## Execution Order
 
 The interceptor chain executes in this order:
+
 1. **Custom Interceptors** (`@NetworkInterceptor`) - sorted by priority
-2. **Storage Interceptors** (`@NetworkRequestStorage`) - sorted by priority  
+2. **Storage Interceptors** (`@NetworkRequestStorage`) - sorted by priority
 3. **SDK Internal Interceptors** (API key, distinct ID, logging)

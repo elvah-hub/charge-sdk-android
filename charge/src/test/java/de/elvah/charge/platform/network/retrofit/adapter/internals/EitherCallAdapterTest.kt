@@ -1,6 +1,5 @@
 package de.elvah.charge.platform.network.retrofit.adapter.internals
 
-import arrow.core.Either
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.elvah.charge.platform.network.error.NetworkErrorParser
@@ -27,10 +26,10 @@ internal class EitherCallAdapterTest {
     fun `responseType returns correct type`() {
         // Given
         val adapter = EitherCallAdapter<String>(responseType, testScope, errorParser)
-        
+
         // When
         val result = adapter.responseType()
-        
+
         // Then
         assertEquals(responseType, result)
     }
@@ -40,10 +39,10 @@ internal class EitherCallAdapterTest {
         // Given
         val mockCall = mockk<Call<String>>()
         val adapter = EitherCallAdapter<String>(responseType, testScope, errorParser)
-        
+
         // When
         val result = adapter.adapt(mockCall)
-        
+
         // Then
         assertTrue("Result should be EitherCall instance", result is EitherCall)
     }
@@ -53,13 +52,15 @@ internal class EitherCallAdapterTest {
         // Given
         val mockCall = mockk<Call<String>>()
         val adapter = EitherCallAdapter<String>(responseType, testScope, errorParser)
-        
+
         // When
         val result = adapter.adapt(mockCall)
-        
+
         // Then
-        assertTrue("Result should be Call<Either<Throwable, String?>>", 
-            result is Call<*>)
+        assertTrue(
+            "Result should be Call<Either<Throwable, String?>>",
+            result is Call<*>
+        )
         // Note: We cannot easily test the generic type at runtime due to type erasure,
         // but the compilation itself validates the type safety
     }
@@ -70,10 +71,10 @@ internal class EitherCallAdapterTest {
         val intResponseType: Type = Int::class.java
         val mockCall = mockk<Call<Int>>()
         val adapter = EitherCallAdapter<Int>(intResponseType, testScope, errorParser)
-        
+
         // When
         val result = adapter.adapt(mockCall)
-        
+
         // Then
         assertTrue("Result should be EitherCall instance", result is EitherCall)
         assertEquals(intResponseType, adapter.responseType())
@@ -83,14 +84,14 @@ internal class EitherCallAdapterTest {
     fun `adapter works with custom data classes`() {
         // Given
         data class CustomResponse(val id: String, val value: Int)
-        
+
         val customResponseType: Type = CustomResponse::class.java
         val mockCall = mockk<Call<CustomResponse>>()
         val adapter = EitherCallAdapter<CustomResponse>(customResponseType, testScope, errorParser)
-        
+
         // When
         val result = adapter.adapt(mockCall)
-        
+
         // Then
         assertTrue("Result should be EitherCall instance", result is EitherCall)
         assertEquals(customResponseType, adapter.responseType())
@@ -101,10 +102,10 @@ internal class EitherCallAdapterTest {
         // Given
         val mockCall = mockk<Call<String>>()
         val adapter = EitherCallAdapter<String>(responseType, testScope, errorParser)
-        
+
         // When
         val result = adapter.adapt(mockCall) as EitherCall<String>
-        
+
         // Then
         // We can't directly access private fields, but we can verify the EitherCall was created
         // The actual functionality testing is covered in EitherCallTest

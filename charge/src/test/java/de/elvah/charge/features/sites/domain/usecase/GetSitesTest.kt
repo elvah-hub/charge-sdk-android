@@ -11,7 +11,10 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 
@@ -31,9 +34,9 @@ class GetSitesTest {
         val params = GetSites.Params()
         val sites = listOf(createTestChargeSite("site_1"), createTestChargeSite("site_2"))
         coEvery { sitesRepository.getChargeSites(null, null, null, null) } returns sites.right()
-        
+
         val result = useCase.invoke(params)
-        
+
         assertTrue("Expected Right result", result.isRight())
         result.fold(
             ifLeft = { fail("Expected success but got failure: $it") },
@@ -43,7 +46,7 @@ class GetSitesTest {
                 assertEquals("site_2", returnedSites[1].id)
             }
         )
-        
+
         coVerify { sitesRepository.getChargeSites(null, null, null, null) }
     }
 
@@ -51,10 +54,17 @@ class GetSitesTest {
     fun `invoke returns failure when repository returns failure`() = runTest {
         val params = GetSites.Params()
         val exception = RuntimeException("Sites fetch failed")
-        coEvery { sitesRepository.getChargeSites(any(), any(), any(), any()) } returns exception.left()
-        
+        coEvery {
+            sitesRepository.getChargeSites(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns exception.left()
+
         val result = useCase.invoke(params)
-        
+
         assertTrue("Expected Left result", result.isLeft())
         result.fold(
             ifLeft = { error ->
@@ -80,11 +90,11 @@ class GetSitesTest {
         )
         val sites = listOf(createTestChargeSite("site_1"))
         coEvery { sitesRepository.getChargeSites(any(), any(), any(), any()) } returns sites.right()
-        
+
         val result = useCase.invoke(params)
-        
+
         assertTrue("Expected Right result", result.isRight())
-        coVerify { 
+        coVerify {
             sitesRepository.getChargeSites(
                 boundingBox = boundingBox,
                 campaignId = "campaign_123",
@@ -104,9 +114,9 @@ class GetSitesTest {
         )
         val sites = listOf(createTestChargeSite("site_null"))
         coEvery { sitesRepository.getChargeSites(null, null, null, null) } returns sites.right()
-        
+
         val result = useCase.invoke(params)
-        
+
         assertTrue("Expected Right result", result.isRight())
         coVerify { sitesRepository.getChargeSites(null, null, null, null) }
     }
@@ -114,7 +124,7 @@ class GetSitesTest {
     @Test
     fun `Params class handles default values correctly`() {
         val defaultParams = GetSites.Params()
-        
+
         assertNull("Default boundingBox should be null", defaultParams.boundingBox)
         assertNull("Default campaignId should be null", defaultParams.campaignId)
         assertNull("Default organisationId should be null", defaultParams.organisationId)
@@ -130,7 +140,7 @@ class GetSitesTest {
             organisationId = "org_test",
             offerType = OfferType.CAMPAIGN
         )
-        
+
         assertEquals("BoundingBox should match", boundingBox, params.boundingBox)
         assertEquals("CampaignId should match", "campaign_test", params.campaignId)
         assertEquals("OrganisationId should match", "org_test", params.organisationId)

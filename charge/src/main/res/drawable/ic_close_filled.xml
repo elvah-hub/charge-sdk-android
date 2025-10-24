@@ -1,3 +1,10 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
-    <path android:pathData="M2 12C2 3 3 2 12 2s10 1 10 10-1 10-10 10S2 21 2 12m7-4a1 1 0 0 0-0.707 1.707L10.586 12l-2.293 2.293a1 1 0 0 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 1 0-1.414-1.414L12 10.586 9.707 8.293A1 1 0 0 0 9 8" android:fillColor="#0C0B0B" android:fillType="evenOdd"/>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#0C0B0B"
+        android:fillType="evenOdd"
+        android:pathData="M2 12C2 3 3 2 12 2s10 1 10 10-1 10-10 10S2 21 2 12m7-4a1 1 0 0 0-0.707 1.707L10.586 12l-2.293 2.293a1 1 0 0 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 1 0-1.414-1.414L12 10.586 9.707 8.293A1 1 0 0 0 9 8" />
 </vector>

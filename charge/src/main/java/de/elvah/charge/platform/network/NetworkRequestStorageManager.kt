@@ -5,7 +5,7 @@ import de.elvah.charge.platform.network.storage.NetworkStorageInterceptor
 import de.elvah.charge.platform.network.storage.StoredNetworkRequest
 
 public object NetworkRequestStorageManager {
-    
+
     public fun registerStorageInterceptor(interceptor: NetworkStorageInterceptor) {
         NetworkStorageInterceptorRegistry.register(interceptor)
     }

@@ -5,7 +5,7 @@ import de.elvah.charge.platform.network.storage.NetworkStorageInterceptor
 import kotlin.reflect.full.findAnnotation
 
 public object NetworkStorageInterceptorRegistry {
-    
+
     private val registeredInterceptors = mutableListOf<NetworkStorageInterceptor>()
 
     public fun register(interceptor: NetworkStorageInterceptor) {

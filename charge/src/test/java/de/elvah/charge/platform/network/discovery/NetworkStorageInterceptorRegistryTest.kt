@@ -27,9 +27,9 @@ class NetworkStorageInterceptorRegistryTest {
     @Test
     fun `register adds interceptor to registry`() {
         val interceptor = TestStorageInterceptor()
-        
+
         NetworkStorageInterceptorRegistry.register(interceptor)
-        
+
         val storageInterceptors = NetworkStorageInterceptorRegistry.getStorageInterceptors()
         assertEquals(1, storageInterceptors.size)
         assertEquals(interceptor, storageInterceptors.first())
@@ -43,10 +43,10 @@ class NetworkStorageInterceptorRegistryTest {
             override fun clear() {}
             override fun getStoredRequests(): List<StoredNetworkRequest> = emptyList()
         }
-        
+
         NetworkStorageInterceptorRegistry.register(annotatedInterceptor)
         NetworkStorageInterceptorRegistry.register(nonAnnotatedInterceptor)
-        
+
         val storageInterceptors = NetworkStorageInterceptorRegistry.getStorageInterceptors()
         assertEquals(1, storageInterceptors.size)
         assertEquals(annotatedInterceptor, storageInterceptors.first())
@@ -57,11 +57,11 @@ class NetworkStorageInterceptorRegistryTest {
         val lowPriorityInterceptor = LowPriorityInterceptor()
         val highPriorityInterceptor = HighPriorityInterceptor()
         val defaultPriorityInterceptor = TestStorageInterceptor()
-        
+
         NetworkStorageInterceptorRegistry.register(highPriorityInterceptor)
         NetworkStorageInterceptorRegistry.register(lowPriorityInterceptor)
         NetworkStorageInterceptorRegistry.register(defaultPriorityInterceptor)
-        
+
         val storageInterceptors = NetworkStorageInterceptorRegistry.getStorageInterceptors()
         assertEquals(3, storageInterceptors.size)
         assertEquals(defaultPriorityInterceptor, storageInterceptors[0]) // priority 0 (default)
@@ -73,14 +73,14 @@ class NetworkStorageInterceptorRegistryTest {
     fun `clear removes all interceptors from registry`() {
         val interceptor1 = TestStorageInterceptor()
         val interceptor2 = TestStorageInterceptor()
-        
+
         NetworkStorageInterceptorRegistry.register(interceptor1)
         NetworkStorageInterceptorRegistry.register(interceptor2)
-        
+
         assertEquals(2, NetworkStorageInterceptorRegistry.getStorageInterceptors().size)
-        
+
         NetworkStorageInterceptorRegistry.clear()
-        
+
         assertTrue(NetworkStorageInterceptorRegistry.getStorageInterceptors().isEmpty())
     }
 
@@ -90,12 +90,12 @@ class NetworkStorageInterceptorRegistryTest {
         val interceptor2 = TestStorageInterceptor()
         val mockInterceptor1 = mockk<TestStorageInterceptor>(relaxed = true)
         val mockInterceptor2 = mockk<TestStorageInterceptor>(relaxed = true)
-        
+
         NetworkStorageInterceptorRegistry.register(interceptor1)
         NetworkStorageInterceptorRegistry.register(interceptor2)
-        
+
         NetworkStorageInterceptorRegistry.clearAllStoredRequests()
-        
+
         // Since we can't easily mock the actual clear method calls, 
         // we just verify that the method runs without errors
         // The functionality is implicitly tested by other test methods

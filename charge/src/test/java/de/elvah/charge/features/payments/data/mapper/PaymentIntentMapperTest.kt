@@ -19,9 +19,9 @@ class PaymentIntentMapperTest {
             amountValue = 25.50,
             currency = "EUR"
         )
-        
+
         val domain = response.toDomain()
-        
+
         assertEquals("pi_test_123456", domain.paymentIntentId)
         assertEquals("acct_test_789", domain.accountId)
         assertEquals("pay_test_456", domain.paymentId)
@@ -40,9 +40,9 @@ class PaymentIntentMapperTest {
             amountValue = 0.0,
             currency = "USD"
         )
-        
+
         val domain = response.toDomain()
-        
+
         assertEquals(0.0, domain.amount, 0.001)
         assertEquals("USD", domain.currency)
     }
@@ -57,9 +57,9 @@ class PaymentIntentMapperTest {
             amountValue = 999.99,
             currency = "GBP"
         )
-        
+
         val domain = response.toDomain()
-        
+
         assertEquals(999.99, domain.amount, 0.001)
         assertEquals("GBP", domain.currency)
     }
@@ -67,7 +67,7 @@ class PaymentIntentMapperTest {
     @Test
     fun `toDomain handles different currency codes`() {
         val currencies = listOf("EUR", "USD", "GBP", "CHF", "SEK", "NOK", "DKK")
-        
+
         currencies.forEach { currency ->
             val response = createPaymentIntentResponse(
                 paymentIntentId = "pi_currency_test",
@@ -77,9 +77,9 @@ class PaymentIntentMapperTest {
                 amountValue = 10.0,
                 currency = currency
             )
-            
+
             val domain = response.toDomain()
-            
+
             assertEquals("Currency mapping failed for $currency", currency, domain.currency)
         }
     }
@@ -94,9 +94,9 @@ class PaymentIntentMapperTest {
             amountValue = 42.75,
             currency = "EUR"
         )
-        
+
         val domain = response.toDomain()
-        
+
         assertEquals("Nested amount value not mapped correctly", 42.75, domain.amount, 0.001)
         assertEquals("Nested currency not mapped correctly", "EUR", domain.currency)
     }
@@ -111,9 +111,9 @@ class PaymentIntentMapperTest {
             amountValue = 12.345,
             currency = "EUR"
         )
-        
+
         val domain = response.toDomain()
-        
+
         assertEquals(12.345, domain.amount, 0.0001)
     }
 
