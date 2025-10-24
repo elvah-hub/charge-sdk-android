@@ -2,7 +2,6 @@ package de.elvah.charge.features.payments.domain.mapper
 
 import de.elvah.charge.features.adhoc_charging.ChargingSessionPrefs
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Test
 
 class SessionDetailsMapperTest {
@@ -15,12 +14,15 @@ class SessionDetailsMapperTest {
             termsOfConditionUrl = "https://example.com/terms-conditions",
             logoUrl = "https://example.com/logo.png"
         )
-        
+
         val organisationDetails = prefs.getOrganisationDetails()
-        
+
         assertEquals("Test CPO Company", organisationDetails.companyName)
         assertEquals("https://example.com/privacy-policy", organisationDetails.privacyUrl)
-        assertEquals("https://example.com/terms-conditions", organisationDetails.termsOfConditionUrl)
+        assertEquals(
+            "https://example.com/terms-conditions",
+            organisationDetails.termsOfConditionUrl
+        )
         assertEquals("https://example.com/logo.png", organisationDetails.logoUrl)
     }
 
@@ -32,10 +34,10 @@ class SessionDetailsMapperTest {
             phone = "+49987654321",
             agent = "John Support Agent"
         )
-        
+
         val organisationDetails = prefs.getOrganisationDetails()
         val supportContacts = organisationDetails.supportContacts
-        
+
         assertEquals("support@example.com", supportContacts.email)
         assertEquals("+49123456789", supportContacts.whatsapp)
         assertEquals("+49987654321", supportContacts.phone)
@@ -50,14 +52,14 @@ class SessionDetailsMapperTest {
             phone = null,
             agent = null
         )
-        
+
         val organisationDetails = prefs.getOrganisationDetails()
         val supportContacts = organisationDetails.supportContacts
-        
-        assertEquals("",supportContacts.email)
-        assertEquals("",supportContacts.whatsapp)
-        assertEquals("",supportContacts.phone)
-        assertEquals("",supportContacts.agent)
+
+        assertEquals("", supportContacts.email)
+        assertEquals("", supportContacts.whatsapp)
+        assertEquals("", supportContacts.phone)
+        assertEquals("", supportContacts.agent)
     }
 
     @Test
@@ -68,10 +70,10 @@ class SessionDetailsMapperTest {
             phone = "",
             agent = ""
         )
-        
+
         val organisationDetails = prefs.getOrganisationDetails()
         val supportContacts = organisationDetails.supportContacts
-        
+
         assertEquals("", supportContacts.email)
         assertEquals("", supportContacts.whatsapp)
         assertEquals("", supportContacts.phone)
@@ -86,12 +88,12 @@ class SessionDetailsMapperTest {
             phone = "+49123456789",
             agent = null
         )
-        
+
         val organisationDetails = prefs.getOrganisationDetails()
         val supportContacts = organisationDetails.supportContacts
-        
+
         assertEquals("support@example.com", supportContacts.email)
-        assertEquals("",supportContacts.whatsapp)
+        assertEquals("", supportContacts.whatsapp)
         assertEquals("+49123456789", supportContacts.phone)
         assertEquals("", supportContacts.agent)
     }
@@ -104,10 +106,10 @@ class SessionDetailsMapperTest {
             phone = "+987654321",
             agent = "Test Agent"
         )
-        
+
         val organisationDetails = prefs.getOrganisationDetails()
         val supportContacts = organisationDetails.supportContacts
-        
+
         assertEquals("Nested email mapping failed", "test@example.com", supportContacts.email)
         assertEquals("Nested whatsapp mapping failed", "+123456789", supportContacts.whatsapp)
         assertEquals("Nested phone mapping failed", "+987654321", supportContacts.phone)
@@ -122,17 +124,25 @@ class SessionDetailsMapperTest {
             "https://company-name.com/legal/privacy-policy" to "https://company-name.com/legal/terms-of-service",
             "https://example.co.uk/privacy" to "https://example.co.uk/terms"
         )
-        
+
         testCases.forEach { (privacyUrl, termsUrl) ->
             val prefs = createChargingSessionPrefs(
                 privacyUrl = privacyUrl,
                 termsOfConditionUrl = termsUrl
             )
-            
+
             val organisationDetails = prefs.getOrganisationDetails()
-            
-            assertEquals("Privacy URL mapping failed for $privacyUrl", privacyUrl, organisationDetails.privacyUrl)
-            assertEquals("Terms URL mapping failed for $termsUrl", termsUrl, organisationDetails.termsOfConditionUrl)
+
+            assertEquals(
+                "Privacy URL mapping failed for $privacyUrl",
+                privacyUrl,
+                organisationDetails.privacyUrl
+            )
+            assertEquals(
+                "Terms URL mapping failed for $termsUrl",
+                termsUrl,
+                organisationDetails.termsOfConditionUrl
+            )
         }
     }
 
@@ -144,13 +154,17 @@ class SessionDetailsMapperTest {
             "Test-Company (Europe) Ltd.",
             "Charge & Go™"
         )
-        
+
         specialNames.forEach { companyName ->
             val prefs = createChargingSessionPrefs(cpoName = companyName)
-            
+
             val organisationDetails = prefs.getOrganisationDetails()
-            
-            assertEquals("Company name mapping failed for '$companyName'", companyName, organisationDetails.companyName)
+
+            assertEquals(
+                "Company name mapping failed for '$companyName'",
+                companyName,
+                organisationDetails.companyName
+            )
         }
     }
 
@@ -161,16 +175,16 @@ class SessionDetailsMapperTest {
             "+33123456789" to "+441234567890",
             "+1234567890" to "+39123456789"
         )
-        
+
         phoneNumbers.forEach { (whatsapp, phone) ->
             val prefs = createChargingSessionPrefs(
                 whatsapp = whatsapp,
                 phone = phone
             )
-            
+
             val organisationDetails = prefs.getOrganisationDetails()
             val supportContacts = organisationDetails.supportContacts
-            
+
             assertEquals("WhatsApp number mapping failed", whatsapp, supportContacts.whatsapp)
             assertEquals("Phone number mapping failed", phone, supportContacts.phone)
         }

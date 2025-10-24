@@ -8,7 +8,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 
@@ -26,9 +29,9 @@ class StopChargingSessionTest {
     @Test
     fun `invoke returns success when repository returns success`() = runTest {
         coEvery { chargingRepository.stopChargingSession() } returns true.right()
-        
+
         val result = useCase.invoke()
-        
+
         assertTrue("Expected Right result", result.isRight())
         result.fold(
             ifLeft = { fail("Expected success but got failure: $it") },
@@ -36,16 +39,16 @@ class StopChargingSessionTest {
                 assertTrue("Expected true", success)
             }
         )
-        
+
         coVerify { chargingRepository.stopChargingSession() }
     }
 
     @Test
     fun `invoke returns false when repository returns false`() = runTest {
         coEvery { chargingRepository.stopChargingSession() } returns false.right()
-        
+
         val result = useCase.invoke()
-        
+
         assertTrue("Expected Right result", result.isRight())
         result.fold(
             ifLeft = { fail("Expected success but got failure: $it") },
@@ -58,9 +61,9 @@ class StopChargingSessionTest {
     @Test
     fun `invoke returns OngoingSession error when repository returns OngoingSession`() = runTest {
         coEvery { chargingRepository.stopChargingSession() } returns SessionExceptions.OngoingSession.left()
-        
+
         val result = useCase.invoke()
-        
+
         assertTrue("Expected Left result", result.isLeft())
         result.fold(
             ifLeft = { error ->
@@ -73,9 +76,9 @@ class StopChargingSessionTest {
     @Test
     fun `invoke returns GenericError when repository returns GenericError`() = runTest {
         coEvery { chargingRepository.stopChargingSession() } returns SessionExceptions.GenericError.left()
-        
+
         val result = useCase.invoke()
-        
+
         assertTrue("Expected Left result", result.isLeft())
         result.fold(
             ifLeft = { error ->
@@ -89,9 +92,9 @@ class StopChargingSessionTest {
     fun `invoke delegates to repository without modification`() = runTest {
         val expectedResult = true.right()
         coEvery { chargingRepository.stopChargingSession() } returns expectedResult
-        
+
         val actualResult = useCase.invoke()
-        
+
         assertEquals("Result should be passed through unchanged", expectedResult, actualResult)
         coVerify(exactly = 1) { chargingRepository.stopChargingSession() }
     }
@@ -102,12 +105,12 @@ class StopChargingSessionTest {
             SessionExceptions.OngoingSession,
             SessionExceptions.GenericError
         )
-        
+
         exceptions.forEach { exception ->
             coEvery { chargingRepository.stopChargingSession() } returns exception.left()
-            
+
             val result = useCase.invoke()
-            
+
             assertTrue("Expected Left result for $exception", result.isLeft())
             result.fold(
                 ifLeft = { error ->
@@ -121,9 +124,9 @@ class StopChargingSessionTest {
     @Test
     fun `invoke is a suspend function`() = runTest {
         coEvery { chargingRepository.stopChargingSession() } returns true.right()
-        
+
         val result = useCase()
-        
+
         assertTrue("Expected Right result", result.isRight())
         coVerify { chargingRepository.stopChargingSession() }
     }

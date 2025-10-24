@@ -33,16 +33,25 @@ internal class NetworkErrorParserTest {
           ]
         }
         """.trimIndent()
-        
+
         val errorBody = errorJson.toResponseBody("application/json".toMediaType())
         val response = Response.error<Any>(HttpURLConnection.HTTP_BAD_REQUEST, errorBody)
-        
+
         val result = parser.parseError(response)
-        
-        assertTrue("Expected InvalidVersionException", result is NetworkError.InvalidVersionException)
+
+        assertTrue(
+            "Expected InvalidVersionException",
+            result is NetworkError.InvalidVersionException
+        )
         val exception = result as NetworkError.InvalidVersionException
-        assertEquals("Invalid API version: 2099-01-01.unknown (valid versions: 2025-04-09.helium, 2025-10-16.lithium)", exception.errorResponse.errors.first().detail)
-        assertEquals("Invalid API version: Invalid API version: 2099-01-01.unknown (valid versions: 2025-04-09.helium, 2025-10-16.lithium)", exception.message)
+        assertEquals(
+            "Invalid API version: 2099-01-01.unknown (valid versions: 2025-04-09.helium, 2025-10-16.lithium)",
+            exception.errorResponse.errors.first().detail
+        )
+        assertEquals(
+            "Invalid API version: Invalid API version: 2099-01-01.unknown (valid versions: 2025-04-09.helium, 2025-10-16.lithium)",
+            exception.message
+        )
     }
 
     @Test
@@ -59,16 +68,22 @@ internal class NetworkErrorParserTest {
           ]
         }
         """.trimIndent()
-        
+
         val errorBody = errorJson.toResponseBody("application/json".toMediaType())
         val response = Response.error<Any>(HttpURLConnection.HTTP_BAD_REQUEST, errorBody)
-        
+
         val result = parser.parseError(response)
-        
+
         assertTrue("Expected VersionTooOldException", result is NetworkError.VersionTooOldException)
         val exception = result as NetworkError.VersionTooOldException
-        assertEquals("API version 2025-04-09.helium is too old for this endpoint (minimum supported: 2025-10-16.lithium)", exception.errorResponse.errors.first().detail)
-        assertEquals("API version too old: API version 2025-04-09.helium is too old for this endpoint (minimum supported: 2025-10-16.lithium)", exception.message)
+        assertEquals(
+            "API version 2025-04-09.helium is too old for this endpoint (minimum supported: 2025-10-16.lithium)",
+            exception.errorResponse.errors.first().detail
+        )
+        assertEquals(
+            "API version too old: API version 2025-04-09.helium is too old for this endpoint (minimum supported: 2025-10-16.lithium)",
+            exception.message
+        )
     }
 
     @Test
@@ -85,16 +100,22 @@ internal class NetworkErrorParserTest {
           ]
         }
         """.trimIndent()
-        
+
         val errorBody = errorJson.toResponseBody("application/json".toMediaType())
         val response = Response.error<Any>(HttpURLConnection.HTTP_BAD_REQUEST, errorBody)
-        
+
         val result = parser.parseError(response)
-        
+
         assertTrue("Expected VersionTooNewException", result is NetworkError.VersionTooNewException)
         val exception = result as NetworkError.VersionTooNewException
-        assertEquals("API version 2025-10-16.lithium is not supported for this endpoint (removed in: 2025-10-16.lithium)", exception.errorResponse.errors.first().detail)
-        assertEquals("API version too new: API version 2025-10-16.lithium is not supported for this endpoint (removed in: 2025-10-16.lithium)", exception.message)
+        assertEquals(
+            "API version 2025-10-16.lithium is not supported for this endpoint (removed in: 2025-10-16.lithium)",
+            exception.errorResponse.errors.first().detail
+        )
+        assertEquals(
+            "API version too new: API version 2025-10-16.lithium is not supported for this endpoint (removed in: 2025-10-16.lithium)",
+            exception.message
+        )
     }
 
     @Test
@@ -111,12 +132,12 @@ internal class NetworkErrorParserTest {
           ]
         }
         """.trimIndent()
-        
+
         val errorBody = errorJson.toResponseBody("application/json".toMediaType())
         val response = Response.error<Any>(HttpURLConnection.HTTP_BAD_REQUEST, errorBody)
-        
+
         val result = parser.parseError(response)
-        
+
         assertTrue("Expected GenericHttpException", result is NetworkError.GenericHttpException)
         val exception = result as NetworkError.GenericHttpException
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, exception.code)
@@ -126,9 +147,9 @@ internal class NetworkErrorParserTest {
     fun `parseError returns GenericHttpException for HTTP 500`() {
         val errorBody = "Internal Server Error".toResponseBody("text/plain".toMediaType())
         val response = Response.error<Any>(HttpURLConnection.HTTP_INTERNAL_ERROR, errorBody)
-        
+
         val result = parser.parseError(response)
-        
+
         assertTrue("Expected GenericHttpException", result is NetworkError.GenericHttpException)
         val exception = result as NetworkError.GenericHttpException
         assertEquals(HttpURLConnection.HTTP_INTERNAL_ERROR, exception.code)
@@ -139,9 +160,9 @@ internal class NetworkErrorParserTest {
     fun `parseError returns GenericHttpException for HTTP 400 with invalid JSON`() {
         val errorBody = "invalid json".toResponseBody("application/json".toMediaType())
         val response = Response.error<Any>(HttpURLConnection.HTTP_BAD_REQUEST, errorBody)
-        
+
         val result = parser.parseError(response)
-        
+
         assertTrue("Expected GenericHttpException", result is NetworkError.GenericHttpException)
         val exception = result as NetworkError.GenericHttpException
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, exception.code)
@@ -153,9 +174,9 @@ internal class NetworkErrorParserTest {
         val response = mockk<Response<*>>()
         every { response.code() } returns HttpURLConnection.HTTP_BAD_REQUEST
         every { response.errorBody() } returns null
-        
+
         val result = parser.parseError(response)
-        
+
         assertTrue("Expected GenericHttpException", result is NetworkError.GenericHttpException)
         val exception = result as NetworkError.GenericHttpException
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, exception.code)
