@@ -20,12 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,28 +34,19 @@ import de.elvah.charge.public_api.extension.openSite
 import de.elvah.charge.public_api.model.EvseId
 import de.elvah.charge.public_api.pricinggraph.PricingGraph
 import de.elvah.charge.public_api.session.SessionManager
+import de.elvah.charge.public_api.sitessource.ChargeSitesSource
 import de.elvah.charge.public_api.sitessource.SitesSource
 import de.elvah.charge.public_api.sitessource.rememberSitesSource
 import kotlinx.coroutines.launch
 
+private var source = ChargeSitesSource.create()
+
 @Composable
 internal fun MainScreen() {
-    val context = LocalContext.current
-    var hasChargeSessionActive by rememberSaveable { mutableStateOf(false) }
-
-    val source = rememberSitesSource()
     val siteIds by source.siteIds.collectAsStateWithLifecycle()
 
     val source2 = rememberSitesSource()
     val siteIds2 by source2.siteIds.collectAsStateWithLifecycle()
-
-    LaunchedEffect(true) {
-        hasChargeSessionActive = SessionManager.isSessionActive()
-        hasChargeSessionActive
-
-        val test = 1
-        test
-    }
 
     Scaffold(
         contentWindowInsets = getInsets(),
@@ -86,14 +73,8 @@ internal fun MainScreen() {
                 .padding(horizontal = 7.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
-            if (hasChargeSessionActive) {
-                item {
-                    Text("Charge session is in progress...")
-
-                    Button(onClick = { SessionManager.openSession(context) }) {
-                        Text("Open charge session")
-                    }
-                }
+            item {
+                ChargeSessionIndicator()
             }
 
             item {
@@ -125,6 +106,47 @@ internal fun MainScreen() {
                     siteId = siteId,
                     display = DisplayBehavior.WHEN_CONTENT_AVAILABLE,
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChargeSessionIndicator() {
+    val context = LocalContext.current
+
+    val isSummaryReady by SessionManager.isSummaryReady.collectAsStateWithLifecycle(false)
+    val hasActiveSession by SessionManager.hasActiveSession.collectAsStateWithLifecycle(false)
+    val charge by SessionManager.chargeSession.collectAsStateWithLifecycle(null)
+
+    Column {
+        if (hasActiveSession || isSummaryReady) {
+            if (isSummaryReady) {
+                Text("Charge stopped. Summary is ready.")
+            } else {
+                Text("Charge session is in progress...")
+            }
+
+            Text("Charge: ${charge?.consumption}")
+        }
+
+        if (hasActiveSession || isSummaryReady) {
+            FlowRow {
+                if (isSummaryReady) {
+                    Button(onClick = { SessionManager.openSessionSummary(context) }) {
+                        Text("Open summary")
+                    }
+                } else {
+                    Button(onClick = { SessionManager.openSession(context) }) {
+                        Text("Open charge session")
+                    }
+                }
+
+                if (!isSummaryReady) {
+                    Button(onClick = { SessionManager.stopSession() }) {
+                        Text("Stop charge session")
+                    }
+                }
             }
         }
     }

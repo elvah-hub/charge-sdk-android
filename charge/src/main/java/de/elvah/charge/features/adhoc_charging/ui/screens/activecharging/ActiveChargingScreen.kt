@@ -1,5 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -79,15 +80,18 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-
 @Composable
 internal fun ActiveChargingScreen(
     viewModel: ActiveChargingViewModel,
     onSupportClick: () -> Unit,
-    onStopClick: () -> Unit,
-    onDismissClick: () -> Unit
+    onMinimizeClick: () -> Unit,
+    navigateToSummary: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    BackHandler {
+        onMinimizeClick()
+    }
 
     when (val state = state) {
         is ActiveChargingState.Loading -> ActiveCharging_Loading()
@@ -98,10 +102,8 @@ internal fun ActiveChargingScreen(
         is ActiveChargingState.Success -> ActiveCharging_Success(
             state = state,
             onSupportClick = onSupportClick,
-            onStopClick = {
-                viewModel.stopCharging()
-            },
-            onBackClick = onDismissClick,
+            onStopClick = viewModel::stopCharging,
+            onMinimizeClick = onMinimizeClick,
             onDismissError = {
                 viewModel.onDismissError()
             },
@@ -110,8 +112,8 @@ internal fun ActiveChargingScreen(
             }
         )
 
-        is ActiveChargingState.Stopped -> {
-            onStopClick()
+        is ActiveChargingState.SessionSummary -> {
+            navigateToSummary()
         }
     }
 }
@@ -184,7 +186,7 @@ internal fun ActiveCharging_Success(
     state: ActiveChargingState.Success,
     onSupportClick: () -> Unit,
     onStopClick: () -> Unit,
-    onBackClick: () -> Unit,
+    onMinimizeClick: () -> Unit,
     onDismissError: () -> Unit,
     onHardCloseClick: () -> Unit,
 ) {
@@ -192,7 +194,7 @@ internal fun ActiveCharging_Success(
         topBar = {
             DismissableTopAppBar(
                 title = stringResource(R.string.charging_session_active_title),
-                onDismissClick = onBackClick,
+                onMinimizeClick = onMinimizeClick,
                 menuItems = listOf(
                     MenuItem(
                         text = stringResource(R.string.support_button),
@@ -610,7 +612,7 @@ private fun ActiveCharging_Success_Preview() {
             ),
             onSupportClick = {},
             onStopClick = {},
-            onBackClick = {},
+            onMinimizeClick = {},
             onDismissError = {},
             onHardCloseClick = {}
         )

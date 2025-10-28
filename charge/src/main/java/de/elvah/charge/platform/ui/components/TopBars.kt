@@ -52,7 +52,7 @@ internal fun TopAppBar(
 @Composable
 internal fun DismissableTopAppBar(
     title: String,
-    onDismissClick: (() -> Unit)? = null,
+    onMinimizeClick: (() -> Unit)? = null,
     menuItems: List<MenuItem> = emptyList(),
 ) {
     val actions = menuItems.groupBy { it.inMenu }
@@ -61,11 +61,11 @@ internal fun DismissableTopAppBar(
         title = {
             Text(title)
         },
-        navigationIcon = onDismissClick?.let {
-            {
-                MinifyIcon(onClick = onDismissClick)
+        navigationIcon = {
+            onMinimizeClick?.let {
+                MinifyIcon(onClick = onMinimizeClick)
             }
-        } ?: {},
+        },
         actions = {
             actions[false].orEmpty().map {
                 IconButton(
@@ -166,7 +166,7 @@ private fun TopAppBarWithBack_Preview() {
 @Composable
 private fun DismissableTopAppBar_Preview() {
     ElvahChargeTheme {
-        DismissableTopAppBar(title = "TopBar title", onDismissClick = {})
+        DismissableTopAppBar(title = "TopBar title", onMinimizeClick = {})
     }
 }
 
@@ -175,7 +175,7 @@ private fun DismissableTopAppBar_Preview() {
 private fun DismissableTopAppBarWithActions_Preview() {
     ElvahChargeTheme {
         DismissableTopAppBar(
-            title = "TopBar title", onDismissClick = {}, menuItems = listOf(
+            title = "TopBar title", onMinimizeClick = {}, menuItems = listOf(
                 MenuItem(
                     text = "Action 1",
                     leadingIcon = {

@@ -72,7 +72,7 @@ public fun ChargeBanner(
                     site = state.site,
                     modifier = modifier,
                     onBannerClick = {
-                        context.goToChargingSession()
+                        context.goToChargingSession(false)
                     },
                 )
             }

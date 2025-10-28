@@ -1,9 +1,10 @@
 package de.elvah.charge
 
 import android.content.Context
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ProcessLifecycleOwner
 import de.elvah.charge.features.adhoc_charging.data.local.DefaultChargingStore
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
-import de.elvah.charge.features.adhoc_charging.data.service.ChargeService
 import de.elvah.charge.features.adhoc_charging.data.service.ElvahChargeService
 import de.elvah.charge.features.adhoc_charging.di.adHocChargingLocalModule
 import de.elvah.charge.features.adhoc_charging.di.adHocChargingUseCasesModule
@@ -11,6 +12,7 @@ import de.elvah.charge.features.adhoc_charging.di.adHocViewModelModule
 import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeService
 import de.elvah.charge.features.payments.data.repository.DefaultPaymentsRepository
 import de.elvah.charge.features.payments.di.paymentsUseCaseModule
 import de.elvah.charge.features.payments.di.provideChargeSettlementApi
@@ -44,7 +46,8 @@ public object Elvah {
     }
 
     private val repositoriesModule = module {
-        singleOf(::ElvahChargeService) { bind<ChargeService>() }
+        single<ChargeService> { ElvahChargeService(get(), get(), get()) }
+
         singleOf(::DefaultChargingRepository) { bind<ChargingRepository>() }
         singleOf(::DefaultPaymentsRepository) { bind<PaymentsRepository>() }
         singleOf(::DefaultChargingStore) { bind<ChargingStore>() }
@@ -72,6 +75,10 @@ public object Elvah {
 
     }
 
+    private val lifecycleModule = module {
+        single<Lifecycle> { (ProcessLifecycleOwner.get() as ProcessLifecycleOwner).lifecycle }
+    }
+
     public fun initialize(context: Context, config: Config) {
         val simulatorModule = if (config.environment is Environment.Simulator) {
             module {
@@ -86,6 +93,7 @@ public object Elvah {
             androidContext(context)
             modules(
                 configModule(config),
+                lifecycleModule,
                 componentsModule,
                 viewModelsModule,
                 useCaseModule,

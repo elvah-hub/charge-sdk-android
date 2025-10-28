@@ -16,11 +16,12 @@ internal val sitesSourceManagerModule = module {
 }
 
 internal fun injectSitesSource(
+    clientId: String,
     instanceId: String? = null,
 ): SitesSource {
     val manager = GlobalContext.get().get<SitesSourceManager>()
 
-    return manager.getOrCreate(instanceId)
+    return manager.getOrCreate(clientId, instanceId)
     // TODO: if instance limit is reached, use preview impl, or what to do?
         ?: SitesSourcePreview()
 }

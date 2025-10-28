@@ -1,6 +1,5 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,9 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.BuildConfig
 import de.elvah.charge.R
+import de.elvah.charge.features.adhoc_charging.ui.components.ChargeSessionBanner
 import de.elvah.charge.features.adhoc_charging.ui.components.OfferCounterBanner
 import de.elvah.charge.features.adhoc_charging.ui.components.button.CircularIconButton
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
@@ -36,7 +34,6 @@ import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.Timer
 import de.elvah.charge.platform.ui.components.site.SiteDetailHeader
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
-import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -47,15 +44,19 @@ import kotlin.time.ExperimentalTime
 internal fun SiteDetailScreen(
     viewModel: SiteDetailViewModel,
     onCloseClick: () -> Unit,
+    navigateToChargeSession: () -> Unit,
     onItemClick: (String) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val chargeIndicator by viewModel.chargeIndicator.collectAsStateWithLifecycle()
 
     when (val state = uiState) {
         is SiteDetailState.Loading -> SiteDetailScreen_Loading()
 
         is SiteDetailState.Success -> SiteDetailScreen_Content(
             state = state,
+            chargeIndicator = chargeIndicator,
+            onChargeSessionActiveClick = navigateToChargeSession,
             onCloseClick = onCloseClick,
             onOfferExpired = viewModel::updateTimeSlot,
             onChargePointSearchInputChange = viewModel::onChargePointSearchInputChange,
@@ -70,6 +71,8 @@ internal fun SiteDetailScreen(
 @Composable
 private fun SiteDetailScreen_Content(
     state: SiteDetailState.Success,
+    chargeIndicator: SiteDetailViewModel.ChargeIndicatorUI,
+    onChargeSessionActiveClick: () -> Unit,
     onCloseClick: () -> Unit,
     onOfferExpired: () -> Unit,
     onChargePointSearchInputChange: (String) -> Unit,
@@ -90,23 +93,10 @@ private fun SiteDetailScreen_Content(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            // TODO: define style and translations
-            if (state.chargeSession != null && BuildConfig.DEBUG) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorSchemeExtended.brand)
-                        .padding(all = 7.dp),
-                ) {
-                    Text(
-                        "Charge session in progress..",
-                        color = MaterialTheme.colorSchemeExtended.onBrand,
-                    )
-                }
-            }
-
             SiteDetailTopBar(
-                discountExpiresAt = null,
+                chargeIndicator = chargeIndicator,
+                discountExpiresAt = state.discountExpiresAt,
+                onChargeSessionActiveClick = onChargeSessionActiveClick,
                 onCloseClick = onCloseClick,
                 onOfferExpired = onOfferExpired,
             )
@@ -135,7 +125,9 @@ private fun SiteDetailScreen_Content(
 
 @Composable
 private fun SiteDetailTopBar(
+    chargeIndicator: SiteDetailViewModel.ChargeIndicatorUI,
     discountExpiresAt: LocalDateTime?,
+    onChargeSessionActiveClick: () -> Unit,
     onCloseClick: () -> Unit,
     onOfferExpired: () -> Unit,
 ) {
@@ -148,18 +140,29 @@ private fun SiteDetailTopBar(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        discount?.let {
-            OfferCounterBanner(
-                discountExpiresAt = discountExpiresAt,
-                onOfferExpired = onOfferExpired,
-            )
+        if (BuildConfig.DEBUG) {
+            Column {
+                if (chargeIndicator.showIndicator) {
+                    ChargeSessionBanner(
+                        isSummaryReady = chargeIndicator.isSummaryReady,
+                        onClick = onChargeSessionActiveClick,
+                    )
+                }
+
+                discount?.let {
+                    OfferCounterBanner(
+                        discountExpiresAt = discountExpiresAt,
+                        onOfferExpired = onOfferExpired,
+                    )
+                }
+            }
         }
 
         CircularIconButton(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(
-                    paddingValues = if (discount != null) {
+                    paddingValues = if (chargeIndicator.showIndicator || discount != null) {
                         PaddingValues(end = 14.dp, top = 16.dp)
                     } else {
                         PaddingValues(end = 14.dp)
@@ -178,6 +181,8 @@ private fun SiteDetailScreen_Content_Preview() {
     ElvahChargeTheme {
         SiteDetailScreen_Content(
             state = successStateMock,
+            chargeIndicator = chargeIndicatorMock,
+            onChargeSessionActiveClick = {},
             onCloseClick = {},
             onOfferExpired = {},
             onChargePointSearchInputChange = {},
@@ -195,6 +200,8 @@ private fun SiteDetailScreen_Content_NoDiscount_Preview() {
             state = successStateMock.copy(
                 discountExpiresAt = null,
             ),
+            chargeIndicator = chargeIndicatorMock,
+            onChargeSessionActiveClick = {},
             onCloseClick = {},
             onOfferExpired = {},
             onChargePointSearchInputChange = {},
@@ -214,6 +221,11 @@ private fun SiteDetailScreen_Error() {
     FullScreenError()
 }
 
+private val chargeIndicatorMock = SiteDetailViewModel.ChargeIndicatorUI(
+    isCharging = true,
+    isSummaryReady = false,
+)
+
 private val chargePointsMock = listOf(
     chargePointItemUIMock,
     chargePointItemUIMock,
@@ -230,7 +242,7 @@ internal val successStateMock = SiteDetailState.Success(
                 month = it.month,
                 day = it.day,
                 hour = it.hour,
-                minute = it.minute,
+                minute = it.minute + 1,
                 second = it.second,
             )
         },

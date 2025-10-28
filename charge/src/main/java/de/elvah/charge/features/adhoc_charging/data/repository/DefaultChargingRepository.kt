@@ -9,6 +9,7 @@ import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
+import de.elvah.charge.features.payments.domain.model.SummaryInfo
 import de.elvah.charge.features.sites.domain.model.AdditionalCosts
 import de.elvah.charge.platform.core.arrow.extensions.toEither
 import kotlinx.coroutines.flow.first
@@ -17,37 +18,6 @@ internal class DefaultChargingRepository(
     private val chargingApi: ChargingApi,
     private val chargingStore: ChargingStore
 ) : ChargingRepository {
-
-    override suspend fun updateChargingToken(token: String) {
-        chargingStore.setToken(token)
-    }
-
-    override suspend fun updateOrganisationDetails(organisationDetails: OrganisationDetails) {
-        chargingStore.saveOrganisationDetails(organisationDetails)
-    }
-
-    override suspend fun getAdditionalCosts(): AdditionalCosts? {
-        return chargingStore.getAdditionalCosts()
-    }
-
-    override suspend fun storeAdditionalCosts(additionalCosts: AdditionalCosts?) {
-        chargingStore.storeAdditionalCosts(additionalCosts)
-    }
-
-    override suspend fun fetchChargingSession(): Either<Throwable, ChargingSession> {
-        val token = getToken()
-
-        return if (token.isNotEmpty()) {
-            runCatching {
-                chargingApi.getActiveChargeSessions(BEARER_TEMPLATE.format(token))
-            }
-                .map { it.toDomain() }
-                .toEither()
-                .also { it }
-        } else {
-            Either.Left(IllegalStateException("No token found"))
-        }
-    }
 
     override suspend fun startChargingSession(): Either<SessionExceptions, Boolean> {
         return runCatching {
@@ -76,8 +46,51 @@ internal class DefaultChargingRepository(
         )
     }
 
+    override suspend fun fetchChargingSession(): Either<Throwable, ChargingSession> {
+        val token = getToken()
+
+        return if (token.isNotEmpty()) {
+            runCatching {
+                chargingApi.getActiveChargeSessions(BEARER_TEMPLATE.format(token))
+            }
+                .map { it.toDomain() }
+                .toEither()
+                .also { it }
+        } else {
+            Either.Left(IllegalStateException("No token found"))
+        }
+    }
+
+    override suspend fun getSummary(): SummaryInfo? {
+        return chargingStore.getChargingPrefs().first()
+            .takeIf { it.paymentId.isNotEmpty() }
+            ?.takeIf { it.logoUrl.isNotEmpty() }
+            ?.let {
+                SummaryInfo(
+                    paymentId = it.paymentId,
+                    logoUrl = it.logoUrl,
+                )
+            }
+    }
+
     override suspend fun resetSession() {
         chargingStore.resetSession()
+    }
+
+    override suspend fun updateChargingToken(token: String) {
+        chargingStore.setToken(token)
+    }
+
+    override suspend fun updateOrganisationDetails(organisationDetails: OrganisationDetails) {
+        chargingStore.saveOrganisationDetails(organisationDetails)
+    }
+
+    override suspend fun getAdditionalCosts(): AdditionalCosts? {
+        return chargingStore.getAdditionalCosts()
+    }
+
+    override suspend fun storeAdditionalCosts(additionalCosts: AdditionalCosts?) {
+        chargingStore.storeAdditionalCosts(additionalCosts)
     }
 
     private suspend fun getToken() = chargingStore.getChargingPrefs().first().token

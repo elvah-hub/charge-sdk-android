@@ -1,12 +1,12 @@
-package de.elvah.charge.features.adhoc_charging.domain.usecase
+package de.elvah.charge.features.payments.domain.usecase
 
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeService
 
-internal class StopChargingSession(
+internal class ResetChargeSession(
     private val chargeService: ChargeService,
 ) {
 
     operator fun invoke() {
-        return chargeService.stopSession()
+        chargeService.reset()
     }
 }

@@ -5,31 +5,33 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.minutes
 
-internal class SitesSourceManager(
-    private val sitesSourceFactory: () -> SitesSource
-) {
-    private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+private typealias InstanceId = String
 
-    private val container = mutableMapOf<String, InstanceContainer>()
-    private val cleanupJobs = ConcurrentHashMap<String, Job>()
+internal class SitesSourceManager(
+    private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
+    private val sitesSourceFactory: () -> SitesSource,
+) {
+    internal val container = mutableMapOf<InstanceId, InstanceContainer>()
+    internal val cleanupJobs = ConcurrentHashMap<InstanceId, Job>()
 
     @Synchronized
     fun getOrCreate(
-        instanceId: String? = null,
+        clientId: String,
+        instanceId: InstanceId? = null,
     ): SitesSource? {
         instanceId?.let { id ->
-            container[id]?.let { existing ->
-                if (existing.status == InstanceStatus.Unactive) {
-                    existing.status = InstanceStatus.Active
-                    cleanupJobs[id]?.cancel()
-                    cleanupJobs.remove(id)
-                }
-                return existing.instance
+            container[id]?.let { ref ->
+                activateInstanceForClient(clientId, id)
+                    ?.takeIf { it == InstanceStatus.Active }
+                    ?.let {
+                        return ref.instance
+                    }
             }
         }
 
@@ -42,49 +44,103 @@ internal class SitesSourceManager(
         container[newInstance.instanceId] = InstanceContainer(
             instance = newInstance,
             status = InstanceStatus.Active,
+            clientIds = setOf(clientId),
         )
 
         return newInstance
     }
 
     @Synchronized
-    fun scheduleDispose(id: String) {
-        if (cleanupJobs.containsKey(id)) return
-        val disposableInstance = container[id] ?: return
-        if (disposableInstance.status == InstanceStatus.Unactive) return
+    private fun activateInstanceForClient(clientId: String, instanceId: String): InstanceStatus? {
+        container[instanceId]?.let { instanceRef ->
+            if (instanceRef.status == InstanceStatus.Unactive) {
+                instanceRef.status = InstanceStatus.Active
+                cleanupJobs[instanceId]?.cancel()
+                cleanupJobs.remove(instanceId)
+            }
 
-        disposableInstance.status = InstanceStatus.Unactive
+            updateClientsOfInstance(clientId, instanceRef, add = true)
 
-        val job = coroutineScope.launch {
+            return instanceRef.status
+        }
+
+        return null
+    }
+
+    @Synchronized
+    fun scheduleDispose(clientId: String, instanceId: String): Boolean {
+        if (cleanupJobs.containsKey(instanceId)) return false
+
+        container[instanceId]
+            ?.let { updateClientsOfInstance(clientId, it, add = false) }
+            ?: return false
+
+        val instanceRef = container[instanceId] ?: return false
+        if (instanceRef.hasActiveClients) return false
+
+        instanceRef.status = InstanceStatus.Unactive
+
+        val cleanupJob = coroutineScope.launch {
             delay(CLEANUP_THRESHOLD)
 
             synchronized(this@SitesSourceManager) {
-                container[id]?.let {
-                    if (it.status == InstanceStatus.Unactive) {
-                        container.remove(id)
-                        cleanupJobs.remove(id)
+                container[instanceId]?.let {
+                    if (it.isDisposable) {
+                        container.remove(instanceId)
+                        cleanupJobs.remove(instanceId)
+                        cancel()
                     }
                 }
             }
         }
 
-        cleanupJobs[id] = job
+        cleanupJobs[instanceId] = cleanupJob
+        cleanupJob.start()
+        return true
+    }
+
+    @Synchronized
+    private fun updateClientsOfInstance(
+        clientId: String,
+        instanceRef: InstanceContainer,
+        add: Boolean,
+    ) {
+        val instanceId = instanceRef.instance.instanceId
+
+        val updateClientIds = instanceRef.clientIds.toMutableSet()
+
+        if (add) {
+            updateClientIds.add(clientId)
+        } else {
+            updateClientIds.remove(clientId)
+        }
+
+        container[instanceId] = instanceRef.copy(
+            clientIds = updateClientIds,
+        )
     }
 
     companion object {
 
-        private const val MAX_INSTANCES = 3
+        internal const val MAX_INSTANCES = 3
 
-        private val CLEANUP_THRESHOLD = 1.minutes
+        internal val CLEANUP_THRESHOLD = 1.minutes
     }
 }
 
-private data class InstanceContainer(
+internal data class InstanceContainer(
     val instance: SitesSource,
     var status: InstanceStatus,
-)
+    val clientIds: Set<String>,
+) {
+    val isDisposable: Boolean
+        get() = status == InstanceStatus.Unactive && !hasActiveClients
 
-private enum class InstanceStatus {
+    val hasActiveClients: Boolean
+        get() = clientIds.isNotEmpty()
+}
+
+internal enum class InstanceStatus {
     Active,
     Unactive,
 }

@@ -38,7 +38,11 @@ internal sealed class AdHocChargingScreens {
     data object HelpAndSupportRoute : AdHocChargingScreens()
 
     @Serializable
-    data object ReviewRoute : AdHocChargingScreens()
+    data object ReviewRoute : AdHocChargingScreens(), Deeplink {
+
+        override val route: String
+            get() = baseRoute + "chargingSummary"
+    }
 }
 
 internal interface Deeplink {

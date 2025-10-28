@@ -4,7 +4,7 @@ import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeService
 import kotlinx.coroutines.flow.StateFlow
 
-internal class ObserveChargingSession(
+internal class GetChargingSession(
     private val chargeService: ChargeService,
 ) {
 

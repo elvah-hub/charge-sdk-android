@@ -5,6 +5,7 @@ import de.elvah.charge.features.sites.domain.usecase.FindBestSite
 import de.elvah.charge.features.sites.ui.SitesState
 import de.elvah.charge.features.sites.ui.components.ChargeBannerActiveSessionRender
 import de.elvah.charge.features.sites.ui.mapper.toRender
+import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import de.elvah.charge.public_api.sitessource.SitesSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,7 +26,7 @@ internal class BannerComponentSourceImpl(
         sitesSource.activeSession,
     ) { sites, chargeSession ->
         when {
-            chargeSession != null -> {
+            chargeSession?.status == SessionStatus.CHARGING -> {
                 SitesState.ActiveSession(
                     site = ChargeBannerActiveSessionRender(
                         id = chargeSession.evseId,

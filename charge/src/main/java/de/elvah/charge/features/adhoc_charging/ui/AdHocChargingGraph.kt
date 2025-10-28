@@ -14,10 +14,13 @@ import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ReviewRou
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.SiteDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.screens.activecharging.ActiveChargingScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailScreen
+import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingStartScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpAndSupportScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewScreen
+import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailScreen
+import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailViewModel
 import de.elvah.charge.platform.ui.animation.slideFromBottom
 import de.elvah.charge.platform.ui.animation.slideToBottom
 import de.elvah.charge.public_api.sitessource.rememberSitesSource
@@ -37,18 +40,41 @@ internal fun AdHocChargingGraph(
     NavHost(navController, startDestination = SiteDetailRoute(siteId)) {
 
         composable<SiteDetailRoute> {
+            val viewModel = koinViewModel<SiteDetailViewModel> {
+                parametersOf(source)
+            }
+
+            val navigateToChargeSession = {
+                when {
+                    viewModel.chargeIndicator.value.isSummaryReady -> {
+                        navController.navigate(ReviewRoute)
+                    }
+
+                    viewModel.chargeIndicator.value.isCharging -> {
+                        navController.navigate(ActiveChargingRoute)
+                    }
+                }
+            }
+
             SiteDetailScreen(
-                viewModel = koinViewModel {
-                    parametersOf(source)
-                },
+                viewModel = viewModel,
                 onCloseClick = onFinishClicked,
+                navigateToChargeSession = navigateToChargeSession,
                 onItemClick = { evseId ->
-                    navController.navigate(
-                        ChargingPointDetailRoute(
-                            siteId = siteId,
-                            evseId = evseId,
-                        )
-                    )
+                    when {
+                        viewModel.chargeIndicator.value.showIndicator -> {
+                            navigateToChargeSession()
+                        }
+
+                        else -> {
+                            navController.navigate(
+                                ChargingPointDetailRoute(
+                                    siteId = siteId,
+                                    evseId = evseId,
+                                ),
+                            )
+                        }
+                    }
                 },
             )
         }
@@ -63,14 +89,12 @@ internal fun AdHocChargingGraph(
             popExitTransition = slideToBottom(),
         ) {
             ChargingPointDetailScreen(
-                chargingPointDetailViewModel = koinViewModel {
+                viewModel = koinViewModel<ChargingPointDetailViewModel> {
                     parametersOf(
                         source as InternalSitesSource,
                     )
                 },
-                onBackClick = {
-                    navController.navigateUp()
-                },
+                onBackClick = navController::navigateUp,
                 onPaymentSuccess = { shortenedEvseId, paymentId ->
                     navController.navigate(
                         ChargingStartRoute(
@@ -84,22 +108,26 @@ internal fun AdHocChargingGraph(
 
         composable<ChargingStartRoute> {
             ChargingStartScreen(koinViewModel()) {
-                navController.navigate(ActiveChargingRoute)
+                navController.navigate(
+                    route = ActiveChargingRoute,
+                )
             }
         }
 
         composable<ActiveChargingRoute>(
             deepLinks = listOf(
                 navDeepLink<ActiveChargingRoute>(basePath = ActiveChargingRoute.route)
-            )
+            ),
         ) {
             ActiveChargingScreen(
                 viewModel = koinViewModel(),
                 onSupportClick = {
                     navController.navigate(HelpAndSupportRoute)
-                }, onStopClick = {
+                },
+                onMinimizeClick = onFinishClicked,
+                navigateToSummary = {
                     navController.navigate(ReviewRoute)
-                }, onDismissClick = onFinishClicked
+                },
             )
         }
 
@@ -108,14 +136,23 @@ internal fun AdHocChargingGraph(
                 navController.navigateUp()
             }
         }
-        composable<ReviewRoute> {
+        composable<ReviewRoute>(
+            deepLinks = listOf(
+                navDeepLink<ReviewRoute>(basePath = ReviewRoute.route)
+            ),
+        ) {
+            val viewModel = koinViewModel<ReviewViewModel>()
+
             ReviewScreen(
-                viewModel = koinViewModel(),
-                onDoneClick = onFinishClicked,
-                onDismissClick = onFinishClicked,
+                viewModel = viewModel,
+                onMinimizeClick = onFinishClicked,
+                onDoneClick = {
+                    viewModel.clearChargeSession()
+                    onFinishClicked()
+                },
                 onContactSupport = {
                     navController.navigate(HelpAndSupportRoute)
-                }
+                },
             )
         }
     }

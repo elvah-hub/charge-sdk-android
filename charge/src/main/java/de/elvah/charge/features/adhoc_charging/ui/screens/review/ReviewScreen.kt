@@ -1,7 +1,9 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.review
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -46,30 +49,35 @@ import de.elvah.charge.platform.ui.theme.copyMedium
 @Composable
 internal fun ReviewScreen(
     viewModel: ReviewViewModel,
+    onMinimizeClick: () -> Unit,
     onDoneClick: () -> Unit,
-    onDismissClick: () -> Unit,
-    onContactSupport: () -> Unit
+    onContactSupport: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     when (val state = uiState) {
         is ReviewState.Loading -> ReviewScreen_Loading()
-        is ReviewState.Success -> ReviewScreen_Content(
-            state,
-            onDoneClick,
-            onDismissClick,
-            onContactSupport
-        )
-
         is ReviewState.Error -> ReviewScreen_Error()
+        is ReviewState.Success -> {
+            BackHandler {
+                onMinimizeClick()
+            }
+
+            ReviewScreen_Content(
+                state = state,
+                onMinimizeClick = onMinimizeClick,
+                onDoneClick = onDoneClick,
+                onContactSupport = onContactSupport,
+            )
+        }
     }
 }
 
 @Composable
 private fun ReviewScreen_Content(
     state: ReviewState.Success,
+    onMinimizeClick: () -> Unit,
     onDoneClick: () -> Unit,
-    onDismissClick: () -> Unit,
     onContactSupport: () -> Unit
 ) {
     Scaffold(
@@ -77,7 +85,7 @@ private fun ReviewScreen_Content(
         topBar = {
             DismissableTopAppBar(
                 title = "Charging session done",
-                onDismissClick = onDismissClick,
+                onMinimizeClick = onMinimizeClick,
                 menuItems = listOf(
                     MenuItem(
                         text = stringResource(R.string.contact_support_agent),
@@ -123,74 +131,93 @@ private fun ReviewScreen_Content(
             )
             Spacer(Modifier.size(32.dp))
 
-            BasicCard(modifier = Modifier.fillMaxWidth()) {
-                CopyXLarge(
-                    state.summary.cpoName,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.size(8.dp))
-
-                Text(
-                    state.summary.address,
-                    style = copyMedium,
-                    color = MaterialTheme.colorScheme.secondary,
-                )
-                Spacer(modifier = Modifier.size(12.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    CopyMedium(stringResource(R.string.code_label))
-                    CopyMedium(state.summary.evseId)
-                }
-            }
-            Spacer(modifier = Modifier.size(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-
-                BasicCard(modifier = Modifier.weight(1f)) {
-                    CopySmall(stringResource(R.string.kw_charged_label))
-                    TitleMedium(state.summary.consumedKWh.toString(), fontWeight = FontWeight.Bold)
+            Box {
+                state.summary?.let { summaryUI ->
+                    ChargeSessionSummary(summaryUI, onDoneClick)
                 }
 
-                BasicCard(modifier = Modifier.weight(1f)) {
-                    CopySmall(stringResource(R.string.charging_duration_label))
-                    TitleMedium(state.summary.totalTime, fontWeight = FontWeight.Bold)
-                }
-            }
-            Spacer(modifier = Modifier.size(8.dp))
-
-            BasicCard(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    CopyMedium(text = stringResource(R.string.total_cost_label))
-                    CopyLarge(
-                        text = state.summary.totalCost.toString() + " €",
-                        fontWeight = FontWeight.Bold
+                if (state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.TopCenter),
                     )
                 }
             }
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            ButtonPrimary(
-                stringResource(R.string.done_label),
-                onClick = onDoneClick,
-                modifier = Modifier.fillMaxWidth()
+@Composable
+private fun ChargeSessionSummary(
+    summaryUI: PaymentSummaryUI,
+    onDoneClick: () -> Unit
+) {
+    Column {
+        BasicCard(modifier = Modifier.fillMaxWidth()) {
+            CopyXLarge(
+                text = summaryUI.cpoName,
+                fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.size(16.dp))
-            CPOLogo(state.summary.cpoLogo, modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.size(8.dp))
 
+            Text(
+                summaryUI.address,
+                style = copyMedium,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+            Spacer(modifier = Modifier.size(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                CopyMedium(stringResource(R.string.code_label))
+                CopyMedium(summaryUI.evseId)
+            }
         }
+        Spacer(modifier = Modifier.size(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            BasicCard(modifier = Modifier.weight(1f)) {
+                CopySmall(stringResource(R.string.kw_charged_label))
+                TitleMedium(summaryUI.consumedKWh.toString(), fontWeight = FontWeight.Bold)
+            }
+
+            BasicCard(modifier = Modifier.weight(1f)) {
+                CopySmall(stringResource(R.string.charging_duration_label))
+                TitleMedium(summaryUI.totalTime, fontWeight = FontWeight.Bold)
+            }
+        }
+        Spacer(modifier = Modifier.size(8.dp))
+
+        BasicCard(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                CopyMedium(text = stringResource(R.string.total_cost_label))
+                CopyLarge(
+                    text = summaryUI.totalCost.toString() + " €",
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        ButtonPrimary(
+            stringResource(R.string.done_label),
+            onClick = onDoneClick,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.size(16.dp))
+        CPOLogo(summaryUI.cpoLogo, modifier = Modifier.height(50.dp))
     }
 }
 
@@ -208,10 +235,11 @@ private fun ReviewScreen_Content_Preview() {
                     consumedKWh = 0.0,
                     cpoLogo = "",
                     totalCost = 0.0
-                )
+                ),
+                isLoading = false,
             ),
             onDoneClick = {},
-            onDismissClick = {},
+            onMinimizeClick = {},
             onContactSupport = {}
         )
     }

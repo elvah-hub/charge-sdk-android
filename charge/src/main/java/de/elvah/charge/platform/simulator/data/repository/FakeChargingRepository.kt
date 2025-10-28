@@ -8,6 +8,7 @@ import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
+import de.elvah.charge.features.payments.domain.model.SummaryInfo
 import de.elvah.charge.features.sites.domain.model.AdditionalCosts
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
@@ -19,6 +20,7 @@ import de.elvah.charge.platform.simulator.domain.model.SimulationContext
 import de.elvah.charge.platform.simulator.domain.model.SimulatorFlow
 import de.elvah.charge.platform.simulator.domain.strategy.ChargingSimulationStrategy
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 
 internal class FakeChargingRepository(
@@ -95,6 +97,15 @@ internal class FakeChargingRepository(
             true.right()
         } else {
             SessionExceptions.GenericError.left()
+        }
+    }
+
+    override suspend fun getSummary(): SummaryInfo? {
+        return chargingStore.getChargingPrefs().first().let {
+            SummaryInfo(
+                paymentId = it.paymentId,
+                logoUrl = it.logoUrl,
+            )
         }
     }
 

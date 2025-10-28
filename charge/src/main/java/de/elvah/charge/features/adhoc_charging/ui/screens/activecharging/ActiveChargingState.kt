@@ -18,7 +18,5 @@ internal sealed class ActiveChargingState {
         val organisationDetails: OrganisationDetails,
     ) : ActiveChargingState()
 
-    internal data class Stopped(
-        val organisationDetails: OrganisationDetails,
-    ) : ActiveChargingState()
+    internal data object SessionSummary : ActiveChargingState()
 }

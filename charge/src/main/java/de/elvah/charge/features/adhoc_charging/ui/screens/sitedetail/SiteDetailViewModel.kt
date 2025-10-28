@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import de.elvah.charge.components.sitessource.InternalSitesSource
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeState
+import de.elvah.charge.features.adhoc_charging.domain.usecase.GetChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingState
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state.BuildSiteDetailSuccessState
 import de.elvah.charge.features.sites.domain.extension.fullAddress
@@ -22,6 +25,8 @@ internal class SiteDetailViewModel(
     sitesSource: SitesSource,
     savedStateHandle: SavedStateHandle,
     private val buildSiteDetailSuccessState: BuildSiteDetailSuccessState,
+    observeChargingState: ObserveChargingState,
+    getChargingSession: GetChargingSession,
 ) : ViewModel() {
 
     private val args: AdHocChargingScreens.SiteDetailRoute =
@@ -38,7 +43,32 @@ internal class SiteDetailViewModel(
     private val chargePointSearchInput = MutableStateFlow("")
     private val timeSlot = MutableStateFlow<ScheduledPricing.TimeSlot?>(null)
 
-    private val siteDetailState = combine(
+    data class ChargeIndicatorUI(
+        val isCharging: Boolean,
+        val isSummaryReady: Boolean,
+    ) {
+        val showIndicator = isCharging || isSummaryReady
+    }
+
+    internal val chargeIndicator = combine(
+        observeChargingState(),
+        getChargingSession(),
+    ) { state, session ->
+        ChargeIndicatorUI(
+            isSummaryReady = state == ChargeState.SUMMARY,
+            isCharging = session != null,
+        )
+
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = ChargeIndicatorUI(
+            isCharging = getChargingSession().value != null,
+            isSummaryReady = observeChargingState().value == ChargeState.SUMMARY,
+        ),
+    )
+
+    internal val state = combine(
         loading,
         site,
         pricing,
@@ -57,24 +87,6 @@ internal class SiteDetailViewModel(
             )
 
             else -> SiteDetailState.Error
-        }
-
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = SiteDetailState.Loading,
-    )
-
-    val state = combine(
-        sitesSource.activeSession,
-        siteDetailState,
-    ) { session, state ->
-        if (session != null && state is SiteDetailState.Success) {
-            state.chargeSession = session
-            state
-
-        } else {
-            state
         }
 
     }.stateIn(

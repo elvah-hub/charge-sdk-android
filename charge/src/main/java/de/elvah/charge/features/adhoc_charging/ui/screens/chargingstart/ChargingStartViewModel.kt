@@ -5,12 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
+import de.elvah.charge.features.adhoc_charging.domain.usecase.HasActiveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StartChargingSession
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentToken
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -19,24 +22,41 @@ internal class ChargingStartViewModel(
     private val getOrganisationDetails: GetOrganisationDetails,
     private val chargingRepository: ChargingRepository,
     private val startChargingSession: StartChargingSession,
-    private val savedStateHandle: SavedStateHandle,
+    hasActiveChargingSession: HasActiveChargingSession,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    private val route = savedStateHandle.toRoute<AdHocChargingScreens.ChargingStartRoute>()
+
     private val _state = MutableStateFlow<ChargingStartState>(ChargingStartState.Loading)
-    val state = _state.asStateFlow()
+    val state = combine(
+        hasActiveChargingSession(),
+        _state,
+    ) { hasActiveSession, state ->
+        if (hasActiveSession) {
+            ChargingStartState.StartRequest
+
+        } else {
+            state
+        }
+
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = ChargingStartState.Loading,
+    )
 
     init {
         viewModelScope.launch {
-            val route = savedStateHandle.toRoute<AdHocChargingScreens.ChargingStartRoute>()
-
-            val result = getOrganisationDetails()
+            val organisationDetails = getOrganisationDetails()
             val token = getPaymentToken(route.paymentId)
 
             chargingRepository.updateChargingToken(token.getOrNull().orEmpty())
 
-            if (result != null) {
+            if (organisationDetails != null) {
                 _state.value = ChargingStartState.Success(
                     evseId = route.shortenedEvseId,
-                    organisationDetails = result
+                    organisationDetails = organisationDetails
                 )
             } else {
                 _state.value = ChargingStartState.Error
@@ -56,31 +76,7 @@ internal class ChargingStartViewModel(
         }
     }
 
-    fun startChargeSession() {
-        viewModelScope.launch {
-            val result = startChargingSession()
-
-            result.fold(
-                ifLeft = {
-                    val route = savedStateHandle.toRoute<AdHocChargingScreens.ChargingStartRoute>()
-                    val organisationDetails = getOrganisationDetails()
-
-                    organisationDetails?.let { organisationDetails ->
-                        _state.update {
-                            ChargingStartState.Success(
-                                evseId = route.shortenedEvseId,
-                                organisationDetails = organisationDetails,
-                                error = true
-                            )
-                        }
-                    }
-                },
-                ifRight = {
-                    _state.update { ChargingStartState.StartRequest }
-                }
-            )
-        }
-    }
+    fun startChargeSession() = startChargingSession()
 
     fun onDismissError() {
         viewModelScope.launch {
