@@ -1,10 +1,13 @@
 package de.elvah.charge.platform.config
 
 import de.elvah.charge.platform.simulator.domain.model.SimulatorFlow
+import de.elvah.charge.platform.ui.theme.colors.CustomColorScheme
 
 public class Config(
     public val apiKey: String,
     public val darkTheme: Boolean? = null,
+    public val customLightColorScheme: CustomColorScheme? = null,
+    public val customDarkColorScheme: CustomColorScheme? = null,
     environment: Environment? = null,
 ) {
     public val environment: Environment = environment ?: detectEnvironmentFromApiKey(apiKey)

@@ -25,7 +25,11 @@ public fun ChargePointList(
 
     val state by siteDetailViewModel.state.collectAsStateWithLifecycle()
 
-    ElvahChargeTheme(darkTheme = shouldUseDarkColors(config.darkTheme)) {
+    ElvahChargeTheme(
+        darkTheme = shouldUseDarkColors(config.darkTheme),
+        customLightColorScheme = config.customLightColorScheme,
+        customDarkColorScheme = config.customDarkColorScheme
+    ) {
         when (val state = state) {
             SiteDetailState.Error -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {

@@ -34,7 +34,11 @@ public fun ChargeBanner(
     val state by sitesViewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    ElvahChargeTheme(darkTheme = shouldUseDarkColors(config.darkTheme)) {
+    ElvahChargeTheme(
+        darkTheme = shouldUseDarkColors(config.darkTheme),
+        customLightColorScheme = config.customLightColorScheme,
+        customDarkColorScheme = config.customDarkColorScheme
+    ) {
         when (val state = state) {
             SitesState.Error -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {

@@ -18,7 +18,11 @@ internal class SimulatorActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            ElvahChargeTheme(darkTheme = shouldUseDarkColors(config.darkTheme)) {
+            ElvahChargeTheme(
+                darkTheme = shouldUseDarkColors(config.darkTheme),
+                customLightColorScheme = config.customLightColorScheme,
+                customDarkColorScheme = config.customDarkColorScheme
+            ) {
                 SimulatorGraph {
                     finish()
                 }
