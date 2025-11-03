@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -65,6 +66,7 @@ import de.elvah.charge.platform.ui.components.site.SiteDetailHeader
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
 import de.elvah.charge.platform.ui.theme.colors.primary
+import de.elvah.charge.platform.ui.theme.copySmallBold
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -324,9 +326,8 @@ private fun LivePricingHeader(selectedType: ChargeType) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         CopySmall(
-            text = stringResource(R.string.schedule_pricing__live_pricing__label),
+            text = stringResource(R.string.live_pricing_label),
             fontWeight = FontWeight.W700
         )
 
@@ -374,10 +375,10 @@ private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.width(4.dp))
         CopySmall(
             text = if (priceOffer != null) {
-                stringResource(R.string.offer_available)
+                stringResource(R.string.generic_offer_available)
             } else {
-                stringResource(R.string.no_offer_available)
-            },
+                stringResource(R.string.no_offer_available_label)
+            } + ":",
             fontWeight = FontWeight.W700,
             color = if (priceOffer != null) {
                 MaterialTheme.colorSchemeExtended.brand
@@ -430,13 +431,15 @@ private fun HourSlot(timeRange: TimeRange, modifier: Modifier = Modifier) {
 @Composable
 internal fun DayLabel(selectedPage: Int) {
     val currentTime = LocalTime.now()
-    CopySmall(
+    val formattedTime = "%2d:%02d".format(currentTime.hour, currentTime.minute)
+
+    Text(
         text = when (selectedPage) {
-            0 -> stringResource(R.string.schedule_pricing__yesterday)
-            1 -> "Now"
-            2 -> stringResource(R.string.schedule_pricing__tomorrow)
-            else -> "%2d:%02d"
-        }.format(currentTime.hour, currentTime.minute),
+            0 -> stringResource(R.string.generic_yesterday)
+            2 -> stringResource(R.string.generic_tomorrow)
+            else -> stringResource(R.string.generic_today)
+        } + " $formattedTime",
+        style = copySmallBold,
         color = MaterialTheme.colorScheme.primary
     )
 }
@@ -500,7 +503,7 @@ private fun TypeModalContentHeader(modifier: Modifier = Modifier, onClick: () ->
         verticalAlignment = Alignment.CenterVertically
     ) {
         CopyXLarge(
-            text = stringResource(R.string.schedule_pricing__live_pricing__label),
+            text = stringResource(R.string.live_pricing_label),
             fontWeight = FontWeight.W700
         )
 

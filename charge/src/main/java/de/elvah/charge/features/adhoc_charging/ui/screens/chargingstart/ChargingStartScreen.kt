@@ -306,13 +306,13 @@ private fun ConnectVehicleMessage(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         TitleMedium(
-            text = stringResource(R.string.charging_start__title),
+            text = stringResource(R.string.charge_start__title),
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = stringResource(R.string.charging_start__description),
+            text = stringResource(R.string.connect_vehicle),
             textAlign = TextAlign.Center,
             style = copyMedium,
             color = secondary

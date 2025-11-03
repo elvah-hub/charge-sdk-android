@@ -100,7 +100,7 @@ private fun ChargingDelayBannerContent(
             BannerHeader()
             Spacer(Modifier.size(12.dp))
             Text(
-                text = stringResource(R.string.charging_delay_banner_description),
+                text = stringResource(R.string.need_help_box__message),
                 style = copyMedium,
                 modifier = modifier.padding(horizontal = 16.dp),
                 color = MaterialTheme.colorScheme.secondary
@@ -133,7 +133,7 @@ private fun BannerHeader(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = stringResource(R.string.charging_delay_banner_title),
+                text = stringResource(R.string.need_help_box__title),
                 style = copyLargeBold,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -152,7 +152,7 @@ private fun BannerActions(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         ButtonTertiary(
-            text = stringResource(R.string.contact_support_button),
+            text = stringResource(R.string.contact_support),
             onClick = onContactSupportClick
         )
 
