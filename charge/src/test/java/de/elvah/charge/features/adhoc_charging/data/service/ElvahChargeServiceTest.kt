@@ -39,6 +39,7 @@ class ElvahChargeServiceTest {
         chargingRepository: ChargingRepository = mockk<DefaultChargingRepository>(),
         checkOnInit: Boolean = true,
     ): ChargeService = ElvahChargeService(
+        lifecycle = null,
         chargingRepository = chargingRepository,
         getPaymentSummary = getPaymentSummary,
         chargeScope = chargeTestScope,

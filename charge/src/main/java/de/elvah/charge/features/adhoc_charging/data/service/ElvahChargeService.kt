@@ -30,7 +30,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 internal class ElvahChargeService(
-    lifecycle: Lifecycle,
+    lifecycle: Lifecycle?,
     private val chargingRepository: ChargingRepository,
     private val getPaymentSummary: GetPaymentSummary,
     private val chargeScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
@@ -67,7 +67,7 @@ internal class ElvahChargeService(
     internal var pollingJob: Job? = null
 
     init {
-        lifecycle.addObserver(this)
+        lifecycle?.addObserver(this)
 
         if (checkOnInit) {
             checkForActiveSession()
