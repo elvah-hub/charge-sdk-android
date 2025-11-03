@@ -3,7 +3,6 @@ package de.elvah.charge.features.sites.data
 import arrow.core.Either
 import arrow.core.right
 import de.elvah.charge.features.sites.data.mapper.toDomain
-import de.elvah.charge.features.sites.data.mapper.toSite
 import de.elvah.charge.features.sites.data.remote.SitesApi
 import de.elvah.charge.features.sites.data.remote.model.request.SignedOfferRequest
 import de.elvah.charge.features.sites.domain.model.ChargeSite
@@ -48,7 +47,7 @@ internal class DefaultSitesRepository(
         evseIds: List<EvseId>?
     ): Either<Throwable, List<ChargeSite>> {
         return runCatching {
-            sitesApi.getSites(
+            sitesApi.getSiteOffers(
                 evseIds?.map { it.value },
                 parseFilters(
                     boundingBox,
@@ -57,7 +56,7 @@ internal class DefaultSitesRepository(
                     offerType,
                 )
             ).data.map {
-                it.toSite()
+                it.toDomain()
             }.also {
                 chargeSites = it
             }
@@ -69,7 +68,7 @@ internal class DefaultSitesRepository(
         evseId: String
     ): Either<Throwable, ChargeSite> {
         return runCatching {
-            sitesApi.getSignedOffer(
+            sitesApi.getSiteOffer(
                 siteId = siteId,
                 signedOfferRequest = SignedOfferRequest(
                     evseIds = listOf(evseId)

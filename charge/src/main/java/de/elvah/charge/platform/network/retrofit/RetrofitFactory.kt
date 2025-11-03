@@ -1,6 +1,8 @@
 package de.elvah.charge.platform.network.retrofit
 
 import com.squareup.moshi.Moshi
+import de.elvah.charge.platform.network.discovery.NetworkInterceptorRegistry
+import de.elvah.charge.platform.network.discovery.NetworkStorageInterceptorRegistry
 import de.elvah.charge.platform.network.retrofit.adapter.EitherCallAdapterFactory
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiKeyInterceptor
 import de.elvah.charge.platform.network.retrofit.interceptor.ApiVersionInterceptor
@@ -13,7 +15,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-
 
 internal class RetrofitFactory(
     private val okHttpClient: OkHttpClient,
@@ -30,6 +31,16 @@ internal class RetrofitFactory(
         service: Class<T>,
     ): T {
         val httpClientBuilder = okHttpClient.newBuilder()
+
+        // Add custom interceptors first
+        NetworkInterceptorRegistry.getCustomInterceptors().forEach { interceptor ->
+            httpClientBuilder.addInterceptor(interceptor)
+        }
+
+        // Add storage interceptors so they can capture all requests including custom ones
+        NetworkStorageInterceptorRegistry.getStorageInterceptors().forEach { interceptor ->
+            httpClientBuilder.addInterceptor(interceptor)
+        }
 
         // needs to be the last in line in order to show headers that have been added
         // by interceptors

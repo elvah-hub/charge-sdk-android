@@ -21,23 +21,7 @@ public data class ChargeSite(
         val powerSpecification: PowerSpecification?,
         val availability: ChargePointAvailability,
         val normalizedEvseId: String
-    ) {
-        public data class Offer(
-            val price: Price,
-            val type: String,
-            val expiresAt: String,
-            val originalPrice: Price? = null,
-            val campaignEndsAt: String? = null,
-            val signedOffer: String? = null,
-        ) {
-            public data class Price(
-                val energyPricePerKWh: Pricing,
-                val baseFee: Pricing?,
-                val blockingFee: BlockingFee?,
-                val currency: String,
-            )
-        }
-    }
+    )
 
     public data class PowerSpecification(
         val maxPowerInKW: Float?,

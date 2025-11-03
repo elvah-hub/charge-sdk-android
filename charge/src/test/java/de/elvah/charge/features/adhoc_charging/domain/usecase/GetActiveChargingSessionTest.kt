@@ -9,7 +9,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 
@@ -28,9 +30,9 @@ class GetActiveChargingSessionTest {
     fun `invoke returns success when repository returns success`() = runTest {
         val chargingSession = createTestChargingSession()
         coEvery { chargingRepository.fetchChargingSession() } returns chargingSession.right()
-        
+
         val result = useCase.invoke()
-        
+
         assertTrue("Expected Right result", result.isRight())
         result.fold(
             ifLeft = { fail("Expected success but got failure: $it") },
@@ -41,7 +43,7 @@ class GetActiveChargingSessionTest {
                 assertEquals(SessionStatus.CHARGING, session.status)
             }
         )
-        
+
         coVerify { chargingRepository.fetchChargingSession() }
     }
 
@@ -49,9 +51,9 @@ class GetActiveChargingSessionTest {
     fun `invoke returns failure when repository returns failure`() = runTest {
         val exception = RuntimeException("Fetch session failed")
         coEvery { chargingRepository.fetchChargingSession() } returns exception.left()
-        
+
         val result = useCase.invoke()
-        
+
         assertTrue("Expected Left result", result.isLeft())
         result.fold(
             ifLeft = { error ->
@@ -66,9 +68,9 @@ class GetActiveChargingSessionTest {
         val chargingSession = createTestChargingSession()
         val expectedResult = chargingSession.right()
         coEvery { chargingRepository.fetchChargingSession() } returns expectedResult
-        
+
         val actualResult = useCase.invoke()
-        
+
         assertEquals("Result should be passed through unchanged", expectedResult, actualResult)
         coVerify(exactly = 1) { chargingRepository.fetchChargingSession() }
     }
@@ -81,12 +83,12 @@ class GetActiveChargingSessionTest {
             NullPointerException("Null pointer"),
             Exception("Generic exception")
         )
-        
+
         exceptions.forEach { exception ->
             coEvery { chargingRepository.fetchChargingSession() } returns exception.left()
-            
+
             val result = useCase.invoke()
-            
+
             assertTrue("Expected Left result for $exception", result.isLeft())
             result.fold(
                 ifLeft = { error ->
@@ -108,7 +110,7 @@ class GetActiveChargingSessionTest {
             SessionStatus.START_REJECTED,
             SessionStatus.STOP_REJECTED
         )
-        
+
         sessionStates.forEach { status ->
             val session = ChargingSession(
                 evseId = "DE*TEST*E000001",
@@ -116,11 +118,11 @@ class GetActiveChargingSessionTest {
                 consumption = 10.0,
                 duration = 60,
             )
-            
+
             coEvery { chargingRepository.fetchChargingSession() } returns session.right()
-            
+
             val result = useCase.invoke()
-            
+
             assertTrue("Expected Right result for $status", result.isRight())
             result.fold(
                 ifLeft = { fail("Expected success but got failure for $status") },
@@ -135,9 +137,9 @@ class GetActiveChargingSessionTest {
     fun `invoke is a suspend function`() = runTest {
         val chargingSession = createTestChargingSession()
         coEvery { chargingRepository.fetchChargingSession() } returns chargingSession.right()
-        
+
         val result = useCase()
-        
+
         assertTrue("Expected Right result", result.isRight())
         coVerify { chargingRepository.fetchChargingSession() }
     }
@@ -151,9 +153,9 @@ class GetActiveChargingSessionTest {
             status = SessionStatus.START_REQUESTED
         )
         coEvery { chargingRepository.fetchChargingSession() } returns session.right()
-        
+
         val result = useCase.invoke()
-        
+
         assertTrue("Expected Right result", result.isRight())
         result.fold(
             ifLeft = { fail("Expected success but got failure") },

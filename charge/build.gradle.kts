@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.serializable)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.protobuf)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -109,6 +110,8 @@ dependencies {
     implementation(libs.koin.androidx.compose.navigation)
 
     implementation(libs.bundles.networking)
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
 
     implementation(platform(libs.arrow.stack))
     implementation(libs.arrow.core)
@@ -149,4 +152,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    ksp(libs.moshi.codegen)
 }

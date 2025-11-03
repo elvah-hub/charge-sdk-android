@@ -1,7 +1,9 @@
 package de.elvah.charge.features.sites.data.remote.model.response
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 internal data class BlockingFeeDto(
 
     @param:Json(name = "pricePerMinute")
@@ -17,6 +19,7 @@ internal data class BlockingFeeDto(
     val timeSlots: List<TimeSlotDto>?,
 )
 
+@JsonClass(generateAdapter = true)
 internal data class TimeSlotDto(
     @param:Json(name = "startTime")
     val startTime: String,

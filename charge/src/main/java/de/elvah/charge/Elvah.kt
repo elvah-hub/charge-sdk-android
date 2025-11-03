@@ -14,6 +14,7 @@ import de.elvah.charge.features.payments.di.paymentsUseCaseModule
 import de.elvah.charge.features.payments.di.provideChargeSettlementApi
 import de.elvah.charge.features.payments.di.provideIntegrateApi
 import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
+import de.elvah.charge.features.sites.di.adaptersModule
 import de.elvah.charge.features.sites.di.sitesRepositoriesModule
 import de.elvah.charge.features.sites.di.sitesUseCaseModule
 import de.elvah.charge.features.sites.di.sitesViewModelModule
@@ -51,17 +52,12 @@ public object Elvah {
     }
 
     private val networkModule = module {
-        singleOf(::ApiUrlBuilder)
-        single {
-            provideChargingApi(get(), get())
-        }
-        single {
-            provideIntegrateApi(get(), get())
-        }
+        includes(adaptersModule)
 
-        single {
-            provideChargeSettlementApi(get(), get())
-        }
+        singleOf(::ApiUrlBuilder)
+        single { provideChargingApi(get(), get()) }
+        single { provideIntegrateApi(get(), get()) }
+        single { provideChargeSettlementApi(get(), get()) }
         single { de.elvah.charge.features.sites.di.provideApi(get(), get()) }
     }
 
@@ -95,9 +91,8 @@ public object Elvah {
                 okHttpModule,
                 retrofitModule,
                 sitesRepositoriesModule,
-                simulatorModule
+                simulatorModule,
             )
         }
     }
 }
-

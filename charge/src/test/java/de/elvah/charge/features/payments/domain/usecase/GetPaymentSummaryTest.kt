@@ -8,7 +8,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 
@@ -28,9 +30,9 @@ class GetPaymentSummaryTest {
         val paymentId = "payment_123"
         val paymentSummary = createTestPaymentSummary()
         coEvery { paymentsRepository.getPaymentSummary(paymentId) } returns paymentSummary.right()
-        
+
         val result = useCase.invoke(paymentId)
-        
+
         assertTrue("Expected Right result", result.isRight())
         result.fold(
             ifLeft = { fail("Expected success but got failure: $it") },
@@ -40,7 +42,7 @@ class GetPaymentSummaryTest {
                 assertEquals(2550, summary.totalCost)
             }
         )
-        
+
         coVerify { paymentsRepository.getPaymentSummary(paymentId) }
     }
 
@@ -49,9 +51,9 @@ class GetPaymentSummaryTest {
         val paymentId = "payment_456"
         val exception = RuntimeException("Payment summary not found")
         coEvery { paymentsRepository.getPaymentSummary(paymentId) } returns exception.left()
-        
+
         val result = useCase.invoke(paymentId)
-        
+
         assertTrue("Expected Left result", result.isLeft())
         result.fold(
             ifLeft = { error ->
@@ -67,9 +69,9 @@ class GetPaymentSummaryTest {
         val paymentSummary = createTestPaymentSummary()
         val expectedResult = paymentSummary.right()
         coEvery { paymentsRepository.getPaymentSummary(paymentId) } returns expectedResult
-        
+
         val actualResult = useCase.invoke(paymentId)
-        
+
         assertEquals("Result should be passed through unchanged", expectedResult, actualResult)
         coVerify(exactly = 1) { paymentsRepository.getPaymentSummary(paymentId) }
     }
