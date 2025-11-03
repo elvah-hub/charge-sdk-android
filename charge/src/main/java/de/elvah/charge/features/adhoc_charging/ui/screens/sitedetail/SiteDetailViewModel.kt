@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import de.elvah.charge.components.sitessource.InternalSitesSource
-import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeState
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.extension.isChargingState
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.extension.isSummaryState
 import de.elvah.charge.features.adhoc_charging.domain.usecase.GetChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingState
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
@@ -20,6 +21,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 internal class SiteDetailViewModel(
     sitesSource: SitesSource,
@@ -46,6 +49,8 @@ internal class SiteDetailViewModel(
     data class ChargeIndicatorUI(
         val isCharging: Boolean,
         val isSummaryReady: Boolean,
+        val evseId: String?,
+        val chargeTime: Duration?,
     ) {
         val showIndicator = isCharging || isSummaryReady
     }
@@ -55,16 +60,20 @@ internal class SiteDetailViewModel(
         getChargingSession(),
     ) { state, session ->
         ChargeIndicatorUI(
-            isSummaryReady = state == ChargeState.SUMMARY,
-            isCharging = session != null,
+            isCharging = session?.status?.isChargingState == true,
+            isSummaryReady = state.isSummaryState,
+            evseId = session?.evseId,
+            chargeTime = session?.duration?.seconds,
         )
 
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = ChargeIndicatorUI(
-            isCharging = getChargingSession().value != null,
-            isSummaryReady = observeChargingState().value == ChargeState.SUMMARY,
+            isCharging = getChargingSession().value?.status?.isChargingState == true,
+            isSummaryReady = observeChargingState().value.isSummaryState,
+            evseId = getChargingSession().value?.evseId,
+            chargeTime = getChargingSession().value?.duration?.seconds,
         ),
     )
 

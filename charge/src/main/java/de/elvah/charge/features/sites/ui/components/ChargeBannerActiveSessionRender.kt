@@ -4,5 +4,6 @@ import kotlin.time.Duration
 
 public data class ChargeBannerActiveSessionRender(
     val id: String,
-    val chargeTime: Duration
+    val chargeTime: Duration,
+    val isSummaryReady: Boolean,
 )

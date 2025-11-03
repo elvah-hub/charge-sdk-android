@@ -50,6 +50,10 @@ internal class SitesSourceImpl(
     override val config: Config
         get() = configuration
 
+    private var _isIdle: Boolean = true
+    override val isIdle: Boolean
+        get() = _isIdle
+
     override val activeSession: StateFlow<ChargingSession?> = getChargingSession()
         .stateIn(
             scope = coroutineScope,
@@ -91,7 +95,9 @@ internal class SitesSourceImpl(
         boundingBox: BoundingBox,
         offerType: OfferType?,
     ) {
-        updateFilters(boundingBox = boundingBox, offerType = offerType)
+        sitesAtCall {
+            updateFilters(boundingBox = boundingBox, offerType = offerType)
+        }
     }
 
     override suspend fun sitesAt(
@@ -100,23 +106,27 @@ internal class SitesSourceImpl(
         radius: Double,
         offerType: OfferType?,
     ) {
-        val radioInDegrees = radius / 11
-        updateFilters(
-            boundingBox = BoundingBox(
-                minLat = (latitude - radioInDegrees).fastCoerceAtLeast(-90.0),
-                minLng = (longitude - radioInDegrees).fastCoerceAtLeast(-180.0),
-                maxLat = (latitude + radioInDegrees).fastCoerceAtMost(90.0),
-                maxLng = (longitude + radioInDegrees).fastCoerceAtMost(180.0)
-            ),
-            offerType = offerType
-        )
+        sitesAtCall {
+            val radioInDegrees = radius / 11
+            updateFilters(
+                boundingBox = BoundingBox(
+                    minLat = (latitude - radioInDegrees).fastCoerceAtLeast(-90.0),
+                    minLng = (longitude - radioInDegrees).fastCoerceAtLeast(-180.0),
+                    maxLat = (latitude + radioInDegrees).fastCoerceAtMost(90.0),
+                    maxLng = (longitude + radioInDegrees).fastCoerceAtMost(180.0)
+                ),
+                offerType = offerType
+            )
+        }
     }
 
     override suspend fun sitesAt(
         evseIds: List<EvseId>,
         offerType: OfferType?,
     ) {
-        updateFilters(evseIds = evseIds, offerType = offerType)
+        sitesAtCall {
+            updateFilters(evseIds = evseIds, offerType = offerType)
+        }
     }
 
     override suspend fun clearSite() {
@@ -136,5 +146,12 @@ internal class SitesSourceImpl(
         return updateSiteAvailability
             .invoke(siteId)
             .getOrNull()
+    }
+
+    private suspend fun sitesAtCall(
+        action: suspend () -> Unit,
+    ) {
+        if (_isIdle) _isIdle = false
+        action()
     }
 }

@@ -41,6 +41,12 @@ public fun ChargeBanner(
         customDarkColorScheme = sitesSource.config.customDarkColorScheme,
     ) {
         when (val state = state) {
+            SitesState.Idle -> {
+                DisplayContent(displayBehaviour = display) {
+                    ChargeBanner_Empty()
+                }
+            }
+
             SitesState.Error -> {
                 DisplayContent(displayBehaviour = display) {
                     ChargeBanner_Error(modifier)
@@ -71,9 +77,8 @@ public fun ChargeBanner(
                 ChargeBanner_ActiveSession(
                     site = state.site,
                     modifier = modifier,
-                    onBannerClick = {
-                        context.goToChargingSession(false)
-                    },
+                    navigateToSession = { context.goToChargingSession(false) },
+                    navigateToSummary = { context.goToChargingSession(true) },
                 )
             }
 

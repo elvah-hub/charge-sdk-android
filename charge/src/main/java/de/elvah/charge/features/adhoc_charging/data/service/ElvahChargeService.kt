@@ -154,6 +154,7 @@ internal class ElvahChargeService(
             pollingJob?.cancel()
             pollingJob = null
 
+            _chargeSession.tryEmit(null)
             _state.value = ChargeState.IDLE
         }
     }

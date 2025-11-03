@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 internal interface InternalSitesSource {
 
+    val isIdle: Boolean
+
     val sites: StateFlow<List<ChargeSite>?>
 
     fun getSite(siteId: String): Either<Throwable, ChargeSite>

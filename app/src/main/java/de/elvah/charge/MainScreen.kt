@@ -78,7 +78,6 @@ internal fun MainScreen() {
             }
 
             item {
-                // TODO: do not show banner if no call to sites has been done
                 ChargeBanner(
                     sitesSource = source,
                     display = DisplayBehavior.WHEN_SOURCE_SET,

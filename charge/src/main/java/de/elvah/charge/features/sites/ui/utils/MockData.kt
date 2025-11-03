@@ -63,7 +63,8 @@ internal object MockData {
 
     val chargeSiteActiveSessionRender = ChargeBannerActiveSessionRender(
         id = "id",
-        chargeTime = Duration.ZERO
+        chargeTime = Duration.ZERO,
+        isSummaryReady = false,
     )
 
     val siteWithoutChargePoints = siteUI.copy(chargePoints = emptyList())

@@ -32,6 +32,9 @@ internal class SitesSourcePreview : SitesSource, InternalSitesSource {
     override val siteIds: StateFlow<List<String>>
         get() = MutableStateFlow(emptyList())
 
+    override val isIdle: Boolean
+        get() = true
+
     override val sites: StateFlow<List<ChargeSite>>
         get() = MutableStateFlow(emptyList())
 

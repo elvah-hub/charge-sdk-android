@@ -14,6 +14,8 @@ internal val bannerModule = module {
             coroutineScope = scope,
             sitesSource = siteSource,
             get(),
+            get(),
+            get(),
         )
     }
 }

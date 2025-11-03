@@ -224,6 +224,8 @@ private fun SiteDetailScreen_Error() {
 private val chargeIndicatorMock = SiteDetailViewModel.ChargeIndicatorUI(
     isCharging = true,
     isSummaryReady = false,
+    evseId = null,
+    chargeTime = null,
 )
 
 private val chargePointsMock = listOf(
