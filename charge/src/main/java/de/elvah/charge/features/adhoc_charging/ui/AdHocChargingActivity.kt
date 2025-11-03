@@ -24,7 +24,11 @@ internal class AdHocChargingActivity : ComponentActivity() {
         val siteId = intent.extras?.getString(ARG_SITE_ID).orEmpty()
 
         setContent {
-            ElvahChargeTheme(darkTheme = shouldUseDarkColors(config.darkTheme)) {
+            ElvahChargeTheme(
+                darkTheme = shouldUseDarkColors(config.darkTheme),
+                customLightColorScheme = config.customLightColorScheme,
+                customDarkColorScheme = config.customDarkColorScheme
+            ) {
                 AdHocChargingGraph(siteId) {
                     finish()
                 }

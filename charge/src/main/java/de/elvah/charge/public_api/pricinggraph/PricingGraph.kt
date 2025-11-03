@@ -71,7 +71,11 @@ public fun PricingGraph(
         pricingGraphViewModel.loadPricing(siteId)
     }
 
-    ElvahChargeTheme(darkTheme = shouldUseDarkColors(config.darkTheme)) {
+    ElvahChargeTheme(
+        darkTheme = shouldUseDarkColors(config.darkTheme),
+        customLightColorScheme = config.customLightColorScheme,
+        customDarkColorScheme = config.customDarkColorScheme
+    ) {
         when (val currentState = state) {
             is PricingGraphState.Loading -> {
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {

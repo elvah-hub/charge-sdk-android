@@ -66,10 +66,28 @@ internal object ElvahChargeColors {
         }
     }
 
+    @Composable
+    fun getColorScheme(
+        darkTheme: Boolean, 
+        dynamicColor: Boolean, 
+        customColorScheme: CustomColorScheme?
+    ): ColorScheme {
+        val baseColorScheme = getColorScheme(darkTheme, dynamicColor)
+        return customColorScheme?.applyToColorScheme(baseColorScheme) ?: baseColorScheme
+    }
+
     fun getColorSchemeExtended(darkTheme: Boolean): ColorSchemeExtended {
         return when {
             darkTheme -> DarkColorSchemeExtended
             else -> LightColorSchemeExtended
         }
+    }
+
+    fun getColorSchemeExtended(
+        darkTheme: Boolean,
+        customColorScheme: CustomColorScheme?
+    ): ColorSchemeExtended {
+        val baseColorSchemeExtended = getColorSchemeExtended(darkTheme)
+        return customColorScheme?.applyToColorSchemeExtended(baseColorSchemeExtended) ?: baseColorSchemeExtended
     }
 }

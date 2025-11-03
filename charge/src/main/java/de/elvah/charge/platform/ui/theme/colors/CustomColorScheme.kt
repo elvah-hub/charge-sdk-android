@@ -1,0 +1,105 @@
+package de.elvah.charge.platform.ui.theme.colors
+
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.graphics.Color
+
+public data class CustomColorScheme(
+    val primary: Color? = null,
+    val onPrimary: Color? = null,
+    val primaryContainer: Color? = null,
+    val onPrimaryContainer: Color? = null,
+    val secondary: Color? = null,
+    val onSecondary: Color? = null,
+    val secondaryContainer: Color? = null,
+    val onSecondaryContainer: Color? = null,
+    val tertiary: Color? = null,
+    val onTertiary: Color? = null,
+    val tertiaryContainer: Color? = null,
+    val onTertiaryContainer: Color? = null,
+    val error: Color? = null,
+    val onError: Color? = null,
+    val errorContainer: Color? = null,
+    val onErrorContainer: Color? = null,
+    val background: Color? = null,
+    val onBackground: Color? = null,
+    val surface: Color? = null,
+    val onSurface: Color? = null,
+    val surfaceVariant: Color? = null,
+    val onSurfaceVariant: Color? = null,
+    val outline: Color? = null,
+    val outlineVariant: Color? = null,
+    val scrim: Color? = null,
+    val inverseSurface: Color? = null,
+    val inverseOnSurface: Color? = null,
+    val inversePrimary: Color? = null,
+    val surfaceDim: Color? = null,
+    val surfaceBright: Color? = null,
+    val surfaceContainerLowest: Color? = null,
+    val surfaceContainerLow: Color? = null,
+    val surfaceContainer: Color? = null,
+    val surfaceContainerHigh: Color? = null,
+    val surfaceContainerHighest: Color? = null,
+    // Extended colors from ColorSchemeExtended
+    val decorativeStroke: Color? = null,
+    val brand: Color? = null,
+    val onBrand: Color? = null,
+    val brandLight: Color? = null,
+    val success: Color? = null,
+    val onSuccess: Color? = null,
+) {
+    internal fun applyToColorScheme(baseColorScheme: ColorScheme): ColorScheme {
+        return baseColorScheme.copy(
+            primary = primary ?: baseColorScheme.primary,
+            onPrimary = onPrimary ?: baseColorScheme.onPrimary,
+            primaryContainer = primaryContainer ?: baseColorScheme.primaryContainer,
+            onPrimaryContainer = onPrimaryContainer ?: baseColorScheme.onPrimaryContainer,
+            secondary = secondary ?: baseColorScheme.secondary,
+            onSecondary = onSecondary ?: baseColorScheme.onSecondary,
+            secondaryContainer = secondaryContainer ?: baseColorScheme.secondaryContainer,
+            onSecondaryContainer = onSecondaryContainer ?: baseColorScheme.onSecondaryContainer,
+            tertiary = tertiary ?: baseColorScheme.tertiary,
+            onTertiary = onTertiary ?: baseColorScheme.onTertiary,
+            tertiaryContainer = tertiaryContainer ?: baseColorScheme.tertiaryContainer,
+            onTertiaryContainer = onTertiaryContainer ?: baseColorScheme.onTertiaryContainer,
+            error = error ?: baseColorScheme.error,
+            onError = onError ?: baseColorScheme.onError,
+            errorContainer = errorContainer ?: baseColorScheme.errorContainer,
+            onErrorContainer = onErrorContainer ?: baseColorScheme.onErrorContainer,
+            background = background ?: baseColorScheme.background,
+            onBackground = onBackground ?: baseColorScheme.onBackground,
+            surface = surface ?: baseColorScheme.surface,
+            onSurface = onSurface ?: baseColorScheme.onSurface,
+            surfaceVariant = surfaceVariant ?: baseColorScheme.surfaceVariant,
+            onSurfaceVariant = onSurfaceVariant ?: baseColorScheme.onSurfaceVariant,
+            outline = outline ?: baseColorScheme.outline,
+            outlineVariant = outlineVariant ?: baseColorScheme.outlineVariant,
+            scrim = scrim ?: baseColorScheme.scrim,
+            inverseSurface = inverseSurface ?: baseColorScheme.inverseSurface,
+            inverseOnSurface = inverseOnSurface ?: baseColorScheme.inverseOnSurface,
+            inversePrimary = inversePrimary ?: baseColorScheme.inversePrimary,
+            surfaceDim = surfaceDim ?: baseColorScheme.surfaceDim,
+            surfaceBright = surfaceBright ?: baseColorScheme.surfaceBright,
+            surfaceContainerLowest = surfaceContainerLowest ?: baseColorScheme.surfaceContainerLowest,
+            surfaceContainerLow = surfaceContainerLow ?: baseColorScheme.surfaceContainerLow,
+            surfaceContainer = surfaceContainer ?: baseColorScheme.surfaceContainer,
+            surfaceContainerHigh = surfaceContainerHigh ?: baseColorScheme.surfaceContainerHigh,
+            surfaceContainerHighest = surfaceContainerHighest ?: baseColorScheme.surfaceContainerHighest,
+        )
+    }
+
+    internal fun applyToColorSchemeExtended(baseColorSchemeExtended: ColorSchemeExtended): ColorSchemeExtended {
+        return baseColorSchemeExtended.copy(
+            primary = primary ?: baseColorSchemeExtended.primary,
+            decorativeStroke = decorativeStroke ?: baseColorSchemeExtended.decorativeStroke,
+            brand = brand ?: baseColorSchemeExtended.brand,
+            onBrand = onBrand ?: baseColorSchemeExtended.onBrand,
+            brandLight = brandLight ?: baseColorSchemeExtended.brandLight,
+            success = success ?: baseColorSchemeExtended.success,
+            onSuccess = onSuccess ?: baseColorSchemeExtended.onSuccess,
+            error = error ?: baseColorSchemeExtended.error,
+            onError = onError ?: baseColorSchemeExtended.onError,
+        )
+    }
+}
