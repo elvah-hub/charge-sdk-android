@@ -7,25 +7,36 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import de.elvah.charge.R
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 
 @Composable
-fun CPOLogo(
+internal fun CPOLogo(
     url: String,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
 ) {
-    AsyncImage(model = url, contentDescription = contentDescription, modifier = modifier)
+    AsyncImage(
+        modifier = modifier,
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(url)
+            .crossfade(true)
+            .build(),
+        placeholder = painterResource(R.drawable.ic_logo_elvah_composed),
+        contentDescription = contentDescription,
+    )
 }
 
 @Composable
-fun ElvahLogo(modifier: Modifier = Modifier) {
+internal fun ElvahLogo(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,

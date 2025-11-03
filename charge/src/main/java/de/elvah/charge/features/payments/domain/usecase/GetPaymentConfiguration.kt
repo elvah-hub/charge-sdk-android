@@ -19,30 +19,36 @@ internal class GetPaymentConfiguration(
     suspend operator fun invoke(
         siteId: String,
         evseId: String
-    ): Either<Throwable, PaymentConfiguration> =
+    ): Either<PaymentConfigErrors, PaymentConfiguration> =
         coroutineScope {
             val publishableKey = async { paymentsRepository.getPublishableKey() }
             val signedOffer = async { sitesRepository.getSignedOffer(siteId, evseId) }
 
-            val paymentIntent = signedOffer.await().flatMap {
-                it.evses.first().offer.signedOffer?.let { signedOffer ->
+            signedOffer.await().flatMap {
+                it.evses.firstOrNull()?.offer?.signedOffer?.let { signedOffer ->
                     paymentsRepository.createPaymentIntent(signedOffer)
                 } ?: Either.Left(Exception("No offer found"))
-            }
-
-            paymentIntent.flatMap { paymentIntent ->
-
+            }.mapLeft {
+                PaymentConfigErrors.NoOfferFound(it.cause)
+            }.flatMap { paymentIntent ->
                 chargingStore.setPaymentId(paymentIntent.paymentId)
                 chargingStore.setEvseId(evseId)
 
-                publishableKey.await().map {
+                publishableKey.await().map { publishableKey ->
                     PaymentConfiguration(
-                        publishableKey = it,
+                        publishableKey = publishableKey,
                         accountId = paymentIntent.accountId,
                         clientSecret = paymentIntent.clientSecret,
                         paymentId = paymentIntent.paymentId
                     )
+                }.mapLeft {
+                    PaymentConfigErrors.NoPublishableKey(it.cause)
                 }
             }
         }
+}
+
+internal sealed class PaymentConfigErrors(val throwable: Throwable?) {
+    data class NoPublishableKey(val cause: Throwable?) : PaymentConfigErrors(cause)
+    data class NoOfferFound(val cause: Throwable?) : PaymentConfigErrors(cause)
 }

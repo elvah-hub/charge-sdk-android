@@ -35,7 +35,7 @@ internal class ChargingStartViewModel(
 
             if (result != null) {
                 _state.value = ChargingStartState.Success(
-                    evseId = route.evseId,
+                    evseId = route.shortenedEvseId,
                     organisationDetails = result
                 )
             } else {
@@ -46,8 +46,13 @@ internal class ChargingStartViewModel(
 
     fun closeBanner() {
         viewModelScope.launch {
-            _state.value =
-                (_state.value as ChargingStartState.Success).copy(shouldShowAuthorizationBanner = false)
+            if (_state.value is ChargingStartState.Success) {
+                val state = _state.value as ChargingStartState.Success
+
+                _state.update {
+                    state.copy(shouldShowAuthorizationBanner = false)
+                }
+            }
         }
     }
 
@@ -55,34 +60,34 @@ internal class ChargingStartViewModel(
         viewModelScope.launch {
             val result = startChargingSession()
 
-            if (result.isRight()) {
-                _state.value = ChargingStartState.StartRequest
-            } else {
-                val route = savedStateHandle.toRoute<AdHocChargingScreens.ChargingStartRoute>()
-                val organisationDetails = getOrganisationDetails()
+            result.fold(
+                ifLeft = {
+                    val route = savedStateHandle.toRoute<AdHocChargingScreens.ChargingStartRoute>()
+                    val organisationDetails = getOrganisationDetails()
 
-                organisationDetails?.let { it1 ->
-                    _state.update {
-                        ChargingStartState.Success(
-                            evseId = route.evseId,
-                            organisationDetails = it1,
-                            error = true
-                        )
+                    organisationDetails?.let { organisationDetails ->
+                        _state.update {
+                            ChargingStartState.Success(
+                                evseId = route.shortenedEvseId,
+                                organisationDetails = organisationDetails,
+                                error = true
+                            )
+                        }
                     }
+                },
+                ifRight = {
+                    _state.update { ChargingStartState.StartRequest }
                 }
-            }
+            )
         }
     }
 
     fun onDismissError() {
         viewModelScope.launch {
             if (_state.value is ChargingStartState.Success) {
+                val state = _state.value as ChargingStartState.Success
                 _state.update {
-                    ChargingStartState.Success(
-                        evseId = (_state.value as ChargingStartState.Success).evseId,
-                        organisationDetails = (_state.value as ChargingStartState.Success).organisationDetails,
-                        error = false
-                    )
+                    state.copy(error = false)
                 }
             }
         }

@@ -1,5 +1,5 @@
 package de.elvah.charge.features.sites.domain.model.filters
 
-enum class OfferType {
+public enum class OfferType {
     CAMPAIGN,
 }

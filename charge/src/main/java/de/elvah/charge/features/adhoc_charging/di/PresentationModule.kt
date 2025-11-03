@@ -9,7 +9,7 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailV
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val adHocViewModelModule = module {
+internal val adHocViewModelModule = module {
     viewModelOf(::SiteDetailViewModel)
     viewModelOf(::ChargingPointDetailViewModel)
     viewModelOf(::ChargingStartViewModel)

@@ -35,9 +35,9 @@ import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.ElvahLogo
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
-import de.elvah.charge.platform.ui.components.SecondaryButton
 import de.elvah.charge.platform.ui.components.TitleSmall
 import de.elvah.charge.platform.ui.components.TopAppBar
+import de.elvah.charge.platform.ui.components.buttons.SecondaryButton
 
 
 @Composable

@@ -23,7 +23,7 @@ class ActiveChargeSessionMapperTest {
             val dto = createActiveChargeSessionsDto(status = statusString)
             val domain = dto.toDomain()
             
-            assertEquals("Status enum mapping failed for $statusString", expectedEnum, domain.status1)
+            assertEquals("Status enum mapping failed for $statusString", expectedEnum, domain.status)
         }
     }
 
@@ -32,7 +32,7 @@ class ActiveChargeSessionMapperTest {
         val dto = createActiveChargeSessionsDto(status = "UNKNOWN_STATUS")
         val domain = dto.toDomain()
         
-        assertEquals(SessionStatus.START_REQUESTED, domain.status1)
+        assertEquals(SessionStatus.START_REQUESTED, domain.status)
     }
 
     @Test
@@ -40,7 +40,7 @@ class ActiveChargeSessionMapperTest {
         val dto = createActiveChargeSessionsDto(status = "")
         val domain = dto.toDomain()
         
-        assertEquals(SessionStatus.START_REQUESTED, domain.status1)
+        assertEquals(SessionStatus.START_REQUESTED, domain.status)
     }
 
     @Test
@@ -55,10 +55,9 @@ class ActiveChargeSessionMapperTest {
         val domain = dto.toDomain()
         
         assertEquals("DE*KDL*E0000040", domain.evseId)
-        assertEquals("CHARGING", domain.status)
         assertEquals(15.5, domain.consumption, 0.001)
         assertEquals(120, domain.duration)
-        assertEquals(SessionStatus.CHARGING, domain.status1)
+        assertEquals(SessionStatus.CHARGING, domain.status)
     }
 
     @Test
@@ -88,10 +87,9 @@ class ActiveChargeSessionMapperTest {
         val domain = dto.toDomain()
         
         assertEquals("DE*ABC*E123456", domain.evseId)
-        assertEquals("STOP_REQUESTED", domain.status)
         assertEquals(25.7, domain.consumption, 0.001)
         assertEquals(0, domain.duration)
-        assertEquals(SessionStatus.STOP_REQUESTED, domain.status1)
+        assertEquals(SessionStatus.STOP_REQUESTED, domain.status)
     }
 
     @Test
@@ -106,10 +104,9 @@ class ActiveChargeSessionMapperTest {
         val domain = dto.toDomain()
         
         assertEquals("DE*TEST*E000000", domain.evseId)
-        assertEquals("START_REJECTED", domain.status)
         assertEquals(0.0, domain.consumption, 0.001)
         assertEquals(0, domain.duration)
-        assertEquals(SessionStatus.START_REJECTED, domain.status1)
+        assertEquals(SessionStatus.START_REJECTED, domain.status)
     }
 
     private fun createActiveChargeSessionsDto(

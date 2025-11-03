@@ -1,29 +1,43 @@
 package de.elvah.charge.features.sites.ui.mapper
 
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.ui.model.AddressUI
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.ChargePointUI
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
 import de.elvah.charge.features.sites.ui.model.Location
+import de.elvah.charge.public_api.banner.EvseId
 
 
-internal fun ChargeSite.toUI(): ChargeSiteUI =
-    ChargeSiteUI(
+internal fun ChargeSite.toUI(): ChargeSiteUI {
+    val commonPrefix = getCommonPrefixes()
+    return ChargeSiteUI(
         id = id,
         cpoName = operatorName,
-        address = address.streetAddress.joinToString { " " },
+        address = address.toUI(),
         lat = location.first(),
         lng = location.last(),
-        pricePerKw = evses.first().offer.price.energyPricePerKWh,
+        pricePerKw = evses.first().offer.price.energyPricePerKWh.value,
         campaignEnd = evses.first().offer.campaignEndsAt.orEmpty(),
-        chargePoints = evses.map { it.toUI() }
+        chargePoints = evses.map { it.toUI(commonPrefix) }
+    )
+}
+
+internal fun ChargeSite.Address.toUI(): AddressUI =
+    AddressUI(
+        streetAddress = streetAddress,
+        postalCode = postalCode,
+        locality = locality,
     )
 
-internal fun ChargeSite.ChargePoint.toUI(): ChargePointUI = ChargePointUI(
-    evseId = evseId,
-    pricePerKwh = offer.price.energyPricePerKWh,
-    energyType = powerSpecification?.type.orEmpty(),
-    energyValue = powerSpecification?.maxPowerInKW,
+
+internal fun ChargeSite.ChargePoint.toUI(commonPrefix: String): ChargePointUI = ChargePointUI(
+    evseId = EvseId(evseId),
+    shortenedEvseId = evseId.removePrefix(commonPrefix),
+    availability = availability,
+    standardPricePerKwh = offer.price.energyPricePerKWh,
+    maxPowerInKW = powerSpecification?.maxPowerInKW,
+    powerType = powerSpecification?.type,
 )
 
 internal fun ChargeSite.toRender(): ChargeBannerRender {
@@ -37,14 +51,25 @@ internal fun ChargeSite.toRender(): ChargeBannerRender {
             location.first(),
             location.last()
         ),
-        originalPrice = bestOffer.originalPrice?.energyPricePerKWh,
-        price = bestOffer.price.energyPricePerKWh,
+        originalPrice = bestOffer.originalPrice?.energyPricePerKWh?.value,
+        price = bestOffer.price.energyPricePerKWh.value,
         campaignEnd = evses.first().offer.campaignEndsAt.orEmpty(),
     )
 }
 
 internal fun ChargeSite.getBestOffer(): ChargeSite.ChargePoint.Offer =
-    this.evses.map { it to it.offer.price.energyPricePerKWh }.reduce { acc, pair ->
+    this.evses.map { it to it.offer.price.energyPricePerKWh.value }.reduce { acc, pair ->
         minOf(acc, pair, compareBy { it.second })
     }.first.offer
 
+private fun ChargeSite.getCommonPrefixes(
+): String {
+    val ids = evses.map { it.evseId }
+    val commonPrefix = ids
+        .takeIf { it.isNotEmpty() }
+        ?.reduce { accumulator, nextElement ->
+            accumulator.commonPrefixWith(nextElement, true)
+        }
+        ?: ""
+    return commonPrefix
+}

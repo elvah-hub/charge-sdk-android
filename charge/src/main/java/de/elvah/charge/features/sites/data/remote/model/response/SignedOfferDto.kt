@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class SignedOfferDto(
+internal data class SignedOfferDto(
 
     @param:Json(name = "originalPrice")
     val originalPrice: PriceDto?,
@@ -13,7 +13,7 @@ data class SignedOfferDto(
     val price: PriceDto,
 
     @param:Json(name = "campaignEndsAt")
-    val campaignEndsAt: String,
+    val campaignEndsAt: String?,
 
     @param:Json(name = "signedOffer")
     val signedOffer: String,
@@ -22,5 +22,5 @@ data class SignedOfferDto(
     val type: String,
 
     @param:Json(name = "expiresAt")
-    val expiresAt: String
+    val expiresAt: String,
 )

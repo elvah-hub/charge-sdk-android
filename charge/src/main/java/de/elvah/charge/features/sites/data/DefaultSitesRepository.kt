@@ -2,17 +2,17 @@ package de.elvah.charge.features.sites.data
 
 import arrow.core.Either
 import arrow.core.right
-import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.sites.data.mapper.toDomain
 import de.elvah.charge.features.sites.data.mapper.toSite
 import de.elvah.charge.features.sites.data.remote.SitesApi
 import de.elvah.charge.features.sites.data.remote.model.request.SignedOfferRequest
 import de.elvah.charge.features.sites.domain.model.ChargeSite
+import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.platform.core.arrow.extensions.toEither
-
+import de.elvah.charge.public_api.banner.EvseId
 
 internal class DefaultSitesRepository(
     private val sitesApi: SitesApi,
@@ -21,16 +21,16 @@ internal class DefaultSitesRepository(
     private var chargeSites: List<ChargeSite> = emptyList()
 
     override fun getChargeSite(siteId: String): Either<Throwable, ChargeSite> {
-        return chargeSites.firstOrNull { it.id == siteId }?.right() ?: Either.Left(
-            Exception("Site not found")
-        )
+        return chargeSites.firstOrNull { it.id == siteId }
+            ?.right()
+            ?: Either.Left(Exception("Site not found"))
     }
 
     override fun updateChargeSite(site: ChargeSite) {
-        if (chargeSites.none { it.id == site.id }) {
-            chargeSites = chargeSites + site
+        chargeSites = if (chargeSites.none { it.id == site.id }) {
+            chargeSites + site
         } else {
-            chargeSites = chargeSites.map {
+            chargeSites.map {
                 if (it.id == site.id) {
                     site
                 } else {
@@ -78,6 +78,10 @@ internal class DefaultSitesRepository(
         }.toEither()
     }
 
+    override suspend fun getSiteScheduledPricing(siteId: String): Either<Throwable, ScheduledPricing> {
+        return sitesApi.getSiteScheduledPricing(siteId).map { it.data.toDomain() }
+    }
+
     private fun parseFilters(
         boundingBox: BoundingBox? = null,
         campaignId: String? = null,
@@ -103,6 +107,43 @@ internal class DefaultSitesRepository(
         }
     }
 
+    override suspend fun updateChargePointAvailabilities(
+        siteId: String,
+    ): Either<Throwable, List<ChargeSite.ChargePoint>> {
+        return runCatching {
+            val site = chargeSites.firstOrNull { it.id == siteId }
+                ?: return Either.Left(Exception("Site not found"))
+
+            val response = sitesApi.getChargePointAvailabilities(site.id)
+                .data
+
+            val updateSites = chargeSites.toMutableList()
+
+            val updatedEvses = site.evses.map { cp ->
+                val newAvailability = response.evses.find { it.evseId == cp.evseId }
+                    ?.availability?.toDomain()
+                    ?: cp.availability
+
+                cp.copy(
+                    availability = newAvailability,
+                )
+            }
+
+            val updateSite = updateSites.find { s -> s.id == siteId }
+                ?.copy(
+                    evses = updatedEvses,
+                )
+
+            updateSite?.let {
+                updateSites[updateSites.indexOf(site)] = it
+            }
+
+            chargeSites = updateSites
+
+            updateSite?.evses ?: listOf()
+        }.toEither()
+    }
+
     companion object {
         const val MIN_LAT_KEY = "minLat"
         const val MAX_LAT_KEY = "maxLat"
@@ -111,6 +152,5 @@ internal class DefaultSitesRepository(
         const val CAMPAIGN_ID_KEY = "campaignId"
         const val ORGANISATION_ID_KEY = "organisationId"
         const val OFFER_TYPE_KEY = "offerType"
-        const val EVSE_IDS_KEY = "evseIds"
     }
 }

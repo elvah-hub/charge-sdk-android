@@ -2,7 +2,7 @@ package de.elvah.charge.features.sites.data.remote.model.response
 
 import com.squareup.moshi.Json
 
-data class OfferDto(
+internal data class OfferDto(
 
     @param:Json(name = "price")
     val price: PriceDto,
@@ -18,5 +18,4 @@ data class OfferDto(
 
     @param:Json(name = "campaignEndsAt")
     val campaignEndsAt: String?
-
 )

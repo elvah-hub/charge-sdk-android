@@ -7,8 +7,11 @@ import de.elvah.charge.platform.simulator.domain.strategy.DefaultSimulationStrat
 import de.elvah.charge.platform.simulator.domain.strategy.InterruptedChargeSimulationStrategy
 import de.elvah.charge.platform.simulator.domain.strategy.StartFailsSimulationStrategy
 import de.elvah.charge.platform.simulator.domain.strategy.StartRejectedSimulationStrategy
+import de.elvah.charge.platform.simulator.domain.strategy.StartRequestedDelayedSimulationStrategy
+import de.elvah.charge.platform.simulator.domain.strategy.StartedDelayedSimulationStrategy
 import de.elvah.charge.platform.simulator.domain.strategy.StopFailsSimulationStrategy
 import de.elvah.charge.platform.simulator.domain.strategy.StopRejectedSimulationStrategy
+import de.elvah.charge.platform.simulator.domain.strategy.StopRequestedDelayedSimulationStrategy
 
 /**
  * Factory Pattern: Creates appropriate simulation strategies based on the flow type.
@@ -37,6 +40,15 @@ internal class DefaultSimulationStrategyFactory(
             SimulatorFlow.InterruptedCharge -> InterruptedChargeSimulationStrategy(sessionFactory)
             SimulatorFlow.StartRejected -> StartRejectedSimulationStrategy(sessionFactory)
             SimulatorFlow.StopRejected -> StopRejectedSimulationStrategy(sessionFactory)
+            SimulatorFlow.StartRequestedDelayed -> StartRequestedDelayedSimulationStrategy(
+                sessionFactory
+            )
+
+            SimulatorFlow.StartedDelayed -> StartedDelayedSimulationStrategy(sessionFactory)
+            SimulatorFlow.StopRequestedDelayed -> StopRequestedDelayedSimulationStrategy(
+                sessionFactory
+            )
+
             is SimulatorFlow.Custom -> CustomSimulationStrategy(
                 sessionFactory,
                 flow.onSessionStatusUpdate

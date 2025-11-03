@@ -5,17 +5,20 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import arrow.core.Either
-import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
+import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Error
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Loading
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Success
-import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.model.ChargePointDetail
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
+import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors
+import de.elvah.charge.features.payments.domain.usecase.StoreAdditionalCosts
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
+import de.elvah.charge.features.sites.domain.model.AdditionalCosts
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
+import de.elvah.charge.features.sites.ui.mapper.toUI
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.platform.core.mvi.MVIBaseViewModel
@@ -27,6 +30,7 @@ internal class ChargingPointDetailViewModel(
     private val getPaymentConfiguration: GetPaymentConfiguration,
     private val initStripeConfig: InitStripeConfig,
     private val getOrganisationDetails: GetOrganisationDetails,
+    private val storeAdditionalCosts: StoreAdditionalCosts,
     private val sitesRepository: SitesRepository,
     private val savedStateHandle: SavedStateHandle,
     private val config: Config,
@@ -38,13 +42,13 @@ internal class ChargingPointDetailViewModel(
         when (event) {
             ChargingPointDetailEvent.OnGooglePayClicked -> when (previousState) {
                 is Loading -> Reducer.Result(Loading(evseId), null)
-                is Error -> Reducer.Result(Error(evseId, previousState.message), null)
+                is Error -> Reducer.Result(Error(evseId, previousState.paymentConfigErrors), null)
                 is Success -> Reducer.Result(previousState.copy(), null)
             }
 
             ChargingPointDetailEvent.OnPayWithCardClicked -> when (previousState) {
                 is Loading -> Reducer.Result(Loading(evseId), null)
-                is Error -> Reducer.Result(Error(evseId, previousState.message), null)
+                is Error -> Reducer.Result(Error(evseId, previousState.paymentConfigErrors), null)
                 is Success -> Reducer.Result(previousState.copy(), null)
             }
 
@@ -53,52 +57,81 @@ internal class ChargingPointDetailViewModel(
 
                 sitesRepository.getChargeSite(route.siteId)
                     .fold(
-                        ifLeft = { Reducer.Result(Error(evseId, it.message.orEmpty())) },
+                        ifLeft = {
+                            Reducer.Result(
+                                Error(
+                                    evseId,
+                                    PaymentConfigErrors.NoOfferFound(it.cause)
+                                )
+                            )
+                        },
                         ifRight = { site ->
-                            val chargePoint = site.evses.first { route.evseId == it.evseId }
+                            val siteUI = site.toUI()
+
+                            val chargePoint = site.evses
+                                .first { route.evseId == it.evseId }
+
+                            val chargePointUI = siteUI.chargePoints
+                                .find { route.evseId == it.evseId.value }
+
+                            val currentPrice = chargePoint.offer.price
+
+                            val standardPrice = chargePoint.offer.originalPrice
+                                ?: currentPrice
+
+                            val hasDiscount =
+                                currentPrice.energyPricePerKWh.value < standardPrice.energyPricePerKWh.value
+
+                            val priceWithLineThrough =
+                                (if (hasDiscount) standardPrice else null)
+
+                            val priceToHighlight =
+                                (if (hasDiscount) currentPrice else standardPrice)
+
+
+                            val additionalCosts = AdditionalCosts(
+                                baseFee = priceToHighlight.baseFee,
+                                blockingFee = priceToHighlight.blockingFee,
+                                currency = priceToHighlight.currency,
+                            )
+
+                            runBlocking { storeAdditionalCosts(additionalCosts) }
+
                             val organisationDetails = runBlocking { getOrganisationDetails() }
 
                             Reducer.Result(
                                 Success(
                                     evseId = evseId,
-                                    chargePointDetail = ChargePointDetail(
-                                        chargingPoint = chargePoint.evseId,
-                                        type = chargePoint.powerSpecification?.type.orEmpty(),
-                                        offer = ChargePointDetail.Offer(
-                                            current = chargePoint.offer.price.energyPricePerKWh,
-                                            old = chargePoint.offer.originalPrice?.energyPricePerKWh
-                                        ),
-                                        cpoName = site.operatorName,
-                                        evseId = chargePoint.evseId,
-                                        energy = chargePoint.powerSpecification?.maxPowerInKW.toString(),
-                                        signedOffer = "",
-                                        termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
-                                        privacyUrl = organisationDetails?.privacyUrl.orEmpty()
-                                    ),
+                                    shortenedEvseId = chargePointUI?.shortenedEvseId ?: evseId,
+                                    availability = chargePoint.availability,
+                                    discountExpiresAt = null, // disabled for now
+                                    priceWithLineThrough = priceWithLineThrough?.energyPricePerKWh,
+                                    priceToHighlight = priceToHighlight.energyPricePerKWh,
+                                    additionalCostsUI = additionalCosts.toUI(),
+                                    companyName = organisationDetails?.companyName.orEmpty(),
+                                    termsOfServiceUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
+                                    privacyPolicyUrl = organisationDetails?.privacyUrl.orEmpty(),
+                                    companyLogoUrl = organisationDetails?.logoUrl,
                                     paymentIntentParams = event.paymentConfiguration,
-                                    logoUrl = event.logoUrl,
-                                    render = ChargePointDetailRender(
-                                        evseId = EvseId(chargePoint.evseId),
-                                        energyType = chargePoint.powerSpecification?.type.orEmpty(),
-                                        energyValue = chargePoint.powerSpecification?.maxPowerInKW,
-                                        price = chargePoint.offer.price.energyPricePerKWh,
-                                        originalPrice = chargePoint.offer.originalPrice?.energyPricePerKWh,
-                                        logoUrl = event.logoUrl,
-                                        cpoName = site.operatorName,
-                                        termsUrl = organisationDetails?.termsOfConditionUrl.orEmpty(),
-                                        privacyUrl = organisationDetails?.privacyUrl.orEmpty()
-                                    ),
-                                    mocked = config.environment is Environment.Simulator
+                                    mocked = config.environment is Environment.Simulator,
                                 ), null
                             )
                         })
-
             }
 
             ChargingPointDetailEvent.OnPaymentSuccess -> {
                 Reducer.Result(
                     previousState,
                     ChargingPointDetailEffect.NavigateTo(previousState.evseId)
+                )
+            }
+
+            is ChargingPointDetailEvent.OnError -> {
+                Reducer.Result(
+                    Error(
+                        previousState.evseId,
+                        event.paymentConfigErrors
+                    ), null
                 )
             }
         }
@@ -112,32 +145,29 @@ internal class ChargingPointDetailViewModel(
     }
 
     private suspend fun executeInitializeStripe(siteId: String, evseId: String) {
-        val result: Either<Throwable, PaymentConfiguration> =
+        val result: Either<PaymentConfigErrors, PaymentConfiguration> =
             getPaymentConfiguration(siteId, evseId)
         val logoUrl = getOrganisationDetails()?.logoUrl.orEmpty()
 
         result.fold(
             ifLeft = {
-                Log.d("ChargingPointDetailViewModel", "Error getting payment configuration", it)
+                Log.d(
+                    "ChargingPointDetailViewModel",
+                    "Error getting payment configuration",
+                    it.throwable?.cause
+                )
+                sendEvent(ChargingPointDetailEvent.OnError(it))
             }, ifRight = { paymentIntentValue ->
                 initStripeConfig(paymentIntentValue.publishableKey, paymentIntentValue.accountId)
                 sendEvent(ChargingPointDetailEvent.Initialize(paymentIntentValue, logoUrl))
             }
         )
     }
-}
 
-sealed class ChargingPointDetailEvent : Reducer.ViewEvent {
-    internal data class Initialize(
-        val paymentConfiguration: PaymentConfiguration,
-        val logoUrl: String,
-    ) : ChargingPointDetailEvent()
-
-    data object OnGooglePayClicked : ChargingPointDetailEvent()
-    data object OnPayWithCardClicked : ChargingPointDetailEvent()
-    data object OnPaymentSuccess : ChargingPointDetailEvent()
-}
-
-sealed class ChargingPointDetailEffect : Reducer.ViewEffect {
-    class NavigateTo(val evseId: String) : ChargingPointDetailEffect()
+    internal fun onRetryClicked() {
+        viewModelScope.launch {
+            val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
+            executeInitializeStripe(route.siteId, route.evseId)
+        }
+    }
 }

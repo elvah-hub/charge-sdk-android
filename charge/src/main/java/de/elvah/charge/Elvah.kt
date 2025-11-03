@@ -3,6 +3,7 @@ package de.elvah.charge
 import android.content.Context
 import de.elvah.charge.features.adhoc_charging.data.local.DefaultChargingStore
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
+import de.elvah.charge.features.adhoc_charging.di.adHocChargingLocalModule
 import de.elvah.charge.features.adhoc_charging.di.adHocChargingUseCasesModule
 import de.elvah.charge.features.adhoc_charging.di.adHocViewModelModule
 import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
@@ -29,7 +30,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-object Elvah {
+public object Elvah {
 
     private val useCaseModule = module {
         includes(sitesUseCaseModule, adHocChargingUseCasesModule, paymentsUseCaseModule)
@@ -65,14 +66,14 @@ object Elvah {
     }
 
     private val localModule = module {
-
+        includes(adHocChargingLocalModule)
     }
 
     private val emptyModule = module {
 
     }
 
-    fun initialize(context: Context, config: Config) {
+    public fun initialize(context: Context, config: Config) {
         val simulatorModule = if (config.environment is Environment.Simulator) {
             module {
                 includes(provideSimulatorModule(config.environment.simulatorFlow))

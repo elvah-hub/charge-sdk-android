@@ -17,6 +17,8 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.Charging
 import de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpAndSupportScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailScreen
+import de.elvah.charge.platform.ui.animation.slideFromBottom
+import de.elvah.charge.platform.ui.animation.slideToBottom
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -27,25 +29,38 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
     NavHost(navController, startDestination = SiteDetailRoute(siteId)) {
 
         composable<SiteDetailRoute> {
-            SiteDetailScreen(koinViewModel()) { evseId ->
-                navController.navigate(
-                    ChargingPointDetailRoute(
-                        siteId = siteId,
-                        evseId = evseId,
+            SiteDetailScreen(
+                viewModel = koinViewModel(),
+                onCloseClick = onFinishClicked,
+                onItemClick = { evseId ->
+                    navController.navigate(
+                        ChargingPointDetailRoute(
+                            siteId = siteId,
+                            evseId = evseId,
+                        )
                     )
-                )
-            }
+                },
+            )
         }
 
         composable<ChargingPointDetailRoute>(
             deepLinks = listOf(
                 navDeepLink<ChargingPointDetailRoute>(basePath = ChargingPointDetailRoute.ROUTE)
-            )
+            ),
+            enterTransition = slideFromBottom(),
+            popEnterTransition = slideFromBottom(),
+            exitTransition = slideToBottom(),
+            popExitTransition = slideToBottom(),
         ) {
             ChargingPointDetailScreen(koinViewModel(), onBackClick = {
                 navController.navigateUp()
-            }, onPaymentSuccess = { evseId, paymentId ->
-                navController.navigate(ChargingStartRoute(evseId, paymentId))
+            }, onPaymentSuccess = { shortenedEvseId, paymentId ->
+                navController.navigate(
+                    ChargingStartRoute(
+                        shortenedEvseId = shortenedEvseId,
+                        paymentId = paymentId
+                    )
+                )
             })
         }
 
@@ -66,7 +81,7 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
                     navController.navigate(HelpAndSupportRoute)
                 }, onStopClick = {
                     navController.navigate(ReviewRoute)
-                }
+                }, onDismissClick = onFinishClicked
             )
         }
 
@@ -76,10 +91,14 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
             }
         }
         composable<ReviewRoute> {
-            ReviewScreen(koinViewModel()) {
-                onFinishClicked()
-            }
+            ReviewScreen(
+                viewModel = koinViewModel(),
+                onDoneClick = onFinishClicked,
+                onDismissClick = onFinishClicked,
+                onContactSupport = {
+                    navController.navigate(HelpAndSupportRoute)
+                }
+            )
         }
     }
 }
-

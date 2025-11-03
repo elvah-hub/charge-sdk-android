@@ -4,10 +4,13 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import de.elvah.charge.features.adhoc_charging.ChargingSessionPrefs
+import de.elvah.charge.features.adhoc_charging.data.mapper.toDomain
+import de.elvah.charge.features.adhoc_charging.data.mapper.toProto
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
+import de.elvah.charge.features.sites.domain.model.AdditionalCosts
 import kotlinx.coroutines.flow.Flow
-
+import kotlinx.coroutines.flow.first
 
 internal class DefaultChargingStore(
     private val context: Context
@@ -49,6 +52,18 @@ internal class DefaultChargingStore(
         }
     }
 
+    override suspend fun getAdditionalCosts(): AdditionalCosts? {
+        return context.settingsDataStore.data.first().additionalCosts.toDomain()
+    }
+
+    override suspend fun storeAdditionalCosts(additionalCosts: AdditionalCosts?) {
+        context.settingsDataStore.updateData { preferences ->
+            preferences.toBuilder()
+                .setAdditionalCosts(additionalCosts?.toProto())
+                .build()
+        }
+    }
+
     override fun getChargingPrefs(): Flow<ChargingSessionPrefs> {
         return context.settingsDataStore.data
     }
@@ -60,8 +75,8 @@ internal class DefaultChargingStore(
     }
 }
 
-val Context.settingsDataStore: DataStore<ChargingSessionPrefs> by dataStore(
+private val Context.settingsDataStore: DataStore<ChargingSessionPrefs> by dataStore(
     fileName = "settings.pb",
-    serializer = ChargingSessionPrefsSerializer
+    serializer = ChargingSessionPrefsSerializer,
 )
 

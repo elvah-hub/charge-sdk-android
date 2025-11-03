@@ -27,7 +27,6 @@ internal class CustomSimulationStrategy(
             status = this.status,
             consumption = this.consumption,
             duration = this.duration + 3,
-            status1 = this.status1
         )
     }
 }

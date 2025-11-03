@@ -15,6 +15,9 @@ android {
     defaultConfig {
         minSdk = 26
 
+        buildConfigField("String", "SDK_VERSION", "\"${libs.versions.sdk.get()}\"")
+        buildConfigField("String", "SDK_API_VERSION", "\"${libs.versions.sdkApiVersion.get()}\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -32,6 +35,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+
     }
 
     kotlin {
@@ -41,6 +45,8 @@ android {
         abiValidation {
             enabled.set(true)
         }
+
+        explicitApi()
     }
 
     publishing {
@@ -48,6 +54,8 @@ android {
             withSourcesJar()
         }
     }
+
+    android.buildFeatures.buildConfig = true
 }
 
 publishing {
@@ -55,7 +63,7 @@ publishing {
         register<MavenPublication>("release") {
             artifactId = "charge-sdk-android"
             groupId = "com.github.elvah-hub"
-            version = "0.3.5"
+            version = libs.versions.sdk.get()
 
             afterEvaluate {
                 from(components["release"])
@@ -63,6 +71,8 @@ publishing {
         }
     }
 }
+
+
 
 tasks.register("checkMinifyEnabled") {
     doLast {
@@ -91,7 +101,6 @@ protobuf {
     }
 }
 
-
 dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material3)
@@ -108,6 +117,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.stripe.android)
     implementation(libs.coil3.coil.compose)
+    implementation(libs.coil3.network.okhttp)
 
     implementation(libs.kotlinx.datetime)
 

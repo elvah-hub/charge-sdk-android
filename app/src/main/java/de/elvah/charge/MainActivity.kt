@@ -11,18 +11,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import de.elvah.charge.entrypoints.banner.ChargeBanner
-import de.elvah.charge.entrypoints.banner.ChargeBannerSource
-import de.elvah.charge.entrypoints.banner.EvseId
-import de.elvah.charge.entrypoints.sites.GetSites
-import de.elvah.charge.entrypoints.sites.SitesManager
+import de.elvah.charge.public_api.DisplayBehavior
+import de.elvah.charge.public_api.banner.ChargeBanner
+import de.elvah.charge.public_api.banner.ChargeBannerSource
+import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.pricinggraph.PricingGraph
+import de.elvah.charge.public_api.sites.GetSites
+import de.elvah.charge.public_api.sites.SitesManager
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private var chargeBannerSource: ChargeBannerSource = ChargeBannerSource()
@@ -32,12 +35,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val evseId = EvseId("HNTCI*E*00001")
         setContent {
             val context = LocalContext.current
+            val coroutineScope = rememberCoroutineScope()
             val sites by produceState(emptyList()) {
                 value = getSites(
                     GetSites.Params(
-                        evseIds = listOf(EvseId("HNTCI*E*00001"))
+                        evseIds = listOf(evseId)
                     )
                 )
             }
@@ -51,43 +56,53 @@ class MainActivity : ComponentActivity() {
                     contentAlignment = Alignment.Center
                 ) {
                     Column {
-                        ChargeBanner()
                         Button({
-                            SitesManager.openSite(context, sites.first().id)
+                            coroutineScope.launch {
+                                /*chargeBannerSource.sitesAt(
+                                    //latitude = 52.520008,
+                                    //longitude = 13.404954,
+                                    14.0785,
+                                    -87.1994,
+                                    radius = 50.0
+                                )*/
+
+                                /* chargeBannerSource.sitesAt(
+                                     boundingBox = BoundingBox(
+                                         minLat = 13.988097,
+                                         minLng = -87.292583,
+                                         maxLat = 14.168866,
+                                         maxLng = -87.106216
+                                     )
+                                 )*/
+
+                                chargeBannerSource.sitesAt(
+                                    latitude = 14.0838,
+                                    longitude = -87.197,
+                                    radius = 50.0,
+                                )
+                            }
                         }) {
-                            Text("Open Deal at HNTCI*E*00001")
+                            Text("Load at location")
+                        }
+                        Button(
+                            {
+                                SitesManager.openSite(context, sites.first().id)
+                            }) {
+                            Text("Open Deal at ${evseId.value}")
+                        }
+
+                        ChargeBanner(
+                            display = DisplayBehavior.WHEN_CONTENT_AVAILABLE,
+                        )
+
+                        if (sites.isNotEmpty()) {
+                            PricingGraph(
+                                siteId = sites.first().id,
+                                minYAxisPrice = 0.0
+                            )
                         }
                     }
                 }
-            }
-            LaunchedEffect(Unit) {
-
-                /*  chargeBannerSource.sitesAt(
-                      latitude = 53.075833333333,
-                      longitude = 8.8072222222222,
-                      radius = 10.0
-                  )
-
-                 */
-
-                /*
-                  campaignSource.sitesAt(
-                      BoundingBox(
-                          minLat = -87.0,
-                          minLng = 14.0,
-                          maxLat = -86.0,
-                          maxLng = 15.0
-                      )
-                  )
-
-                 */
-
-                /*
-                campaignSource.sitesAt(
-                    evseIds = listOf(EvseId("HNTCI*E*00001"))
-                )
-
-                 */
             }
         }
     }

@@ -1,12 +1,12 @@
 package de.elvah.charge.features.sites.domain.usecase
 
-import de.elvah.charge.entrypoints.banner.EvseId
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.CampaignId
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.model.filters.OrganisationId
 import de.elvah.charge.features.sites.domain.model.filters.SiteFilter
 import de.elvah.charge.features.sites.domain.repository.FiltersRepository
+import de.elvah.charge.public_api.banner.EvseId
 
 
 internal class UpdateFilters(

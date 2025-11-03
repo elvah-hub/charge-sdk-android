@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class TariffInfoResponse(
+internal class TariffInfoResponse(
 
     @param:Json(name = "data")
     val data: List<DataItem>,
@@ -14,7 +14,7 @@ class TariffInfoResponse(
 )
 
 @JsonClass(generateAdapter = true)
-class DataItem(
+internal class DataItem(
 
     @param:Json(name = "evseId")
     val evseId: String,
@@ -48,21 +48,21 @@ class DataItem(
 )
 
 @JsonClass(generateAdapter = true)
-class EnergyTariff(
+internal class EnergyTariff(
 
     @param:Json(name = "pricePerKWH")
     val pricePerKWH: Int,
 )
 
 @JsonClass(generateAdapter = true)
-class AuthorizationAmount(
+internal class AuthorizationAmount(
 
     @param:Json(name = "amount")
     val amount: Int,
 )
 
 @JsonClass(generateAdapter = true)
-class BaseTariff(
+internal class BaseTariff(
 
     @param:Json(name = "activeHours")
     val activeHours: Any?,
@@ -72,7 +72,7 @@ class BaseTariff(
 )
 
 @JsonClass(generateAdapter = true)
-class TimeTariff(
+internal class TimeTariff(
 
     @param:Json(name = "pricePerMinute")
     val pricePerMinute: Int,

@@ -15,4 +15,29 @@ message ChargingSessionPrefs {
   optional string phone = 9;
   optional string agent = 10;
   string evseId = 11;
+  optional AdditionalCostsProto additionalCosts = 12;
+}
+
+message AdditionalCostsProto {
+  PricingProto base_fee = 1;
+  BlockingFeeProto blocking_fee = 2;
+  string currency = 3;
+}
+
+message BlockingFeeProto {
+  PricingProto price_per_minute = 1;
+  int32 starts_after_minutes = 2;
+  PricingProto max_amount = 3;
+  repeated BlockingFeeTimeSlotProto time_slots = 4;
+  string currency = 5;
+}
+
+message BlockingFeeTimeSlotProto {
+  string start_time = 1;
+  string end_time = 2;
+}
+
+message PricingProto {
+  double value = 1;
+  string currency = 2;
 }

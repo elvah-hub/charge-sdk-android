@@ -16,21 +16,30 @@ internal class DefaultSimulationStrategy(
     override suspend fun generateNextSession(context: SimulationContext): ChargingSession? {
         return when (context.currentStatus) {
             SessionStatus.START_REQUESTED -> {
-                sessionFactory.createSession {
-                    evseId(context.evseId)
-                    status(SessionStatus.STARTED)
-                    consumption(Math.random() + context.sessionCounter)
-                    duration(context.sessionCounter * 3)
+                if (context.secondsSinceLastChange > 4) {
+                    sessionFactory.createSession {
+                        evseId(context.evseId)
+                        status(SessionStatus.STARTED)
+                        consumption(0.0)
+                        duration(0)
+                    }
+                } else {
+                    context.currentSession?.incrementDuration()
                 }
             }
 
             SessionStatus.STARTED -> {
-                sessionFactory.createSession {
-                    evseId(context.evseId)
-                    status(SessionStatus.CHARGING)
-                    consumption(0.0)
-                    duration(0)
+                if (context.secondsSinceLastChange > 4) {
+                    sessionFactory.createSession {
+                        evseId(context.evseId)
+                        status(SessionStatus.CHARGING)
+                        consumption(0.0)
+                        duration(0)
+                    }
+                } else {
+                    context.currentSession?.incrementDuration()
                 }
+
             }
 
             SessionStatus.START_REJECTED -> {
@@ -63,8 +72,8 @@ internal class DefaultSimulationStrategy(
                 sessionFactory.createSession {
                     evseId(context.evseId)
                     status(SessionStatus.START_REQUESTED)
-                    consumption(Math.random() + context.sessionCounter)
-                    duration(context.sessionCounter * 3)
+                    consumption(0.0)
+                    duration(0)
                 }
             }
         }
@@ -84,7 +93,6 @@ internal class DefaultSimulationStrategy(
             status = this.status,
             consumption = this.consumption,
             duration = this.duration + 3,
-            status1 = this.status1
         )
     }
 }
