@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -57,16 +56,13 @@ internal fun ChargingStartScreen(
         is ChargingStartState.Error -> ChargingStart_Error()
         is ChargingStartState.Success -> ChargingStart_Success(
             state = state as ChargingStartState.Success,
-            onStartCharging = { viewModel.startChargeSession() },
+            onStartCharging = {
+                viewModel.startChargeSession()
+                onStartCharging()
+            },
             onCloseBanner = { viewModel.closeBanner() },
             onDismissError = { viewModel.onDismissError() }
         )
-
-        ChargingStartState.StartRequest -> {
-            SideEffect {
-                onStartCharging()
-            }
-        }
     }
 }
 

@@ -11,6 +11,4 @@ internal sealed class ChargingStartState {
         val shouldShowAuthorizationBanner: Boolean = true,
         val error: Boolean = false
     ) : ChargingStartState()
-
-    data object StartRequest : ChargingStartState()
 }

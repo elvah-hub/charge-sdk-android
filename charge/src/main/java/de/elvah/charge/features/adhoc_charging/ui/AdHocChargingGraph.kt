@@ -107,11 +107,14 @@ internal fun AdHocChargingGraph(
         }
 
         composable<ChargingStartRoute> {
-            ChargingStartScreen(koinViewModel()) {
-                navController.navigate(
-                    route = ActiveChargingRoute,
-                )
-            }
+            ChargingStartScreen(
+                viewModel = koinViewModel(),
+                onStartCharging = {
+                    navController.navigate(
+                        route = ActiveChargingRoute,
+                    )
+                },
+            )
         }
 
         composable<ActiveChargingRoute>(
