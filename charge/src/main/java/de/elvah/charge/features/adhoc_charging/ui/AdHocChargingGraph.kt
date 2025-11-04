@@ -138,7 +138,7 @@ internal fun AdHocChargingGraph(
         }
         composable<ReviewRoute>(
             deepLinks = listOf(
-                navDeepLink<ReviewRoute>(basePath = ReviewRoute.route)
+                navDeepLink<ReviewRoute>(basePath = ReviewRoute.ROUTE)
             ),
         ) {
             val viewModel = koinViewModel<ReviewViewModel>()

@@ -41,7 +41,9 @@ internal sealed class AdHocChargingScreens {
     data object ReviewRoute : AdHocChargingScreens(), Deeplink {
 
         override val route: String
-            get() = baseRoute + "chargingSummary"
+            get() = ROUTE
+
+        const val ROUTE = baseRoute + "chargingSummary"
     }
 }
 
