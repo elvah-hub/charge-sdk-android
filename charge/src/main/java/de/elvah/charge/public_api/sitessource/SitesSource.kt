@@ -3,7 +3,6 @@ package de.elvah.charge.public_api.sitessource
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
 import de.elvah.charge.components.sitessource.SitesSourcePreview
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.manager.di.injectSitesSource
@@ -16,9 +15,6 @@ public interface SitesSource {
     public val instanceId: String
 
     public val config: Config
-
-    // TODO: is necessary here? charge service is a single instance, use chargeService directly
-    public val activeSession: StateFlow<ChargingSession?>
 
     public val siteIds: StateFlow<List<String>>
 

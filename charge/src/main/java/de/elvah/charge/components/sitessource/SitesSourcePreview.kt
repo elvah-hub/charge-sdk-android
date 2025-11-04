@@ -1,7 +1,6 @@
 package de.elvah.charge.components.sitessource
 
 import arrow.core.Either
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
@@ -25,9 +24,6 @@ internal class SitesSourcePreview : SitesSource, InternalSitesSource {
             darkTheme = null,
             environment = Environment.Simulator(SimulatorFlow.Default),
         )
-
-    override val activeSession: StateFlow<ChargingSession?>
-        get() = MutableStateFlow(null)
 
     override val siteIds: StateFlow<List<String>>
         get() = MutableStateFlow(emptyList())

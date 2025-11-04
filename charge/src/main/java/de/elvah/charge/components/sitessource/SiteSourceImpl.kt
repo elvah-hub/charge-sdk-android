@@ -4,8 +4,6 @@ import androidx.compose.ui.util.fastCoerceAtLeast
 import androidx.compose.ui.util.fastCoerceAtMost
 import arrow.core.Either
 import arrow.core.getOrElse
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.usecase.GetChargingSession
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
@@ -32,7 +30,6 @@ import java.util.UUID
 
 internal class SitesSourceImpl(
     private val configuration: Config,
-    getChargingSession: GetChargingSession,
     getFilters: GetFilters,
     private val updateFilters: UpdateFilters,
     private val clearFilters: ClearFilters,
@@ -53,13 +50,6 @@ internal class SitesSourceImpl(
     private var _isIdle: Boolean = true
     override val isIdle: Boolean
         get() = _isIdle
-
-    override val activeSession: StateFlow<ChargingSession?> = getChargingSession()
-        .stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null,
-        )
 
     override val siteIds: StateFlow<List<String>>
         get() = sites

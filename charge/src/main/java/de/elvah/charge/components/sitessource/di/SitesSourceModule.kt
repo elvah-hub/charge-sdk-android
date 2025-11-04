@@ -22,7 +22,6 @@ internal val sitesSourceModule = module {
 
         SitesSourceImpl(
             get(),
-            get(),
             get<GetFilters> { parametersOf(filterRepository) },
             get<UpdateFilters> { parametersOf(filterRepository) },
             get<ClearFilters> { parametersOf(filterRepository) },
