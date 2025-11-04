@@ -32,5 +32,7 @@ private val String.hoursAndMinutesText: String?
         val (hour, minute, _) = this.split(":")
             .map { it.toInt() }
 
-        return "$hour:$minute"
+        return HOUR_MINUTE_FORMAT.format(hour, minute)
     }.getOrNull()
+
+private const val HOUR_MINUTE_FORMAT = "%02d:%02d"
