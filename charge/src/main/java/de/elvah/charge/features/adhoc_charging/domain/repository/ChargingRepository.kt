@@ -15,6 +15,7 @@ internal interface ChargingRepository {
 
     suspend fun fetchChargingSession(): Either<Throwable, ChargingSession>
 
+    // TODO: create new repositories to split responsibilities (e.g: SummaryInfoRepository)
     suspend fun getSummary(): SummaryInfo?
 
     suspend fun resetSession()
