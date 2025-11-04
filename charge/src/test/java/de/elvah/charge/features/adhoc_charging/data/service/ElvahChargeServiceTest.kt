@@ -3,6 +3,7 @@ package de.elvah.charge.features.adhoc_charging.data.service
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import de.elvah.charge.common.createTestChargingSession
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
 import de.elvah.charge.features.adhoc_charging.data.repository.SessionExceptions
 import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
@@ -39,6 +40,7 @@ class ElvahChargeServiceTest {
         chargingRepository: ChargingRepository = mockk<DefaultChargingRepository>(),
         checkOnInit: Boolean = true,
     ): ChargeService = ElvahChargeService(
+        lifecycle = null,
         chargingRepository = chargingRepository,
         getPaymentSummary = getPaymentSummary,
         chargeScope = chargeTestScope,
@@ -356,14 +358,4 @@ class ElvahChargeServiceTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
-
-    private fun createTestChargingSession(
-        status: SessionStatus = SessionStatus.CHARGING,
-        consumption: Double = 15.5
-    ) = ChargingSession(
-        evseId = "DE*KDL*E0000040",
-        consumption = consumption,
-        duration = 120,
-        status = status,
-    )
 }
