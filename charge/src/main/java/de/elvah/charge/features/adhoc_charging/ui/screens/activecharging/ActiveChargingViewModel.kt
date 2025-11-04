@@ -3,9 +3,9 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeState
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeServiceState
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargeServiceState
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingState
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 internal class ActiveChargingViewModel(
     observeChargingSession: ObserveChargingSession,
-    observeChargingState: ObserveChargingState,
+    observeChargeServiceState: ObserveChargeServiceState,
     private val stopChargingSession: StopChargingSession,
     private val getOrganisationDetails: GetOrganisationDetails,
     private val getAdditionalCosts: GetAdditionalCosts,
@@ -31,7 +31,7 @@ internal class ActiveChargingViewModel(
 
     internal val state: StateFlow<ActiveChargingState> =
         combine(
-            observeChargingState(),
+            observeChargeServiceState(),
             observeChargingSession(),
         ) { state, chargeSession ->
             when {
@@ -52,7 +52,7 @@ internal class ActiveChargingViewModel(
 
     suspend fun getState(
         chargeSession: ChargingSession,
-        chargeState: ChargeState,
+        chargeServiceState: ChargeServiceState,
     ): ActiveChargingState {
         val organisationDetails = getOrganisationDetails() ?: OrganisationDetails(
             privacyUrl = "",
@@ -68,7 +68,7 @@ internal class ActiveChargingViewModel(
         )
 
         // TODO: handle this
-        if (chargeState == ChargeState.SUMMARY) {
+        if (chargeServiceState == ChargeServiceState.SUMMARY) {
             return ActiveChargingState.SessionSummary
         }
 

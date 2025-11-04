@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import de.elvah.charge.components.sitessource.InternalSitesSource
-import de.elvah.charge.features.adhoc_charging.domain.service.charge.extension.isChargingState
-import de.elvah.charge.features.adhoc_charging.domain.service.charge.extension.isSummaryState
-import de.elvah.charge.features.adhoc_charging.domain.usecase.GetChargingSession
-import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingState
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargeSessionState
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state.BuildSiteDetailSuccessState
 import de.elvah.charge.features.sites.domain.extension.fullAddress
@@ -21,15 +18,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 internal class SiteDetailViewModel(
     sitesSource: SitesSource,
     savedStateHandle: SavedStateHandle,
     private val buildSiteDetailSuccessState: BuildSiteDetailSuccessState,
-    observeChargingState: ObserveChargingState,
-    getChargingSession: GetChargingSession,
+    observeChargeSessionState: ObserveChargeSessionState,
 ) : ViewModel() {
 
     private val args: AdHocChargingScreens.SiteDetailRoute =
@@ -46,36 +40,7 @@ internal class SiteDetailViewModel(
     private val chargePointSearchInput = MutableStateFlow("")
     private val timeSlot = MutableStateFlow<ScheduledPricing.TimeSlot?>(null)
 
-    data class ChargeIndicatorUI(
-        val isCharging: Boolean,
-        val isSummaryReady: Boolean,
-        val evseId: String?,
-        val chargeTime: Duration?,
-    ) {
-        val showIndicator = isCharging || isSummaryReady
-    }
-
-    internal val chargeIndicator = combine(
-        observeChargingState(),
-        getChargingSession(),
-    ) { state, session ->
-        ChargeIndicatorUI(
-            isCharging = session?.status?.isChargingState == true,
-            isSummaryReady = state.isSummaryState,
-            evseId = session?.evseId,
-            chargeTime = session?.duration?.seconds,
-        )
-
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = ChargeIndicatorUI(
-            isCharging = getChargingSession().value?.status?.isChargingState == true,
-            isSummaryReady = observeChargingState().value.isSummaryState,
-            evseId = getChargingSession().value?.evseId,
-            chargeTime = getChargingSession().value?.duration?.seconds,
-        ),
-    )
+    internal val chargeSessionState = observeChargeSessionState()
 
     internal val state = combine(
         loading,

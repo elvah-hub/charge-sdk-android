@@ -8,7 +8,7 @@ import de.elvah.charge.features.adhoc_charging.data.repository.SessionExceptions
 import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeService
-import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeState
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeServiceState
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.errors.ChargeError
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentSummary
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
@@ -110,9 +110,9 @@ class ElvahChargeServiceTest {
         chargeService.stopSession()
 
         chargeService.state.test {
-            assertEquals(ChargeState.STOPPING, awaitItem())
+            assertEquals(ChargeServiceState.STOPPING, awaitItem())
             chargeTestScope.advanceTimeBy(1.seconds)
-            assertEquals(ChargeState.IDLE, awaitItem())
+            assertEquals(ChargeServiceState.IDLE, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
 
@@ -137,11 +137,11 @@ class ElvahChargeServiceTest {
 
         chargeService.state.test {
             val stopping = awaitItem()
-            assertEquals(ChargeState.STOPPING, stopping)
+            assertEquals(ChargeServiceState.STOPPING, stopping)
             chargeTestScope.advanceTimeBy(1.seconds)
 
             val summary = awaitItem()
-            assertEquals(ChargeState.SUMMARY, summary)
+            assertEquals(ChargeServiceState.SUMMARY, summary)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -178,9 +178,9 @@ class ElvahChargeServiceTest {
         chargeService.startSession()
 
         chargeService.state.test {
-            assertEquals(ChargeState.STARTING, awaitItem())
+            assertEquals(ChargeServiceState.STARTING, awaitItem())
             chargeTestScope.advanceTimeBy(1.seconds)
-            assertEquals(ChargeState.IDLE, awaitItem())
+            assertEquals(ChargeServiceState.IDLE, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
 
@@ -204,9 +204,9 @@ class ElvahChargeServiceTest {
         chargeService.startSession()
 
         chargeService.state.test {
-            assertEquals(ChargeState.STARTING, awaitItem())
+            assertEquals(ChargeServiceState.STARTING, awaitItem())
             chargeTestScope.advanceTimeBy(1.seconds)
-            assertEquals(ChargeState.STARTED, awaitItem())
+            assertEquals(ChargeServiceState.STARTED, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -245,9 +245,9 @@ class ElvahChargeServiceTest {
         ) as ElvahChargeService
 
         chargeService.state.test {
-            assertEquals(ChargeState.VERIFYING, awaitItem())
+            assertEquals(ChargeServiceState.VERIFYING, awaitItem())
             chargeTestScope.advanceTimeBy(1.minutes)
-            assertEquals(ChargeState.STARTED, awaitItem())
+            assertEquals(ChargeServiceState.STARTED, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
 
@@ -302,9 +302,9 @@ class ElvahChargeServiceTest {
         ) as ElvahChargeService
 
         chargeService.state.test {
-            assertEquals(ChargeState.VERIFYING, awaitItem())
+            assertEquals(ChargeServiceState.VERIFYING, awaitItem())
             chargeTestScope.advanceTimeBy(1.minutes)
-            assertEquals(ChargeState.STARTED, awaitItem())
+            assertEquals(ChargeServiceState.STARTED, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
 
@@ -328,9 +328,9 @@ class ElvahChargeServiceTest {
         )
 
         chargeService.state.test {
-            assertEquals(ChargeState.VERIFYING, awaitItem())
+            assertEquals(ChargeServiceState.VERIFYING, awaitItem())
             chargeTestScope.advanceTimeBy(1.seconds)
-            assertEquals(ChargeState.STARTED, awaitItem())
+            assertEquals(ChargeServiceState.STARTED, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -340,7 +340,7 @@ class ElvahChargeServiceTest {
         val chargeService = getChargeService()
 
         chargeService.state.test {
-            assertEquals(ChargeState.VERIFYING, awaitItem())
+            assertEquals(ChargeServiceState.VERIFYING, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -352,7 +352,7 @@ class ElvahChargeServiceTest {
         )
 
         chargeService.state.test {
-            assertEquals(ChargeState.IDLE, awaitItem())
+            assertEquals(ChargeServiceState.IDLE, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }

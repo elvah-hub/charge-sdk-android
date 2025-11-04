@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
-import de.elvah.charge.features.adhoc_charging.domain.usecase.HasActiveChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.extension.isSessionRunning
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StartChargingSession
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
@@ -22,7 +23,7 @@ internal class ChargingStartViewModel(
     private val getOrganisationDetails: GetOrganisationDetails,
     private val chargingRepository: ChargingRepository,
     private val startChargingSession: StartChargingSession,
-    hasActiveChargingSession: HasActiveChargingSession,
+    observeChargingSession: ObserveChargingSession,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -30,10 +31,10 @@ internal class ChargingStartViewModel(
 
     private val _state = MutableStateFlow<ChargingStartState>(ChargingStartState.Loading)
     val state = combine(
-        hasActiveChargingSession(),
+        observeChargingSession(),
         _state,
-    ) { hasActiveSession, state ->
-        if (hasActiveSession) {
+    ) { session, state ->
+        if (session?.status?.isSessionRunning == true) {
             ChargingStartState.StartRequest
 
         } else {

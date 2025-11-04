@@ -18,7 +18,6 @@ internal val adHocViewModelModule = module {
             get(),
             get(),
             get(),
-            get(),
         )
     }
 

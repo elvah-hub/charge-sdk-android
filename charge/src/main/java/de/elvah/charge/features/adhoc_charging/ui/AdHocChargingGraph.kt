@@ -46,11 +46,11 @@ internal fun AdHocChargingGraph(
 
             val navigateToChargeSession = {
                 when {
-                    viewModel.chargeIndicator.value.isSummaryReady -> {
+                    viewModel.chargeSessionState.value.isSessionSummaryReady -> {
                         navController.navigate(ReviewRoute)
                     }
 
-                    viewModel.chargeIndicator.value.isCharging -> {
+                    viewModel.chargeSessionState.value.isSessionRunning -> {
                         navController.navigate(ActiveChargingRoute)
                     }
                 }
@@ -62,7 +62,7 @@ internal fun AdHocChargingGraph(
                 navigateToChargeSession = navigateToChargeSession,
                 onItemClick = { evseId ->
                     when {
-                        viewModel.chargeIndicator.value.showIndicator -> {
+                        viewModel.chargeSessionState.value.isSessionActive -> {
                             navigateToChargeSession()
                         }
 

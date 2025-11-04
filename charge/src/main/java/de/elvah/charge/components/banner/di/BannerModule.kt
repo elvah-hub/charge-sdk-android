@@ -15,7 +15,6 @@ internal val bannerModule = module {
             sitesSource = siteSource,
             get(),
             get(),
-            get(),
         )
     }
 }

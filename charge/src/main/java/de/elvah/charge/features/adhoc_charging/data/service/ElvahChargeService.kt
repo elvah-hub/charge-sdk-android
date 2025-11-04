@@ -7,8 +7,11 @@ import arrow.core.Either
 import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeService
-import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeState
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeServiceState
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargingSessionState
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.errors.ChargeError
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.extension.isSessionRunning
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.extension.isSummaryReady
 import de.elvah.charge.features.payments.domain.model.PaymentSummary
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentSummary
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
@@ -18,7 +21,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -31,11 +37,27 @@ internal class ElvahChargeService(
     checkOnInit: Boolean = true,
 ) : ChargeService, DefaultLifecycleObserver {
 
-    private val _state = MutableStateFlow(ChargeState.IDLE)
-    override val state: StateFlow<ChargeState> = _state
+    private val _state = MutableStateFlow(ChargeServiceState.IDLE)
+    override val state: StateFlow<ChargeServiceState> = _state
 
     private val _chargeSession = MutableStateFlow<ChargingSession?>(null)
     override val chargeSession: StateFlow<ChargingSession?> = _chargeSession
+
+    override val chargeSessionState = combine(
+        state,
+        chargeSession,
+    ) { state, session ->
+        buildChargingSessionState(
+            isSessionRunning = session?.status?.isSessionRunning == true,
+            isSessionSummaryReady = state.isSummaryReady,
+            lastSessionData = session,
+        )
+
+    }.stateIn(
+        scope = chargeScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = buildChargingSessionState(),
+    )
 
     private val _errors = MutableStateFlow<ChargeError?>(null)
     override val errors: StateFlow<ChargeError?> = _errors
@@ -68,8 +90,8 @@ internal class ElvahChargeService(
     }
 
     override fun startSession() {
-        if (_state.value == ChargeState.STARTING) return
-        _state.value = ChargeState.STARTING
+        if (_state.value == ChargeServiceState.STARTING) return
+        _state.value = ChargeServiceState.STARTING
 
         chargeScope.launch {
             chargingRepository.startChargingSession()
@@ -77,11 +99,11 @@ internal class ElvahChargeService(
                     when (it) {
                         is Either.Left -> {
                             _errors.value = it.value.toChargeError()
-                            _state.value = ChargeState.IDLE
+                            _state.value = ChargeServiceState.IDLE
                         }
 
                         is Either.Right -> {
-                            _state.value = ChargeState.STARTED
+                            _state.value = ChargeServiceState.STARTED
                             startPolling()
                         }
                     }
@@ -90,9 +112,9 @@ internal class ElvahChargeService(
     }
 
     override fun stopSession() {
-        if (_state.value == ChargeState.STOPPING) return
+        if (_state.value == ChargeServiceState.STOPPING) return
         val prevState = _state.value
-        _state.value = ChargeState.STOPPING
+        _state.value = ChargeServiceState.STOPPING
 
         chargeScope.launch {
             chargingRepository.stopChargingSession()
@@ -113,12 +135,12 @@ internal class ElvahChargeService(
 
     private fun onSessionStopped() {
         stopPolling()
-        _state.value = ChargeState.SUMMARY
+        _state.value = ChargeServiceState.SUMMARY
     }
 
     override fun checkForActiveSession() {
-        if (_state.value == ChargeState.VERIFYING) return
-        _state.value = ChargeState.VERIFYING
+        if (_state.value == ChargeServiceState.VERIFYING) return
+        _state.value = ChargeServiceState.VERIFYING
 
         chargeScope.launch {
             chargingRepository
@@ -127,7 +149,7 @@ internal class ElvahChargeService(
                     ifLeft = {
                         // TODO: retry options? for first failed call
                         _errors.value = it.toChargeError()
-                        _state.value = ChargeState.IDLE
+                        _state.value = ChargeServiceState.IDLE
                     },
                     ifRight = {
                         if (it.status == SessionStatus.STOPPED) {
@@ -137,7 +159,7 @@ internal class ElvahChargeService(
                             }
 
                         } else {
-                            _state.value = ChargeState.STARTED
+                            _state.value = ChargeServiceState.STARTED
                             startPolling()
                         }
                     }
@@ -155,12 +177,12 @@ internal class ElvahChargeService(
             pollingJob = null
 
             _chargeSession.tryEmit(null)
-            _state.value = ChargeState.IDLE
+            _state.value = ChargeServiceState.IDLE
         }
     }
 
     override suspend fun getSummary(): PaymentSummary? {
-        if (_state.value != ChargeState.SUMMARY) return null
+        if (_state.value != ChargeServiceState.SUMMARY) return null
 
         if (paymentSummary != null) return paymentSummary
         val chargeSummary = chargingRepository.getSummary()
@@ -233,6 +255,18 @@ internal class ElvahChargeService(
                 delay(CHARGE_SESSION_POLLING_INTERVAL)
             }
         }
+    }
+
+    private fun buildChargingSessionState(
+        isSessionRunning: Boolean = chargeSession.value?.status?.isSessionRunning == true,
+        isSessionSummaryReady: Boolean = state.value.isSummaryReady,
+        lastSessionData: ChargingSession? = chargeSession.value,
+    ): ChargingSessionState {
+        return ChargingSessionState(
+            isSessionRunning = isSessionRunning,
+            isSessionSummaryReady = isSessionSummaryReady,
+            lastSessionData = lastSessionData,
+        )
     }
 
     companion object {

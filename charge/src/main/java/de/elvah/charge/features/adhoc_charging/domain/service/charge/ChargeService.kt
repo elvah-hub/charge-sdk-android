@@ -7,9 +7,11 @@ import kotlinx.coroutines.flow.StateFlow
 
 internal interface ChargeService {
 
-    val state: StateFlow<ChargeState>
+    val state: StateFlow<ChargeServiceState>
 
     val chargeSession: StateFlow<ChargingSession?>
+
+    val chargeSessionState: StateFlow<ChargingSessionState>
 
     val errors: StateFlow<ChargeError?>
 
