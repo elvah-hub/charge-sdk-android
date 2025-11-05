@@ -15,7 +15,7 @@ import de.elvah.charge.public_api.model.ChargingSessionState
 internal fun ChargeSessionIndicator() {
     val context = LocalContext.current
 
-    val chargeSessionState by ChargeSessionManager.chargingSessionState.collectAsStateWithLifecycle(
+    val chargeSessionState by ChargeSessionManager.chargeSessionState.collectAsStateWithLifecycle(
         ChargingSessionState(
             isSessionRunning = false,
             isSessionSummaryReady = false,
@@ -31,11 +31,13 @@ internal fun ChargeSessionIndicator() {
                 Text("Charge session is in progress...")
             }
 
-            Text("Consumption: ${chargeSessionState.lastSessionData?.consumption}")
+            chargeSessionState.lastSessionData?.consumption?.let {
+                Text("Consumption: $it")
+            }
 
             FlowRow {
                 if (chargeSessionState.isSessionSummaryReady) {
-                    Button(onClick = { ChargeSessionManager.openSessionSummary(context) }) {
+                    Button(onClick = { ChargeSessionManager.openSession(context) }) {
                         Text("Open summary")
                     }
 

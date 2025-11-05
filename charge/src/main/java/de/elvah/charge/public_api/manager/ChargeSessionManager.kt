@@ -29,15 +29,12 @@ public object ChargeSessionManager {
     public val chargeSession: Flow<ChargeSession?> = observeChargeSession()
         .map { it?.toPublic() }
 
-    public val chargingSessionState: Flow<ChargingSessionState> = observeChargeSessionState()
+    public val chargeSessionState: Flow<ChargingSessionState> = observeChargeSessionState()
         .map { it.toPublic() }
 
     public fun openSession(context: Context) {
-        context.goToChargingSession(false)
-    }
-
-    public fun openSessionSummary(context: Context) {
-        context.goToChargingSession(true)
+        val isSessionSummaryReady = observeChargeSessionState().value.isSessionSummaryReady
+        context.goToChargingSession(isSessionSummaryReady)
     }
 
     public fun stopSession() {

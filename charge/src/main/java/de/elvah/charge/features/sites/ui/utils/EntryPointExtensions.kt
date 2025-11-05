@@ -22,11 +22,12 @@ internal fun Context.openSite(dealId: String, sourceInstanceId: String? = null) 
 internal fun Context.goToChargingSession(
     isSummaryReady: Boolean,
 ) {
-    val uri = if (isSummaryReady) {
-        AdHocChargingScreens.ReviewRoute.route.toUri()
-    } else {
-        ActiveChargingRoute.route.toUri()
+    val destination = when {
+        isSummaryReady -> AdHocChargingScreens.ReviewRoute
+        else -> ActiveChargingRoute
     }
+
+    val uri = destination.route.toUri()
 
     val intent = Intent(
         Intent.ACTION_VIEW,
