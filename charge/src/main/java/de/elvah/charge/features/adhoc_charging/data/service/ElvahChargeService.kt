@@ -4,7 +4,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import arrow.core.Either
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeService
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeServiceState
@@ -40,8 +40,8 @@ internal class ElvahChargeService(
     private val _state = MutableStateFlow(ChargeServiceState.IDLE)
     override val state: StateFlow<ChargeServiceState> = _state
 
-    private val _chargeSession = MutableStateFlow<ChargingSession?>(null)
-    override val chargeSession: StateFlow<ChargingSession?> = _chargeSession
+    private val _chargeSession = MutableStateFlow<ChargeSession?>(null)
+    override val chargeSession: StateFlow<ChargeSession?> = _chargeSession
 
     override val chargeSessionState = combine(
         state,
@@ -260,7 +260,7 @@ internal class ElvahChargeService(
     private fun buildChargingSessionState(
         isSessionRunning: Boolean = chargeSession.value?.status?.isSessionRunning == true,
         isSessionSummaryReady: Boolean = state.value.isSummaryReady,
-        lastSessionData: ChargingSession? = chargeSession.value,
+        lastSessionData: ChargeSession? = chargeSession.value,
     ): ChargingSessionState {
         return ChargingSessionState(
             isSessionRunning = isSessionRunning,

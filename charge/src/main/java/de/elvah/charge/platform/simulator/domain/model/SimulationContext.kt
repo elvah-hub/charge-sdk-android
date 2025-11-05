@@ -1,6 +1,6 @@
 package de.elvah.charge.platform.simulator.domain.model
 
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 
 /**
@@ -8,7 +8,7 @@ import de.elvah.charge.platform.simulator.data.repository.SessionStatus
  * This follows the Context pattern to encapsulate simulation state.
  */
 internal data class SimulationContext(
-    val currentSession: ChargingSession? = null,
+    val currentSession: ChargeSession? = null,
     val sessionCounter: Int = 0,
     val secondsSinceLastChange: Int = 0,
     val bannerRequested: Boolean = false,
@@ -31,7 +31,7 @@ internal data class SimulationContext(
     /**
      * Creates a new context with updated current session.
      */
-    fun withSession(session: ChargingSession?): SimulationContext = copy(currentSession = session)
+    fun withSession(session: ChargeSession?): SimulationContext = copy(currentSession = session)
 
     /**
      * Creates a new context with banner requested flag set.

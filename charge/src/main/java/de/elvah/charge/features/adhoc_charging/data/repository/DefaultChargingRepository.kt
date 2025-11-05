@@ -5,7 +5,7 @@ import arrow.core.left
 import arrow.core.right
 import de.elvah.charge.features.adhoc_charging.data.mapper.toDomain
 import de.elvah.charge.features.adhoc_charging.data.remote.api.ChargingApi
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
@@ -46,7 +46,7 @@ internal class DefaultChargingRepository(
         )
     }
 
-    override suspend fun fetchChargingSession(): Either<Throwable, ChargingSession> {
+    override suspend fun fetchChargingSession(): Either<Throwable, ChargeSession> {
         val token = getToken()
 
         return if (token.isNotEmpty()) {

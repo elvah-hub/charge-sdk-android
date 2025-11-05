@@ -1,6 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.domain.usecase
 
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeService
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import io.mockk.confirmVerified
@@ -17,7 +17,7 @@ import org.junit.Test
 internal class ObserveChargingSessionTest {
 
     private lateinit var chargeService: ChargeService
-    private lateinit var stateFlowMock: MutableStateFlow<ChargingSession?>
+    private lateinit var stateFlowMock: MutableStateFlow<ChargeSession?>
 
     @Before
     fun setup() {
@@ -46,7 +46,7 @@ internal class ObserveChargingSessionTest {
         val useCase = getUseCase()
         val result = useCase()
 
-        val expected1 = ChargingSession(
+        val expected1 = ChargeSession(
             evseId = "123",
             status = SessionStatus.STARTED,
             consumption = 0.15,
@@ -55,7 +55,7 @@ internal class ObserveChargingSessionTest {
         stateFlowMock.value = expected1
         assertEquals(expected1, result.value)
 
-        val expected2 = ChargingSession(
+        val expected2 = ChargeSession(
             evseId = "123",
             status = SessionStatus.CHARGING,
             consumption = 0.30,
