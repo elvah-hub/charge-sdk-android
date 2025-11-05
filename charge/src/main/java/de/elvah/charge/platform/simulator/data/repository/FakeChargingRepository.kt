@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import de.elvah.charge.features.adhoc_charging.data.repository.SessionExceptions
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
@@ -52,7 +52,7 @@ internal class FakeChargingRepository(
         chargingStore.storeAdditionalCosts(additionalCosts)
     }
 
-    override suspend fun fetchChargingSession(): Either<Exception, ChargingSession> {
+    override suspend fun fetchChargingSession(): Either<Exception, ChargeSession> {
         return try {
             val context = currentContext.value
 

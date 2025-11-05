@@ -2,7 +2,7 @@ package de.elvah.charge.features.adhoc_charging.domain.repository
 
 import arrow.core.Either
 import de.elvah.charge.features.adhoc_charging.data.repository.SessionExceptions
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SummaryInfo
 import de.elvah.charge.features.sites.domain.model.AdditionalCosts
@@ -13,7 +13,7 @@ internal interface ChargingRepository {
 
     suspend fun stopChargingSession(): Either<SessionExceptions, Boolean>
 
-    suspend fun fetchChargingSession(): Either<Throwable, ChargingSession>
+    suspend fun fetchChargingSession(): Either<Throwable, ChargeSession>
 
     // TODO: create new repositories to split responsibilities (e.g: SummaryInfoRepository)
     suspend fun getSummary(): SummaryInfo?

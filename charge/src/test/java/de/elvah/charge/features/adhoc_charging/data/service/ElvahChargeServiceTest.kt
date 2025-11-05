@@ -6,7 +6,7 @@ import arrow.core.right
 import de.elvah.charge.common.createTestChargingSession
 import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
 import de.elvah.charge.features.adhoc_charging.data.repository.SessionExceptions
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeService
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeServiceState
@@ -235,7 +235,7 @@ class ElvahChargeServiceTest {
     fun `confirm polling starts emit charge states`() = runTest {
         val chargingRepository = mockk<DefaultChargingRepository>()
 
-        coEvery { chargingRepository.fetchChargingSession() } returns ChargingSession(
+        coEvery { chargingRepository.fetchChargingSession() } returns ChargeSession(
             evseId = "1",
             status = SessionStatus.STARTED,
             consumption = 0.5,
@@ -292,7 +292,7 @@ class ElvahChargeServiceTest {
     fun `confirm polling starts on initial check when exists an active session`() = runTest {
         val chargingRepository = mockk<DefaultChargingRepository>()
 
-        coEvery { chargingRepository.fetchChargingSession() } returns ChargingSession(
+        coEvery { chargingRepository.fetchChargingSession() } returns ChargeSession(
             evseId = "1",
             status = SessionStatus.STARTED,
             consumption = 0.5,
@@ -318,7 +318,7 @@ class ElvahChargeServiceTest {
     fun `confirm started state on service start with initial check`() = runTest {
         val chargingRepository = mockk<DefaultChargingRepository>()
 
-        coEvery { chargingRepository.fetchChargingSession() } returns ChargingSession(
+        coEvery { chargingRepository.fetchChargingSession() } returns ChargeSession(
             evseId = "1",
             status = SessionStatus.STARTED,
             consumption = 0.5,

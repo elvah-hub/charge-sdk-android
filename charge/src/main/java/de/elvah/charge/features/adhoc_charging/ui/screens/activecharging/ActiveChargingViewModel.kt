@@ -2,7 +2,7 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeServiceState
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargeServiceState
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
@@ -51,7 +51,7 @@ internal class ActiveChargingViewModel(
         )
 
     suspend fun getState(
-        chargeSession: ChargingSession,
+        chargeSession: ChargeSession,
         chargeServiceState: ChargeServiceState,
     ): ActiveChargingState {
         val organisationDetails = getOrganisationDetails() ?: OrganisationDetails(

@@ -1,6 +1,6 @@
 package de.elvah.charge.platform.simulator.domain.strategy
 
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.platform.simulator.domain.model.SimulationContext
 
 /**
@@ -15,7 +15,7 @@ internal interface ChargingSimulationStrategy {
      * @param context Current simulation state and configuration
      * @return Next charging session or null if session should end
      */
-    suspend fun generateNextSession(context: SimulationContext): ChargingSession?
+    suspend fun generateNextSession(context: SimulationContext): ChargeSession?
 
     /**
      * Determines if the simulation should continue running.
