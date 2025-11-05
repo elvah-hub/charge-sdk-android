@@ -2,11 +2,11 @@ package de.elvah.charge.public_api.mapper
 
 import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
-import de.elvah.charge.public_api.model.ChargingSession as PublicChargingSession
+import de.elvah.charge.public_api.model.ChargeSession as PublicChargeSession
 import de.elvah.charge.public_api.model.SessionStatus as PublicSessionStatus
 
-internal fun ChargeSession.toPublic(): PublicChargingSession {
-    return PublicChargingSession(
+internal fun ChargeSession.toPublic(): PublicChargeSession {
+    return PublicChargeSession(
         evseId = evseId,
         status = status.toPublic(),
         consumption = consumption,

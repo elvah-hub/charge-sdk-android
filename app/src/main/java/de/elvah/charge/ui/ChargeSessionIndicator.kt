@@ -16,7 +16,7 @@ internal fun ChargeSessionIndicator() {
 
     val isSummaryReady by ChargeSessionManager.isSummaryReady.collectAsStateWithLifecycle(false)
     val hasActiveSession by ChargeSessionManager.hasActiveSession.collectAsStateWithLifecycle(false)
-    val chargingSession by ChargeSessionManager.chargingSession.collectAsStateWithLifecycle(null)
+    val chargeSession by ChargeSessionManager.chargeSession.collectAsStateWithLifecycle(null)
 
     Column {
         if (hasActiveSession || isSummaryReady) {
@@ -26,7 +26,7 @@ internal fun ChargeSessionIndicator() {
                 Text("Charge session is in progress...")
             }
 
-            Text("Charge: ${chargingSession?.consumption}")
+            Text("Charge: ${chargeSession?.consumption}")
         }
 
         if (hasActiveSession || isSummaryReady) {

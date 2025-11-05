@@ -1,6 +1,6 @@
 package de.elvah.charge.public_api.model
 
-public class ChargingSession(
+public class ChargeSession(
     public val evseId: String,
     public val status: SessionStatus,
     public val consumption: Double,

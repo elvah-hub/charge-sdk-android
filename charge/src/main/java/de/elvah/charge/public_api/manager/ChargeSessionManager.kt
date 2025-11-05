@@ -8,7 +8,7 @@ import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSes
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.sites.ui.utils.goToChargingSession
 import de.elvah.charge.public_api.mapper.toPublic
-import de.elvah.charge.public_api.model.ChargingSession
+import de.elvah.charge.public_api.model.ChargeSession
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.java.KoinJavaComponent
@@ -31,7 +31,7 @@ public object ChargeSessionManager {
     public val hasActiveSession: Flow<Boolean> =
         observeChargingSession().map { it?.status?.isSessionRunning == true }
 
-    public val chargingSession: Flow<ChargingSession?> = observeChargingSession()
+    public val chargeSession: Flow<ChargeSession?> = observeChargingSession()
         .map { it?.toPublic() }
 
     public fun openSession(context: Context) {
