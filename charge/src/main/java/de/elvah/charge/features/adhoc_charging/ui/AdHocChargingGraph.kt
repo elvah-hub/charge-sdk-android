@@ -101,7 +101,9 @@ internal fun AdHocChargingGraph(
                             shortenedEvseId = shortenedEvseId,
                             paymentId = paymentId
                         )
-                    )
+                    ) {
+                        popUpTo<ChargingPointDetailRoute> { inclusive = true }
+                    }
                 },
             )
         }
@@ -110,9 +112,9 @@ internal fun AdHocChargingGraph(
             ChargingStartScreen(
                 viewModel = koinViewModel(),
                 onStartCharging = {
-                    navController.navigate(
-                        route = ActiveChargingRoute,
-                    )
+                    navController.navigate(ActiveChargingRoute) {
+                        popUpTo<ChargingStartRoute> { inclusive = true }
+                    }
                 },
             )
         }
@@ -124,6 +126,7 @@ internal fun AdHocChargingGraph(
         ) {
             ActiveChargingScreen(
                 viewModel = koinViewModel(),
+                onBackClicked = navController::navigateUp,
                 onSupportClick = {
                     navController.navigate(HelpAndSupportRoute)
                 },

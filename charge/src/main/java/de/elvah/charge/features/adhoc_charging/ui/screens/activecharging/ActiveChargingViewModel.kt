@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeServiceState
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.errors.ChargeError
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargeServiceErrors
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargeServiceState
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
@@ -23,6 +25,7 @@ internal class ActiveChargingViewModel(
     observeChargingSession: ObserveChargingSession,
     observeChargeServiceState: ObserveChargeServiceState,
     private val stopChargingSession: StopChargingSession,
+    private val observeChargeServiceErrors: ObserveChargeServiceErrors,
     private val getOrganisationDetails: GetOrganisationDetails,
     private val getAdditionalCosts: GetAdditionalCosts,
 ) : ViewModel() {
@@ -31,17 +34,19 @@ internal class ActiveChargingViewModel(
 
     internal val state: StateFlow<ActiveChargingState> =
         combine(
+            observeChargeServiceErrors(),
             observeChargeServiceState(),
             observeChargingSession(),
-        ) { state, chargeSession ->
+        ) { chargeErrors, state, chargeSession ->
             when {
+                chargeErrors != null -> buildErrorState(chargeErrors)
+
                 chargeSession != null -> getState(chargeSession, state)
 
-                else -> ActiveChargingState.Error(
+                else -> ActiveChargingState.Error.OtherError(
                     status = SessionStatus.START_REQUESTED,
                     cpoLogo = "", // TODO: organisationDetails.logoUrl
                 )
-
             }
 
         }.stateIn(
@@ -97,7 +102,7 @@ internal class ActiveChargingViewModel(
 
             SessionStatus.STOP_REJECTED,
             SessionStatus.START_REJECTED -> {
-                ActiveChargingState.Error(
+                ActiveChargingState.Error.OtherError(
                     status = chargeSession.status,
                     cpoLogo = organisationDetails.logoUrl
                 )
@@ -108,6 +113,18 @@ internal class ActiveChargingViewModel(
             }
         }
     }
+
+    private fun buildErrorState(chargeErrors: ChargeError): ActiveChargingState.Error =
+        if (chargeErrors is ChargeError.StartAttemptFailed) {
+            ActiveChargingState.Error.StartFailed(
+                cpoLogo = "", // TODO: organisationDetails.logoUrl
+            )
+        } else {
+            ActiveChargingState.Error.OtherError(
+                status = SessionStatus.START_REQUESTED,
+                cpoLogo = "", // TODO: organisationDetails.logoUrl
+            )
+        }
 
     fun stopCharging() {
         viewModelScope.launch {

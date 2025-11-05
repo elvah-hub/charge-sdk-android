@@ -4,19 +4,28 @@ import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 
-internal sealed class ActiveChargingState {
-    data object Loading : ActiveChargingState()
-    data class Error(
-        val status: SessionStatus,
+internal sealed interface ActiveChargingState {
+    data object Loading : ActiveChargingState
+
+    sealed interface Error : ActiveChargingState {
+
         val cpoLogo: String
 
-    ) : ActiveChargingState()
+        data class StartFailed(
+            override val cpoLogo: String,
+        ) : Error
 
-    internal data class Success(
+        data class OtherError(
+            val status: SessionStatus,
+            override val cpoLogo: String,
+        ) : Error
+    }
+
+    data class Success(
         val activeChargingSessionUI: ActiveChargingSessionUI,
         val additionalCostsUI: AdditionalCostsUI?,
         val organisationDetails: OrganisationDetails,
-    ) : ActiveChargingState()
+    ) : ActiveChargingState
 
-    internal data object SessionSummary : ActiveChargingState()
+    data object SessionSummary : ActiveChargingState
 }

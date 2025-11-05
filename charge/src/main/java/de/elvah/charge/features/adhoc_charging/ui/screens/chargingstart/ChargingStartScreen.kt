@@ -1,5 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,6 +67,8 @@ internal fun ChargingStartScreen(
 
 @Composable
 internal fun ChargingStart_Loading() {
+    BackHandler { /* cant navigate back during loading */ }
+
     FullScreenLoading()
 }
 

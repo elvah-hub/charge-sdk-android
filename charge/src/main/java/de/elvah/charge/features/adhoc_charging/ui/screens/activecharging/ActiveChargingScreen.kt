@@ -83,6 +83,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 internal fun ActiveChargingScreen(
     viewModel: ActiveChargingViewModel,
+    onBackClicked: () -> Unit,
     onSupportClick: () -> Unit,
     onMinimizeClick: () -> Unit,
     navigateToSummary: () -> Unit,
@@ -95,9 +96,11 @@ internal fun ActiveChargingScreen(
 
     when (val state = state) {
         is ActiveChargingState.Loading -> ActiveCharging_Loading()
-        is ActiveChargingState.Error -> ActiveCharging_Error(state) {
-            viewModel.retry(it)
-        }
+        is ActiveChargingState.Error -> ActiveCharging_Error(
+            state = state,
+            onBackClicked = onBackClicked,
+            onRetryClick = { viewModel.retry(it) },
+        )
 
         is ActiveChargingState.Success -> ActiveCharging_Success(
             state = state,
@@ -126,6 +129,7 @@ private fun ActiveCharging_Loading() {
 @Composable
 private fun ActiveCharging_Error(
     state: ActiveChargingState.Error,
+    onBackClicked: () -> Unit,
     onRetryClick: (SessionStatus) -> Unit,
 ) {
     Scaffold {
@@ -158,10 +162,8 @@ private fun ActiveCharging_Error(
                 )
 
                 Spacer(modifier = Modifier.size(32.dp))
-                ChargeStateTitle(state.status)
-                Spacer(modifier = Modifier.size(12.dp))
 
-                ChargeStateSubtitle(state.status)
+                ErrorDescription(state)
             }
 
             Column(
@@ -169,8 +171,21 @@ private fun ActiveCharging_Error(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                ButtonPrimary("Retry", modifier = Modifier.fillMaxWidth()) {
 
+                when (state) {
+                    is ActiveChargingState.Error.StartFailed -> {
+                        ButtonPrimary(
+                            text = "Return",
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = onBackClicked,
+                        )
+                    }
+
+                    else -> {
+                        ButtonPrimary("Retry", modifier = Modifier.fillMaxWidth()) {
+                            // TODO: implement retry option
+                        }
+                    }
                 }
 
                 CPOLogo(state.cpoLogo, modifier = Modifier.height(50.dp))
@@ -178,6 +193,69 @@ private fun ActiveCharging_Error(
         }
     }
 
+}
+
+@Composable
+private fun ErrorDescription(state: ActiveChargingState.Error) {
+    when (state) {
+        is ActiveChargingState.Error.StartFailed -> {
+            // TODO: verify what text we need to display for this case
+            TitleAndSubtitle(
+                title = "Start failed",
+                subtitle = "The session could not be started, please try again. Your previous payment will be reimbursed. Sorry for the inconvenience.",
+            )
+        }
+
+        is ActiveChargingState.Error.OtherError -> {
+            // TODO: extract string resources
+            val title = when (state.status) {
+                SessionStatus.START_REQUESTED -> "Preparing"
+                SessionStatus.STARTED -> "Started"
+                SessionStatus.STOP_REQUESTED -> "Stopping the charging session"
+                SessionStatus.START_REJECTED -> "The charge point reported an error"
+                SessionStatus.STOP_REJECTED -> "Please end charging manually"
+                else -> ""
+            }
+
+            val subtitle = when (state.status) {
+                SessionStatus.START_REQUESTED -> "Reaching out to the charger.\n" +
+                        "Please bear with us for a moment."
+
+                SessionStatus.STARTED -> "Charger is awake!\n" +
+                        "Starting session with the charger."
+
+                SessionStatus.STOP_REQUESTED -> "We are connecting to the station to end the charging session"
+                SessionStatus.START_REJECTED -> "Unfortunately, the charging session could not be started at this charge point. Please try again later or use another charge point."
+                SessionStatus.STOP_REJECTED -> "Please stop charging manually by removing the charging cable first from your car and then from the charging station.\n\nWe will analyze the problem and try to solve it together with the operator of the charging station."
+                else -> ""
+            }
+
+            TitleAndSubtitle(
+                title = title,
+                subtitle = subtitle,
+            )
+        }
+    }
+}
+
+@Composable
+private fun TitleAndSubtitle(
+    title: String,
+    subtitle: String,
+) {
+    Text(
+        text = title,
+        style = titleMedium,
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.primary
+    )
+    Spacer(modifier = Modifier.size(12.dp))
+    Text(
+        text = subtitle,
+        style = copyMedium,
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.secondary
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -277,14 +355,15 @@ internal fun ActiveCharging_Success(
 private fun ActiveCharging_Error_Preview() {
     ElvahChargeTheme {
         ActiveCharging_Error(
-            state = ActiveChargingState.Error(
+            state = ActiveChargingState.Error.OtherError(
                 SessionStatus.START_REJECTED,
                 ""
-            )
-        ) { }
+            ),
+            onBackClicked = {},
+            onRetryClick = {},
+        )
     }
 }
-
 
 @Composable
 private fun ChargeStateSubtitle(status: SessionStatus, modifier: Modifier = Modifier) {
