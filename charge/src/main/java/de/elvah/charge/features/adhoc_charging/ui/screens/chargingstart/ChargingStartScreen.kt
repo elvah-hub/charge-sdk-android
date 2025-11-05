@@ -28,8 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
 import de.elvah.charge.features.adhoc_charging.ui.components.ShortenedEvseBigBadge
-import de.elvah.charge.features.payments.domain.model.OrganisationDetails
-import de.elvah.charge.features.payments.domain.model.SupportContacts
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.CopyLarge
 import de.elvah.charge.platform.ui.components.FullScreenError
@@ -113,10 +111,12 @@ internal fun ChargingStart_Success(
                     }
                 }
 
-                StartCharging_Success_Footer(
-                    logoUrl = state.organisationDetails.logoUrl,
-                    onStartCharging = onStartCharging
-                )
+                state.organizationLogoUrl?.let {
+                    StartCharging_Success_Footer(
+                        logoUrl = it,
+                        onStartCharging = onStartCharging
+                    )
+                }
             }
 
             if (state.shouldShowAuthorizationBanner) {
@@ -323,13 +323,7 @@ private fun ChargingStart_Success_Preview() {
         ChargingStart_Success(
             state = ChargingStartState.Success(
                 evseId = "DE*01",
-                organisationDetails = OrganisationDetails(
-                    "",
-                    "",
-                    "",
-                    "",
-                    supportContacts = SupportContacts()
-                )
+                organizationLogoUrl = null,
             ),
             onStartCharging = {},
             onCloseBanner = {},

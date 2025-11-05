@@ -30,15 +30,17 @@ internal class ChargingStartViewModel(
     init {
         viewModelScope.launch {
             val organisationDetails = getOrganisationDetails()
-            val token = getPaymentToken(route.paymentId)
+            val token = getPaymentToken(route.paymentId).getOrNull()
+                ?.takeIf { it.isNotEmpty() }
 
-            chargingRepository.updateChargingToken(token.getOrNull().orEmpty())
+            if (token != null) {
+                chargingRepository.updateChargingToken(token)
 
-            if (organisationDetails != null) {
                 _state.value = ChargingStartState.Success(
                     evseId = route.shortenedEvseId,
-                    organisationDetails = organisationDetails
+                    organizationLogoUrl = organisationDetails?.logoUrl,
                 )
+
             } else {
                 _state.value = ChargingStartState.Error
             }
