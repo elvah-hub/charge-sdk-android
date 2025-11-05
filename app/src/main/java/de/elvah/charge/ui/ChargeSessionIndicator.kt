@@ -9,39 +9,41 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.public_api.manager.ChargeSessionManager
+import de.elvah.charge.public_api.model.ChargingSessionState
 
 @Composable
 internal fun ChargeSessionIndicator() {
     val context = LocalContext.current
 
-    val isSummaryReady by ChargeSessionManager.isSummaryReady.collectAsStateWithLifecycle(false)
-    val hasActiveSession by ChargeSessionManager.hasActiveSession.collectAsStateWithLifecycle(false)
-    val chargeSession by ChargeSessionManager.chargeSession.collectAsStateWithLifecycle(null)
+    val chargeSessionState by ChargeSessionManager.chargingSessionState.collectAsStateWithLifecycle(
+        ChargingSessionState(
+            isSessionRunning = false,
+            isSessionSummaryReady = false,
+            lastSessionData = null,
+        )
+    )
 
-    Column {
-        if (hasActiveSession || isSummaryReady) {
-            if (isSummaryReady) {
+    if (chargeSessionState.isSessionActive) {
+        Column {
+            if (chargeSessionState.isSessionSummaryReady) {
                 Text("Charge stopped. Summary is ready.")
-            } else {
+            } else if (chargeSessionState.isSessionRunning) {
                 Text("Charge session is in progress...")
             }
 
-            Text("Charge: ${chargeSession?.consumption}")
-        }
+            Text("Consumption: ${chargeSessionState.lastSessionData?.consumption}")
 
-        if (hasActiveSession || isSummaryReady) {
             FlowRow {
-                if (isSummaryReady) {
+                if (chargeSessionState.isSessionSummaryReady) {
                     Button(onClick = { ChargeSessionManager.openSessionSummary(context) }) {
                         Text("Open summary")
                     }
+
                 } else {
                     Button(onClick = { ChargeSessionManager.openSession(context) }) {
                         Text("Open charge session")
                     }
-                }
 
-                if (!isSummaryReady) {
                     Button(onClick = { ChargeSessionManager.stopSession() }) {
                         Text("Stop charge session")
                     }
