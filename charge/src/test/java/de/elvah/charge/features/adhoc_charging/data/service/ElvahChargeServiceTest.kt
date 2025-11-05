@@ -102,7 +102,8 @@ class ElvahChargeServiceTest {
     fun `requesting stop session that fails should emit error state`() = runTest {
         val chargingRepository = mockk<DefaultChargingRepository>()
 
-        coEvery { chargingRepository.stopChargingSession() } returns SessionExceptions.GenericError.left()
+        val sessionException = SessionExceptions.GenericError
+        coEvery { chargingRepository.stopChargingSession() } returns sessionException.left()
 
         val chargeService = getChargeService(
             chargingRepository = chargingRepository,
@@ -119,7 +120,7 @@ class ElvahChargeServiceTest {
         }
 
         chargeService.errors.test {
-            assertEquals(ChargeError.GENERIC_ERROR, awaitItem())
+            assertEquals(ChargeError.StopAttemptFailed(sessionException), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -170,7 +171,8 @@ class ElvahChargeServiceTest {
     fun `requesting start session that fails should emit error state`() = runTest {
         val chargingRepository = mockk<DefaultChargingRepository>()
 
-        coEvery { chargingRepository.startChargingSession() } returns SessionExceptions.GenericError.left()
+        val sessionException = SessionExceptions.GenericError
+        coEvery { chargingRepository.startChargingSession() } returns sessionException.left()
 
         val chargeService = getChargeService(
             chargingRepository = chargingRepository,
@@ -187,7 +189,7 @@ class ElvahChargeServiceTest {
         }
 
         chargeService.errors.test {
-            assertEquals(ChargeError.GENERIC_ERROR, awaitItem())
+            assertEquals(ChargeError.StartAttemptFailed(sessionException), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }

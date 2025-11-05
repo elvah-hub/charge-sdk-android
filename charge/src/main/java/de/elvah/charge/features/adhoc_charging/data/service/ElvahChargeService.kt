@@ -91,6 +91,7 @@ internal class ElvahChargeService(
 
     override fun startSession() {
         if (_state.value == ChargeServiceState.STARTING) return
+        setChargeError(null)
         _state.value = ChargeServiceState.STARTING
 
         chargeScope.launch {
@@ -98,7 +99,7 @@ internal class ElvahChargeService(
                 .also {
                     when (it) {
                         is Either.Left -> {
-                            _errors.value = it.value.toChargeError()
+                            setChargeError(ChargeError.StartAttemptFailed(it.value))
                             _state.value = ChargeServiceState.IDLE
                         }
 
@@ -113,6 +114,7 @@ internal class ElvahChargeService(
 
     override fun stopSession() {
         if (_state.value == ChargeServiceState.STOPPING) return
+        setChargeError(null)
         val prevState = _state.value
         _state.value = ChargeServiceState.STOPPING
 
@@ -121,7 +123,7 @@ internal class ElvahChargeService(
                 .also {
                     when (it) {
                         is Either.Left -> {
-                            _errors.value = it.value.toChargeError()
+                            setChargeError(ChargeError.StopAttemptFailed(it.value))
                             _state.value = prevState
                         }
 
@@ -140,6 +142,7 @@ internal class ElvahChargeService(
 
     override fun checkForActiveSession() {
         if (_state.value == ChargeServiceState.VERIFYING) return
+        setChargeError(null)
         _state.value = ChargeServiceState.VERIFYING
 
         chargeScope.launch {
@@ -148,7 +151,7 @@ internal class ElvahChargeService(
                 .fold(
                     ifLeft = {
                         // TODO: retry options? for first failed call
-                        _errors.value = it.toChargeError()
+                        setChargeError(ChargeError.SessionCheckFailed(it))
                         _state.value = ChargeServiceState.IDLE
                     },
                     ifRight = {
@@ -176,6 +179,7 @@ internal class ElvahChargeService(
             pollingJob?.cancel()
             pollingJob = null
 
+            setChargeError(null)
             _chargeSession.tryEmit(null)
             _state.value = ChargeServiceState.IDLE
         }
@@ -192,18 +196,20 @@ internal class ElvahChargeService(
             return null
         }
 
+        setChargeError(null)
+
         var retryAttempt = CHARGE_SESSION_SUMMARY_MAX_RETRY
         delay(CHARGE_SESSION_SUMMARY_DELAY)
 
         while (retryAttempt > 0) {
-            getPaymentSummary(paymentId = chargeSummary.paymentId.orEmpty()).fold(
+            getPaymentSummary(paymentId = chargeSummary.paymentId).fold(
                 ifLeft = {
                     retryAttempt.minus(1)
 
                     if (retryAttempt <= 0) {
-                        _errors.value = ChargeError.SUMMARY_FAILED_ALL_ATTEMPTS
+                        setChargeError(ChargeError.SummaryRetryFailedAllAttempts)
                     } else {
-                        _errors.value = it.toChargeError()
+                        setChargeError(ChargeError.SummaryRetryFailed(it))
                         delay(CHARGE_SESSION_SUMMARY_RETRY_DELAY)
                     }
                 },
@@ -236,12 +242,13 @@ internal class ElvahChargeService(
         pollingJob?.cancel()
         pollingJob = chargeScope.launch {
             while (isPolling) {
+                setChargeError(null)
                 chargingRepository
                     .fetchChargingSession()
                     .fold(
                         ifLeft = {
                             // TODO: depending on error stop the polling
-                            _errors.value = it.toChargeError()
+                            setChargeError(ChargeError.SessionPollingFailed(it))
                         },
                         ifRight = { session ->
                             _chargeSession.tryEmit(session)
@@ -267,6 +274,10 @@ internal class ElvahChargeService(
             isSessionSummaryReady = isSessionSummaryReady,
             lastSessionData = lastSessionData,
         )
+    }
+
+    private fun setChargeError(error: ChargeError?) {
+        _errors.value = error
     }
 
     companion object {
