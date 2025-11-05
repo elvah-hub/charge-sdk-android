@@ -204,7 +204,7 @@ internal class ElvahChargeService(
         while (retryAttempt > 0) {
             getPaymentSummary(paymentId = chargeSummary.paymentId).fold(
                 ifLeft = {
-                    retryAttempt.minus(1)
+                    retryAttempt--
 
                     if (retryAttempt <= 0) {
                         setChargeError(ChargeError.SummaryRetryFailedAllAttempts)
@@ -242,7 +242,6 @@ internal class ElvahChargeService(
         pollingJob?.cancel()
         pollingJob = chargeScope.launch {
             while (isPolling) {
-                setChargeError(null)
                 chargingRepository
                     .fetchChargingSession()
                     .fold(
@@ -251,6 +250,7 @@ internal class ElvahChargeService(
                             setChargeError(ChargeError.SessionPollingFailed(it))
                         },
                         ifRight = { session ->
+                            setChargeError(null)
                             _chargeSession.tryEmit(session)
 
                             if (session.status == SessionStatus.STOPPED) {
