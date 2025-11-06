@@ -24,12 +24,15 @@ import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toChartData
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
 import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart
+import de.elvah.charge.platform.ui.components.graph.line.GraphColors
+import de.elvah.charge.platform.ui.components.graph.line.GraphColorDefaults
 
 @Composable
 internal fun PricingGraphContent(
     scheduledPricing: ScheduledPricingUI,
     chargeSite: ChargeSiteUI,
     modifier: Modifier = Modifier,
+    colors: GraphColors = GraphColorDefaults.colors(),
     minYAxisPrice: Double? = null,
     gridLineDotSize: Float = 4f,
     onChargeNowClick: () -> Unit,
@@ -51,6 +54,7 @@ internal fun PricingGraphContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
+                colors = colors,
                 animated = true,
                 showVerticalGridLines = true,
                 minYAxisPrice = minYAxisPrice,

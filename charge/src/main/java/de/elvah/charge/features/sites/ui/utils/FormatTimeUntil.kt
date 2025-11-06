@@ -217,3 +217,5 @@ private fun formatTimeLocalized(
         }
     }
 }
+
+internal const val HOUR_MINUTE_FORMAT = "%02d:%02d"

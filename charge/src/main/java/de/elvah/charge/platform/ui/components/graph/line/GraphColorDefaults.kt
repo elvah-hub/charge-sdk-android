@@ -9,10 +9,10 @@ import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorS
  * Default graph colors following Jetpack Compose patterns.
  * Uses brand color for offers and gray for regular pricing.
  */
-internal object GraphColorDefaults {
+public object GraphColorDefaults {
 
     @Composable
-    fun colors(
+    public fun colors(
         offerSelectedLine: Color = MaterialTheme.colorSchemeExtended.brand,
         offerSelectedArea: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.6f),
         offerUnselectedLine: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.6f),
