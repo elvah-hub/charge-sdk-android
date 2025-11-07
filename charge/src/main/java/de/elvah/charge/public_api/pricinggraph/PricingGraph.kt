@@ -27,6 +27,7 @@ public fun PricingGraph(
     siteId: String,
     modifier: Modifier = Modifier,
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
+    colors: GraphColors = GraphColorDefaults.colors(),
     onError: ((String) -> Unit)? = null,
     onRefreshSuccess: (() -> Unit)? = null,
     minYAxisPrice: Double? = null,
@@ -88,6 +89,7 @@ public fun PricingGraph(
                     scheduledPricing = currentState.scheduledPricing,
                     chargeSite = currentState.siteDetail,
                     modifier = modifier,
+                    colors = colors,
                     minYAxisPrice = minYAxisPrice,
                     gridLineDotSize = gridLineDotSize,
                     onChargeNowClick = {

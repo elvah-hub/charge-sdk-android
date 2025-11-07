@@ -19,6 +19,7 @@ import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.GRID_LIN
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.HOURS_IN_DAY
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.LINE_STROKE_WIDTH_DP
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.MINUTES_IN_DAY
+import de.elvah.charge.public_api.pricinggraph.GraphColors
 import java.time.LocalTime
 
 /**

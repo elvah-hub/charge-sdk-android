@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +40,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,6 +50,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import de.elvah.charge.R
 import de.elvah.charge.features.sites.ui.model.ChargeSiteUI
+import de.elvah.charge.features.sites.ui.utils.HOUR_MINUTE_FORMAT
 import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
@@ -65,8 +66,9 @@ import de.elvah.charge.platform.ui.components.graph.line.utils.getClickedTimeByO
 import de.elvah.charge.platform.ui.components.site.SiteDetailHeader
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
-import de.elvah.charge.platform.ui.theme.colors.primary
 import de.elvah.charge.platform.ui.theme.copySmallBold
+import de.elvah.charge.public_api.pricinggraph.GraphColorDefaults
+import de.elvah.charge.public_api.pricinggraph.GraphColors
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -227,7 +229,8 @@ internal fun EnergyPriceLineChart(
                 selectedPrice = selectedPrice,
                 offerSelected = offerSelected,
                 currency = updatedDailyData.first().currency,
-                regularPrice = updatedDailyData[pagerState.currentPage].regularPrice
+                regularPrice = updatedDailyData[pagerState.currentPage].regularPrice,
+                textColor = colors.offerSelectedLine
             )
 
             LivePriceTimeSlot(selectedPriceOffer, pagerState.currentPage)
@@ -288,7 +291,8 @@ private fun LivePricingPrice(
     selectedPrice: Double,
     offerSelected: Boolean,
     currency: String,
-    regularPrice: Double
+    regularPrice: Double,
+    textColor: Color = MaterialTheme.colorSchemeExtended.brand
 ) {
     Row(
         modifier = Modifier
@@ -302,7 +306,7 @@ private fun LivePricingPrice(
                 R.string.kwh_label
             ),
             color = if (offerSelected) {
-                MaterialTheme.colorSchemeExtended.brand
+                textColor
             } else {
                 MaterialTheme.colorScheme.primary
             }
@@ -348,31 +352,35 @@ private fun LivePricingHeader(selectedType: ChargeType) {
 }
 
 @Composable
-private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
+private fun OfferBadge(
+    priceOffer: PriceOffer?,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorSchemeExtended.brand
+) {
     FlowRow(
         modifier = modifier
             .background(
                 color = if (priceOffer != null) {
-                    MaterialTheme.colorSchemeExtended.brandLight
+                    color
                 } else {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.07f)
-                },
+                    MaterialTheme.colorScheme.primary
+                }.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(100.dp)
             )
             .padding(horizontal = 8.dp, vertical = 10.dp),
-        itemVerticalAlignment = Alignment.CenterVertically
+        itemVerticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Icon(
             painter = if (priceOffer != null) painterResource(R.drawable.ic_offer) else painterResource(
                 R.drawable.ic_no_offer
             ), contentDescription = null,
             tint = if (priceOffer != null) {
-                MaterialTheme.colorSchemeExtended.brand
+                color
             } else {
                 MaterialTheme.colorScheme.secondary
             }
         )
-        Spacer(modifier = Modifier.width(4.dp))
         CopySmall(
             text = if (priceOffer != null) {
                 stringResource(R.string.generic_offer_available)
@@ -381,13 +389,11 @@ private fun OfferBadge(priceOffer: PriceOffer?, modifier: Modifier = Modifier) {
             } + ":",
             fontWeight = FontWeight.W700,
             color = if (priceOffer != null) {
-                MaterialTheme.colorSchemeExtended.brand
+                color
             } else {
                 MaterialTheme.colorScheme.primary
             }
         )
-        Spacer(modifier = Modifier.width(4.dp))
-
         if (priceOffer != null) {
             HourSlot(priceOffer.timeRange)
         }
@@ -401,29 +407,29 @@ private fun HourSlot(timeRange: TimeRange, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CopySmall(
-            text = "%02d:%02d".format(
+            text = HOUR_MINUTE_FORMAT.format(
                 timeRange.startTime.hour,
                 timeRange.startTime.minute
             ),
             fontWeight = FontWeight.W700,
-            color = primary
+            color = MaterialTheme.colorScheme.primary
         )
 
         Icon(
             imageVector = Icons.AutoMirrored.Default.ArrowForward,
             contentDescription = null,
             modifier = Modifier.size(12.dp),
-            tint = primary
+            tint = MaterialTheme.colorScheme.primary
 
         )
 
         CopySmall(
-            text = "%02d:%02d".format(
+            text = HOUR_MINUTE_FORMAT.format(
                 timeRange.endTime.hour,
                 timeRange.endTime.minute
             ),
             fontWeight = FontWeight.W700,
-            color = primary
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -679,6 +685,31 @@ private fun EnergyPriceLineChartDottedGridPreview() {
         EnergyPriceLineChart(
             dailyData = MockData.generateThreeDayPricingData(),
             gridLineDotSize = 6f, // Larger dots for demonstration
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun EnergyPriceLineChartCustomColorsPreview() {
+    ElvahChargeTheme {
+        EnergyPriceLineChart(
+            dailyData = MockData.generateThreeDayPricingData(),
+            colors = GraphColorDefaults.colors(
+                offerSelectedLine = Color(0xFF2196F3), // Blue
+                offerSelectedArea = Color(0xFF2196F3).copy(alpha = 0.3f),
+                offerUnselectedLine = Color(0xFF2196F3).copy(alpha = 0.6f),
+                offerUnselectedArea = Color(0xFF2196F3).copy(alpha = 0.2f),
+                regularSelectedLine = Color(0xFF9C27B0), // Purple
+                regularSelectedArea = Color(0xFF9C27B0).copy(alpha = 0.3f),
+                regularUnselectedLine = Color(0xFF9C27B0).copy(alpha = 0.4f),
+                regularUnselectedArea = Color(0xFF9C27B0).copy(alpha = 0.2f),
+                verticalLine = Color(0xFF757575).copy(alpha = 0.8f),
+                currentTimeMarker = Color(0xFFFF5722) // Orange
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),

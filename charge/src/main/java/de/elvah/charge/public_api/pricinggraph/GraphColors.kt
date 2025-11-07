@@ -1,4 +1,4 @@
-package de.elvah.charge.platform.ui.components.graph.line
+package de.elvah.charge.public_api.pricinggraph
 
 import androidx.compose.ui.graphics.Color
 
@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
  * - Offer and Regular pricing types
  * - Selected and Unselected states
  */
-internal data class GraphColors(
+public data class GraphColors(
     // Offer colors - selected state
     val offerSelectedLine: Color,
     val offerSelectedArea: Color,

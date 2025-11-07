@@ -3,6 +3,7 @@ package de.elvah.charge.features.adhoc_charging.ui.mapper
 import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
 import de.elvah.charge.features.sites.domain.model.AdditionalCosts
 import de.elvah.charge.features.sites.domain.model.BlockingFeeTimeSlot
+import de.elvah.charge.features.sites.ui.utils.HOUR_MINUTE_FORMAT
 
 internal fun AdditionalCosts.toUI(): AdditionalCostsUI? = AdditionalCostsUI(
     activationFee = baseFee,
