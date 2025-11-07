@@ -13,8 +13,6 @@ import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphCon
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphEmpty
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphError
 import de.elvah.charge.features.sites.ui.pricinggraph.components.PricingGraphLoading
-import de.elvah.charge.platform.ui.components.graph.line.GraphColors
-import de.elvah.charge.platform.ui.components.graph.line.GraphColorDefaults
 import de.elvah.charge.features.sites.ui.utils.openSite
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme

@@ -1,4 +1,4 @@
-package de.elvah.charge.platform.ui.components.graph.line
+package de.elvah.charge.public_api.pricinggraph
 
 import androidx.compose.ui.graphics.Color
 

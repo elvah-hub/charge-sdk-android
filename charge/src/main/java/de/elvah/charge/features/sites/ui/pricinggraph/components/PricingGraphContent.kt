@@ -24,8 +24,8 @@ import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toChartData
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
 import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart
-import de.elvah.charge.platform.ui.components.graph.line.GraphColors
-import de.elvah.charge.platform.ui.components.graph.line.GraphColorDefaults
+import de.elvah.charge.public_api.pricinggraph.GraphColors
+import de.elvah.charge.public_api.pricinggraph.GraphColorDefaults
 
 @Composable
 internal fun PricingGraphContent(

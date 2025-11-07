@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -67,8 +66,9 @@ import de.elvah.charge.platform.ui.components.graph.line.utils.getClickedTimeByO
 import de.elvah.charge.platform.ui.components.site.SiteDetailHeader
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.colors.ElvahChargeThemeExtension.colorSchemeExtended
-import de.elvah.charge.platform.ui.theme.colors.primary
 import de.elvah.charge.platform.ui.theme.copySmallBold
+import de.elvah.charge.public_api.pricinggraph.GraphColorDefaults
+import de.elvah.charge.public_api.pricinggraph.GraphColors
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
