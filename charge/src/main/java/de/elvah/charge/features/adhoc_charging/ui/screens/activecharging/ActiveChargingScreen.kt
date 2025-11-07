@@ -163,7 +163,7 @@ private fun ActiveCharging_Error(
 
                 Spacer(modifier = Modifier.size(32.dp))
 
-                ErrorDescription(state)
+                ErrorDescriptionContent(state)
             }
 
             Column(
@@ -196,44 +196,46 @@ private fun ActiveCharging_Error(
 }
 
 @Composable
-private fun ErrorDescription(state: ActiveChargingState.Error) {
-    when (state) {
-        is ActiveChargingState.Error.StartFailed -> {
-            // TODO: verify what text we need to display for this case
-            TitleAndSubtitle(
-                title = "Start failed",
-                subtitle = "The session could not be started, please try again. Your previous payment will be reimbursed. Sorry for the inconvenience.",
-            )
-        }
-
-        is ActiveChargingState.Error.OtherError -> {
-            // TODO: extract string resources
-            val title = when (state.status) {
-                SessionStatus.START_REQUESTED -> "Preparing"
-                SessionStatus.STARTED -> "Started"
-                SessionStatus.STOP_REQUESTED -> "Stopping the charging session"
-                SessionStatus.START_REJECTED -> "The charge point reported an error"
-                SessionStatus.STOP_REJECTED -> "Please end charging manually"
-                else -> ""
+private fun ErrorDescriptionContent(state: ActiveChargingState.Error) {
+    Column {
+        when (state) {
+            is ActiveChargingState.Error.StartFailed -> {
+                // TODO: verify what text we need to display for this case
+                TitleAndSubtitle(
+                    title = "Start failed",
+                    subtitle = "The session could not be started, please try again. Your previous payment will be reimbursed. Sorry for the inconvenience.",
+                )
             }
 
-            val subtitle = when (state.status) {
-                SessionStatus.START_REQUESTED -> "Reaching out to the charger.\n" +
-                        "Please bear with us for a moment."
+            is ActiveChargingState.Error.OtherError -> {
+                // TODO: extract string resources
+                val title = when (state.status) {
+                    SessionStatus.START_REQUESTED -> "Preparing"
+                    SessionStatus.STARTED -> "Started"
+                    SessionStatus.STOP_REQUESTED -> "Stopping the charging session"
+                    SessionStatus.START_REJECTED -> "The charge point reported an error"
+                    SessionStatus.STOP_REJECTED -> "Please end charging manually"
+                    else -> ""
+                }
 
-                SessionStatus.STARTED -> "Charger is awake!\n" +
-                        "Starting session with the charger."
+                val subtitle = when (state.status) {
+                    SessionStatus.START_REQUESTED -> "Reaching out to the charger.\n" +
+                            "Please bear with us for a moment."
 
-                SessionStatus.STOP_REQUESTED -> "We are connecting to the station to end the charging session"
-                SessionStatus.START_REJECTED -> "Unfortunately, the charging session could not be started at this charge point. Please try again later or use another charge point."
-                SessionStatus.STOP_REJECTED -> "Please stop charging manually by removing the charging cable first from your car and then from the charging station.\n\nWe will analyze the problem and try to solve it together with the operator of the charging station."
-                else -> ""
+                    SessionStatus.STARTED -> "Charger is awake!\n" +
+                            "Starting session with the charger."
+
+                    SessionStatus.STOP_REQUESTED -> "We are connecting to the station to end the charging session"
+                    SessionStatus.START_REJECTED -> "Unfortunately, the charging session could not be started at this charge point. Please try again later or use another charge point."
+                    SessionStatus.STOP_REJECTED -> "Please stop charging manually by removing the charging cable first from your car and then from the charging station.\n\nWe will analyze the problem and try to solve it together with the operator of the charging station."
+                    else -> ""
+                }
+
+                TitleAndSubtitle(
+                    title = title,
+                    subtitle = subtitle,
+                )
             }
-
-            TitleAndSubtitle(
-                title = title,
-                subtitle = subtitle,
-            )
         }
     }
 }
@@ -243,19 +245,23 @@ private fun TitleAndSubtitle(
     title: String,
     subtitle: String,
 ) {
-    Text(
-        text = title,
-        style = titleMedium,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.primary
-    )
-    Spacer(modifier = Modifier.size(12.dp))
-    Text(
-        text = subtitle,
-        style = copyMedium,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.secondary
-    )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = title,
+            style = titleMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.size(12.dp))
+        Text(
+            text = subtitle,
+            style = copyMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.secondary
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
