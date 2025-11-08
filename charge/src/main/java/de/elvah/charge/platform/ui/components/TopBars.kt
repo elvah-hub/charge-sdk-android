@@ -70,10 +70,12 @@ internal fun DismissableTopAppBar(
             actions[false].orEmpty().map {
                 IconButton(
                     onClick = it.onClick,
-                    modifier = Modifier.background(
-                        color = MaterialTheme.colorScheme.background,
-                        shape = CircleShape
-                    )
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.background,
+                            shape = CircleShape
+                        )
                 ) {
                     it.leadingIcon()
                 }
@@ -92,7 +94,7 @@ private fun DropdownMenuWithDetails(menuItems: List<MenuItem>) {
 
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(end = 16.dp)
     ) {
         IconButton(
             onClick = { expanded = !expanded },
