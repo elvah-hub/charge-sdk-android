@@ -3,10 +3,15 @@ package de.elvah.charge.features.payments.data.mapper
 import de.elvah.charge.features.payments.data.remote.model.response.PaymentSummaryDto
 import de.elvah.charge.features.payments.domain.model.PaymentSummary
 
-internal fun PaymentSummaryDto.toDomain(evseId: String, cpoName: String): PaymentSummary {
+internal fun PaymentSummaryDto.toDomain(
+    evseId: String,
+    cpoName: String,
+    logoUrl: String
+): PaymentSummary {
     return PaymentSummary(
         evseId = evseId,
         cpoName = cpoName,
+        logoUrl = logoUrl,
         address = this.data.address.streetAddress,
         totalTime = this.data.totalTimeInSeconds,
         consumedKWh = this.data.consumedKWh,

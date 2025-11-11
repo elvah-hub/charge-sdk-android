@@ -19,15 +19,11 @@ import org.koin.dsl.module
 
 
 internal fun provideSimulatorModule(simulatorFlow: SimulatorFlow) = module {
-    single {
-        simulatorFlow
-    }
+    single { simulatorFlow }
     singleOf(::FakeSitesRepository) { bind<SitesRepository>() }
     singleOf(::FakePaymentsRepository) { bind<PaymentsRepository>() }
     singleOf(::DefaultChargingSessionFactory) { bind<ChargingSessionFactory>() }
     singleOf(::DefaultSimulationStrategyFactory) { bind<SimulationStrategyFactory>() }
     singleOf(::FakeChargingRepository) { bind<ChargingRepository>() }
     singleOf(::FakeInitStripeConfig) { bind<InitStripeConfig>() }
-
-
 }

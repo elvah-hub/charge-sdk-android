@@ -1,6 +1,6 @@
 package de.elvah.charge.platform.simulator.domain.strategy
 
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import de.elvah.charge.platform.simulator.domain.factory.ChargingSessionFactory
 import de.elvah.charge.platform.simulator.domain.model.SimulationContext
@@ -14,7 +14,7 @@ internal class StopRejectedSimulationStrategy(
     private val startDelay: Int = 2
 ) : ChargingSimulationStrategy {
 
-    override suspend fun generateNextSession(context: SimulationContext): ChargingSession? {
+    override suspend fun generateNextSession(context: SimulationContext): ChargeSession? {
         return when (context.currentStatus) {
             null -> {
                 sessionFactory.createSession {

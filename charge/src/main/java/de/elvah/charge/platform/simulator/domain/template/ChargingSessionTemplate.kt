@@ -1,6 +1,6 @@
 package de.elvah.charge.platform.simulator.domain.template
 
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import de.elvah.charge.platform.simulator.domain.factory.ChargingSessionFactory
 import de.elvah.charge.platform.simulator.domain.model.SimulationContext
@@ -17,7 +17,7 @@ internal abstract class ChargingSessionTemplate(
      * Template method that defines the overall session progression algorithm.
      * This method should not be overridden by subclasses.
      */
-    fun processSession(context: SimulationContext): ChargingSession? {
+    fun processSession(context: SimulationContext): ChargeSession? {
         if (!shouldProcessSession(context)) {
             return context.currentSession
         }
@@ -83,32 +83,32 @@ internal abstract class ChargingSessionTemplate(
     /**
      * Creates the initial session when no session exists.
      */
-    protected abstract fun createInitialSession(context: SimulationContext): ChargingSession?
+    protected abstract fun createInitialSession(context: SimulationContext): ChargeSession?
 
     /**
      * Handles the starting phase of the session.
      */
-    protected abstract fun handleStartingPhase(context: SimulationContext): ChargingSession?
+    protected abstract fun handleStartingPhase(context: SimulationContext): ChargeSession?
 
     /**
      * Handles the charging phase of the session.
      */
-    protected abstract fun handleChargingPhase(context: SimulationContext): ChargingSession?
+    protected abstract fun handleChargingPhase(context: SimulationContext): ChargeSession?
 
     /**
      * Handles the stopping phase of the session.
      */
-    protected abstract fun handleStoppingPhase(context: SimulationContext): ChargingSession?
+    protected abstract fun handleStoppingPhase(context: SimulationContext): ChargeSession?
 
     /**
      * Handles the final phase of the session.
      */
-    protected abstract fun handleFinalPhase(context: SimulationContext): ChargingSession?
+    protected abstract fun handleFinalPhase(context: SimulationContext): ChargeSession?
 
     /**
      * Handles unknown or unexpected states.
      */
-    protected open fun handleUnknownState(context: SimulationContext): ChargingSession? {
+    protected open fun handleUnknownState(context: SimulationContext): ChargeSession? {
         return createInitialSession(context)
     }
 
@@ -117,9 +117,9 @@ internal abstract class ChargingSessionTemplate(
      * Can be overridden for additional processing.
      */
     protected open fun postProcessSession(
-        session: ChargingSession?,
+        session: ChargeSession?,
         context: SimulationContext
-    ): ChargingSession? {
+    ): ChargeSession? {
         return session
     }
 
@@ -128,7 +128,7 @@ internal abstract class ChargingSessionTemplate(
     /**
      * Creates a session with incremented duration from the current session.
      */
-    protected fun incrementDuration(context: SimulationContext): ChargingSession? {
+    protected fun incrementDuration(context: SimulationContext): ChargeSession? {
         return context.currentSession?.let { current ->
             sessionFactory.createSession {
                 evseId(current.evseId)

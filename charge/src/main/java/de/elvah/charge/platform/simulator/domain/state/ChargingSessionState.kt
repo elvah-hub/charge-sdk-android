@@ -1,6 +1,6 @@
 package de.elvah.charge.platform.simulator.domain.state
 
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import de.elvah.charge.platform.simulator.domain.factory.ChargingSessionFactory
 import de.elvah.charge.platform.simulator.domain.model.SimulationContext
@@ -17,7 +17,7 @@ internal interface ChargingSessionState {
     fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession?
+    ): ChargeSession?
 
     /**
      * Determines the next state based on the current context.
@@ -41,7 +41,7 @@ internal class ChargingSessionStateContext(
     /**
      * Processes the current state and transitions to the next state if needed.
      */
-    fun processSession(context: SimulationContext): ChargingSession? {
+    fun processSession(context: SimulationContext): ChargeSession? {
         val session = currentState.process(context, sessionFactory)
         currentState = currentState.getNextState(context)
         return session
@@ -76,7 +76,7 @@ internal class StartRequestedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargeSession? {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.START_REQUESTED)
@@ -102,7 +102,7 @@ internal class StartedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargeSession? {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.STARTED)
@@ -125,7 +125,7 @@ internal class ChargingState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargeSession? {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.CHARGING)
@@ -151,7 +151,7 @@ internal class StopRequestedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargeSession? {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.STOP_REQUESTED)
@@ -174,7 +174,7 @@ internal class StoppedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargeSession? {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.STOPPED)
@@ -197,7 +197,7 @@ internal class StartRejectedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargeSession? {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.START_REJECTED)
@@ -220,7 +220,7 @@ internal class StopRejectedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargeSession? {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.STOP_REJECTED)

@@ -1,6 +1,6 @@
 package de.elvah.charge.features.sites.domain.model.filters
 
-import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.model.EvseId
 
 internal data class SiteFilter(
     val evseIds: List<EvseId> = emptyList(),

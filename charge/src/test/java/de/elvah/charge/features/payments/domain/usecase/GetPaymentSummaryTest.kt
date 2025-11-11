@@ -79,6 +79,7 @@ class GetPaymentSummaryTest {
     private fun createTestPaymentSummary() = PaymentSummary(
         evseId = "DE*KDL*E0000040",
         cpoName = "Test CPO",
+        logoUrl = "",
         address = "Test Address",
         totalTime = 120,
         consumedKWh = 25.5,

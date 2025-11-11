@@ -14,7 +14,7 @@ import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.core.arrow.extensions.toEither
 import de.elvah.charge.platform.simulator.domain.model.SimulatorFlow
-import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.model.EvseId
 
 internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesRepository {
 
@@ -22,20 +22,6 @@ internal class FakeSitesRepository(simulatorFlow: SimulatorFlow) : SitesReposito
 
     override fun getChargeSite(siteId: String): Either<Throwable, ChargeSite> {
         return chargeSites.first { it.id == siteId }.right()
-    }
-
-    override fun updateChargeSite(site: ChargeSite) {
-        if (chargeSites.none { it.id == site.id }) {
-            chargeSites = chargeSites + site
-        } else {
-            chargeSites = chargeSites.map {
-                if (it.id == site.id) {
-                    site
-                } else {
-                    it
-                }
-            }
-        }
     }
 
     override suspend fun getChargeSites(

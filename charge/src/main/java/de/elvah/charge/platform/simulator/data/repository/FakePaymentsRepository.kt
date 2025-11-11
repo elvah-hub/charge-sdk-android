@@ -40,6 +40,7 @@ internal class FakePaymentsRepository() : PaymentsRepository {
             PaymentSummary(
                 evseId = "nulla",
                 cpoName = "Wanda Dodson",
+                logoUrl = "",
                 address = "litora",
                 totalTime = 7412,
                 consumedKWh = 14.15,

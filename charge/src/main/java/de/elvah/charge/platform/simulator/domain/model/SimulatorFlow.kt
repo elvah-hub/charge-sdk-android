@@ -1,6 +1,6 @@
 package de.elvah.charge.platform.simulator.domain.model
 
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 
 /**
  * Represents the different simulation flows that can be executed.
@@ -53,7 +53,7 @@ public sealed class SimulatorFlow(public val name: String, public val descriptio
     internal data class Custom(
         val onSessionStart: () -> Unit,
         val onSessionStop: () -> Unit,
-        internal val onSessionStatusUpdate: (SimulationContext) -> ChargingSession?
+        internal val onSessionStatusUpdate: (SimulationContext) -> ChargeSession?
 
     ) : SimulatorFlow("custom", "Custom simulation flow")
 }

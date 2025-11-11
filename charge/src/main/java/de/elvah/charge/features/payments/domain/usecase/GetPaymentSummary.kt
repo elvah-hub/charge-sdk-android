@@ -4,7 +4,6 @@ import arrow.core.Either
 import de.elvah.charge.features.payments.domain.model.PaymentSummary
 import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
 
-
 internal class GetPaymentSummary(
     private val paymentsRepository: PaymentsRepository,
 ) {

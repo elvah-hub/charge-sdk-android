@@ -22,6 +22,7 @@ kotlinx-serialization-json = "1.9.0"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxDatetime = "0.7.1"
 ksp = "2.2.20-2.0.2"
+lifecycleProcess = "2.9.4"
 lifecycleRuntimeKtx = "2.9.2"
 material = "1.12.0"
 mockk = "1.14.5"
@@ -46,6 +47,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "test-extensions" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }

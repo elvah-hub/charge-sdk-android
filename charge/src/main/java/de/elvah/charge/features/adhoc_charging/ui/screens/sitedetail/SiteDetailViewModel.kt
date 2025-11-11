@@ -4,40 +4,45 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import de.elvah.charge.components.sitessource.InternalSitesSource
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargeSessionState
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state.BuildSiteDetailSuccessState
 import de.elvah.charge.features.sites.domain.extension.fullAddress
 import de.elvah.charge.features.sites.domain.extension.getSlotAtTime
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.ScheduledPricing
-import de.elvah.charge.features.sites.domain.repository.SitesRepository
-import de.elvah.charge.features.sites.domain.usecase.GetSiteScheduledPricing
+import de.elvah.charge.public_api.sitessource.SitesSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class SiteDetailViewModel(
-    private val sitesRepository: SitesRepository,
+    sitesSource: SitesSource,
     savedStateHandle: SavedStateHandle,
     private val buildSiteDetailSuccessState: BuildSiteDetailSuccessState,
-    private val getSiteScheduledPricing: GetSiteScheduledPricing,
+    observeChargeSessionState: ObserveChargeSessionState,
 ) : ViewModel() {
 
     private val args: AdHocChargingScreens.SiteDetailRoute =
         savedStateHandle.toRoute()
 
-    val siteId = args.siteId
+    private val internalSitesSource = sitesSource as InternalSitesSource
+
+    private val siteId = args.siteId
 
     private val loading = MutableStateFlow(false)
+
     private val site = MutableStateFlow<ChargeSite?>(null)
     private val pricing = MutableStateFlow<ScheduledPricing?>(null)
     private val chargePointSearchInput = MutableStateFlow("")
     private val timeSlot = MutableStateFlow<ScheduledPricing.TimeSlot?>(null)
 
-    val state = combine(
+    internal val chargeSessionState = observeChargeSessionState()
+
+    internal val state = combine(
         loading,
         site,
         pricing,
@@ -68,15 +73,12 @@ internal class SiteDetailViewModel(
         viewModelScope.launch {
             loading.value = true
 
-            site.value = sitesRepository.getChargeSite(args.siteId)
-                .fold({ null }, { it })
+            updateChargePointAvailabilities()
+            updateSite()
 
-            pricing.value = getSiteScheduledPricing(GetSiteScheduledPricing.Params(siteId = siteId))
-                .fold({ null }, { it })
+            pricing.value = internalSitesSource.getSiteScheduledPricing(siteId).getOrNull()
 
             timeSlot.value = pricing.value?.dailyPricing?.today?.timeSlots?.getSlotAtTime()
-
-            updateChargePointAvailabilities()
 
             loading.value = false
         }
@@ -85,23 +87,18 @@ internal class SiteDetailViewModel(
     internal fun refreshAvailability() {
         viewModelScope.launch {
             updateChargePointAvailabilities()
+            updateSite()
         }
     }
 
-    private suspend fun updateChargePointAvailabilities() {
-        sitesRepository.updateChargePointAvailabilities(
-            siteId = siteId,
-        ).fold(
-            ifLeft = { /* keep same data */ },
-            ifRight = { evses ->
-                site.update {
-                    it?.copy(
-                        evses = evses,
-                    )
-                }
-            }
-        )
+    private fun updateSite() {
+        site.value = internalSitesSource.getSite(siteId).getOrNull()
     }
+
+    private suspend fun updateChargePointAvailabilities() {
+        internalSitesSource.updateSiteAvailability(siteId)
+    }
+
 
     internal fun onChargePointSearchInputChange(input: String) {
         chargePointSearchInput.value = input

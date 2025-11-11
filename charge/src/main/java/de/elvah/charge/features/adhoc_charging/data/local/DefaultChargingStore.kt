@@ -47,7 +47,6 @@ internal class DefaultChargingStore(
                     .setPhone(supportContacts.phone.orEmpty())
                     .setWhatsapp(supportContacts.whatsapp.orEmpty())
                     .build()
-
             }
         }
     }

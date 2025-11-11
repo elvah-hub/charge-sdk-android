@@ -6,7 +6,7 @@ import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.model.filters.OrganisationId
 import de.elvah.charge.features.sites.domain.model.filters.SiteFilter
 import de.elvah.charge.features.sites.domain.repository.FiltersRepository
-import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.model.EvseId
 
 
 internal class UpdateFilters(

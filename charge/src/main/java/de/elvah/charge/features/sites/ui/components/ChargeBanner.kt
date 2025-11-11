@@ -89,7 +89,7 @@ private fun ChargeBannerContentCollapsed(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.tertiary)
             .padding(vertical = 16.dp)
-            .padding(start = 16.dp),
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -137,29 +137,49 @@ internal fun ChargeBanner_Error(modifier: Modifier = Modifier) {
 @Composable
 internal fun ChargeBanner_ActiveSession(
     site: ChargeBannerActiveSessionRender,
-    onBannerClick: (String) -> Unit,
+    navigateToSummary: (String) -> Unit,
+    navigateToSession: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            ChargeBannerHeaderActiveSession(
-                chargeTime = site.chargeTime,
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (site.isSummaryReady) {
+                Text("Charge session stopped")
+
+            } else {
+                ChargeBannerHeaderActiveSession(
+                    chargeTime = site.chargeTime,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.tertiary)
                     .padding(vertical = 16.dp)
                     .padding(start = 16.dp)
-                    .clickable { onBannerClick(site.id) },
+                    .clickable {
+                        if (site.isSummaryReady) {
+                            navigateToSummary(site.id)
+                        } else {
+                            navigateToSession(site.id)
+                        }
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                CopyMedium(
-                    stringResource(R.string.campaign_banner__active_session_text),
-                    modifier = Modifier.weight(1f)
-                )
+                if (site.isSummaryReady) {
+                    CopyMedium(
+                        "Your charge summary is ready",
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    CopyMedium(
+                        stringResource(R.string.campaign_banner__active_session_text),
+                        modifier = Modifier.weight(1f)
+                    )
+                }
 
                 Chevron()
             }
@@ -181,8 +201,7 @@ private fun ChargeBannerHeader(timeLeft: String, modifier: Modifier = Modifier) 
 }
 
 @Composable
-private fun
-        ChargeBannerHeaderActiveSession(chargeTime: Duration, modifier: Modifier = Modifier) {
+private fun ChargeBannerHeaderActiveSession(chargeTime: Duration, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .background(color = MaterialTheme.colorScheme.onTertiary)
@@ -414,7 +433,9 @@ private fun ChargeBanner_ActiveSession_Preview() {
     ElvahChargeTheme {
         ChargeBanner_ActiveSession(
             site = MockData.chargeSiteActiveSessionRender,
-            onBannerClick = {})
+            navigateToSummary = {},
+            navigateToSession = {},
+        )
     }
 }
 

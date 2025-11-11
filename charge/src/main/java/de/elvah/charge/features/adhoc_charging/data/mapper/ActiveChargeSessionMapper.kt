@@ -1,10 +1,10 @@
 package de.elvah.charge.features.adhoc_charging.data.mapper
 
 import de.elvah.charge.features.adhoc_charging.data.remote.model.response.ActiveChargeSessionsDto
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 
-internal fun ActiveChargeSessionsDto.toDomain() = ChargingSession(
+internal fun ActiveChargeSessionsDto.toDomain() = ChargeSession(
     evseId = data.evseId,
     status = parseStatus(data.status),
     consumption = data.consumption ?: 0.0,

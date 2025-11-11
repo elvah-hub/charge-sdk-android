@@ -1,6 +1,6 @@
 package de.elvah.charge.platform.simulator.domain.factory
 
-import de.elvah.charge.features.adhoc_charging.domain.model.ChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 
 /**
@@ -12,12 +12,12 @@ internal interface ChargingSessionFactory {
     /**
      * Creates a ChargingSession using a builder pattern.
      */
-    fun createSession(builderAction: ChargingSessionBuilder.() -> Unit): ChargingSession
+    fun createSession(builderAction: ChargingSessionBuilder.() -> Unit): ChargeSession
 
     /**
      * Creates a ChargingSession with default values.
      */
-    fun createDefaultSession(): ChargingSession
+    fun createDefaultSession(): ChargeSession
 }
 
 /**
@@ -30,14 +30,14 @@ internal class DefaultChargingSessionFactory : ChargingSessionFactory {
         private const val DEFAULT_STATUS = "auctor"
     }
 
-    override fun createSession(builderAction: ChargingSessionBuilder.() -> Unit): ChargingSession {
+    override fun createSession(builderAction: ChargingSessionBuilder.() -> Unit): ChargeSession {
         val builder = ChargingSessionBuilder()
         builder.builderAction()
         return builder.build()
     }
 
-    override fun createDefaultSession(): ChargingSession {
-        return ChargingSession(
+    override fun createDefaultSession(): ChargeSession {
+        return ChargeSession(
             evseId = DEFAULT_EVSE_ID,
             status = SessionStatus.START_REQUESTED,
             consumption = 0.0,
@@ -91,8 +91,8 @@ internal class ChargingSessionBuilder {
     /**
      * Builds the ChargingSession with the configured parameters.
      */
-    fun build(): ChargingSession {
-        return ChargingSession(
+    fun build(): ChargeSession {
+        return ChargeSession(
             evseId = evseId,
             status = status,
             consumption = consumption,

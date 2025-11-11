@@ -1,27 +1,24 @@
 package de.elvah.charge.features.sites.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.repository.SitesRepository
-import de.elvah.charge.public_api.banner.EvseId
+import de.elvah.charge.public_api.model.EvseId
 
+internal class GetSites(
+    private val sitesRepository: SitesRepository,
+) {
 
-internal class GetSites(private val sitesRepository: SitesRepository) {
     suspend operator fun invoke(params: Params): Either<Throwable, List<ChargeSite>> {
-        return either {
-            val sites = sitesRepository.getChargeSites(
-                boundingBox = params.boundingBox,
-                campaignId = params.campaignId,
-                organisationId = params.organisationId,
-                offerType = params.offerType,
-                evseIds = params.evseIds
-            )
-
-            sites.bind()
-        }
+        return sitesRepository.getChargeSites(
+            boundingBox = params.boundingBox,
+            campaignId = params.campaignId,
+            organisationId = params.organisationId,
+            offerType = params.offerType,
+            evseIds = params.evseIds
+        )
     }
 
     internal class Params(

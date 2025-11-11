@@ -2,151 +2,144 @@ package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.elvah.charge.features.adhoc_charging.domain.usecase.ClearLocalSessionData
-import de.elvah.charge.features.adhoc_charging.domain.usecase.FetchChargingSession
+import de.elvah.charge.features.adhoc_charging.domain.model.ChargeSession
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.ChargeServiceState
+import de.elvah.charge.features.adhoc_charging.domain.service.charge.errors.ChargeError
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargeServiceErrors
+import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargeServiceState
 import de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession
 import de.elvah.charge.features.adhoc_charging.domain.usecase.StopChargingSession
 import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
+import de.elvah.charge.features.payments.domain.model.OrganisationDetails
+import de.elvah.charge.features.payments.domain.model.SupportContacts
 import de.elvah.charge.features.payments.domain.usecase.GetAdditionalCosts
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 internal class ActiveChargingViewModel(
-    private val observeChargingSession: ObserveChargingSession,
+    observeChargingSession: ObserveChargingSession,
+    observeChargeServiceState: ObserveChargeServiceState,
     private val stopChargingSession: StopChargingSession,
-    private val fetchChargingSession: FetchChargingSession,
+    private val observeChargeServiceErrors: ObserveChargeServiceErrors,
     private val getOrganisationDetails: GetOrganisationDetails,
     private val getAdditionalCosts: GetAdditionalCosts,
-    private val clearLocalSessionData: ClearLocalSessionData,
 ) : ViewModel() {
-
-    private val _state = MutableStateFlow<ActiveChargingState>(ActiveChargingState.Loading)
-    val state = _state.asStateFlow()
 
     private var lastActiveSession: ActiveChargingSessionUI? = null
 
-    init {
-        viewModelScope.launch {
-            val organisationDetails = getOrganisationDetails()
-            organisationDetails?.let {
-                startPolling()
-                observeChargingSession().collect { chargeSession ->
-                    val organisationDetails = getOrganisationDetails()
+    internal val state: StateFlow<ActiveChargingState> =
+        combine(
+            observeChargeServiceErrors(),
+            observeChargeServiceState(),
+            observeChargingSession(),
+        ) { chargeErrors, state, chargeSession ->
+            when {
+                chargeErrors != null -> buildErrorState(chargeErrors)
 
-                    organisationDetails?.let { organisationDetails ->
-                        when (chargeSession?.status) {
-                            SessionStatus.START_REQUESTED,
-                            SessionStatus.STARTED,
-                            SessionStatus.CHARGING,
-                            SessionStatus.STOP_REQUESTED,
-                            null -> {
-                                _state.update {
-                                    chargeSession?.let {
-                                        ActiveChargingState.Success(
-                                            activeChargingSessionUI = ActiveChargingSessionUI(
-                                                evseId = it.evseId,
-                                                status = it.status,
-                                                consumption = it.consumption,
-                                                duration = it.duration,
-                                                error = (_state.value as? ActiveChargingState.Success)?.activeChargingSessionUI?.error
-                                                    ?: false,
-                                                cpoLogo = organisationDetails.logoUrl
-                                            ),
-                                            additionalCostsUI = getAdditionalCosts()?.toUI(),
-                                            organisationDetails = organisationDetails
-                                        )
-                                    } ?: ActiveChargingState.Error(
-                                        status = SessionStatus.START_REQUESTED,
-                                        cpoLogo = organisationDetails.logoUrl
-                                    )
-                                }
+                chargeSession != null -> getState(chargeSession, state)
 
-                                lastActiveSession =
-                                    (state.value as? ActiveChargingState.Success)?.activeChargingSessionUI
-                            }
+                else -> ActiveChargingState.Error.OtherError(
+                    status = SessionStatus.START_REQUESTED,
+                    cpoLogo = "", // TODO: organisationDetails.logoUrl
+                )
+            }
 
-                            SessionStatus.STOP_REJECTED,
-                            SessionStatus.START_REJECTED -> {
-                                _state.update {
-                                    ActiveChargingState.Error(
-                                        status = chargeSession.status,
-                                        cpoLogo = organisationDetails.logoUrl
-                                    )
-                                }
-                            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = ActiveChargingState.Loading,
+        )
 
-                            SessionStatus.STOPPED -> {
-                                _state.update {
-                                    ActiveChargingState.Stopped(organisationDetails)
-                                }
-                                viewModelScope.cancel()
-                            }
-                        }
-                    }
-                }
+    suspend fun getState(
+        chargeSession: ChargeSession,
+        chargeServiceState: ChargeServiceState,
+    ): ActiveChargingState {
+        val organisationDetails = getOrganisationDetails() ?: OrganisationDetails(
+            privacyUrl = "",
+            termsOfConditionUrl = "",
+            companyName = "",
+            logoUrl = "",
+            supportContacts = SupportContacts(
+                email = "",
+                whatsapp = "",
+                phone = "",
+                agent = "",
+            )
+        )
+
+        // TODO: handle this
+        if (chargeServiceState == ChargeServiceState.SUMMARY) {
+            return ActiveChargingState.SessionSummary
+        }
+
+        return when (chargeSession.status) {
+            SessionStatus.START_REQUESTED,
+            SessionStatus.STARTED,
+            SessionStatus.CHARGING,
+            SessionStatus.STOP_REQUESTED,
+                -> {
+                lastActiveSession =
+                    (state.value as? ActiveChargingState.Success)?.activeChargingSessionUI
+
+                ActiveChargingState.Success(
+                    activeChargingSessionUI = ActiveChargingSessionUI(
+                        evseId = chargeSession.evseId,
+                        status = chargeSession.status,
+                        consumption = chargeSession.consumption,
+                        duration = chargeSession.duration,
+                        error = false,
+                        cpoLogo = organisationDetails.logoUrl
+                    ),
+                    additionalCostsUI = getAdditionalCosts()?.toUI(),
+                    organisationDetails = organisationDetails
+                )
+            }
+
+            SessionStatus.STOP_REJECTED,
+            SessionStatus.START_REJECTED -> {
+                ActiveChargingState.Error.OtherError(
+                    status = chargeSession.status,
+                    cpoLogo = organisationDetails.logoUrl
+                )
+            }
+
+            SessionStatus.STOPPED -> {
+                ActiveChargingState.SessionSummary
             }
         }
     }
 
+    private fun buildErrorState(chargeErrors: ChargeError): ActiveChargingState.Error =
+        if (chargeErrors is ChargeError.StartAttemptFailed) {
+            ActiveChargingState.Error.StartFailed(
+                cpoLogo = "", // TODO: organisationDetails.logoUrl
+            )
+        } else {
+            ActiveChargingState.Error.OtherError(
+                status = SessionStatus.START_REQUESTED,
+                cpoLogo = "", // TODO: organisationDetails.logoUrl
+            )
+        }
+
     fun stopCharging() {
         viewModelScope.launch {
-            val result = stopChargingSession()
-
-            val organisationDetails = getOrganisationDetails()
-
-            organisationDetails?.let {
-                if (result.isRight()) {
-
-                } else {
-                    val currentValue =
-                        (state.value as ActiveChargingState.Success).activeChargingSessionUI
-                    _state.update {
-                        ActiveChargingState.Success(
-                            activeChargingSessionUI = currentValue.copy(
-                                error = true
-                            ),
-                            additionalCostsUI = getAdditionalCosts()?.toUI(),
-                            organisationDetails = organisationDetails
-                        )
-                    }
-                }
-            }
+            stopChargingSession()
         }
     }
 
     fun forceStopChargingAndClear() {
         viewModelScope.launch {
             stopChargingSession()
-
-            // Clear all local data immediately
-            clearLocalSessionData()
-
-            // Set state to stopped to trigger activity finish
-            val organisationDetails = getOrganisationDetails()
-            organisationDetails?.let { orgDetails ->
-                _state.update { ActiveChargingState.Stopped(orgDetails) }
-            }
-        }
-    }
-
-    private fun startPolling() {
-        viewModelScope.launch {
-            while (isActive && state.value !is ActiveChargingState.Error) {
-                fetchChargingSession()
-                delay(DELAY_IN_MILLIS)
-            }
         }
     }
 
     fun onDismissError() {
-        viewModelScope.launch {
+        /* viewModelScope.launch {
             _state.update {
                 ActiveChargingState.Success(
                     activeChargingSessionUI = (state.value as ActiveChargingState.Success).activeChargingSessionUI.copy(
@@ -156,27 +149,12 @@ internal class ActiveChargingViewModel(
                     organisationDetails = getOrganisationDetails()!!
                 )
             }
-        }
+        }*/
     }
 
     fun retry(status: SessionStatus) {
-        viewModelScope.launch {
-            if (status == SessionStatus.STOP_REQUESTED) {
-                stopChargingSession()
-                getOrganisationDetails()?.let { it1 ->
-                    lastActiveSession?.let { activeChargingSessionUI ->
-                        _state.update {
-                            ActiveChargingState.Success(
-                                activeChargingSessionUI = activeChargingSessionUI,
-                                additionalCostsUI = null,
-                                organisationDetails = it1
-                            )
-                        }
-                    }
-                }
-            }
+        if (status == SessionStatus.STOP_REQUESTED) {
+            stopCharging()
         }
     }
 }
-
-private const val DELAY_IN_MILLIS = 2000L

@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import arrow.core.Either
+import de.elvah.charge.components.sitessource.InternalSitesSource
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Error
@@ -17,7 +18,6 @@ import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors
 import de.elvah.charge.features.payments.domain.usecase.StoreAdditionalCosts
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.features.sites.domain.model.AdditionalCosts
-import de.elvah.charge.features.sites.domain.repository.SitesRepository
 import de.elvah.charge.features.sites.ui.mapper.toUI
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
@@ -26,12 +26,14 @@ import de.elvah.charge.platform.core.mvi.Reducer
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+// TODO: display screen, set payment button with loading indicator while the payment signed offer is fetch.
+//  show error screen if fails.
 internal class ChargingPointDetailViewModel(
-    private val getPaymentConfiguration: GetPaymentConfiguration,
+    private val internalSitesSource: InternalSitesSource,
+    private val getPaymentConfiguration: GetPaymentConfiguration, // TODO: needs adjustment
     private val initStripeConfig: InitStripeConfig,
     private val getOrganisationDetails: GetOrganisationDetails,
     private val storeAdditionalCosts: StoreAdditionalCosts,
-    private val sitesRepository: SitesRepository,
     private val savedStateHandle: SavedStateHandle,
     private val config: Config,
 ) : MVIBaseViewModel<ChargingPointDetailState, ChargingPointDetailEvent, ChargingPointDetailEffect>(
@@ -55,7 +57,7 @@ internal class ChargingPointDetailViewModel(
             is ChargingPointDetailEvent.Initialize -> {
                 val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
 
-                sitesRepository.getChargeSite(route.siteId)
+                internalSitesSource.getSite(route.siteId)
                     .fold(
                         ifLeft = {
                             Reducer.Result(
