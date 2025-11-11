@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -59,7 +60,7 @@ internal fun DismissableTopAppBar(
 
     CenterAlignedTopAppBar(
         title = {
-            Text(title)
+            Text(title, textAlign = TextAlign.Center)
         },
         navigationIcon = onDismissClick?.let {
             {
@@ -70,10 +71,12 @@ internal fun DismissableTopAppBar(
             actions[false].orEmpty().map {
                 IconButton(
                     onClick = it.onClick,
-                    modifier = Modifier.background(
-                        color = MaterialTheme.colorScheme.background,
-                        shape = CircleShape
-                    )
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.background,
+                            shape = CircleShape
+                        )
                 ) {
                     it.leadingIcon()
                 }
@@ -92,7 +95,7 @@ private fun DropdownMenuWithDetails(menuItems: List<MenuItem>) {
 
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(end = 16.dp)
     ) {
         IconButton(
             onClick = { expanded = !expanded },
