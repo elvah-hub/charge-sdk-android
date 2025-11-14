@@ -16,6 +16,7 @@ message ChargingSessionPrefs {
   optional string agent = 10;
   string evseId = 11;
   optional AdditionalCostsProto additionalCosts = 12;
+  optional string publishableKey = 13;
 }
 
 message AdditionalCostsProto {

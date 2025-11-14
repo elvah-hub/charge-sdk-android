@@ -73,6 +73,17 @@ internal class DefaultChargingStore(
             preferences.toBuilder().clear().build()
         }
     }
+
+    override suspend fun setPublishableKey(publishableKey: String) {
+        context.settingsDataStore.updateData { preferences ->
+            preferences.toBuilder().setPublishableKey(publishableKey).build()
+        }
+    }
+
+    override suspend fun getPublishableKey(): String? {
+        val prefs = context.settingsDataStore.data.first()
+        return if (prefs.hasPublishableKey()) prefs.publishableKey else null
+    }
 }
 
 private val Context.settingsDataStore: DataStore<ChargingSessionPrefs> by dataStore(

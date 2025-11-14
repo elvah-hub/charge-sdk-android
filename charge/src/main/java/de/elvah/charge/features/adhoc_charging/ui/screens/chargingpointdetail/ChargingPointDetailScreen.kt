@@ -1,5 +1,6 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,11 +18,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -37,6 +40,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.google.pay.button.PayButton
+import com.stripe.android.googlepaylauncher.GooglePayEnvironment
+import com.stripe.android.googlepaylauncher.GooglePayLauncher
+import com.stripe.android.googlepaylauncher.GooglePayPaymentMethodLauncher
+import com.stripe.android.googlepaylauncher.rememberGooglePayPaymentMethodLauncher
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import de.elvah.charge.R
@@ -63,6 +71,7 @@ internal fun ChargingPointDetailScreen(
     chargingPointDetailViewModel: ChargingPointDetailViewModel,
     onBackClick: () -> Unit,
     onPaymentSuccess: (String, String) -> Unit,
+    onGooglePayClcik: (String) -> Unit,
 ) {
     val state by chargingPointDetailViewModel.state.collectAsStateWithLifecycle()
 
@@ -74,20 +83,22 @@ internal fun ChargingPointDetailScreen(
 
         is ChargingPointDetailState.Success -> {
             val paymentSheet = remember {
-                PaymentSheet.Builder(resultCallback = {
-                    if (it is PaymentSheetResult.Completed) {
-                        onPaymentSuccess(
-                            state.shortenedEvseId,
-                            state.paymentIntentParams.paymentId
-                        )
-                    }
-                })
+                PaymentSheet.Builder(
+                    resultCallback = {
+                        Log.d("HOLA", it.toString())
+                        if (it is PaymentSheetResult.Completed) {
+                            onPaymentSuccess(
+                                state.shortenedEvseId,
+                                state.paymentIntentParams.paymentId
+                            )
+                        }
+                    })
             }.build()
 
             ChargingPointDetail_Success(
                 state = state,
                 onBackClick = onBackClick,
-                onAction = {
+                onPayWithCardAction = {
                     if (state.mocked) {
                         onPaymentSuccess(
                             state.shortenedEvseId,
@@ -96,11 +107,19 @@ internal fun ChargingPointDetailScreen(
                     } else {
                         val configuration = PaymentSheet.Configuration(
                             merchantDisplayName = state.companyName,
+                            googlePay = PaymentSheet.GooglePayConfiguration(
+                                environment = PaymentSheet.GooglePayConfiguration.Environment.Test,
+                                countryCode = "DE"
+                            ),
+
                         )
 
                         val currentClientSecret = state.paymentIntentParams.clientSecret
                         presentPaymentSheet(paymentSheet, configuration, currentClientSecret)
                     }
+                },
+                onGooglePayAction = {
+                    onGooglePayClcik(state.paymentIntentParams.clientSecret)
                 },
             )
         }
@@ -112,7 +131,8 @@ internal fun ChargingPointDetailScreen(
 private fun ChargingPointDetail_Success(
     state: ChargingPointDetailState.Success,
     onBackClick: () -> Unit,
-    onAction: (ChargingPointDetailEvent) -> Unit,
+    onPayWithCardAction: () -> Unit,
+    onGooglePayAction: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -137,7 +157,9 @@ private fun ChargingPointDetail_Success(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 ChargingPointDetailActions(
-                    onPayWithCardClick = { onAction(ChargingPointDetailEvent.OnPayWithCardClicked) },
+                    onGooglePayClick = onGooglePayAction,
+                    onPayWithCardClick = onPayWithCardAction,
+                    publishableKey = state.paymentIntentParams.publishableKey,
                 )
 
                 TermsAndConditions(
@@ -317,11 +339,40 @@ private fun ChargingPointDetailTopBar(
 private fun ChargingPointDetailActions(
     modifier: Modifier = Modifier,
     onPayWithCardClick: () -> Unit,
+    onGooglePayClick: () -> Unit,
+    publishableKey: String,
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val allowedPaymentMethods = """
+            [
+              {
+                "type": "CARD",
+                "parameters": {
+                  "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+                  "allowedCardNetworks": ["AMEX", "DISCOVER", "JCB", "MASTERCARD", "VISA"]
+                },
+                "tokenizationSpecification": {
+                  "type": "PAYMENT_GATEWAY",
+                  "parameters": {
+                    "gateway": "stripe",
+                    "stripe:version": "2018-10-31",
+                    "stripe:publishableKey": "$publishableKey"
+                  }
+                }
+              }
+            ]
+        """.trimIndent()
+
+        PayButton(
+            modifier = Modifier
+                .fillMaxWidth(),
+            onClick = onGooglePayClick,
+            allowedPaymentMethods = allowedPaymentMethods
+        )
         UnderlinedButton(
             text = stringResource(R.string.pay_with_credit_card_button),
             onClick = onDebounceClick(onClick = onPayWithCardClick),
@@ -364,7 +415,8 @@ private fun ChargingPointDetail_Success_Preview() {
                 ),
             ),
             onBackClick = {},
-            onAction = {},
+            onPayWithCardAction = {},
+            onGooglePayAction = {},
         )
     }
 }

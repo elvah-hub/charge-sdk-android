@@ -24,12 +24,17 @@ import de.elvah.charge.platform.network.ApiUrlBuilder
 import de.elvah.charge.platform.network.okhttp.di.okHttpModule
 import de.elvah.charge.platform.network.retrofit.di.retrofitModule
 import de.elvah.charge.platform.simulator.di.provideSimulatorModule
+import de.elvah.charge.platform.startup.SdkLifecycleManager
+import de.elvah.charge.platform.startup.di.startupModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import org.koin.java.KoinJavaComponent.inject
 
 public object Elvah {
 
@@ -92,7 +97,16 @@ public object Elvah {
                 retrofitModule,
                 sitesRepositoriesModule,
                 simulatorModule,
+                startupModule,
             )
         }
+        
+        val lifecycleManager: SdkLifecycleManager by inject(SdkLifecycleManager::class.java)
+        lifecycleManager.initialize()
+    }
+    
+    public fun cleanup() {
+        val lifecycleManager: SdkLifecycleManager by inject(SdkLifecycleManager::class.java)
+        lifecycleManager.cleanup()
     }
 }

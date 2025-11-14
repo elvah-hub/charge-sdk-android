@@ -37,7 +37,10 @@ internal fun GooglePayButton(
         onClick = onClick,
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Black,
+            contentColor = Color.White
+        )
     ) {
         Text(stringResource(R.string.google_pay_button))
     }
