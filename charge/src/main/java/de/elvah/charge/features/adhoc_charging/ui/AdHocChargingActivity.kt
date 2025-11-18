@@ -5,21 +5,20 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import com.stripe.android.googlepaylauncher.GooglePayEnvironment
 import com.stripe.android.googlepaylauncher.GooglePayLauncher
+import de.elvah.charge.features.payments.domain.manager.GooglePayManager
+import de.elvah.charge.features.payments.domain.model.GooglePayState
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import org.koin.android.ext.android.inject
-import org.koin.androidx.compose.koinViewModel
 
 internal class AdHocChargingActivity : ComponentActivity() {
 
     private val config: Config by inject()
+    private val googlePayManager: GooglePayManager by inject()
 
     companion object {
         const val ARG_SITE_ID = "siteId"
@@ -45,6 +44,7 @@ internal class AdHocChargingActivity : ComponentActivity() {
                     siteId = siteId,
                     onFinishClicked = { finish() },
                     onGooglePayClick = { clientSecret ->
+                        googlePayManager.setProcessingState()
                         googlePayLauncher.presentForPaymentIntent(clientSecret)
                     }
                 )
@@ -73,15 +73,19 @@ internal class AdHocChargingActivity : ComponentActivity() {
     }
 
     private fun onGooglePayResult(result: GooglePayLauncher.Result) {
-        Log.i("GooglePayLauncher", "Google Pay is ready: $result")
+        Log.i("GooglePayLauncher", "Google Pay result: $result")
         when (result) {
-            is GooglePayLauncher.Result.Completed -> { /* OK */
+            is GooglePayLauncher.Result.Completed -> {
+                googlePayManager.processPaymentResult(GooglePayState.Success)
             }
 
-            is GooglePayLauncher.Result.Canceled -> { /* Cancelado */
+            is GooglePayLauncher.Result.Canceled -> {
+                googlePayManager.processPaymentResult(GooglePayState.Cancelled)
             }
 
-            is GooglePayLauncher.Result.Failed -> { /* Error */
+            is GooglePayLauncher.Result.Failed -> {
+                val errorMessage = result.error.localizedMessage ?: "Payment failed"
+                googlePayManager.processPaymentResult(GooglePayState.Failed(errorMessage))
             }
         }
     }

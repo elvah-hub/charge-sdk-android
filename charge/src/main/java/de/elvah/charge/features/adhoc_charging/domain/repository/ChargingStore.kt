@@ -21,8 +21,4 @@ internal interface ChargingStore {
     fun getChargingPrefs(): Flow<ChargingSessionPrefs>
 
     suspend fun resetSession()
-
-    suspend fun setPublishableKey(publishableKey: String)
-
-    suspend fun getPublishableKey(): String?
 }

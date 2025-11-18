@@ -16,15 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -40,11 +39,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.google.pay.button.PayButton
-import com.stripe.android.googlepaylauncher.GooglePayEnvironment
-import com.stripe.android.googlepaylauncher.GooglePayLauncher
-import com.stripe.android.googlepaylauncher.GooglePayPaymentMethodLauncher
-import com.stripe.android.googlepaylauncher.rememberGooglePayPaymentMethodLauncher
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import de.elvah.charge.R
@@ -54,13 +48,13 @@ import de.elvah.charge.features.adhoc_charging.ui.components.ShortenedEvseBigBad
 import de.elvah.charge.features.adhoc_charging.ui.components.button.CircularIconButton
 import de.elvah.charge.features.adhoc_charging.ui.components.button.UnderlinedButton
 import de.elvah.charge.features.adhoc_charging.ui.components.discountExpiresAtMock
-import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
-import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
-import de.elvah.charge.features.sites.domain.model.BlockingFeeTimeSlot
+import de.elvah.charge.features.payments.domain.model.PublishableKey
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Pricing
+import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
+import de.elvah.charge.platform.ui.components.buttons.GooglePayButton
 import de.elvah.charge.platform.ui.components.onDebounceClick
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.copySmall
@@ -75,6 +69,18 @@ internal fun ChargingPointDetailScreen(
 ) {
     val state by chargingPointDetailViewModel.state.collectAsStateWithLifecycle()
 
+
+    LaunchedEffect(Unit) {
+        chargingPointDetailViewModel.effects.collect { effect ->
+            Log.d("HOLA", effect.toString())
+            when (val effect = effect) {
+                is ChargingPointDetailEffect.NavigateTo -> {
+                    onPaymentSuccess(effect.evseId, effect.paymentId)
+                }
+            }
+        }
+    }
+
     when (val state = state) {
         is ChargingPointDetailState.Loading -> ChargingPointDetail_Loading()
         is ChargingPointDetailState.Error -> ChargingPointDetail_Error(onRetryClick = {
@@ -85,7 +91,6 @@ internal fun ChargingPointDetailScreen(
             val paymentSheet = remember {
                 PaymentSheet.Builder(
                     resultCallback = {
-                        Log.d("HOLA", it.toString())
                         if (it is PaymentSheetResult.Completed) {
                             onPaymentSuccess(
                                 state.shortenedEvseId,
@@ -112,7 +117,7 @@ internal fun ChargingPointDetailScreen(
                                 countryCode = "DE"
                             ),
 
-                        )
+                            )
 
                         val currentClientSecret = state.paymentIntentParams.clientSecret
                         presentPaymentSheet(paymentSheet, configuration, currentClientSecret)
@@ -340,38 +345,16 @@ private fun ChargingPointDetailActions(
     modifier: Modifier = Modifier,
     onPayWithCardClick: () -> Unit,
     onGooglePayClick: () -> Unit,
-    publishableKey: String,
+    publishableKey: PublishableKey,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(14.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val allowedPaymentMethods = """
-            [
-              {
-                "type": "CARD",
-                "parameters": {
-                  "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-                  "allowedCardNetworks": ["AMEX", "DISCOVER", "JCB", "MASTERCARD", "VISA"]
-                },
-                "tokenizationSpecification": {
-                  "type": "PAYMENT_GATEWAY",
-                  "parameters": {
-                    "gateway": "stripe",
-                    "stripe:version": "2018-10-31",
-                    "stripe:publishableKey": "$publishableKey"
-                  }
-                }
-              }
-            ]
-        """.trimIndent()
-
-        PayButton(
-            modifier = Modifier
-                .fillMaxWidth(),
+        GooglePayButton(
             onClick = onGooglePayClick,
-            allowedPaymentMethods = allowedPaymentMethods
+            modifier = Modifier.fillMaxWidth()
         )
         UnderlinedButton(
             text = stringResource(R.string.pay_with_credit_card_button),
@@ -402,17 +385,12 @@ private fun ChargingPointDetail_Success_Preview() {
                 discountExpiresAt = discountExpiresAtMock(),
                 priceWithLineThrough = Pricing(0.52, "EUR"),
                 priceToHighlight = Pricing(0.42, "EUR"),
-                additionalCostsUI = additionalCostsUIMock,
+                additionalCostsUI = MockData.additionalCostsUIMock,
                 companyName = "elvah GmbH",
                 termsOfServiceUrl = "",
                 privacyPolicyUrl = "",
                 companyLogoUrl = "",
-                paymentIntentParams = PaymentConfiguration(
-                    publishableKey = "",
-                    accountId = "",
-                    clientSecret = "",
-                    paymentId = ""
-                ),
+                paymentIntentParams = MockData.paymentConfiguration,
             ),
             onBackClick = {},
             onPayWithCardAction = {},
@@ -432,16 +410,3 @@ private fun presentPaymentSheet(
     )
 }
 
-internal val additionalCostsUIMock = "EUR".let { currency ->
-    AdditionalCostsUI(
-        activationFee = Pricing(0.5, currency),
-        blockingFee = Pricing(0.5, currency),
-        blockingFeeMaxPrice = Pricing(0.1, currency),
-        startsAfterMinutes = 10,
-        timeSlots = listOf(
-            BlockingFeeTimeSlot("10:00", "11:00"),
-            BlockingFeeTimeSlot("12:00", "13:00"),
-            BlockingFeeTimeSlot("15:00", "16:00"),
-        ),
-    )
-}

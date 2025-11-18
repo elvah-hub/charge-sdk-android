@@ -10,6 +10,7 @@ import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.data.repository.DefaultPaymentsRepository
+import de.elvah.charge.features.payments.di.paymentsManagerModule
 import de.elvah.charge.features.payments.di.paymentsUseCaseModule
 import de.elvah.charge.features.payments.di.provideChargeSettlementApi
 import de.elvah.charge.features.payments.di.provideIntegrateApi
@@ -28,8 +29,6 @@ import de.elvah.charge.platform.startup.SdkLifecycleManager
 import de.elvah.charge.platform.startup.di.startupModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -38,8 +37,9 @@ import org.koin.java.KoinJavaComponent.inject
 
 public object Elvah {
 
+    private val lifecycleManager: SdkLifecycleManager by inject(SdkLifecycleManager::class.java)
     private val useCaseModule = module {
-        includes(sitesUseCaseModule, adHocChargingUseCasesModule, paymentsUseCaseModule)
+        includes(sitesUseCaseModule, adHocChargingUseCasesModule, paymentsUseCaseModule, paymentsManagerModule)
     }
 
     private val viewModelsModule = module {
@@ -101,12 +101,10 @@ public object Elvah {
             )
         }
         
-        val lifecycleManager: SdkLifecycleManager by inject(SdkLifecycleManager::class.java)
         lifecycleManager.initialize()
     }
     
     public fun cleanup() {
-        val lifecycleManager: SdkLifecycleManager by inject(SdkLifecycleManager::class.java)
         lifecycleManager.cleanup()
     }
 }

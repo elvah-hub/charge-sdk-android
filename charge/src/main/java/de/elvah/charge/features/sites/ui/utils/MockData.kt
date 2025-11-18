@@ -1,5 +1,9 @@
 package de.elvah.charge.features.sites.ui.utils
 
+import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
+import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
+import de.elvah.charge.features.payments.domain.model.PublishableKey
+import de.elvah.charge.features.sites.domain.model.BlockingFeeTimeSlot
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.Offer
@@ -105,6 +109,27 @@ internal object MockData {
             id = "odio",
             operatorName = "Robby Stafford",
             prevalentPowerType = "felis",
+        )
+    }
+
+    val paymentConfiguration = PaymentConfiguration(
+        publishableKey = PublishableKey("pk_test_123"),
+        accountId = "account_id",
+        clientSecret = "client_secret",
+        paymentId = "payment_id"
+    )
+
+    val additionalCostsUIMock = "EUR".let { currency ->
+        AdditionalCostsUI(
+            activationFee = Pricing(0.5, currency),
+            blockingFee = Pricing(0.5, currency),
+            blockingFeeMaxPrice = Pricing(0.1, currency),
+            startsAfterMinutes = 10,
+            timeSlots = listOf(
+                BlockingFeeTimeSlot("10:00", "11:00"),
+                BlockingFeeTimeSlot("12:00", "13:00"),
+                BlockingFeeTimeSlot("15:00", "16:00"),
+            ),
         )
     }
 

@@ -7,13 +7,17 @@ import androidx.navigation.toRoute
 import arrow.core.Either
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
+import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailEffect.NavigateTo
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Error
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Loading
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Success
+import de.elvah.charge.features.payments.domain.manager.GooglePayManager
+import de.elvah.charge.features.payments.domain.model.GooglePayState
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors
+import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors.NoOfferFound
 import de.elvah.charge.features.payments.domain.usecase.StoreAdditionalCosts
 import de.elvah.charge.features.payments.ui.usecase.InitStripeConfig
 import de.elvah.charge.features.sites.domain.model.AdditionalCosts
@@ -23,6 +27,7 @@ import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.platform.core.mvi.MVIBaseViewModel
 import de.elvah.charge.platform.core.mvi.Reducer
+import de.elvah.charge.platform.core.mvi.Reducer.Result
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -34,22 +39,23 @@ internal class ChargingPointDetailViewModel(
     private val sitesRepository: SitesRepository,
     private val savedStateHandle: SavedStateHandle,
     private val config: Config,
+    private val googlePayManager: GooglePayManager,
 ) : MVIBaseViewModel<ChargingPointDetailState, ChargingPointDetailEvent, ChargingPointDetailEffect>(
     initialState = Loading(savedStateHandle.toRoute<ChargingPointDetailRoute>().evseId),
     reducer = Reducer { previousState, event ->
         val evseId = savedStateHandle.toRoute<ChargingPointDetailRoute>().evseId
 
-        when (event) {
+        when (val event = event) {
             ChargingPointDetailEvent.OnGooglePayClicked -> when (previousState) {
-                is Loading -> Reducer.Result(Loading(evseId), null)
-                is Error -> Reducer.Result(Error(evseId, previousState.paymentConfigErrors), null)
-                is Success -> Reducer.Result(previousState.copy(), null)
+                is Loading -> Result(Loading(evseId), null)
+                is Error -> Result(Error(evseId, previousState.paymentConfigErrors), null)
+                is Success -> Result(previousState.copy(), null)
             }
 
             ChargingPointDetailEvent.OnPayWithCardClicked -> when (previousState) {
-                is Loading -> Reducer.Result(Loading(evseId), null)
-                is Error -> Reducer.Result(Error(evseId, previousState.paymentConfigErrors), null)
-                is Success -> Reducer.Result(previousState.copy(), null)
+                is Loading -> Result(Loading(evseId), null)
+                is Error -> Result(Error(evseId, previousState.paymentConfigErrors), null)
+                is Success -> Result(previousState.copy(), null)
             }
 
             is ChargingPointDetailEvent.Initialize -> {
@@ -58,10 +64,10 @@ internal class ChargingPointDetailViewModel(
                 sitesRepository.getChargeSite(route.siteId)
                     .fold(
                         ifLeft = {
-                            Reducer.Result(
+                            Result(
                                 Error(
                                     evseId,
-                                    PaymentConfigErrors.NoOfferFound(it.cause)
+                                    NoOfferFound(it.cause)
                                 )
                             )
                         },
@@ -99,7 +105,7 @@ internal class ChargingPointDetailViewModel(
 
                             val organisationDetails = runBlocking { getOrganisationDetails() }
 
-                            Reducer.Result(
+                            Result(
                                 Success(
                                     evseId = evseId,
                                     shortenedEvseId = chargePointUI?.shortenedEvseId ?: evseId,
@@ -119,15 +125,15 @@ internal class ChargingPointDetailViewModel(
                         })
             }
 
-            ChargingPointDetailEvent.OnPaymentSuccess -> {
-                Reducer.Result(
+            is ChargingPointDetailEvent.OnPaymentSuccess -> {
+                Result(
                     previousState,
-                    ChargingPointDetailEffect.NavigateTo(previousState.evseId)
+                    NavigateTo(event.shortenedEvseId, event.paymentId)
                 )
             }
 
             is ChargingPointDetailEvent.OnError -> {
-                Reducer.Result(
+                Result(
                     Error(
                         previousState.evseId,
                         event.paymentConfigErrors
@@ -141,6 +147,45 @@ internal class ChargingPointDetailViewModel(
         viewModelScope.launch {
             val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
             executeInitializeStripe(route.siteId, route.evseId)
+        }
+
+        viewModelScope.launch {
+            googlePayManager.paymentState.collect { googlePayState ->
+                when (googlePayState) {
+                    is GooglePayState.Success -> {
+
+                        (state.value as? Success)?.let {
+                            sendEvent(
+                                ChargingPointDetailEvent.OnPaymentSuccess(
+                                    it.shortenedEvseId, it.paymentIntentParams.paymentId
+                                ), true
+                            )
+                            googlePayManager.resetPaymentState()
+                        }
+                    }
+
+                    is GooglePayState.Failed -> {
+                        Log.e(
+                            "ChargingPointDetailViewModel",
+                            "Google Pay payment failed: ${googlePayState.error}"
+                        )
+                        // Handle Google Pay errors here if needed in the future
+                    }
+
+                    is GooglePayState.Cancelled -> {
+                        Log.i(
+                            "ChargingPointDetailViewModel",
+                            "Google Pay payment cancelled by user"
+                        )
+                        // Handle Google Pay cancellation here if needed in the future
+                    }
+
+                    GooglePayState.Idle,
+                    GooglePayState.Processing -> {
+                        // No action needed for these states
+                    }
+                }
+            }
         }
     }
 
