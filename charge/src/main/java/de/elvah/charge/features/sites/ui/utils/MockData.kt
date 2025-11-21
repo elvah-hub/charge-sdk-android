@@ -45,7 +45,8 @@ internal object MockData {
         lng = 8.9,
         pricePerKw = 0.42,
         campaignEnd = "2025-07-23T10:21:28.423423423Z",
-        chargePoints = chargePoints
+        chargePoints = chargePoints,
+        dynamicPricingAvailable = true
     )
 
     val chargeSiteRender = ChargeBannerRender(

@@ -1,22 +1,46 @@
-# PricingGraph Color Customization
+# PricingGraph Customization
 
-The `PricingGraph` component supports full color customization through the `GraphColors` parameter, allowing you to match the graph appearance to your app's design system.
+The `PricingGraph` component supports full customization through color parameters and display behavior options, allowing you to match the graph appearance to your app's design system and control when the chart is displayed.
 
 ## Basic Usage
 
 ```kotlin
-// Using default colors
+// Using default colors and display behavior
 PricingGraph(
     siteId = "site-123"
 )
 ```
 
+## Display Behavior Control
+
+The `PricingGraph` supports different display behaviors through the `graphDisplayBehavior` parameter:
+
+```kotlin
+// Always show the chart (default behavior)
+PricingGraph(
+    siteId = "site-123",
+    graphDisplayBehavior = GraphDisplayBehavior.ALWAYS
+)
+
+// Only show the chart when dynamic pricing is available
+PricingGraph(
+    siteId = "site-123",
+    graphDisplayBehavior = GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE
+)
+```
+
+### GraphDisplayBehavior Options
+
+- **`ALWAYS`** - Always show the energy price line chart regardless of dynamic pricing availability. This is the default behavior to maintain backward compatibility.
+- **`WHEN_DYNAMIC_PRICING_AVAILABLE`** - Only show the energy price line chart when dynamic pricing is available for the site. If dynamic pricing is not available, the chart will be hidden and only the "Charge Now" button will be displayed.
+
 ## Custom Colors
 
 ```kotlin
-// Using custom colors
+// Using custom colors with display behavior
 PricingGraph(
     siteId = "site-123",
+    graphDisplayBehavior = GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE,
     colors = GraphColorDefaults.colors(
         offerSelectedLine = Color.Blue,
         offerSelectedArea = Color.Blue.copy(alpha = 0.3f),
@@ -69,7 +93,8 @@ fun MyAppGraphColors(): GraphColors {
 // Usage
 PricingGraph(
     siteId = "site-123",
-    colors = MyAppGraphColors()
+    colors = MyAppGraphColors(),
+    graphDisplayBehavior = GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE
 )
 ```
 

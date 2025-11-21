@@ -19,7 +19,8 @@ internal fun ChargeSite.toUI(): ChargeSiteUI {
         lng = location.last(),
         pricePerKw = evses.first().offer.price.energyPricePerKWh.value,
         campaignEnd = evses.first().offer.campaignEndsAt.orEmpty(),
-        chargePoints = evses.map { it.toUI(commonPrefix) }
+        chargePoints = evses.map { it.toUI(commonPrefix) },
+        dynamicPricingAvailable = dynamicPricingAvailable
     )
 }
 

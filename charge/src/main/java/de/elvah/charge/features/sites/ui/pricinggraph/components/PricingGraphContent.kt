@@ -26,6 +26,7 @@ import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart
 import de.elvah.charge.public_api.pricinggraph.GraphColors
 import de.elvah.charge.public_api.pricinggraph.GraphColorDefaults
+import de.elvah.charge.public_api.pricinggraph.GraphDisplayBehavior
 
 @Composable
 internal fun PricingGraphContent(
@@ -35,6 +36,7 @@ internal fun PricingGraphContent(
     colors: GraphColors = GraphColorDefaults.colors(),
     minYAxisPrice: Double? = null,
     gridLineDotSize: Float = 4f,
+    graphDisplayBehavior: GraphDisplayBehavior = GraphDisplayBehavior.ALWAYS,
     onChargeNowClick: () -> Unit,
 ) {
     Card(
@@ -48,18 +50,25 @@ internal fun PricingGraphContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Energy price line chart displaying the API data
-            EnergyPriceLineChart(
-                dailyData = scheduledPricing.toChartData(),
-                chargeSite = chargeSite,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                colors = colors,
-                animated = true,
-                showVerticalGridLines = true,
-                minYAxisPrice = minYAxisPrice,
-                gridLineDotSize = gridLineDotSize
-            )
+            val shouldShowChart = when (graphDisplayBehavior) {
+                GraphDisplayBehavior.ALWAYS -> true
+                GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE -> chargeSite.dynamicPricingAvailable
+            }
+            
+            if (shouldShowChart) {
+                EnergyPriceLineChart(
+                    dailyData = scheduledPricing.toChartData(),
+                    chargeSite = chargeSite,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = colors,
+                    animated = true,
+                    showVerticalGridLines = true,
+                    minYAxisPrice = minYAxisPrice,
+                    gridLineDotSize = gridLineDotSize
+                )
+            }
 
             ButtonPrimary(
                 text = stringResource(id = R.string.discover_button),

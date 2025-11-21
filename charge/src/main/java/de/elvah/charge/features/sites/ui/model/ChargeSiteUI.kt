@@ -10,6 +10,7 @@ internal data class ChargeSiteUI(
     val pricePerKw: Double,
     val campaignEnd: String,
     val chargePoints: List<ChargePointUI>,
+    val dynamicPricingAvailable: Boolean,
 )
 
 internal data class AddressUI(
