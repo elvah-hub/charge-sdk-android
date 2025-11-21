@@ -1,4 +1,5 @@
 [versions]
+composePayButton = "1.1.0"
 sdk = "0.4.0"
 sdkApiVersion = "2025-10-16.lithium"
 activityCompose = "1.10.1"
@@ -62,6 +63,7 @@ chucker-no-op = { module = "com.github.chuckerteam.chucker:library-no-op", versi
 chucker = { module = "com.github.chuckerteam.chucker:library", version.ref = "chucker" }
 coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil3-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
+compose-pay-button = { module = "com.google.pay.button:compose-pay-button", version.ref = "composePayButton" }
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit2" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }

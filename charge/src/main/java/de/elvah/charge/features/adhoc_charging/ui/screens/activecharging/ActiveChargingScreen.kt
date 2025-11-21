@@ -58,10 +58,10 @@ import de.elvah.charge.features.adhoc_charging.ui.components.AdditionalCostsBann
 import de.elvah.charge.features.adhoc_charging.ui.components.AdditionalCostsContent
 import de.elvah.charge.features.adhoc_charging.ui.components.ChargingSessionDelayBanner
 import de.elvah.charge.features.adhoc_charging.ui.model.AdditionalCostsUI
-import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.additionalCostsUIMock
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingPointErrorModal
 import de.elvah.charge.features.payments.domain.model.OrganisationDetails
 import de.elvah.charge.features.payments.domain.model.SupportContacts
+import de.elvah.charge.features.sites.ui.utils.MockData
 import de.elvah.charge.platform.simulator.data.repository.SessionStatus
 import de.elvah.charge.platform.ui.components.CPOLogo
 import de.elvah.charge.platform.ui.components.DismissableTopAppBar
@@ -599,7 +599,7 @@ private fun ActiveCharging_Success_Preview() {
                     cpoLogo = "",
                     error = false
                 ),
-                additionalCostsUI = additionalCostsUIMock,
+                additionalCostsUI = MockData.additionalCostsUIMock,
                 organisationDetails = OrganisationDetails(
                     privacyUrl = "",
                     termsOfConditionUrl = "",

@@ -12,7 +12,8 @@ internal sealed class ChargingPointDetailEvent : Reducer.ViewEvent {
 
     data object OnGooglePayClicked : ChargingPointDetailEvent()
     data object OnPayWithCardClicked : ChargingPointDetailEvent()
-    data object OnPaymentSuccess : ChargingPointDetailEvent()
+    data class OnPaymentSuccess(val shortenedEvseId: String, val paymentId: String) :
+        ChargingPointDetailEvent()
 
     data class OnError(val paymentConfigErrors: PaymentConfigErrors) : ChargingPointDetailEvent()
 }

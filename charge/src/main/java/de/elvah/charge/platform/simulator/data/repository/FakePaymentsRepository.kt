@@ -3,6 +3,7 @@ package de.elvah.charge.platform.simulator.data.repository
 import arrow.core.Either
 import de.elvah.charge.features.payments.domain.model.PaymentIntent
 import de.elvah.charge.features.payments.domain.model.PaymentSummary
+import de.elvah.charge.features.payments.domain.model.PublishableKey
 import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
 import de.elvah.charge.platform.core.arrow.extensions.toEither
 
@@ -29,9 +30,9 @@ internal class FakePaymentsRepository() : PaymentsRepository {
 
     }
 
-    override suspend fun getPublishableKey(): Either<Throwable, String> {
+    override suspend fun getPublishableKey(): Either<Throwable, PublishableKey> {
         return runCatching {
-            ""
+            PublishableKey("pk_test_123")
         }.toEither()
     }
 

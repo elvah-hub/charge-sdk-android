@@ -2,6 +2,8 @@ package de.elvah.charge.platform.ui.components.buttons
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,8 +39,17 @@ internal fun GooglePayButton(
         onClick = onClick,
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Black,
+            contentColor = Color.White
+        ),
+        contentPadding = PaddingValues(16.dp)
     ) {
+        Image(
+            painter = painterResource(R.drawable.ic_google_logo),
+            contentDescription = "Google"
+        )
+        Spacer(Modifier.size(8.dp))
         Text(stringResource(R.string.google_pay_button))
     }
 }

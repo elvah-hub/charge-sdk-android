@@ -110,6 +110,7 @@ dependencies {
     implementation(libs.koin.androidx.compose.navigation)
 
     implementation(libs.bundles.networking)
+    implementation(libs.compose.pay.button)
     debugImplementation(libs.chucker)
     releaseImplementation(libs.chucker.no.op)
 

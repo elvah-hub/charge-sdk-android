@@ -22,7 +22,11 @@ import de.elvah.charge.platform.ui.animation.slideToBottom
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
+internal fun AdHocChargingGraph(
+    siteId: String,
+    onFinishClicked: () -> Unit,
+    onGooglePayClick: (String) -> Unit
+) {
 
     val navController = rememberNavController()
 
@@ -52,7 +56,8 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
             exitTransition = slideToBottom(),
             popExitTransition = slideToBottom(),
         ) {
-            ChargingPointDetailScreen(koinViewModel(), onBackClick = {
+            ChargingPointDetailScreen(
+                koinViewModel(), onBackClick = {
                 navController.navigateUp()
             }, onPaymentSuccess = { shortenedEvseId, paymentId ->
                 navController.navigate(
@@ -61,7 +66,9 @@ internal fun AdHocChargingGraph(siteId: String, onFinishClicked: () -> Unit) {
                         paymentId = paymentId
                     )
                 )
-            })
+            },
+                onGooglePayClcik = onGooglePayClick
+            )
         }
 
         composable<ChargingStartRoute> {

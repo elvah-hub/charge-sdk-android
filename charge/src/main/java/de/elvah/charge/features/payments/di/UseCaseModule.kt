@@ -5,6 +5,7 @@ import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentSummary
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentToken
+import de.elvah.charge.features.payments.domain.usecase.GetPublishableKey
 import de.elvah.charge.features.payments.domain.usecase.GetSessionDetails
 import de.elvah.charge.features.payments.domain.usecase.GetSummaryInfo
 import de.elvah.charge.features.payments.domain.usecase.ResetSession
@@ -21,6 +22,7 @@ internal val paymentsUseCaseModule = module {
     factoryOf(::GetPaymentConfiguration)
     factoryOf(::GetPaymentSummary)
     factoryOf(::GetPaymentToken)
+    factoryOf(::GetPublishableKey)
     factoryOf(::GetSessionDetails)
     factoryOf(::GetSummaryInfo)
     factoryOf(::ResetSession)

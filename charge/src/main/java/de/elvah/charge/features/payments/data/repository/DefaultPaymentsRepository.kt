@@ -9,6 +9,7 @@ import de.elvah.charge.features.payments.data.remote.model.request.AuthorizeSess
 import de.elvah.charge.features.payments.data.remote.model.request.CreatePaymentIntentRequest
 import de.elvah.charge.features.payments.domain.model.PaymentIntent
 import de.elvah.charge.features.payments.domain.model.PaymentSummary
+import de.elvah.charge.features.payments.domain.model.PublishableKey
 import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
 import de.elvah.charge.platform.core.arrow.extensions.toEither
 import kotlinx.coroutines.flow.first
@@ -37,9 +38,11 @@ internal class DefaultPaymentsRepository(
         }.toEither()
     }
 
-    override suspend fun getPublishableKey(): Either<Throwable, String> {
+    override suspend fun getPublishableKey(): Either<Throwable, PublishableKey> {
         return runCatching {
-            integrateApi.getPublishableKey().data.publishableKey
+            integrateApi.getPublishableKey().data.publishableKey.let {
+                PublishableKey(it)
+            }
         }.toEither()
     }
 

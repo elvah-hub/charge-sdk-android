@@ -1,5 +1,6 @@
 package de.elvah.charge.platform.core.mvi
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,8 +34,9 @@ internal abstract class MVIBaseViewModel<State : Reducer.ViewState, Event : Redu
         timeCapsule.addState(initialState)
     }
 
-    private fun effect(effect: Effect) {
-        _effects.tryEmit(effect)
+    private suspend fun effect(effect: Effect) {
+        Log.d("Effect", effect.toString())
+        _effects.emit(effect)
     }
 
     fun event(transform: () -> Event) {
@@ -45,7 +47,7 @@ internal abstract class MVIBaseViewModel<State : Reducer.ViewState, Event : Redu
         _events.tryEmit(event)
     }
 
-    fun sendEvent(event: Event, allowSideEffect: Boolean = false) {
+    suspend fun sendEvent(event: Event, allowSideEffect: Boolean = true) {
         val (newState, effect) = reducer.reduce(_state.value, event)
 
         val success = _state.tryEmit(newState)
