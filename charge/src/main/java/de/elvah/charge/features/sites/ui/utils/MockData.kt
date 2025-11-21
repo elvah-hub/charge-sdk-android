@@ -105,6 +105,7 @@ internal object MockData {
             id = "odio",
             operatorName = "Robby Stafford",
             prevalentPowerType = "felis",
+            dynamicPricingAvailable = true
         )
     }
 
@@ -155,5 +156,4 @@ internal object MockData {
             )
         )
     }
-
 }
