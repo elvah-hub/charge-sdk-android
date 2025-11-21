@@ -32,12 +32,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,6 +60,11 @@ import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_GRID_LINE_DOT_SIZE
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_GRID_LINE_INTERVAL
 import de.elvah.charge.platform.ui.components.graph.line.GraphConstants.DEFAULT_MINUTE_RESOLUTION
+import de.elvah.charge.platform.ui.components.graph.line.state.ChartState
+import de.elvah.charge.platform.ui.components.graph.line.state.PlugType
+import de.elvah.charge.platform.ui.components.graph.line.state.PriceRange
+import de.elvah.charge.platform.ui.components.graph.line.state.SelectionState
+import de.elvah.charge.platform.ui.components.graph.line.state.SlotClickResult
 import de.elvah.charge.platform.ui.components.graph.line.utils.getClickedTimeByOffset
 import de.elvah.charge.platform.ui.components.site.SiteDetailHeader
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
@@ -77,133 +80,43 @@ import java.time.LocalTime
 internal fun EnergyPriceLineChart(
     dailyData: List<DailyPricingData>,
     modifier: Modifier = Modifier,
-    chargeSite: ChargeSiteUI? = null,
+    chargeSite: ChargeSiteUI,
     colors: GraphColors = GraphColorDefaults.colors(),
     animated: Boolean = true,
     showVerticalGridLines: Boolean = true,
     gridLineInterval: Int = DEFAULT_GRID_LINE_INTERVAL,
     minuteResolution: Int = DEFAULT_MINUTE_RESOLUTION,
     minYAxisPrice: Double? = null,
-    gridLineDotSize: Float = DEFAULT_GRID_LINE_DOT_SIZE
+    gridLineDotSize: Float = DEFAULT_GRID_LINE_DOT_SIZE,
+    shouldShowChart: Boolean = true,
+    shouldShowSiteDetails: Boolean = true,
 ) {
     val scope = rememberCoroutineScope()
 
     if (dailyData.isEmpty()) return
 
-    // Default value is the today page and the slot based on the current hour
-    val todayIndex = dailyData.indexOfFirst { it.date == LocalDate.now() }.takeIf { it != -1 } ?: 1
-
+    val todayIndex = calculateTodayIndex(dailyData)
     val pagerState = rememberPagerState(
         initialPage = todayIndex,
         pageCount = { dailyData.size }
     )
-    var selectedType by remember { mutableStateOf(ChargeType.VERY_FAST) }
-    var selectedPrice by remember {
-        mutableDoubleStateOf(
-            getPriceAtTimeFromSlots(
-                dailyData[todayIndex],
-                LocalTime.of(LocalTime.now().hour, 0)
-            )
-        )
-    }
-    var offerSelected by remember { mutableStateOf(false) }
-    var selectedPriceOffer by remember {
-        mutableStateOf(
-            getOfferAtTimeFromSlots(dailyData[todayIndex], LocalTime.of(LocalTime.now().hour, 0))
-        )
-    }
 
-    // State to track updated daily data with selections
-    var updatedDailyData by remember { mutableStateOf(dailyData) }
+    val chartState = rememberChartState(dailyData, todayIndex)
 
-    // Function to handle slot clicks
-    val handleSlotClick: (pageIndex: Int, clickedTime: LocalTime) -> Unit =
-        { pageIndex, clickedTime ->
-            val currentDayData = updatedDailyData[pageIndex]
+    val (updatedDailyData, selectedPrice, offerSelected, selectedPriceOffer, selectedType) = chartState
 
-            // Find the clicked slot
-            val clickedSlot = getSlotAtTime(currentDayData, clickedTime)
-
-            val updatedSlots = if (clickedSlot != null) {
-                currentDayData.slots.map { slot ->
-                    when {
-                        // Clicked on this slot - toggle its selection
-                        slot.startTime == clickedSlot.startTime && slot.endTime == clickedSlot.endTime -> {
-                            when (slot) {
-                                is PriceSlot.RegularPriceSlot -> slot.copy(isSelected = !slot.isSelected)
-                                is PriceSlot.OfferPriceSlot -> slot.copy(isSelected = !slot.isSelected)
-                            }
-                        }
-                        // Deselect all other slots
-                        else -> {
-                            when (slot) {
-                                is PriceSlot.RegularPriceSlot -> slot.copy(isSelected = false)
-                                is PriceSlot.OfferPriceSlot -> slot.copy(isSelected = false)
-                            }
-                        }
-                    }
-                }
-            } else {
-                currentDayData.slots
-            }
-
-            val updatedDay = currentDayData.withUpdatedSlots(updatedSlots).copy(isSelected = false)
-
-            // Update the daily data
-            updatedDailyData = updatedDailyData.toMutableList().apply {
-                this[pageIndex] = updatedDay
-            }
-
-            // Update selected price based on current selection state
-            val selectedSlot = updatedSlots.find { it.isSelected }
-            if (selectedSlot != null) {
-                selectedPrice = selectedSlot.price
-                offerSelected = selectedSlot is PriceSlot.OfferPriceSlot
-                selectedPriceOffer = if (selectedSlot is PriceSlot.OfferPriceSlot) {
-                    // Convert slot back to PriceOffer for display compatibility
-                    PriceOffer(
-                        timeRange = TimeRange(selectedSlot.startTime, selectedSlot.endTime),
-                        discountedPrice = selectedSlot.price,
-                        isSelected = true
-                    )
-                } else null
-            } else {
-                // No selection - show current price
-                val currentTime = LocalTime.now()
-                val isToday = updatedDay.date == LocalDate.now()
-                if (isToday) {
-                    val currentSlot = getSlotAtTime(updatedDay, currentTime)
-                    selectedPrice = currentSlot?.price ?: updatedDay.regularPrice
-                    offerSelected = currentSlot is PriceSlot.OfferPriceSlot
-                    selectedPriceOffer = if (currentSlot is PriceSlot.OfferPriceSlot) {
-                        PriceOffer(
-                            timeRange = TimeRange(currentSlot.startTime, currentSlot.endTime),
-                            discountedPrice = currentSlot.price,
-                            isSelected = false
-                        )
-                    } else null
-                } else {
-                    selectedPrice = updatedDay.regularPrice
-                    offerSelected = false
-                    selectedPriceOffer = null
-                }
-            }
+    val handleSlotClick = createSlotClickHandler(
+        updatedDailyData = updatedDailyData.value,
+        onUpdate = { data, price, offer, isOffer ->
+            updatedDailyData.value = data
+            selectedPrice.value = price
+            offerSelected.value = isOffer
+            selectedPriceOffer.value = offer
         }
-
-    val allPrices = updatedDailyData.flatMap { day ->
-        day.slots.map { it.price }
-    }
-    val maxPrice = allPrices.maxOf { it }
-    val calculatedMinPrice = allPrices.minOf { it }
-    val minPrice = minYAxisPrice?.let { userMin ->
-        minOf(userMin, calculatedMinPrice)
-    } ?: calculatedMinPrice
-
-    val animatedProgress by animateFloatAsState(
-        targetValue = if (animated) 1f else 1f,
-        animationSpec = tween(durationMillis = DEFAULT_ANIMATION_DURATION_MS),
-        label = "chart_animation"
     )
+
+    val priceRange = calculatePriceRange(updatedDailyData.value, minYAxisPrice)
+    val animatedProgress = createAnimatedProgress(animated)
 
     Card(
         modifier = modifier,
@@ -215,7 +128,7 @@ internal fun EnergyPriceLineChart(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            chargeSite?.let {
+            if (shouldShowSiteDetails) {
                 SiteDetailHeader(
                     operatorName = chargeSite.cpoName,
                     address = chargeSite.address.streetAddress.joinToString(separator = " "),
@@ -223,47 +136,49 @@ internal fun EnergyPriceLineChart(
                 )
             }
 
-            LivePricingHeader(selectedType)
+            LivePricingHeader(selectedType.value)
 
             LivePricingPrice(
-                selectedPrice = selectedPrice,
-                offerSelected = offerSelected,
-                currency = updatedDailyData.first().currency,
-                regularPrice = updatedDailyData[pagerState.currentPage].regularPrice,
+                selectedPrice = selectedPrice.value,
+                offerSelected = offerSelected.value,
+                currency = updatedDailyData.value.first().currency,
+                regularPrice = updatedDailyData.value[pagerState.currentPage].regularPrice,
                 textColor = colors.offerSelectedLine
             )
 
-            LivePriceTimeSlot(selectedPriceOffer, pagerState.currentPage)
+            LivePriceTimeSlot(selectedPriceOffer.value, pagerState.currentPage)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth()
-            ) { pageIndex ->
-                DayLineChart(
-                    dayData = updatedDailyData[pageIndex],
-                    maxPrice = maxPrice,
-                    minPrice = minPrice,
-                    progress = animatedProgress,
-                    minuteResolution = minuteResolution,
-                    colors = colors,
-                    modifier = Modifier,
-                    showVerticalGridLines = showVerticalGridLines,
-                    gridLineInterval = gridLineInterval,
-                    gridLineDotSize = gridLineDotSize,
-                    isToday = updatedDailyData[pageIndex].date == LocalDate.now(),
-                    onSlotClick = { clickedTime ->
-                        handleSlotClick(pageIndex, clickedTime)
+            if (shouldShowChart) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxWidth()
+                ) { pageIndex ->
+                    DayLineChart(
+                        dayData = updatedDailyData.value[pageIndex],
+                        maxPrice = priceRange.maxPrice,
+                        minPrice = priceRange.minPrice,
+                        progress = animatedProgress,
+                        minuteResolution = minuteResolution,
+                        colors = colors,
+                        modifier = Modifier,
+                        showVerticalGridLines = showVerticalGridLines,
+                        gridLineInterval = gridLineInterval,
+                        gridLineDotSize = gridLineDotSize,
+                        isToday = updatedDailyData.value[pageIndex].date == LocalDate.now(),
+                        onSlotClick = { clickedTime ->
+                            handleSlotClick(pageIndex, clickedTime)
+                        }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                DaySelector(pagerState.currentPage, modifier = Modifier.fillMaxWidth()) {
+                    scope.launch {
+                        pagerState.animateScrollToPage(it)
                     }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            DaySelector(pagerState.currentPage, modifier = Modifier.fillMaxWidth()) {
-                scope.launch {
-                    pagerState.animateScrollToPage(it)
                 }
             }
         }
@@ -435,7 +350,7 @@ private fun HourSlot(timeRange: TimeRange, modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun DayLabel(selectedPage: Int) {
+private fun DayLabel(selectedPage: Int) {
     val currentTime = LocalTime.now()
     val formattedTime = "%2d:%02d".format(currentTime.hour, currentTime.minute)
 
@@ -545,11 +460,6 @@ private fun TypeModalContentListItem(option: PlugType, modifier: Modifier = Modi
     }
 }
 
-internal data class PlugType(
-    val title: String,
-    val subtitle: String
-)
-
 @Composable
 private fun CloseIcon(modifier: Modifier = Modifier, onClick: () -> Unit) {
     IconButton(modifier = modifier, onClick = onClick) {
@@ -633,6 +543,180 @@ private fun getOfferAtTimeFromSlots(dayData: DailyPricingData, time: LocalTime):
     } else null
 }
 
+private fun calculateTodayIndex(dailyData: List<DailyPricingData>): Int {
+    return dailyData.indexOfFirst { it.date == LocalDate.now() }.takeIf { it != -1 } ?: 1
+}
+
+@Composable
+private fun rememberChartState(
+    dailyData: List<DailyPricingData>,
+    todayIndex: Int
+): ChartState {
+    val initialTime = LocalTime.of(LocalTime.now().hour, 0)
+    val todayData = dailyData[todayIndex]
+
+    val updatedDailyData = remember { mutableStateOf(dailyData) }
+    val selectedPrice =
+        remember { mutableDoubleStateOf(getPriceAtTimeFromSlots(todayData, initialTime)) }
+    val offerSelected = remember { mutableStateOf(false) }
+    val selectedPriceOffer =
+        remember { mutableStateOf(getOfferAtTimeFromSlots(todayData, initialTime)) }
+    val selectedType = remember { mutableStateOf(ChargeType.VERY_FAST) }
+
+    return ChartState(
+        updatedDailyData = updatedDailyData,
+        selectedPrice = selectedPrice,
+        offerSelected = offerSelected,
+        selectedPriceOffer = selectedPriceOffer,
+        selectedType = selectedType
+    )
+}
+
+private fun createSlotClickHandler(
+    updatedDailyData: List<DailyPricingData>,
+    onUpdate: (List<DailyPricingData>, Double, PriceOffer?, Boolean) -> Unit
+): (Int, LocalTime) -> Unit {
+    return { pageIndex, clickedTime ->
+        val result = processSlotClick(updatedDailyData, pageIndex, clickedTime)
+        onUpdate(result.data, result.price, result.priceOffer, result.isOffer)
+    }
+}
+
+private fun processSlotClick(
+    dailyData: List<DailyPricingData>,
+    pageIndex: Int,
+    clickedTime: LocalTime
+): SlotClickResult {
+    val currentDayData = dailyData[pageIndex]
+    val clickedSlot = getSlotAtTime(currentDayData, clickedTime)
+
+    val updatedSlots = updateSlotsSelection(currentDayData.slots, clickedSlot)
+    val updatedDay = currentDayData.withUpdatedSlots(updatedSlots).copy(isSelected = false)
+    val updatedDailyData = dailyData.toMutableList().apply { this[pageIndex] = updatedDay }
+
+    val selectionState = calculateSelectionState(updatedSlots, updatedDay)
+
+    return SlotClickResult(
+        data = updatedDailyData,
+        price = selectionState.price,
+        priceOffer = selectionState.priceOffer,
+        isOffer = selectionState.isOffer
+    )
+}
+
+private fun updateSlotsSelection(
+    slots: List<PriceSlot>,
+    clickedSlot: PriceSlot?
+): List<PriceSlot> {
+    return if (clickedSlot != null) {
+        slots.map { slot ->
+            when {
+                slot.startTime == clickedSlot.startTime && slot.endTime == clickedSlot.endTime -> {
+                    toggleSlotSelection(slot)
+                }
+
+                else -> deselectSlot(slot)
+            }
+        }
+    } else {
+        slots
+    }
+}
+
+private fun toggleSlotSelection(slot: PriceSlot): PriceSlot {
+    return when (slot) {
+        is PriceSlot.RegularPriceSlot -> slot.copy(isSelected = !slot.isSelected)
+        is PriceSlot.OfferPriceSlot -> slot.copy(isSelected = !slot.isSelected)
+    }
+}
+
+private fun deselectSlot(slot: PriceSlot): PriceSlot {
+    return when (slot) {
+        is PriceSlot.RegularPriceSlot -> slot.copy(isSelected = false)
+        is PriceSlot.OfferPriceSlot -> slot.copy(isSelected = false)
+    }
+}
+
+private fun calculateSelectionState(
+    slots: List<PriceSlot>,
+    dayData: DailyPricingData
+): SelectionState {
+    val selectedSlot = slots.find { it.isSelected }
+
+    return if (selectedSlot != null) {
+        SelectionState(
+            price = selectedSlot.price,
+            isOffer = selectedSlot is PriceSlot.OfferPriceSlot,
+            priceOffer = createPriceOfferFromSlot(selectedSlot)
+        )
+    } else {
+        calculateCurrentTimeState(dayData)
+    }
+}
+
+private fun createPriceOfferFromSlot(slot: PriceSlot): PriceOffer? {
+    return if (slot is PriceSlot.OfferPriceSlot) {
+        PriceOffer(
+            timeRange = TimeRange(slot.startTime, slot.endTime),
+            discountedPrice = slot.price,
+            isSelected = true
+        )
+    } else null
+}
+
+private fun calculateCurrentTimeState(dayData: DailyPricingData): SelectionState {
+    val currentTime = LocalTime.now()
+    val isToday = dayData.date == LocalDate.now()
+
+    return if (isToday) {
+        val currentSlot = getSlotAtTime(dayData, currentTime)
+        SelectionState(
+            price = currentSlot?.price ?: dayData.regularPrice,
+            isOffer = currentSlot is PriceSlot.OfferPriceSlot,
+            priceOffer = createCurrentTimePriceOffer(currentSlot)
+        )
+    } else {
+        SelectionState(
+            price = dayData.regularPrice,
+            isOffer = false,
+            priceOffer = null
+        )
+    }
+}
+
+private fun createCurrentTimePriceOffer(slot: PriceSlot?): PriceOffer? {
+    return if (slot is PriceSlot.OfferPriceSlot) {
+        PriceOffer(
+            timeRange = TimeRange(slot.startTime, slot.endTime),
+            discountedPrice = slot.price,
+            isSelected = false
+        )
+    } else null
+}
+
+private fun calculatePriceRange(
+    dailyData: List<DailyPricingData>,
+    minYAxisPrice: Double?
+): PriceRange {
+    val allPrices = dailyData.flatMap { day -> day.slots.map { it.price } }
+    val maxPrice = allPrices.maxOf { it }
+    val calculatedMinPrice = allPrices.minOf { it }
+    val minPrice = minYAxisPrice?.let { userMin ->
+        minOf(userMin, calculatedMinPrice)
+    } ?: calculatedMinPrice
+
+    return PriceRange(minPrice, maxPrice)
+}
+
+@Composable
+private fun createAnimatedProgress(animated: Boolean): Float {
+    return animateFloatAsState(
+        targetValue = if (animated) 1f else 1f,
+        animationSpec = tween(durationMillis = DEFAULT_ANIMATION_DURATION_MS),
+        label = "chart_animation"
+    ).value
+}
+
 @PreviewLightDark
 @Composable
 private fun EnergyPriceLineChart_Preview() {
@@ -645,6 +729,9 @@ private fun EnergyPriceLineChart_Preview() {
             EnergyPriceLineChart(
                 dailyData = MockData.generateThreeDayPricingData(),
                 modifier = Modifier.fillMaxWidth(),
+                shouldShowChart = true,
+                shouldShowSiteDetails = true,
+                chargeSite = MockData.siteWithoutChargePoints
             )
         }
     }
@@ -652,7 +739,7 @@ private fun EnergyPriceLineChart_Preview() {
 
 @PreviewLightDark
 @Composable
-private fun EnergyPriceLineChartHighResPreview() {
+private fun EnergyPriceLineChartHighRes_Preview() {
     ElvahChargeTheme {
         EnergyPriceLineChart(
             dailyData = MockData.generateThreeDayPricingData(),
@@ -660,13 +747,16 @@ private fun EnergyPriceLineChartHighResPreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
+            shouldShowChart = true,
+            shouldShowSiteDetails = true,
+            chargeSite = MockData.siteWithoutChargePoints
         )
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun EnergyPriceLineChartCustomMinYAxisPreview() {
+private fun EnergyPriceLineChartCustomMinYAxis_Preview() {
     ElvahChargeTheme {
         EnergyPriceLineChart(
             dailyData = MockData.generateThreeDayPricingData(),
@@ -674,13 +764,16 @@ private fun EnergyPriceLineChartCustomMinYAxisPreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
+            shouldShowChart = true,
+            shouldShowSiteDetails = true,
+            chargeSite = MockData.siteWithoutChargePoints
         )
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun EnergyPriceLineChartDottedGridPreview() {
+private fun EnergyPriceLineChartDottedGrid_Preview() {
     ElvahChargeTheme {
         EnergyPriceLineChart(
             dailyData = MockData.generateThreeDayPricingData(),
@@ -688,16 +781,22 @@ private fun EnergyPriceLineChartDottedGridPreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
+            shouldShowChart = true,
+            shouldShowSiteDetails = true,
+            chargeSite = MockData.siteWithoutChargePoints
         )
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun EnergyPriceLineChartCustomColorsPreview() {
+private fun EnergyPriceLineChartCustomColors_Preview() {
     ElvahChargeTheme {
         EnergyPriceLineChart(
             dailyData = MockData.generateThreeDayPricingData(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             colors = GraphColorDefaults.colors(
                 offerSelectedLine = Color(0xFF2196F3), // Blue
                 offerSelectedArea = Color(0xFF2196F3).copy(alpha = 0.3f),
@@ -710,9 +809,9 @@ private fun EnergyPriceLineChartCustomColorsPreview() {
                 verticalLine = Color(0xFF757575).copy(alpha = 0.8f),
                 currentTimeMarker = Color(0xFFFF5722) // Orange
             ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            shouldShowChart = true,
+            shouldShowSiteDetails = true,
+            chargeSite = MockData.siteWithoutChargePoints
         )
     }
 }

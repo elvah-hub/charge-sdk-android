@@ -24,8 +24,8 @@ import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toChartData
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
 import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart
-import de.elvah.charge.public_api.pricinggraph.GraphColors
 import de.elvah.charge.public_api.pricinggraph.GraphColorDefaults
+import de.elvah.charge.public_api.pricinggraph.GraphColors
 import de.elvah.charge.public_api.pricinggraph.GraphDisplayBehavior
 
 @Composable
@@ -37,6 +37,7 @@ internal fun PricingGraphContent(
     minYAxisPrice: Double? = null,
     gridLineDotSize: Float = 4f,
     graphDisplayBehavior: GraphDisplayBehavior = GraphDisplayBehavior.ALWAYS,
+    shouldShowSiteDetails: Boolean = true,
     onChargeNowClick: () -> Unit,
 ) {
     Card(
@@ -54,21 +55,21 @@ internal fun PricingGraphContent(
                 GraphDisplayBehavior.ALWAYS -> true
                 GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE -> chargeSite.dynamicPricingAvailable
             }
-            
-            if (shouldShowChart) {
-                EnergyPriceLineChart(
-                    dailyData = scheduledPricing.toChartData(),
-                    chargeSite = chargeSite,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    colors = colors,
-                    animated = true,
-                    showVerticalGridLines = true,
-                    minYAxisPrice = minYAxisPrice,
-                    gridLineDotSize = gridLineDotSize
-                )
-            }
+
+            EnergyPriceLineChart(
+                dailyData = scheduledPricing.toChartData(),
+                chargeSite = chargeSite,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = colors,
+                animated = true,
+                showVerticalGridLines = true,
+                minYAxisPrice = minYAxisPrice,
+                gridLineDotSize = gridLineDotSize,
+                shouldShowChart = shouldShowChart,
+                shouldShowSiteDetails = shouldShowSiteDetails
+            )
 
             ButtonPrimary(
                 text = stringResource(id = R.string.discover_button),

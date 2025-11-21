@@ -1,8 +1,6 @@
 package de.elvah.charge.platform.ui.theme.colors
 
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 public data class CustomColorScheme(
@@ -81,11 +79,13 @@ public data class CustomColorScheme(
             inversePrimary = inversePrimary ?: baseColorScheme.inversePrimary,
             surfaceDim = surfaceDim ?: baseColorScheme.surfaceDim,
             surfaceBright = surfaceBright ?: baseColorScheme.surfaceBright,
-            surfaceContainerLowest = surfaceContainerLowest ?: baseColorScheme.surfaceContainerLowest,
+            surfaceContainerLowest = surfaceContainerLowest
+                ?: baseColorScheme.surfaceContainerLowest,
             surfaceContainerLow = surfaceContainerLow ?: baseColorScheme.surfaceContainerLow,
             surfaceContainer = surfaceContainer ?: baseColorScheme.surfaceContainer,
             surfaceContainerHigh = surfaceContainerHigh ?: baseColorScheme.surfaceContainerHigh,
-            surfaceContainerHighest = surfaceContainerHighest ?: baseColorScheme.surfaceContainerHighest,
+            surfaceContainerHighest = surfaceContainerHighest
+                ?: baseColorScheme.surfaceContainerHighest,
         )
     }
 

@@ -9,7 +9,7 @@ public enum class GraphDisplayBehavior {
      * This is the default behavior to maintain backward compatibility.
      */
     ALWAYS,
-    
+
     /**
      * Only show the energy price line chart when dynamic pricing is available for the site.
      * If dynamic pricing is not available, the chart will be hidden.

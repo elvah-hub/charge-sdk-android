@@ -165,7 +165,7 @@ private fun WithoutDiscountPreview() {
 @OptIn(ExperimentalTime::class)
 internal fun discountExpiresAtMock(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
-): LocalDateTime? = Clock.System.now()
+): LocalDateTime = Clock.System.now()
     .toLocalDateTime(timeZone)
     .toInstant(timeZone)
     .plus(DatePeriod(months = 9, days = 5), timeZone)

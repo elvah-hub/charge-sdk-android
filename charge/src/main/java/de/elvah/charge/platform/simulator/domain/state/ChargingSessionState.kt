@@ -76,7 +76,7 @@ internal class StartRequestedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargingSession {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.START_REQUESTED)
@@ -102,7 +102,7 @@ internal class StartedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargingSession {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.STARTED)
@@ -125,7 +125,7 @@ internal class ChargingState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargingSession {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.CHARGING)
@@ -151,7 +151,7 @@ internal class StopRequestedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargingSession {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.STOP_REQUESTED)
@@ -174,7 +174,7 @@ internal class StoppedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargingSession {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.STOPPED)
@@ -197,7 +197,7 @@ internal class StartRejectedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargingSession {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.START_REJECTED)
@@ -220,7 +220,7 @@ internal class StopRejectedState : ChargingSessionState {
     override fun process(
         context: SimulationContext,
         sessionFactory: ChargingSessionFactory
-    ): ChargingSession? {
+    ): ChargingSession {
         return sessionFactory.createSession {
             evseId(context.evseId)
             status(SessionStatus.STOP_REJECTED)

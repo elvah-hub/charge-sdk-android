@@ -17,11 +17,11 @@ public object GraphColorDefaults {
         offerSelectedArea: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.6f),
         offerUnselectedLine: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.6f),
         offerUnselectedArea: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.3f),
-        regularSelectedLine: Color = Color.Companion.Gray.copy(alpha = 0.8f),
-        regularSelectedArea: Color = Color.Companion.Gray.copy(alpha = 0.6f),
-        regularUnselectedLine: Color = Color.Companion.Gray.copy(alpha = 0.4f),
-        regularUnselectedArea: Color = Color.Companion.Gray.copy(alpha = 0.3f),
-        verticalLine: Color = Color.Companion.Gray.copy(alpha = 0.8f),
+        regularSelectedLine: Color = Color.Gray.copy(alpha = 0.8f),
+        regularSelectedArea: Color = Color.Gray.copy(alpha = 0.6f),
+        regularUnselectedLine: Color = Color.Gray.copy(alpha = 0.4f),
+        regularUnselectedArea: Color = Color.Gray.copy(alpha = 0.3f),
+        verticalLine: Color = Color.Gray.copy(alpha = 0.8f),
         currentTimeMarker: Color = MaterialTheme.colorScheme.primary
     ): GraphColors = GraphColors(
         offerSelectedLine = offerSelectedLine,
