@@ -24,8 +24,9 @@ import de.elvah.charge.features.sites.ui.pricinggraph.mapper.toChartData
 import de.elvah.charge.features.sites.ui.pricinggraph.model.ScheduledPricingUI
 import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
 import de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart
-import de.elvah.charge.public_api.pricinggraph.GraphColors
 import de.elvah.charge.public_api.pricinggraph.GraphColorDefaults
+import de.elvah.charge.public_api.pricinggraph.GraphColors
+import de.elvah.charge.public_api.pricinggraph.GraphDisplayBehavior
 
 @Composable
 internal fun PricingGraphContent(
@@ -35,6 +36,8 @@ internal fun PricingGraphContent(
     colors: GraphColors = GraphColorDefaults.colors(),
     minYAxisPrice: Double? = null,
     gridLineDotSize: Float = 4f,
+    graphDisplayBehavior: GraphDisplayBehavior = GraphDisplayBehavior.ALWAYS,
+    shouldShowSiteDetails: Boolean = true,
     onChargeNowClick: () -> Unit,
 ) {
     Card(
@@ -48,6 +51,11 @@ internal fun PricingGraphContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Energy price line chart displaying the API data
+            val shouldShowChart = when (graphDisplayBehavior) {
+                GraphDisplayBehavior.ALWAYS -> true
+                GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE -> chargeSite.dynamicPricingAvailable
+            }
+
             EnergyPriceLineChart(
                 dailyData = scheduledPricing.toChartData(),
                 chargeSite = chargeSite,
@@ -58,7 +66,9 @@ internal fun PricingGraphContent(
                 animated = true,
                 showVerticalGridLines = true,
                 minYAxisPrice = minYAxisPrice,
-                gridLineDotSize = gridLineDotSize
+                gridLineDotSize = gridLineDotSize,
+                shouldShowChart = shouldShowChart,
+                shouldShowSiteDetails = shouldShowSiteDetails
             )
 
             ButtonPrimary(

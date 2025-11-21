@@ -1,22 +1,77 @@
-# PricingGraph Color Customization
+# PricingGraph Customization
 
-The `PricingGraph` component supports full color customization through the `GraphColors` parameter, allowing you to match the graph appearance to your app's design system.
+The `PricingGraph` component supports full customization through color parameters and display behavior options, allowing you to match the graph appearance to your app's design system and control when the chart is displayed.
 
 ## Basic Usage
 
 ```kotlin
-// Using default colors
+// Using default colors and display behavior
 PricingGraph(
     siteId = "site-123"
 )
+
+// With granular visibility control
+PricingGraph(
+    siteId = "site-123",
+    shouldShowSiteDetails = true,  // Show/hide site information header
+    graphDisplayBehavior = GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE
+)
 ```
+
+## Display Behavior Control
+
+The `PricingGraph` supports different display behaviors and granular visibility controls:
+
+### Graph Display Behavior
+
+Control when the entire graph component is shown through the `graphDisplayBehavior` parameter:
+
+```kotlin
+// Always show the chart (default behavior)
+PricingGraph(
+    siteId = "site-123",
+    graphDisplayBehavior = GraphDisplayBehavior.ALWAYS
+)
+
+// Only show the chart when dynamic pricing is available
+PricingGraph(
+    siteId = "site-123",
+    graphDisplayBehavior = GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE
+)
+```
+
+#### GraphDisplayBehavior Options
+
+- **`ALWAYS`** - Always show the energy price line chart regardless of dynamic pricing availability. This is the default behavior to maintain backward compatibility.
+- **`WHEN_DYNAMIC_PRICING_AVAILABLE`** - Only show the energy price line chart when dynamic pricing is available for the site. If dynamic pricing is not available, the chart will be hidden and only the "Charge Now" button will be displayed.
+
+### Granular Visibility Controls
+
+New in the latest version, you can control individual components within the pricing graph:
+
+```kotlin
+PricingGraph(
+    siteId = "site-123",
+    shouldShowSiteDetails = false,  // Hide site information header
+    graphDisplayBehavior = GraphDisplayBehavior.ALWAYS  // But still show the chart
+)
+```
+
+#### Visibility Parameters
+
+- **`shouldShowSiteDetails`** (default: `true`) - Controls visibility of the site information header including operator name and address
+- The chart visualization itself is controlled internally based on `graphDisplayBehavior` and dynamic pricing availability
+
+This allows for flexible layouts where you might want to show pricing information without site details, or vice versa.
 
 ## Custom Colors
 
 ```kotlin
-// Using custom colors
+// Using custom colors with display behavior and visibility controls
 PricingGraph(
     siteId = "site-123",
+    shouldShowSiteDetails = true,
+    graphDisplayBehavior = GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE,
     colors = GraphColorDefaults.colors(
         offerSelectedLine = Color.Blue,
         offerSelectedArea = Color.Blue.copy(alpha = 0.3f),
@@ -69,7 +124,9 @@ fun MyAppGraphColors(): GraphColors {
 // Usage
 PricingGraph(
     siteId = "site-123",
-    colors = MyAppGraphColors()
+    shouldShowSiteDetails = true,
+    colors = MyAppGraphColors(),
+    graphDisplayBehavior = GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE
 )
 ```
 

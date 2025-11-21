@@ -31,7 +31,9 @@ public fun PricingGraph(
     onError: ((String) -> Unit)? = null,
     onRefreshSuccess: (() -> Unit)? = null,
     minYAxisPrice: Double? = null,
-    gridLineDotSize: Float = 4f
+    gridLineDotSize: Float = 4f,
+    graphDisplayBehavior: GraphDisplayBehavior = GraphDisplayBehavior.ALWAYS,
+    shouldShowSiteDetails: Boolean = true,
 ) {
     val pricingGraphViewModel: PricingGraphViewModel = koinViewModel()
     val config: Config = koinInject()
@@ -92,9 +94,11 @@ public fun PricingGraph(
                     colors = colors,
                     minYAxisPrice = minYAxisPrice,
                     gridLineDotSize = gridLineDotSize,
+                    graphDisplayBehavior = graphDisplayBehavior,
                     onChargeNowClick = {
                         context.openSite(siteId)
-                    }
+                    },
+                    shouldShowSiteDetails = shouldShowSiteDetails
                 )
             }
 

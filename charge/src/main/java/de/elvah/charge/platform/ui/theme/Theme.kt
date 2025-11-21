@@ -17,12 +17,19 @@ internal fun ElvahChargeTheme(
     content: @Composable () -> Unit
 ) {
     val customColorScheme = if (darkTheme) customDarkColorScheme else customLightColorScheme
-    
+
     CompositionLocalProvider(
-        LocalColorSchemeExtended provides ElvahChargeColors.getColorSchemeExtended(darkTheme, customColorScheme),
+        LocalColorSchemeExtended provides ElvahChargeColors.getColorSchemeExtended(
+            darkTheme,
+            customColorScheme
+        ),
     ) {
         MaterialTheme(
-            colorScheme = ElvahChargeColors.getColorScheme(darkTheme, dynamicColor, customColorScheme),
+            colorScheme = ElvahChargeColors.getColorScheme(
+                darkTheme,
+                dynamicColor,
+                customColorScheme
+            ),
             typography = Typography,
             content = content
         )

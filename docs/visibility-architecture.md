@@ -67,7 +67,9 @@ fun ChargingStationsScreen() {
 @Composable
 fun PricingScreen() {
     PricingGraph(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        shouldShowSiteDetails = true,  // Control site header visibility
+        graphDisplayBehavior = GraphDisplayBehavior.WHEN_DYNAMIC_PRICING_AVAILABLE
     )
 }
 ```
