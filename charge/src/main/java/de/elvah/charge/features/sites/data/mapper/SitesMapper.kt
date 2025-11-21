@@ -10,6 +10,7 @@ internal fun SitesDto.toDomain(): ChargeSite {
         location = location,
         id = id,
         operatorName = operatorName,
-        prevalentPowerType = prevalentPowerType
+        prevalentPowerType = prevalentPowerType,
+        dynamicPricingAvailable = dynamicPricingAvailable
     )
 }

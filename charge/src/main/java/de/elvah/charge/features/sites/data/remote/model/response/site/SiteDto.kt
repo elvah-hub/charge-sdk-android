@@ -25,7 +25,10 @@ internal data class SitesDto(
     val operatorName: String,
 
     @param:Json(name = "prevalentPowerType")
-    val prevalentPowerType: String
+    val prevalentPowerType: String,
+
+    @param:Json(name = "dynamicPricingAvailable")
+    val dynamicPricingAvailable: Boolean,
 )
 
 @JsonClass(generateAdapter = true)

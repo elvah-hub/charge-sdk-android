@@ -6,7 +6,8 @@ public data class ChargeSite(
     val location: List<Double>,
     val id: String,
     val operatorName: String,
-    val prevalentPowerType: String
+    val prevalentPowerType: String,
+    val dynamicPricingAvailable: Boolean
 ) {
 
     public data class Address(
