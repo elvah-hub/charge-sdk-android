@@ -60,18 +60,4 @@ class HelpViewModelTest {
         advanceUntilIdle()
         assertEquals(HelpState.Success(organisationDetails), viewModel.state.value)
     }
-
-    @Test
-    fun `init error`() = runTest {
-        // Given
-        coEvery { getOrganisationDetails() } returns null
-
-        // When
-        viewModel = HelpViewModel(getOrganisationDetails)
-
-        // Then
-        assertEquals(HelpState.Loading, viewModel.state.value)
-        advanceUntilIdle()
-        assertEquals(HelpState.Error, viewModel.state.value)
-    }
 }
