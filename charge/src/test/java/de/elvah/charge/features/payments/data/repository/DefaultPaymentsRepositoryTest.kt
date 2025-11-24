@@ -4,6 +4,7 @@ import de.elvah.charge.features.adhoc_charging.ChargingSessionPrefs
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.data.remote.api.ChargeSettlementApi
 import de.elvah.charge.features.payments.data.remote.api.IntegrateApi
+import de.elvah.charge.features.payments.domain.model.PublishableKey
 import de.elvah.charge.features.payments.data.remote.model.OrganisationDetailsDto
 import de.elvah.charge.features.payments.data.remote.model.response.AuthorisationAmount
 import de.elvah.charge.features.payments.data.remote.model.response.CreatePaymentIntentResponse
@@ -98,7 +99,7 @@ class DefaultPaymentsRepositoryTest {
         result.fold(
             ifLeft = { fail("Expected success but got failure: $it") },
             ifRight = { key ->
-                assertEquals(publishableKey, key)
+                assertEquals(PublishableKey(publishableKey), key)
             }
         )
 

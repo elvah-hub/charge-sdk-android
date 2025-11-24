@@ -4,6 +4,7 @@ import arrow.core.left
 import arrow.core.right
 import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
 import de.elvah.charge.features.payments.domain.model.PaymentIntent
+import de.elvah.charge.features.payments.domain.model.PublishableKey
 import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.ChargeSite
@@ -48,7 +49,7 @@ internal class GetPaymentConfigurationTest {
         val siteId = "site_123"
         val evseId = "evse_456"
         val signedOffer = "signed_offer_token"
-        val publishableKey = "pk_test_123"
+        val publishableKey = PublishableKey("pk_test_123")
 
         val chargeSite = createChargeSiteWithSignedOffer(signedOffer)
         val paymentIntent = createPaymentIntent()
@@ -84,7 +85,7 @@ internal class GetPaymentConfigurationTest {
         val exception = RuntimeException("Site not found")
 
         coEvery { sitesRepository.getSignedOffer(siteId, evseId) } returns exception.left()
-        coEvery { paymentsRepository.getPublishableKey() } returns "pk_test_123".right()
+        coEvery { paymentsRepository.getPublishableKey() } returns PublishableKey("pk_test_123").right()
 
         val result = useCase.invoke(siteId, evseId)
 
@@ -117,7 +118,7 @@ internal class GetPaymentConfigurationTest {
                 evseId
             )
         } returns chargeSiteWithNoEvses.right()
-        coEvery { paymentsRepository.getPublishableKey() } returns "pk_test_123".right()
+        coEvery { paymentsRepository.getPublishableKey() } returns PublishableKey("pk_test_123").right()
 
         val result = useCase.invoke(siteId, evseId)
 
@@ -153,7 +154,7 @@ internal class GetPaymentConfigurationTest {
                 evseId
             )
         } returns chargeSiteWithNoSignedOffer.right()
-        coEvery { paymentsRepository.getPublishableKey() } returns "pk_test_123".right()
+        coEvery { paymentsRepository.getPublishableKey() } returns PublishableKey("pk_test_123").right()
 
         val result = useCase.invoke(siteId, evseId)
 
@@ -187,7 +188,7 @@ internal class GetPaymentConfigurationTest {
 
         coEvery { sitesRepository.getSignedOffer(siteId, evseId) } returns chargeSite.right()
         coEvery { paymentsRepository.createPaymentIntent(signedOffer) } returns exception.left()
-        coEvery { paymentsRepository.getPublishableKey() } returns "pk_test_123".right()
+        coEvery { paymentsRepository.getPublishableKey() } returns PublishableKey("pk_test_123").right()
 
         val result = useCase.invoke(siteId, evseId)
 
@@ -267,7 +268,7 @@ internal class GetPaymentConfigurationTest {
         val siteId = "site_123"
         val evseId = "evse_456"
         val signedOffer = "signed_offer_token"
-        val publishableKey = "pk_test_123"
+        val publishableKey = PublishableKey("pk_test_123")
 
         val chargeSite = createChargeSiteWithSignedOffer(signedOffer)
         val paymentIntent = createPaymentIntent()
