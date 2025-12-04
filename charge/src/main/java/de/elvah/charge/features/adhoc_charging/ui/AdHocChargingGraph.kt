@@ -27,11 +27,9 @@ internal fun AdHocChargingGraph(
     onFinishClicked: () -> Unit,
     onGooglePayClick: (String) -> Unit
 ) {
-
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = SiteDetailRoute(siteId)) {
-
         composable<SiteDetailRoute> {
             SiteDetailScreen(
                 viewModel = sdkViewModel(),
@@ -58,15 +56,15 @@ internal fun AdHocChargingGraph(
         ) {
             ChargingPointDetailScreen(
                 sdkViewModel(), onBackClick = {
-                navController.navigateUp()
-            }, onPaymentSuccess = { shortenedEvseId, paymentId ->
-                navController.navigate(
-                    ChargingStartRoute(
-                        shortenedEvseId = shortenedEvseId,
-                        paymentId = paymentId
+                    navController.navigateUp()
+                }, onPaymentSuccess = { shortenedEvseId, paymentId ->
+                    navController.navigate(
+                        ChargingStartRoute(
+                            shortenedEvseId = shortenedEvseId,
+                            paymentId = paymentId
+                        )
                     )
-                )
-            },
+                },
                 onGooglePayClcik = onGooglePayClick
             )
         }

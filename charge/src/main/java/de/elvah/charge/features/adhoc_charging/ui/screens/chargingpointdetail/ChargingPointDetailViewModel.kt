@@ -15,6 +15,7 @@ import de.elvah.charge.features.payments.domain.manager.GooglePayManager
 import de.elvah.charge.features.payments.domain.model.GooglePayState
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
+import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfigSettings
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors
 import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors.NoOfferFound
@@ -33,6 +34,7 @@ import kotlinx.coroutines.runBlocking
 
 internal class ChargingPointDetailViewModel(
     private val getPaymentConfiguration: GetPaymentConfiguration,
+    private val getPaymentConfigSettings: GetPaymentConfigSettings,
     private val initStripeConfig: InitStripeConfig,
     private val getOrganisationDetails: GetOrganisationDetails,
     private val storeAdditionalCosts: StoreAdditionalCosts,
@@ -119,6 +121,7 @@ internal class ChargingPointDetailViewModel(
                                     privacyPolicyUrl = organisationDetails?.privacyUrl.orEmpty(),
                                     companyLogoUrl = organisationDetails?.logoUrl,
                                     paymentIntentParams = event.paymentConfiguration,
+                                    paymentConfig = getPaymentConfigSettings(),
                                     mocked = config.environment is Environment.Simulator,
                                 ), null
                             )

@@ -1,6 +1,5 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,6 +51,7 @@ import de.elvah.charge.features.payments.domain.model.PublishableKey
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.ui.utils.MockData
+import de.elvah.charge.platform.config.PaymentConfig
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.buttons.GooglePayButton
@@ -72,7 +72,6 @@ internal fun ChargingPointDetailScreen(
 
     LaunchedEffect(Unit) {
         chargingPointDetailViewModel.effects.collect { effect ->
-            Log.d("HOLA", effect.toString())
             when (val effect = effect) {
                 is ChargingPointDetailEffect.NavigateTo -> {
                     onPaymentSuccess(effect.evseId, effect.paymentId)
@@ -112,11 +111,12 @@ internal fun ChargingPointDetailScreen(
                     } else {
                         val configuration = PaymentSheet.Configuration(
                             merchantDisplayName = state.companyName,
-                            googlePay = PaymentSheet.GooglePayConfiguration(
-                                environment = PaymentSheet.GooglePayConfiguration.Environment.Test,
-                                countryCode = "DE"
-                            ),
-
+                            googlePay = if (state.paymentConfig.googlePayEnabled) {
+                                PaymentSheet.GooglePayConfiguration(
+                                    environment = PaymentSheet.GooglePayConfiguration.Environment.Test,
+                                    countryCode = "DE"
+                                )
+                            } else null,
                             )
 
                         val currentClientSecret = state.paymentIntentParams.clientSecret
@@ -162,6 +162,7 @@ private fun ChargingPointDetail_Success(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 ChargingPointDetailActions(
+                    paymentConfig = state.paymentConfig,
                     onGooglePayClick = onGooglePayAction,
                     onPayWithCardClick = onPayWithCardAction,
                     publishableKey = state.paymentIntentParams.publishableKey,
@@ -342,6 +343,7 @@ private fun ChargingPointDetailTopBar(
 
 @Composable
 private fun ChargingPointDetailActions(
+    paymentConfig: PaymentConfig,
     modifier: Modifier = Modifier,
     onPayWithCardClick: () -> Unit,
     onGooglePayClick: () -> Unit,
@@ -352,14 +354,18 @@ private fun ChargingPointDetailActions(
         verticalArrangement = Arrangement.spacedBy(14.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        GooglePayButton(
-            onClick = onGooglePayClick,
-            modifier = Modifier.fillMaxWidth()
-        )
-        UnderlinedButton(
-            text = stringResource(R.string.pay_with_credit_card_button),
-            onClick = onDebounceClick(onClick = onPayWithCardClick),
-        )
+        if (paymentConfig.googlePayEnabled) {
+            GooglePayButton(
+                onClick = onGooglePayClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        if (paymentConfig.creditCardEnabled) {
+            UnderlinedButton(
+                text = stringResource(R.string.pay_with_credit_card_button),
+                onClick = onDebounceClick(onClick = onPayWithCardClick),
+            )
+        }
     }
 }
 
@@ -391,6 +397,7 @@ private fun ChargingPointDetail_Success_Preview() {
                 privacyPolicyUrl = "",
                 companyLogoUrl = "",
                 paymentIntentParams = MockData.paymentConfiguration,
+                paymentConfig = de.elvah.charge.platform.config.PaymentConfig(),
             ),
             onBackClick = {},
             onPayWithCardAction = {},
