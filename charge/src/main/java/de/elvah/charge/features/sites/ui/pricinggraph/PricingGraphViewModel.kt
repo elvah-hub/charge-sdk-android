@@ -110,12 +110,12 @@ internal class PricingGraphViewModel(
     }
 ) {
 
-    fun loadPricing(siteId: String) {
+    suspend fun loadPricing(siteId: String) {
         sendEvent(PricingGraphEvent.LoadPricing(siteId), allowSideEffect = true)
         executeLoadPricing(siteId)
     }
 
-    fun refreshData() {
+    suspend fun refreshData() {
         sendEvent(PricingGraphEvent.RefreshData, allowSideEffect = true)
         when (val currentState = state.value) {
             is PricingGraphState.Success -> executeLoadPricing(
@@ -146,7 +146,7 @@ internal class PricingGraphViewModel(
         }
     }
 
-    fun retryLoad() {
+    suspend fun retryLoad() {
         sendEvent(PricingGraphEvent.RetryLoad, allowSideEffect = true)
         when (val currentState = state.value) {
             is PricingGraphState.Error -> currentState.siteId?.let { executeLoadPricing(it) }

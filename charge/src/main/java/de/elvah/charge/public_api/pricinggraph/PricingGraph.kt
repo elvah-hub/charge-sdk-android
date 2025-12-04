@@ -102,7 +102,7 @@ public fun PricingGraph(
                 if (display != DisplayBehavior.WHEN_CONTENT_AVAILABLE) {
                     PricingGraphError(
                         onRetry = {
-                            pricingGraphViewModel.retryLoad()
+                            //pricingGraphViewModel.retryLoad()
                         },
                         modifier = modifier
                     )
