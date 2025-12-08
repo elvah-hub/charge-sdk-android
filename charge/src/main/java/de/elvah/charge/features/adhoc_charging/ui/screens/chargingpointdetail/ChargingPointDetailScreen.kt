@@ -51,6 +51,7 @@ import de.elvah.charge.features.payments.domain.model.PublishableKey
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Pricing
 import de.elvah.charge.features.sites.ui.utils.MockData
+import de.elvah.charge.platform.config.Environment
 import de.elvah.charge.platform.config.PaymentConfig
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
@@ -59,6 +60,7 @@ import de.elvah.charge.platform.ui.components.onDebounceClick
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.copySmall
 import de.elvah.charge.platform.ui.theme.copyXLargeBold
+import java.util.Locale
 
 @Composable
 internal fun ChargingPointDetailScreen(
@@ -111,14 +113,11 @@ internal fun ChargingPointDetailScreen(
                     } else {
                         val configuration = PaymentSheet.Configuration(
                             merchantDisplayName = state.companyName,
-                            googlePay = if (state.paymentConfig.googlePayEnabled) {
-                                PaymentSheet.GooglePayConfiguration(
-                                    environment = PaymentSheet.GooglePayConfiguration.Environment.Test,
-                                    countryCode = "DE"
-                                )
-                            } else null,
+                            googlePay = provideGooglePayConfiguration(
+                                state.paymentConfig.googlePayEnabled,
+                                environment = state.environment
                             )
-
+                        )
                         val currentClientSecret = state.paymentIntentParams.clientSecret
                         presentPaymentSheet(paymentSheet, configuration, currentClientSecret)
                     }
@@ -398,6 +397,7 @@ private fun ChargingPointDetail_Success_Preview() {
                 companyLogoUrl = "",
                 paymentIntentParams = MockData.paymentConfiguration,
                 paymentConfig = de.elvah.charge.platform.config.PaymentConfig(),
+                environment = de.elvah.charge.platform.config.Environment.Int,
             ),
             onBackClick = {},
             onPayWithCardAction = {},
@@ -416,4 +416,20 @@ private fun presentPaymentSheet(
         configuration
     )
 }
+
+private fun provideGooglePayConfiguration(
+    enabled: Boolean,
+    environment: Environment
+): PaymentSheet.GooglePayConfiguration? =
+    if (enabled) {
+        PaymentSheet.GooglePayConfiguration(
+            environment = when (environment) {
+                is Environment.Production ->
+                    PaymentSheet.GooglePayConfiguration.Environment.Production
+                else ->
+                    PaymentSheet.GooglePayConfiguration.Environment.Test
+            },
+            countryCode = Locale.getDefault().country
+        )
+    } else null
 

@@ -8,7 +8,7 @@ internal fun Context.initializeSdk() {
     Elvah.initialize(
         context = this,
         config = Config(
-            apiKey = "evpk_test_Syx9tZW1LGcIA7Js0BADiFg7HVDpUGk2CDYPd6zLKOqrSfEI0GIVzInH7W4WfoATHcPnEW7O3uP0GrsGL0IpeUjBf72BuYwanBJ4EUZTv",
+            "evpk_prod_SxeWcg76aOt3Z1xpDstOA84kGs827Jd53bKebbhLJJcWhpFceq0WKAOoMFkAhmvcaxaBwd4ZeK3omN3FQvkeybm64jLMqbb9Cp0hXuoAe",
         ),
     )
 }

@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val evseId = EvseId("HNTCI*E*00001")
+        val evseId = EvseId("DE*EUL*EHAN0001*01")
         setContent {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()

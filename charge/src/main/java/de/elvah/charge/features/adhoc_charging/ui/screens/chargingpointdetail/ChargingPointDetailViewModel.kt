@@ -122,6 +122,7 @@ internal class ChargingPointDetailViewModel(
                                     companyLogoUrl = organisationDetails?.logoUrl,
                                     paymentIntentParams = event.paymentConfiguration,
                                     paymentConfig = getPaymentConfigSettings(),
+                                    environment = config.environment,
                                     mocked = config.environment is Environment.Simulator,
                                 ), null
                             )
