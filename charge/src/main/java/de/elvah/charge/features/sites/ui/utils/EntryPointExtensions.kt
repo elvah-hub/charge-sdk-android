@@ -20,7 +20,7 @@ internal fun Context.openSite(dealId: String) {
 
 internal fun Context.openChargePoint(evseId: String) {
     val destination = ChargingPointDetailRoute(
-        siteId = "test",
+        siteId = "odio",
         evseId = evseId,
     )
 
