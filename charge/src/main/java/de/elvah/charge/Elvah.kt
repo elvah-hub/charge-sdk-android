@@ -30,6 +30,7 @@ import de.elvah.charge.platform.startup.di.startupModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -39,7 +40,12 @@ public object Elvah {
 
     private val lifecycleManager: SdkLifecycleManager by inject(SdkLifecycleManager::class.java)
     private val useCaseModule = module {
-        includes(sitesUseCaseModule, adHocChargingUseCasesModule, paymentsUseCaseModule, paymentsManagerModule)
+        includes(
+            sitesUseCaseModule,
+            adHocChargingUseCasesModule,
+            paymentsUseCaseModule,
+            paymentsManagerModule
+        )
     }
 
     private val viewModelsModule = module {
@@ -75,6 +81,18 @@ public object Elvah {
     }
 
     public fun initialize(context: Context, config: Config) {
+        val sdkModules = getModules(config)
+
+        startKoin {
+            androidLogger()
+            androidContext(context)
+            modules(sdkModules)
+        }
+
+        initLifecycleManager()
+    }
+
+    public fun getModules(config: Config): List<Module> {
         val simulatorModule = if (config.environment is Environment.Simulator) {
             module {
                 includes(provideSimulatorModule(config.environment.simulatorFlow))
@@ -83,27 +101,25 @@ public object Elvah {
             emptyModule
         }
 
-        startKoin {
-            androidLogger()
-            androidContext(context)
-            modules(
-                configModule(config),
-                viewModelsModule,
-                useCaseModule,
-                networkModule,
-                localModule,
-                repositoriesModule,
-                okHttpModule,
-                retrofitModule,
-                sitesRepositoriesModule,
-                simulatorModule,
-                startupModule,
-            )
-        }
-        
+        return listOf(
+            configModule(config),
+            viewModelsModule,
+            useCaseModule,
+            networkModule,
+            localModule,
+            repositoriesModule,
+            okHttpModule,
+            retrofitModule,
+            sitesRepositoriesModule,
+            simulatorModule,
+            startupModule,
+        )
+    }
+
+    public fun initLifecycleManager() {
         lifecycleManager.initialize()
     }
-    
+
     public fun cleanup() {
         lifecycleManager.cleanup()
     }
