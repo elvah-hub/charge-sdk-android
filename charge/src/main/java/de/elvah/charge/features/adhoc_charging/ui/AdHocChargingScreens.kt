@@ -27,6 +27,7 @@ internal sealed class AdHocChargingScreens {
     data class ChargingPointDetailRoute(
         val siteId: String,
         val evseId: String,
+        val finishOnBackClicked: Boolean = false,
     ) : AdHocChargingScreens() {
 
         companion object {
@@ -50,6 +51,10 @@ internal sealed class AdHocChargingScreens {
                         UrlArg(
                             parameterName = "evseId",
                             parameterValue = args?.evseId,
+                        ),
+                        UrlArg(
+                            parameterName = "finishOnBackClicked",
+                            parameterValue = args?.finishOnBackClicked?.toString(),
                         ),
                     ),
                     isTemplate = isTemplate,

@@ -22,6 +22,7 @@ internal fun Context.openChargePoint(evseId: String) {
     val destination = ChargingPointDetailRoute(
         siteId = "odio",
         evseId = evseId,
+        finishOnBackClicked = true,
     )
 
     val deepLinkIntent = Intent(

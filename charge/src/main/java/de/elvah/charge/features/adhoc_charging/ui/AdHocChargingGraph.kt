@@ -67,7 +67,13 @@ internal fun AdHocChargingGraph(
             ChargingPointDetailScreen(
                 viewModel = viewModel,
                 onBackClick = {
-                    navController.navigateUp()
+                    if (args.finishOnBackClicked) {
+                        // when entering with a deep link
+                        onFinishClicked()
+                    } else {
+                        // when coming from the sites detail
+                        navController.navigateUp()
+                    }
                 }, onPaymentSuccess = { shortenedEvseId, paymentId ->
                     navController.navigate(
                         ChargingStartRoute(

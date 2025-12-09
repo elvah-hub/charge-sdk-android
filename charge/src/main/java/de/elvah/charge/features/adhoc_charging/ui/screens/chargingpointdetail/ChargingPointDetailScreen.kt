@@ -1,6 +1,7 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -79,6 +80,10 @@ internal fun ChargingPointDetailScreen(
             }
         }
     }
+
+    BackHandler(
+        onBack = onBackClick,
+    )
 
     when (val state = state) {
         is ChargingPointDetailState.Loading -> ChargingPointDetail_Loading()
