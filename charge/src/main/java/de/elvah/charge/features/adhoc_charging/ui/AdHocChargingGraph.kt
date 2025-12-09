@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingStartRoute
@@ -13,6 +14,7 @@ import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ReviewRou
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.SiteDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.screens.activecharging.ActiveChargingScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailScreen
+import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailViewModel
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart.ChargingStartScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpAndSupportScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewScreen
@@ -20,6 +22,7 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailS
 import de.elvah.charge.platform.ui.animation.slideFromBottom
 import de.elvah.charge.platform.ui.animation.slideToBottom
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 internal fun AdHocChargingGraph(
@@ -56,8 +59,13 @@ internal fun AdHocChargingGraph(
             exitTransition = slideToBottom(),
             popExitTransition = slideToBottom(),
         ) {
+            val args = it.toRoute<ChargingPointDetailRoute>()
+            val viewModel = koinViewModel<ChargingPointDetailViewModel> {
+                parametersOf(args)
+            }
+
             ChargingPointDetailScreen(
-                viewModel = koinViewModel(),
+                viewModel = viewModel,
                 onBackClick = {
                     navController.navigateUp()
                 }, onPaymentSuccess = { shortenedEvseId, paymentId ->

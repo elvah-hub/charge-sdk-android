@@ -1,9 +1,7 @@
 package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import arrow.core.Either
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
 import de.elvah.charge.features.adhoc_charging.ui.mapper.toUI
@@ -32,18 +30,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 internal class ChargingPointDetailViewModel(
+    private val args: ChargingPointDetailRoute,
     private val getPaymentConfiguration: GetPaymentConfiguration,
     private val initStripeConfig: InitStripeConfig,
     private val getOrganisationDetails: GetOrganisationDetails,
     private val storeAdditionalCosts: StoreAdditionalCosts,
     private val sitesRepository: SitesRepository,
-    private val savedStateHandle: SavedStateHandle,
     private val config: Config,
     private val googlePayManager: GooglePayManager,
 ) : MVIBaseViewModel<ChargingPointDetailState, ChargingPointDetailEvent, ChargingPointDetailEffect>(
-    initialState = Loading(savedStateHandle.toRoute<ChargingPointDetailRoute>().evseId),
+    initialState = Loading(args.evseId),
     reducer = Reducer { previousState, event ->
-        val evseId = savedStateHandle.toRoute<ChargingPointDetailRoute>().evseId
+        val evseId = args.evseId
 
         when (val event = event) {
             ChargingPointDetailEvent.OnGooglePayClicked -> when (previousState) {
@@ -59,9 +57,7 @@ internal class ChargingPointDetailViewModel(
             }
 
             is ChargingPointDetailEvent.Initialize -> {
-                val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
-
-                sitesRepository.getChargeSite(route.siteId)
+                sitesRepository.getChargeSite(args.siteId)
                     .fold(
                         ifLeft = {
                             Result(
@@ -75,10 +71,10 @@ internal class ChargingPointDetailViewModel(
                             val siteUI = site.toUI()
 
                             val chargePoint = site.evses
-                                .first { route.evseId == it.evseId }
+                                .first { args.evseId == it.evseId }
 
                             val chargePointUI = siteUI.chargePoints
-                                .find { route.evseId == it.evseId.value }
+                                .find { args.evseId == it.evseId.value }
 
                             val currentPrice = chargePoint.offer.price
 
@@ -145,8 +141,7 @@ internal class ChargingPointDetailViewModel(
 ) {
     init {
         viewModelScope.launch {
-            val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
-            executeInitializeStripe(route.siteId, route.evseId)
+            executeInitializeStripe(args.siteId, args.evseId)
         }
 
         viewModelScope.launch {
@@ -211,8 +206,7 @@ internal class ChargingPointDetailViewModel(
 
     internal fun onRetryClicked() {
         viewModelScope.launch {
-            val route = savedStateHandle.toRoute<ChargingPointDetailRoute>()
-            executeInitializeStripe(route.siteId, route.evseId)
+            executeInitializeStripe(args.siteId, args.evseId)
         }
     }
 }
