@@ -48,25 +48,26 @@ internal fun AdHocChargingGraph(
         }
 
         composable<ChargingPointDetailRoute>(
-            deepLinks = listOf(
-                navDeepLink<ChargingPointDetailRoute>(basePath = ChargingPointDetailRoute.ROUTE)
-            ),
+            deepLinks = ChargingPointDetailRoute.deepLinks.map {
+                navDeepLink<ChargingPointDetailRoute>(basePath = it) { uriPattern = it }
+            },
             enterTransition = slideFromBottom(),
             popEnterTransition = slideFromBottom(),
             exitTransition = slideToBottom(),
             popExitTransition = slideToBottom(),
         ) {
             ChargingPointDetailScreen(
-                koinViewModel(), onBackClick = {
-                navController.navigateUp()
-            }, onPaymentSuccess = { shortenedEvseId, paymentId ->
-                navController.navigate(
-                    ChargingStartRoute(
-                        shortenedEvseId = shortenedEvseId,
-                        paymentId = paymentId
+                viewModel = koinViewModel(),
+                onBackClick = {
+                    navController.navigateUp()
+                }, onPaymentSuccess = { shortenedEvseId, paymentId ->
+                    navController.navigate(
+                        ChargingStartRoute(
+                            shortenedEvseId = shortenedEvseId,
+                            paymentId = paymentId
+                        )
                     )
-                )
-            },
+                },
                 onGooglePayClcik = onGooglePayClick
             )
         }

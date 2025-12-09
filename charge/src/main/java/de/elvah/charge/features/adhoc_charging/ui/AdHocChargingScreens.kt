@@ -1,5 +1,7 @@
 package de.elvah.charge.features.adhoc_charging.ui
 
+import de.elvah.charge.features.adhoc_charging.deeplinks.DeepLinks
+import de.elvah.charge.features.adhoc_charging.deeplinks.UrlArg
 import kotlinx.serialization.Serializable
 
 internal sealed class AdHocChargingScreens {
@@ -25,12 +27,39 @@ internal sealed class AdHocChargingScreens {
     data class ChargingPointDetailRoute(
         val siteId: String,
         val evseId: String,
-    ) : AdHocChargingScreens(), Deeplink {
-        override val route: String
-            get() = ROUTE
+    ) : AdHocChargingScreens() {
 
         companion object {
-            const val ROUTE = baseRoute + "chargingPointDetail"
+            const val ROUTE = "chargingPointDetail"
+
+            val deepLinks = DeepLinks.getDeepLinks(
+                route = ROUTE,
+                args = buildArgsForUrl(isTemplate = true),
+            )
+
+            private fun buildArgsForUrl(
+                isTemplate: Boolean,
+                args: ChargingPointDetailRoute? = null,
+            ): String {
+                return DeepLinks.buildArgsForUrl(
+                    args = listOf(
+                        UrlArg(
+                            parameterName = "siteId",
+                            parameterValue = args?.siteId,
+                        ),
+                        UrlArg(
+                            parameterName = "evseId",
+                            parameterValue = args?.evseId,
+                        ),
+                    ),
+                    isTemplate = isTemplate,
+                )
+            }
+
+            fun ChargingPointDetailRoute.toDeepLinks(): List<String> = DeepLinks.getDeepLinks(
+                route = ROUTE,
+                args = buildArgsForUrl(isTemplate = false, args = this),
+            )
         }
     }
 

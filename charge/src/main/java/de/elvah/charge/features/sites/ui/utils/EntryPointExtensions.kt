@@ -7,6 +7,8 @@ import android.content.Intent
 import androidx.core.net.toUri
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingActivity
 import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ActiveChargingRoute
+import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute
+import de.elvah.charge.features.adhoc_charging.ui.AdHocChargingScreens.ChargingPointDetailRoute.Companion.toDeepLinks
 
 internal fun Context.openSite(dealId: String) {
     val intent =
@@ -16,6 +18,21 @@ internal fun Context.openSite(dealId: String) {
     startActivity(intent)
 }
 
+internal fun Context.openChargePoint(evseId: String) {
+    val destination = ChargingPointDetailRoute(
+        siteId = "test",
+        evseId = evseId,
+    )
+
+    val deepLinkIntent = Intent(
+        Intent.ACTION_VIEW,
+        destination.toDeepLinks().first().toUri(),
+        this,
+        AdHocChargingActivity::class.java
+    )
+
+    startActivity(deepLinkIntent)
+}
 
 internal fun Context.goToChargingSession() {
     val deepLinkIntent = Intent(
