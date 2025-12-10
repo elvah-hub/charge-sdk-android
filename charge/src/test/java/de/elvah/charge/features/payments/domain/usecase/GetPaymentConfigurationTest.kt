@@ -305,7 +305,8 @@ internal class GetPaymentConfigurationTest {
             location = listOf(52.5200, 13.4050),
             id = "site_test_123",
             operatorName = "Test Operator",
-            prevalentPowerType = "AC"
+            prevalentPowerType = "AC",
+            dynamicPricingAvailable = true
         )
     }
 
