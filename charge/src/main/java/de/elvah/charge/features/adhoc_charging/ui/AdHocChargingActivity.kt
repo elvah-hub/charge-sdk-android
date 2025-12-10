@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.stripe.android.PaymentConfiguration
 import com.stripe.android.googlepaylauncher.GooglePayEnvironment
 import com.stripe.android.googlepaylauncher.GooglePayLauncher
 import de.elvah.charge.features.payments.domain.manager.GooglePayManager
@@ -32,6 +33,13 @@ internal class AdHocChargingActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val siteId = intent.extras?.getString(ARG_SITE_ID).orEmpty()
+
+        PaymentConfiguration.init(
+            context = this,
+            publishableKey = "initial_value",
+            stripeAccountId = null,
+        )
+
         initializeGooglePayLauncher()
 
         setContent {
