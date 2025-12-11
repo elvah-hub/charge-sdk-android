@@ -17,16 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.elvah.charge.R
-import de.elvah.charge.features.adhoc_charging.ui.components.OfferCounterBanner
 import de.elvah.charge.features.adhoc_charging.ui.components.button.CircularIconButton
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.ChargePointsList
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist.chargePointItemUIMock
-import de.elvah.charge.features.sites.ui.utils.formatTimeUntil
 import de.elvah.charge.platform.ui.components.FullScreenError
 import de.elvah.charge.platform.ui.components.FullScreenLoading
 import de.elvah.charge.platform.ui.components.Timer
@@ -86,7 +83,6 @@ private fun SiteDetailScreen_Content(
                 .padding(innerPadding),
         ) {
             SiteDetailTopBar(
-                discountExpiresAt = null,
                 onCloseClick = onCloseClick,
                 onOfferExpired = onOfferExpired,
             )
@@ -115,35 +111,19 @@ private fun SiteDetailScreen_Content(
 
 @Composable
 private fun SiteDetailTopBar(
-    discountExpiresAt: LocalDateTime?,
     onCloseClick: () -> Unit,
     onOfferExpired: () -> Unit,
 ) {
-    val context = LocalContext.current
-
-    val discount = discountExpiresAt
-        ?.let { formatTimeUntil(context, it) }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        discount?.let {
-            OfferCounterBanner(
-                discountExpiresAt = discountExpiresAt,
-                onOfferExpired = onOfferExpired,
-            )
-        }
-
         CircularIconButton(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(
-                    paddingValues = if (discount != null) {
-                        PaddingValues(end = 14.dp, top = 16.dp)
-                    } else {
-                        PaddingValues(end = 14.dp)
-                    },
+                    paddingValues = PaddingValues(end = 14.dp),
                 ),
             iconResId = R.drawable.ic_close,
             onClick = onCloseClick,
