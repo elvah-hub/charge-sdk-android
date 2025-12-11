@@ -25,7 +25,7 @@ internal class AdHocChargingActivity : ComponentActivity() {
     }
 
     private lateinit var googlePayLauncher: GooglePayLauncher
-
+    private var googlePayAvailable: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +44,10 @@ internal class AdHocChargingActivity : ComponentActivity() {
                     siteId = siteId,
                     onFinishClicked = { finish() },
                     onGooglePayClick = { clientSecret ->
-                        googlePayManager.setProcessingState()
-                        googlePayLauncher.presentForPaymentIntent(clientSecret)
+                        if (googlePayAvailable){
+                            googlePayManager.setProcessingState()
+                            googlePayLauncher.presentForPaymentIntent(clientSecret)
+                        }
                     }
                 )
             }
@@ -66,7 +68,7 @@ internal class AdHocChargingActivity : ComponentActivity() {
             ),
             readyCallback = { isReady ->
                 Log.i("GooglePayLauncher", "Google Pay is ready: $isReady")
-                // Google Pay is ready
+                googlePayAvailable = isReady
             },
             resultCallback = ::onGooglePayResult
         )
