@@ -65,7 +65,7 @@ internal fun AdHocChargingGraph(
                         )
                     )
                 },
-                onGooglePayClcik = onGooglePayClick
+                onGooglePayClick = onGooglePayClick
             )
         }
 

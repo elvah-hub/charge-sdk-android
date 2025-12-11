@@ -67,7 +67,7 @@ internal fun ChargingPointDetailScreen(
     chargingPointDetailViewModel: ChargingPointDetailViewModel,
     onBackClick: () -> Unit,
     onPaymentSuccess: (String, String) -> Unit,
-    onGooglePayClcik: (String) -> Unit,
+    onGooglePayClick: (String) -> Unit,
 ) {
     val state by chargingPointDetailViewModel.state.collectAsStateWithLifecycle()
 
@@ -123,7 +123,7 @@ internal fun ChargingPointDetailScreen(
                     }
                 },
                 onGooglePayAction = {
-                    onGooglePayClcik(state.paymentIntentParams.clientSecret)
+                    onGooglePayClick(state.paymentIntentParams.clientSecret)
                 },
             )
         }
