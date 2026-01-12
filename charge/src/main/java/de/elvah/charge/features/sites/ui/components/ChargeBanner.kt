@@ -29,7 +29,6 @@ import de.elvah.charge.R
 import de.elvah.charge.features.sites.ui.model.ChargeBannerRender
 import de.elvah.charge.features.sites.ui.model.Location
 import de.elvah.charge.features.sites.ui.utils.MockData
-import de.elvah.charge.features.sites.ui.utils.parseDate
 import de.elvah.charge.platform.ui.components.CopyMedium
 import de.elvah.charge.platform.ui.components.CopySmall
 import de.elvah.charge.platform.ui.components.buttons.ButtonPrimary
@@ -50,12 +49,6 @@ internal fun ChargeBanner_Content(
 ) {
     Card(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            site.originalPrice?.let {
-                ChargeBannerHeader(
-                    timeLeft = site.campaignEnd,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
             if (compact) {
                 ChargeBannerContentCollapsed(
                     price = site.price,
@@ -168,19 +161,6 @@ internal fun ChargeBanner_ActiveSession(
 }
 
 @Composable
-private fun ChargeBannerHeader(timeLeft: String, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .background(color = MaterialTheme.colorScheme.onTertiary)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        BestDealTimeLeft(timeLeft)
-    }
-}
-
-@Composable
 private fun
         ChargeBannerHeaderActiveSession(chargeTime: Duration, modifier: Modifier = Modifier) {
     Row(
@@ -222,16 +202,6 @@ private fun LiveCounter(
     }
 
     content(counter)
-}
-
-@Composable
-private fun BestDealTimeLeft(timeLeft: String, modifier: Modifier = Modifier) {
-    CopySmall(
-        text = parseDate(timeLeft),
-        modifier = modifier,
-        color = MaterialTheme.colorSchemeExtended.brand,
-        fontWeight = FontWeight.W700
-    )
 }
 
 @Composable
