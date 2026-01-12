@@ -11,8 +11,8 @@ import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import de.elvah.charge.public_api.DisplayBehavior
-import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
+import de.elvah.charge.platform.di.sdkGet
+import de.elvah.charge.platform.di.sdkViewModel
 
 @Composable
 public fun ChargePointList(
@@ -20,8 +20,8 @@ public fun ChargePointList(
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
     onItemClick: (evseId: String) -> Unit,
 ) {
-    val siteDetailViewModel: SiteDetailViewModel = koinViewModel()
-    val config: Config = koinInject()
+    val siteDetailViewModel: SiteDetailViewModel = sdkViewModel()
+    val config: Config = sdkGet()
 
     val state by siteDetailViewModel.state.collectAsStateWithLifecycle()
 

@@ -5,14 +5,14 @@ import de.elvah.charge.features.sites.domain.model.ChargeSite
 import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.usecase.UpdateSite
+import de.elvah.charge.platform.di.sdkInject
 import de.elvah.charge.public_api.banner.EvseId
-import org.koin.java.KoinJavaComponent
 import de.elvah.charge.features.sites.domain.usecase.GetSites as GetSitesUseCase
 
 public class GetSites() {
 
-    private val getSites: GetSitesUseCase by KoinJavaComponent.inject(GetSitesUseCase::class.java)
-    private val updateSite: UpdateSite by KoinJavaComponent.inject(UpdateSite::class.java)
+    private val getSites: GetSitesUseCase by sdkInject()
+    private val updateSite: UpdateSite by sdkInject()
 
     public suspend operator fun invoke(params: Params): List<ChargeSite> {
         return getSites(params = params.toDomain()).getOrElse { emptyList() }.also {

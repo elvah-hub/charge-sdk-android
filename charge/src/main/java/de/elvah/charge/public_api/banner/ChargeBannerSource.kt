@@ -6,12 +6,12 @@ import de.elvah.charge.features.sites.domain.model.filters.BoundingBox
 import de.elvah.charge.features.sites.domain.model.filters.OfferType
 import de.elvah.charge.features.sites.domain.usecase.ClearFilters
 import de.elvah.charge.features.sites.domain.usecase.UpdateFilters
-import org.koin.java.KoinJavaComponent
+import de.elvah.charge.platform.di.sdkInject
 
 public class ChargeBannerSource() {
 
-    private val updateFilters: UpdateFilters by KoinJavaComponent.inject(UpdateFilters::class.java)
-    private val clearFilters: ClearFilters by KoinJavaComponent.inject(ClearFilters::class.java)
+    private val updateFilters: UpdateFilters by sdkInject()
+    private val clearFilters: ClearFilters by sdkInject()
 
     public suspend fun sitesAt(
         boundingBox: BoundingBox,

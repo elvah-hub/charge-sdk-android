@@ -5,13 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import de.elvah.charge.platform.config.Config
+import de.elvah.charge.platform.di.sdkInject
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
-import org.koin.android.ext.android.inject
 
 internal class SimulatorActivity : ComponentActivity() {
 
-    private val config: Config by inject()
+    private val config: Config by sdkInject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -19,8 +19,8 @@ import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import de.elvah.charge.public_api.DisplayBehavior
 import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
+import de.elvah.charge.platform.di.sdkGet
+import de.elvah.charge.platform.di.sdkViewModel
 
 @Composable
 public fun PricingGraph(
@@ -33,8 +33,8 @@ public fun PricingGraph(
     minYAxisPrice: Double? = null,
     gridLineDotSize: Float = 4f
 ) {
-    val pricingGraphViewModel: PricingGraphViewModel = koinViewModel()
-    val config: Config = koinInject()
+    val pricingGraphViewModel: PricingGraphViewModel = sdkViewModel()
+    val config: Config = sdkGet()
 
     val context = LocalContext.current
 
