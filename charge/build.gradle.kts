@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.serializable)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.protobuf)
+    alias(libs.plugins.kover)
     alias(libs.plugins.ksp)
 }
 
@@ -156,4 +157,16 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
     ksp(libs.moshi.codegen)
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                // Exclude generated code
+                classes("*.BuildConfig", "*.*_Factory", "*.*_MembersInjector", "*.Dagger*")
+                packages("de.elvah.charge.databinding", "de.elvah.charge.generated", "de.elvah.charge.proto")
+            }
+        }
+    }
 }
