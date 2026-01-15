@@ -36,6 +36,16 @@ jobs:
       - name: Run unit tests
         run: ./gradlew :charge:test
 
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-coverage
+          path: |
+            charge/build/test-results/test*/*.xml
+            charge/build/reports/tests/
+          retention-days: 14
+
       - name: Generate Kover coverage report
         run: ./gradlew :charge:koverXmlReport
 
