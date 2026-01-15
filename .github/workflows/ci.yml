@@ -49,7 +49,82 @@ jobs:
           cache: gradle
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
-      - name: Build with Gradle
-        run: ./gradlew assemble
+
+      - name: Build Debug Variants
+        run: ./gradlew assembleDebug
+
+      - name: Build Release Variants
+        run: ./gradlew assembleRelease
+
+      - name: Verify Charge SDK Release Build
+        run: |
+          if [ ! -f "charge/build/outputs/aar/charge-release.aar" ]; then
+            echo "❌ Charge SDK release AAR not found!"
+            exit 1
+          fi
+          echo "✅ Charge SDK release build successful"
+          echo "## Build Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Charge Library (SDK)" >> $GITHUB_STEP_SUMMARY
+          ls -lh charge/build/outputs/aar/ | tail -n +2 | awk '{print "- " $9 " (" $5 ")"}' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### App Module" >> $GITHUB_STEP_SUMMARY
+          ls -lh app/build/outputs/apk/debug/ 2>/dev/null | tail -n +2 | awk '{print "- " $9 " (" $5 ")"}' >> $GITHUB_STEP_SUMMARY || echo "- No debug APK" >> $GITHUB_STEP_SUMMARY
+
       - name: Run Tests with Gradle
         run: ./gradlew test
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            **/build/test-results/test*/*.xml
+            **/build/reports/tests/
+          retention-days: 14
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -d "charge/build/test-results/testDebugUnitTest" ]; then
+            TEST_COUNT=$(find charge/build/test-results/testDebugUnitTest -name "*.xml" | wc -l)
+            echo "✅ Charge module: $TEST_COUNT test files" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -d "app/build/test-results/testDebugUnitTest" ]; then
+            TEST_COUNT=$(find app/build/test-results/testDebugUnitTest -name "*.xml" | wc -l)
+            echo "✅ App module: $TEST_COUNT test files" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Run Android Lint
+        run: ./gradlew :charge:lintDebug :app:lintDebug
+        continue-on-error: true
+
+      - name: Upload Lint Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-reports
+          path: |
+            charge/build/reports/lint-results-*.html
+            charge/build/reports/lint-results-*.xml
+            app/build/reports/lint-results-*.html
+            app/build/reports/lint-results-*.xml
+          retention-days: 14
+
+      - name: Run Detekt
+        run: ./gradlew detekt
+        continue-on-error: true
+
+      - name: Upload Detekt Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-reports
+          path: |
+            build/reports/detekt/
+            app/build/reports/detekt/
+            charge/build/reports/detekt/
+          retention-days: 14

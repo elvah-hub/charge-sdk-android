@@ -12,6 +12,7 @@ coilCompose = "3.3.0"
 composeBom = "2026.01.01"
 coreKtx = "1.17.0"
 datastore = "1.2.0"
+detekt = "1.23.7"
 espressoCore = "3.7.0"
 google-services = "4.4.4"
 jetbrainsKotlinJvm = "2.3.0"
@@ -106,6 +107,7 @@ networking = [
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

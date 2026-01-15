@@ -1,0 +1,1048 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ArgumentListWrapping:ActiveChargingScreen.kt$( onDismissRequest = { onDismissError() }, sheetState = errorSheetState )</ID>
+    <ID>ArgumentListWrapping:AdHocChargingGraph.kt$( koinViewModel(), onBackClick = { navController.navigateUp() }, onPaymentSuccess = { shortenedEvseId, paymentId -&gt; navController.navigate( ChargingStartRoute( shortenedEvseId = shortenedEvseId, paymentId = paymentId ) ) }, onGooglePayClcik = onGooglePayClick )</ID>
+    <ID>ArgumentListWrapping:AdHocChargingGraph.kt$( viewModel = koinViewModel(), onSupportClick = { navController.navigate(HelpAndSupportRoute) }, onStopClick = { navController.navigate(ReviewRoute) }, onDismissClick = onFinishClicked )</ID>
+    <ID>ArgumentListWrapping:Brand.kt$(if (darkMode) R.drawable.ic_logo_elvah_composed_dark else R.drawable.ic_logo_elvah_composed)</ID>
+    <ID>ArgumentListWrapping:ChargeBanner.kt$( site = ChargeBannerRender( id = "id", cpoName = "Deal Title", address = "address", location = Location( lat = 0.0, lng = 0.0 ), campaignEnd = "2025-04-23T10:21:28.405000000Z", originalPrice = 0.50, price = 0.24 ), onDealClick = {} )</ID>
+    <ID>ArgumentListWrapping:ChargeBanner.kt$( site = MockData.chargeSiteActiveSessionRender, onBannerClick = {})</ID>
+    <ID>ArgumentListWrapping:ChargingPointDetailScreen.kt$( resultCallback = { if (it is PaymentSheetResult.Completed) { onPaymentSuccess( state.shortenedEvseId, state.paymentIntentParams.paymentId ) } })</ID>
+    <ID>ArgumentListWrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( ChargingPointDetailEvent.OnPaymentSuccess( it.shortenedEvseId, it.paymentIntentParams.paymentId ), true )</ID>
+    <ID>ArgumentListWrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( Error( previousState.evseId, event.paymentConfigErrors ), null )</ID>
+    <ID>ArgumentListWrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( Success( evseId = evseId, shortenedEvseId = chargePointUI?.shortenedEvseId ?: evseId, availability = chargePoint.availability, discountExpiresAt = null, // disabled for now priceWithLineThrough = priceWithLineThrough?.energyPricePerKWh, priceToHighlight = priceToHighlight.energyPricePerKWh, additionalCostsUI = additionalCosts.toUI(), companyName = organisationDetails?.companyName.orEmpty(), termsOfServiceUrl = organisationDetails?.termsOfConditionUrl.orEmpty(), privacyPolicyUrl = organisationDetails?.privacyUrl.orEmpty(), companyLogoUrl = organisationDetails?.logoUrl, paymentIntentParams = event.paymentConfiguration, mocked = config.environment is Environment.Simulator, ), null )</ID>
+    <ID>ArgumentListWrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( ifLeft = { Log.d( "ChargingPointDetailViewModel", "Error getting payment configuration", it.throwable?.cause ) sendEvent(ChargingPointDetailEvent.OnError(it)) }, ifRight = { paymentIntentValue -&gt; initStripeConfig(paymentIntentValue.publishableKey, paymentIntentValue.accountId) sendEvent(ChargingPointDetailEvent.Initialize(paymentIntentValue, logoUrl)) } )</ID>
+    <ID>ArgumentListWrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( ifLeft = { Result( Error( evseId, NoOfferFound(it.cause) ) ) }, ifRight = { site -&gt; val siteUI = site.toUI() val chargePoint = site.evses .first { route.evseId == it.evseId } val chargePointUI = siteUI.chargePoints .find { route.evseId == it.evseId.value } val currentPrice = chargePoint.offer.price val standardPrice = chargePoint.offer.originalPrice ?: currentPrice val hasDiscount = currentPrice.energyPricePerKWh.value &lt; standardPrice.energyPricePerKWh.value val priceWithLineThrough = (if (hasDiscount) standardPrice else null) val priceToHighlight = (if (hasDiscount) currentPrice else standardPrice) val additionalCosts = AdditionalCosts( baseFee = priceToHighlight.baseFee, blockingFee = priceToHighlight.blockingFee, currency = priceToHighlight.currency, ) runBlocking { storeAdditionalCosts(additionalCosts) } val organisationDetails = runBlocking { getOrganisationDetails() } Result( Success( evseId = evseId, shortenedEvseId = chargePointUI?.shortenedEvseId ?: evseId, availability = chargePoint.availability, discountExpiresAt = null, // disabled for now priceWithLineThrough = priceWithLineThrough?.energyPricePerKWh, priceToHighlight = priceToHighlight.energyPricePerKWh, additionalCostsUI = additionalCosts.toUI(), companyName = organisationDetails?.companyName.orEmpty(), termsOfServiceUrl = organisationDetails?.termsOfConditionUrl.orEmpty(), privacyPolicyUrl = organisationDetails?.privacyUrl.orEmpty(), companyLogoUrl = organisationDetails?.logoUrl, paymentIntentParams = event.paymentConfiguration, mocked = config.environment is Environment.Simulator, ), null ) })</ID>
+    <ID>ArgumentListWrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( it.shortenedEvseId, it.paymentIntentParams.paymentId )</ID>
+    <ID>ArgumentListWrapping:ChargingStartScreen.kt$( onDismissRequest = { onDismissError() }, sheetState = errorSheetState )</ID>
+    <ID>ArgumentListWrapping:ChargingStartScreen.kt$( onDismissRequest = { scope.launch { lockedSheetState.hide() } }, sheetState = lockedSheetState )</ID>
+    <ID>ArgumentListWrapping:DefaultChargingRepository.kt$DefaultChargingRepository$( onSuccess = { true.right() }, onFailure = { SessionExceptions.GenericError.left() } )</ID>
+    <ID>ArgumentListWrapping:DefaultChargingRepository.kt$DefaultChargingRepository$( onSuccess = { true.right() }, onFailure = { when (it) { is IllegalStateException -&gt; SessionExceptions.OngoingSession.left() else -&gt; SessionExceptions.GenericError.left() } } )</ID>
+    <ID>ArgumentListWrapping:EitherCallAdapterFactoryTest.kt$EitherCallAdapterFactoryTest$( customScope, Moshi.Builder() .add(com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory()) .build() )</ID>
+    <ID>ArgumentListWrapping:EitherCallAdapterFactoryTest.kt$EitherCallAdapterFactoryTest$( testScope, Moshi.Builder() .add(KotlinJsonAdapterFactory()) .build() )</ID>
+    <ID>ArgumentListWrapping:EnergyPriceLineChart.kt$( onDismissRequest = { scope.launch { lockedSheetState.hide() } }, sheetState = lockedSheetState )</ID>
+    <ID>ArgumentListWrapping:EnergyPriceLineChart.kt$( painter = if (priceOffer != null) painterResource(R.drawable.ic_offer) else painterResource( R.drawable.ic_no_offer ), contentDescription = null, tint = if (priceOffer != null) { color } else { MaterialTheme.colorScheme.secondary } )</ID>
+    <ID>ArgumentListWrapping:EnergyPriceLineChart.kt$(options, onCloseClick = { scope.launch { lockedSheetState.hide() } } )</ID>
+    <ID>ArgumentListWrapping:HelpScreen.kt$( text = stringResource(R.string.contact_support_agent), icon = R.drawable.ic_support_agent, modifier = Modifier.fillMaxWidth() )</ID>
+    <ID>ArgumentListWrapping:SitesRemoteMapper.kt$( maxPowerInKW = maxPowerInKW, type = type )</ID>
+    <ID>ArgumentListWrapping:SitesViewModel.kt$SitesViewModel$( activeSession.evseId, activeSession.duration.seconds )</ID>
+    <ID>ArgumentListWrapping:SwipeButton2.kt$( targetValue = if (sliderComplete) 0f else 1f, animationSpec = tween(durationMillis = 300), label = "sliderAlpha" )</ID>
+    <ID>ArgumentListWrapping:SwipeButton2.kt$( targetValue = if (sliderComplete) 0f else 1f, animationSpec = tween(durationMillis = 300), label = "trackScale" )</ID>
+    <ID>ArgumentListWrapping:TopBars.kt$( title = "TopBar title", onDismissClick = {}, menuItems = listOf( MenuItem( text = "Action 1", leadingIcon = { Icon( imageVector = Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.primary ) }, onClick = {}, tint = MaterialTheme.colorScheme.primary, inMenu = true ), MenuItem( text = "Action 2", leadingIcon = { Icon( imageVector = Icons.Default.Add, contentDescription = "Close", tint = MaterialTheme.colorScheme.primary ) }, onClick = {}, tint = MaterialTheme.colorScheme.primary, inMenu = false ) ) )</ID>
+    <ID>BlockCommentInitialStarAlignment:BuildSiteDetailSuccessState.kt$BuildSiteDetailSuccessState$/* Pricing-Schedule returns the prices for the prevalent power type of the given site. We will assign this prices to the corresponding charge point based on its power type. Remaining charge points will depend on the original response to the sites offer, but will update its price (when the discount time is expired) based on the information in the time slot table (provided from pricing-schedule). */</ID>
+    <ID>CommentSpacing:PricingGraph.kt$//pricingGraphViewModel.retryLoad()</ID>
+    <ID>CommentSpacing:SwipeButton.kt$//maybe add vibration here</ID>
+    <ID>CommentWrapping:PricingGraphViewModel.kt$PricingGraphViewModel$/* No retry needed for other states */</ID>
+    <ID>CyclomaticComplexMethod:CustomColorScheme.kt$CustomColorScheme$internal fun applyToColorScheme(baseColorScheme: ColorScheme): ColorScheme</ID>
+    <ID>CyclomaticComplexMethod:EnergyPriceLineChart.kt$@Composable internal fun EnergyPriceLineChart( dailyData: List&lt;DailyPricingData&gt;, modifier: Modifier = Modifier, chargeSite: ChargeSiteUI? = null, colors: GraphColors = GraphColorDefaults.colors(), animated: Boolean = true, showVerticalGridLines: Boolean = true, gridLineInterval: Int = DEFAULT_GRID_LINE_INTERVAL, minuteResolution: Int = DEFAULT_MINUTE_RESOLUTION, minYAxisPrice: Double? = null, gridLineDotSize: Float = DEFAULT_GRID_LINE_DOT_SIZE )</ID>
+    <ID>CyclomaticComplexMethod:OfferTypeAdapter.kt$OfferTypeAdapter$override fun fromJson(reader: JsonReader): OfferTypeDto?</ID>
+    <ID>EmptyDefaultConstructor:ChargeBannerSource.kt$ChargeBannerSource$()</ID>
+    <ID>EmptyDefaultConstructor:DefaultFiltersRepository.kt$DefaultFiltersRepository$( )</ID>
+    <ID>EmptyDefaultConstructor:FakePaymentsRepository.kt$FakePaymentsRepository$()</ID>
+    <ID>EmptyDefaultConstructor:GetActiveChargingSession.kt$GetActiveChargingSession$()</ID>
+    <ID>EmptyDefaultConstructor:GetSites.kt$GetSites$()</ID>
+    <ID>EmptyFunctionBlock:NetworkStorageInterceptorRegistryTest.kt$NetworkStorageInterceptorRegistryTest.&lt;no name provided&gt;${}</ID>
+    <ID>EmptyFunctionBlock:NetworkStorageInterceptorRegistryTest.kt$NetworkStorageInterceptorRegistryTest.HighPriorityInterceptor${}</ID>
+    <ID>EmptyFunctionBlock:NetworkStorageInterceptorRegistryTest.kt$NetworkStorageInterceptorRegistryTest.LowPriorityInterceptor${}</ID>
+    <ID>EmptyFunctionBlock:NetworkStorageInterceptorRegistryTest.kt$NetworkStorageInterceptorRegistryTest.TestStorageInterceptor${}</ID>
+    <ID>EmptyIfBlock:ActiveChargingViewModel.kt$ActiveChargingViewModel${ }</ID>
+    <ID>EmptyIfBlock:ChargePointList.kt${ }</ID>
+    <ID>Filename:CustomPreview.kt$de.elvah.charge.platform.ui.preview.CustomPreview.kt</ID>
+    <ID>Filename:MVIViewModel.kt$de.elvah.charge.platform.core.mvi.MVIViewModel.kt</ID>
+    <ID>Filename:PricingGraphIntent.kt$de.elvah.charge.features.sites.ui.pricinggraph.PricingGraphIntent.kt</ID>
+    <ID>FinalNewline:AdHocChargingState.kt$de.elvah.charge.features.adhoc_charging.ui.AdHocChargingState.kt</ID>
+    <ID>FinalNewline:ClearLocalSessionData.kt$de.elvah.charge.features.adhoc_charging.domain.usecase.ClearLocalSessionData.kt</ID>
+    <ID>FinalNewline:GetSessionDetails.kt$de.elvah.charge.features.payments.domain.usecase.GetSessionDetails.kt</ID>
+    <ID>FinalNewline:GetSiteScheduledPricing.kt$de.elvah.charge.features.sites.domain.usecase.GetSiteScheduledPricing.kt</ID>
+    <ID>FinalNewline:GooglePayManager.kt$de.elvah.charge.features.payments.domain.manager.GooglePayManager.kt</ID>
+    <ID>FinalNewline:GooglePayState.kt$de.elvah.charge.features.payments.domain.model.GooglePayState.kt</ID>
+    <ID>FinalNewline:HelpState.kt$de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpState.kt</ID>
+    <ID>FinalNewline:ManagerModule.kt$de.elvah.charge.features.payments.di.ManagerModule.kt</ID>
+    <ID>FinalNewline:NetworkInterceptorRegistryTest.kt$de.elvah.charge.platform.network.discovery.NetworkInterceptorRegistryTest.kt</ID>
+    <ID>FinalNewline:ObserveChargingSession.kt$de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession.kt</ID>
+    <ID>FinalNewline:OrganisationDetailsMapper.kt$de.elvah.charge.features.payments.data.mapper.OrganisationDetailsMapper.kt</ID>
+    <ID>FinalNewline:PaymentIntent.kt$de.elvah.charge.features.payments.domain.model.PaymentIntent.kt</ID>
+    <ID>FinalNewline:PaymentIntentMapper.kt$de.elvah.charge.features.payments.data.mapper.PaymentIntentMapper.kt</ID>
+    <ID>FinalNewline:PaymentIntentValues.kt$de.elvah.charge.features.payments.domain.model.PaymentIntentValues.kt</ID>
+    <ID>FinalNewline:PaymentSummary.kt$de.elvah.charge.features.payments.domain.model.PaymentSummary.kt</ID>
+    <ID>FinalNewline:PaymentSummaryMapper.kt$de.elvah.charge.features.payments.data.mapper.PaymentSummaryMapper.kt</ID>
+    <ID>FinalNewline:Reducer.kt$de.elvah.charge.platform.core.mvi.Reducer.kt</ID>
+    <ID>FinalNewline:ReviewState.kt$de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewState.kt</ID>
+    <ID>FinalNewline:SdkLifecycleManager.kt$de.elvah.charge.platform.startup.SdkLifecycleManager.kt</ID>
+    <ID>FinalNewline:SimulatorActivity.kt$de.elvah.charge.platform.simulator.ui.SimulatorActivity.kt</ID>
+    <ID>FinalNewline:StartRequestedDelayedSimulationStrategy.kt$de.elvah.charge.platform.simulator.domain.strategy.StartRequestedDelayedSimulationStrategy.kt</ID>
+    <ID>FinalNewline:StartedDelayedSimulationStrategy.kt$de.elvah.charge.platform.simulator.domain.strategy.StartedDelayedSimulationStrategy.kt</ID>
+    <ID>FinalNewline:StartupModule.kt$de.elvah.charge.platform.startup.di.StartupModule.kt</ID>
+    <ID>FinalNewline:StopRequestedDelayedSimulationStrategy.kt$de.elvah.charge.platform.simulator.domain.strategy.StopRequestedDelayedSimulationStrategy.kt</ID>
+    <ID>FinalNewline:StripeInitializationServiceTest.kt$de.elvah.charge.platform.startup.StripeInitializationServiceTest.kt</ID>
+    <ID>FinalNewline:SupportConfig.kt$de.elvah.charge.features.adhoc_charging.domain.model.SupportConfig.kt</ID>
+    <ID>FinalNewline:TimeCapsule.kt$de.elvah.charge.platform.core.mvi.TimeCapsule.kt</ID>
+    <ID>ForbiddenComment:SwipeButton2.kt$// TODO: In next step, we’ll trigger onBtnSwipe if drag passes threshold</ID>
+    <ID>FunKeywordSpacing:ChargeBanner.kt$fun</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable internal fun ActiveChargingScreen( viewModel: ActiveChargingViewModel, onSupportClick: () -&gt; Unit, onStopClick: () -&gt; Unit, onDismissClick: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun ActiveChargingActions( onStopClick: () -&gt; Unit, onSupportClick: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun ActiveCharging_Error( state: ActiveChargingState.Error, onRetryClick: (SessionStatus) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun ActiveCharging_Loading()</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun ActiveCharging_Success_Footer( logoUrl: String, additionalCostsUI: AdditionalCostsUI?, onStopClick: () -&gt; Unit, onSupportClick: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun AnimatedChargingTimeText(time: Duration, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun AnimatedKilowattsText(kilowatts: Double, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun ChargeIcon(status: SessionStatus, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun ChargeState( kilowatts: Double, duration: Duration, status: SessionStatus, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun ChargeStateSubtitle(status: SessionStatus, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun ChargeStateTitle(status: SessionStatus, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun ChargeState_Content( kilowatts: Double, duration: Duration, status: SessionStatus, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@Composable private fun TimeItem(time: Int, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable internal fun ActiveCharging_Success( state: ActiveChargingState.Success, onSupportClick: () -&gt; Unit, onStopClick: () -&gt; Unit, onBackClick: () -&gt; Unit, onDismissError: () -&gt; Unit, onHardCloseClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun AdditionalCostsLearnMoreSheet( additionalCostsUI: AdditionalCostsUI, )</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun ErrorModalSheet( error: Boolean, onDismissError: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@PreviewLightDark @Composable private fun ActiveCharging_Error_Preview()</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@PreviewLightDark @Composable private fun ActiveCharging_Success_Preview()</ID>
+    <ID>FunctionNaming:ActiveChargingScreen.kt$@PreviewLightDark @Composable private fun ChargeState_Preview()</ID>
+    <ID>FunctionNaming:AdHocChargingGraph.kt$@Composable internal fun AdHocChargingGraph( siteId: String, onFinishClicked: () -&gt; Unit, onGooglePayClick: (String) -&gt; Unit )</ID>
+    <ID>FunctionNaming:AdditionalCostsBanner.kt$@Composable internal fun AdditionalCostsBanner( onLearnMoreClicked: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:AdditionalCostsBanner.kt$@PreviewLightDark @Composable private fun AdditionalCostsBannerPreview()</ID>
+    <ID>FunctionNaming:AdditionalCostsCard.kt$@Composable internal fun AdditionalCostsCard( activationFee: Pricing?, blockingFee: Pricing?, blockingFeeMaxPrice: Pricing?, startsAfterMinutes: Int?, timeSlots: List&lt;BlockingFeeTimeSlot&gt;?, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:AdditionalCostsCard.kt$@Composable internal fun AdditionalCostsContent( activationFee: Pricing?, blockingFee: Pricing?, blockingFeeMaxPrice: Pricing?, startsAfterMinutes: Int?, timeSlots: List&lt;BlockingFeeTimeSlot&gt;?, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:AdditionalCostsCard.kt$@PreviewLightDark @Composable private fun NoActivationFeePreview()</ID>
+    <ID>FunctionNaming:AdditionalCostsCard.kt$@PreviewLightDark @Composable private fun NoBlockingFeePreview()</ID>
+    <ID>FunctionNaming:AdditionalCostsCard.kt$@PreviewLightDark @FontScalePreview @Composable private fun AdditionalCostsCardPreview()</ID>
+    <ID>FunctionNaming:Badges.kt$@Composable internal fun BrandBadge( @DrawableRes brandIcon: Int, contentDescription: String, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:Badges.kt$@Composable internal fun ChargingBadge( progress: Int, modifier: Modifier = Modifier, tint: Color = MaterialTheme.colorSchemeExtended.brand, )</ID>
+    <ID>FunctionNaming:Badges.kt$@Preview @Composable private fun BrandBadge_Preview()</ID>
+    <ID>FunctionNaming:Badges.kt$@Preview @Composable private fun ChargingBadge_Preview()</ID>
+    <ID>FunctionNaming:Banners.kt$@Composable internal fun Banner( text: String, @DrawableRes icon: Int, modifier: Modifier = Modifier, contentDescription: String? = null, onCloseClick: (() -&gt; Unit)? = null, tint: Color = MaterialTheme.colorSchemeExtended.onSuccess, containerColor: Color = MaterialTheme.colorSchemeExtended.success )</ID>
+    <ID>FunctionNaming:Banners.kt$@Composable internal fun ErrorBanner( text: String, modifier: Modifier = Modifier, autoClose: Boolean = false, onCloseClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:Banners.kt$@Composable internal fun TickBanner( text: String, modifier: Modifier = Modifier, autoClose: Boolean = true, onCloseClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:Banners.kt$@PreviewLightDark @Composable private fun Banner_Preview()</ID>
+    <ID>FunctionNaming:Banners.kt$@PreviewLightDark @Composable private fun ErrorBanner_Preview()</ID>
+    <ID>FunctionNaming:Brand.kt$@Composable internal fun CPOLogo( url: String, modifier: Modifier = Modifier, contentDescription: String? = null, )</ID>
+    <ID>FunctionNaming:Brand.kt$@Composable internal fun ElvahLogo(modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:Brand.kt$@PreviewLightDark @Composable private fun ElvahLogo_Preview()</ID>
+    <ID>FunctionNaming:Buttons.kt$@Composable internal fun ButtonPrimary( text: String, modifier: Modifier = Modifier, @DrawableRes icon: Int? = null, onClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:Buttons.kt$@Composable internal fun ButtonTertiary(text: String, modifier: Modifier = Modifier, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:Buttons.kt$@Composable internal fun GooglePayButton( onClick: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:Buttons.kt$@Composable internal fun SecondaryButton( text: String, modifier: Modifier = Modifier, @DrawableRes icon: Int? = null, tint: Color = MaterialTheme.colorSchemeExtended.brand, onClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:Buttons.kt$@PreviewLightDark @Composable private fun ButtonTertiary_Preview()</ID>
+    <ID>FunctionNaming:Buttons.kt$@PreviewLightDark @Composable private fun GooglePayButton_Preview()</ID>
+    <ID>FunctionNaming:Buttons.kt$@PreviewLightDark @Composable private fun PrimaryButton_Preview()</ID>
+    <ID>FunctionNaming:Buttons.kt$@PreviewLightDark @Composable private fun SecondaryButton_Preview()</ID>
+    <ID>FunctionNaming:Buttons.kt$@PreviewLightDark @Composable private fun SecondaryButton_WithIcon_Preview()</ID>
+    <ID>FunctionNaming:Cards.kt$@Composable internal fun BasicCard( modifier: Modifier = Modifier, backgroundColor: Color = MaterialTheme.colorScheme.background, borderColor: Color = MaterialTheme.colorSchemeExtended.decorativeStroke, paddingValues: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 16.dp), content: @Composable ColumnScope.() -&gt; Unit, )</ID>
+    <ID>FunctionNaming:Cards.kt$@PreviewLightDark @Composable private fun BasicCard_Preview()</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable internal fun ChargeBanner_ActiveSession( site: ChargeBannerActiveSessionRender, onBannerClick: (String) -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable internal fun ChargeBanner_Content( site: ChargeBannerRender, modifier: Modifier = Modifier, compact: Boolean = true, onDealClick: (ChargeBannerRender) -&gt; Unit )</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable internal fun ChargeBanner_Empty(modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable internal fun ChargeBanner_Error(modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable internal fun ChargeBanner_Loading(modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable private fun ChargeBannerContentCollapsed( price: Double, modifier: Modifier = Modifier, originalPrice: Double? = null, onBannerClick: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable private fun ChargeBannerContentExpanded( price: Double, modifier: Modifier = Modifier, originalPrice: Double? = null, onBannerClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable private fun ChargeBannerHeaderActiveSession(chargeTime: Duration, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable private fun ChargeBannerPrice( price: Double, modifier: Modifier = Modifier, originalPrice: Double? = null, collapsed: Boolean = false )</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable private fun LiveCounter( initialValue: Duration, step: Duration = 1.seconds, content: @Composable (Duration) -&gt; Unit )</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@Composable public fun ChargeBanner( modifier: Modifier = Modifier, display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET, variant: BannerVariant = BannerVariant.DEFAULT, )</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBannerCollapsed_Preview()</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBannerContentCollapsed_Preview()</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBannerContentExpanded_Preview()</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_ActiveSession_Preview()</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_Empty_Preview()</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_Error_Preview()</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_Loading_Preview()</ID>
+    <ID>FunctionNaming:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_Preview()</ID>
+    <ID>FunctionNaming:ChargePointItem.kt$@Composable internal fun ChargePointItem( modifier: Modifier = Modifier, contentPadding: PaddingValues = PaddingValues(), chargePoint: ChargePointItemUI, )</ID>
+    <ID>FunctionNaming:ChargePointItem.kt$@Composable private fun BadgeStatus( title: String, availability: ChargePointAvailability, )</ID>
+    <ID>FunctionNaming:ChargePointItem.kt$@PreviewLightDark @Composable private fun ChargePointItemPreview()</ID>
+    <ID>FunctionNaming:ChargePointItem.kt$@PreviewLightDark @Composable private fun OccupiedPreview()</ID>
+    <ID>FunctionNaming:ChargePointItem.kt$@PreviewLightDark @Composable private fun OutOfServicePreview()</ID>
+    <ID>FunctionNaming:ChargePointList.kt$@Composable public fun ChargePointList( modifier: Modifier = Modifier, display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET, onItemClick: (evseId: String) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@Composable internal fun ChargePointsList( state: SiteDetailState.Success, modifier: Modifier = Modifier, onChargePointSearchInputChange: (String) -&gt; Unit, onItemClick: (String) -&gt; Unit )</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@Composable private fun ChargePointItemWithSeparator( chargePoint: ChargePointItemUI, onClick: () -&gt; Unit, showSeparator: Boolean, modifier: Modifier = Modifier, contentPadding: PaddingValues = PaddingValues(), )</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@Composable private fun ChargePointsListContent( items: List&lt;ChargePointItemUI&gt;, onItemClick: (String) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@Composable private fun NoSearchResultsContent( searchInput: String, onClearFilters: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@Composable private fun NoStationsContent()</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@Composable private fun SelectChargePointHeader( state: SiteDetailState.Success, onChargePointSearchInputChange: (String) -&gt; Unit )</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@PreviewLightDark @Composable private fun ChargePointsListPreview()</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@PreviewLightDark @Composable private fun EmptyListPreview()</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@PreviewLightDark @Composable private fun NoSearchResultsPreview()</ID>
+    <ID>FunctionNaming:ChargesPointList.kt$@PreviewLightDark @Composable private fun NoStationsPreview()</ID>
+    <ID>FunctionNaming:ChargingPointDetailScreen.kt$@Composable internal fun ChargingPointDetailScreen( chargingPointDetailViewModel: ChargingPointDetailViewModel, onBackClick: () -&gt; Unit, onPaymentSuccess: (String, String) -&gt; Unit, onGooglePayClcik: (String) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ChargingPointDetailScreen.kt$@Composable private fun ChargingPartnerAttribution( logoUrl: String, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ChargingPointDetailScreen.kt$@Composable private fun ChargingPointDetailActions( modifier: Modifier = Modifier, onPayWithCardClick: () -&gt; Unit, onGooglePayClick: () -&gt; Unit, publishableKey: PublishableKey, )</ID>
+    <ID>FunctionNaming:ChargingPointDetailScreen.kt$@Composable private fun ChargingPointDetail_Error(onRetryClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:ChargingPointDetailScreen.kt$@Composable private fun ChargingPointDetail_Loading()</ID>
+    <ID>FunctionNaming:ChargingPointDetailScreen.kt$@Composable private fun TermsAndConditions( companyName: String, termsOfServiceUrl: String, privacyPolicyUrl: String, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ChargingPointDetailScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun ChargingPointDetailTopBar( onBackClick: () -&gt; Unit, onActionClick: (() -&gt; Unit)?, )</ID>
+    <ID>FunctionNaming:ChargingPointDetailScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun ChargingPointDetail_Success( state: ChargingPointDetailState.Success, onBackClick: () -&gt; Unit, onPayWithCardAction: () -&gt; Unit, onGooglePayAction: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ChargingPointDetailScreen.kt$@PreviewLightDark @Composable private fun ChargingPointDetail_Success_Preview()</ID>
+    <ID>FunctionNaming:ChargingSessionDelayBanner.kt$@Composable internal fun ChargingSessionDelayBanner( sessionStatus: SessionStatus, onStopChargingClick: () -&gt; Unit, onContactSupportClick: () -&gt; Unit, modifier: Modifier = Modifier, delayTimeSeconds: Long = 30 )</ID>
+    <ID>FunctionNaming:ChargingSessionDelayBanner.kt$@Composable private fun BannerActions( onStopChargingClick: () -&gt; Unit, onContactSupportClick: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:ChargingSessionDelayBanner.kt$@Composable private fun BannerHeader( modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:ChargingSessionDelayBanner.kt$@Composable private fun ChargingDelayBannerContent( onStopChargingClick: () -&gt; Unit, onContactSupportClick: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:ChargingSessionDelayBanner.kt$@PreviewLightDark @Composable private fun ChargingSessionDelayBanner_Preview()</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@Composable internal fun ChargingPointErrorModal( modifier: Modifier = Modifier, onCloseModal: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@Composable internal fun ChargingStartScreen( viewModel: ChargingStartViewModel, onStartCharging: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@Composable internal fun ChargingStart_Error()</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@Composable internal fun ChargingStart_Loading()</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@Composable private fun ChargingActions(modifier: Modifier = Modifier, onStartCharging: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@Composable private fun ChargingPointLockedModal( modifier: Modifier = Modifier, onCloseModal: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@Composable private fun ConnectVehicleMessage(modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@Composable private fun StartCharging_Success_Content( evseId: String, modifier: Modifier = Modifier, onLockedClicked: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@Composable private fun StartCharging_Success_Footer( logoUrl: String, modifier: Modifier = Modifier, onStartCharging: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable internal fun ChargingStart_Success( state: ChargingStartState.Success, onStartCharging: () -&gt; Unit, onCloseBanner: () -&gt; Unit, onDismissError: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@PreviewLightDark @Composable private fun ChargingPointErrorModal_Preview()</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@PreviewLightDark @Composable private fun ChargingPointLockedModal_Preview()</ID>
+    <ID>FunctionNaming:ChargingStartScreen.kt$@PreviewLightDark @Composable private fun ChargingStart_Success_Preview()</ID>
+    <ID>FunctionNaming:CircularIconButton.kt$@Composable internal fun CircularIconButton( modifier: Modifier = Modifier, iconResId: Int, enabled: Boolean = true, onClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:CircularIconButton.kt$@PreviewLightDark @Composable private fun CircularIconButtonPreview()</ID>
+    <ID>FunctionNaming:Dropdown.kt$@Composable internal fun DropdownLabel(selectedText: String)</ID>
+    <ID>FunctionNaming:Dropdown.kt$@Composable internal fun DropdownMenuButton(selectedOption: String, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:EnergyPriceBanner.kt$@OptIn(ExperimentalTime::class) @Composable internal fun EnergyPriceBanner( discountExpiresAt: LocalDateTime?, priceWithLineThrough: Pricing?, priceToHighlight: Pricing, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:EnergyPriceBanner.kt$@PreviewLightDark @FontScalePreview @Composable private fun EnergyPriceBannerPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceBanner.kt$@PreviewLightDark @FontScalePreview @Composable private fun WithoutDiscountPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceChart.kt$@Composable private fun DayChart( dayData: DailyEnergyData, maxPrice: Double, minPrice: Double, progress: Float, modifier: Modifier = Modifier, showVerticalGridLines: Boolean = true, gridLineInterval: Int = 4, gridLineDotSize: Float = 4f )</ID>
+    <ID>FunctionNaming:EnergyPriceChart.kt$@Composable private fun EnergyPriceBar( data: EnergyPriceData, maxPrice: Double, minPrice: Double, progress: Float, showHourLabel: Boolean = true, barColor: Color = MaterialTheme.colorSchemeExtended.brand, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:EnergyPriceChart.kt$@OptIn(ExperimentalFoundationApi::class) @Composable internal fun EnergyPriceChart( dailyData: List&lt;DailyEnergyData&gt;, modifier: Modifier = Modifier, animated: Boolean = true, showVerticalGridLines: Boolean = true, gridLineInterval: Int = 4, minYAxisPrice: Double? = null, // User-defined minimum Y-axis price gridLineDotSize: Float = 4f // Size of dots in dotted grid lines )</ID>
+    <ID>FunctionNaming:EnergyPriceChart.kt$@Preview(showBackground = true) @Composable private fun EnergyPriceChart_Preview()</ID>
+    <ID>FunctionNaming:EnergyPriceChart.kt$@Preview(showBackground = true, name = "Custom Min Y-Axis Price") @Composable private fun EnergyPriceChartCustomMinYAxisPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceChart.kt$@Preview(showBackground = true, name = "Dotted Grid Lines") @Composable private fun EnergyPriceChartDottedGridPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceChart.kt$@Preview(showBackground = true, name = "High Price Variation") @Composable private fun EnergyPriceChartHighVariationPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceChart.kt$@Preview(showBackground = true, name = "Low Price Variation") @Composable private fun EnergyPriceChartLowVariationPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceChartBase.kt$@Composable internal fun EnergyPriceLineChart1( data: List&lt;EnergyPriceData&gt;, modifier: Modifier = Modifier, animated: Boolean = true )</ID>
+    <ID>FunctionNaming:EnergyPriceChartBase.kt$@Composable private fun EnergyPriceBar( data: EnergyPriceData, maxPrice: Double, minPrice: Double, progress: Float, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:EnergyPriceChartBase.kt$@Composable private fun EnergyPriceChart1( data: List&lt;EnergyPriceData&gt;, modifier: Modifier = Modifier, animated: Boolean = true )</ID>
+    <ID>FunctionNaming:EnergyPriceChartBase.kt$@Preview(showBackground = true) @Composable private fun EnergyPriceChart_Preview()</ID>
+    <ID>FunctionNaming:EnergyPriceChartBase.kt$@Preview(showBackground = true) @Composable private fun EnergyPriceLineChart_Preview()</ID>
+    <ID>FunctionNaming:EnergyPriceChartBase.kt$@Preview(showBackground = true, name = "Dark Theme") @Composable private fun EnergyPriceChartDarkPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceChartBase.kt$@Preview(showBackground = true, name = "High Price Variation") @Composable private fun EnergyPriceChartHighVariationPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceChartBase.kt$@Preview(showBackground = true, name = "Low Price Variation") @Composable private fun EnergyPriceChartLowVariationPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable internal fun DayLabel(selectedPage: Int)</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable internal fun EnergyPriceLineChart( dailyData: List&lt;DailyPricingData&gt;, modifier: Modifier = Modifier, chargeSite: ChargeSiteUI? = null, colors: GraphColors = GraphColorDefaults.colors(), animated: Boolean = true, showVerticalGridLines: Boolean = true, gridLineInterval: Int = DEFAULT_GRID_LINE_INTERVAL, minuteResolution: Int = DEFAULT_MINUTE_RESOLUTION, minYAxisPrice: Double? = null, gridLineDotSize: Float = DEFAULT_GRID_LINE_DOT_SIZE )</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun CloseIcon(modifier: Modifier = Modifier, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun DayLineChart( dayData: DailyPricingData, maxPrice: Double, minPrice: Double, progress: Float, minuteResolution: Int, colors: GraphColors, modifier: Modifier = Modifier, showVerticalGridLines: Boolean = true, gridLineInterval: Int = 4, gridLineDotSize: Float = 4f, isToday: Boolean = false, onSlotClick: (LocalTime) -&gt; Unit )</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun HourSlot(timeRange: TimeRange, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun LivePriceTimeSlot(selectedPriceOffer: PriceOffer?, selectedPage: Int)</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun LivePricingHeader(selectedType: ChargeType)</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun LivePricingPrice( selectedPrice: Double, offerSelected: Boolean, currency: String, regularPrice: Double, textColor: Color = MaterialTheme.colorSchemeExtended.brand )</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun OfferBadge( priceOffer: PriceOffer?, modifier: Modifier = Modifier, color: Color = MaterialTheme.colorSchemeExtended.brand )</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun TypeModalContent( options: List&lt;PlugType&gt;, modifier: Modifier = Modifier, onCloseClick: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun TypeModalContentHeader(modifier: Modifier = Modifier, onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun TypeModalContentList(options: List&lt;PlugType&gt;, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@Composable private fun TypeModalContentListItem(option: PlugType, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun TypeDropdownSelector( selectedOption: String, options: List&lt;PlugType&gt;, )</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChartCustomColorsPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChartCustomMinYAxisPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChartDottedGridPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChartHighResPreview()</ID>
+    <ID>FunctionNaming:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChart_Preview()</ID>
+    <ID>FunctionNaming:Errors.kt$@Composable internal fun FullScreenError( modifier: Modifier = Modifier, onRetryClick: (() -&gt; Unit)? = null )</ID>
+    <ID>FunctionNaming:Errors.kt$@PreviewLightDark @Composable private fun FullScreenError_Preview()</ID>
+    <ID>FunctionNaming:Errors.kt$@PreviewLightDark @Composable private fun FullScreenError_Retry_Preview()</ID>
+    <ID>FunctionNaming:HelpScreen.kt$@Composable internal fun HelpAndSupportScreen( viewModel: HelpViewModel, onBackClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:HelpScreen.kt$@Composable private fun HelpScreen_Content( state: HelpState.Success, onBackClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:HelpScreen.kt$@Composable private fun HelpScreen_Error()</ID>
+    <ID>FunctionNaming:HelpScreen.kt$@Composable private fun HelpScreen_Loading()</ID>
+    <ID>FunctionNaming:HelpScreen.kt$@Composable private fun SupportActions(supportContacts: SupportContacts, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:HelpScreen.kt$@Preview @Composable private fun HelpScreen_Content_Preview()</ID>
+    <ID>FunctionNaming:IconButtons.kt$@Composable internal fun Chevron(onClick: () -&gt; Unit = {})</ID>
+    <ID>FunctionNaming:IconButtons.kt$@PreviewLightDark @Composable private fun Chevron_Preview()</ID>
+    <ID>FunctionNaming:Lists.kt$@Composable internal fun BulletedList(items: List&lt;String&gt;, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:Lists.kt$@Composable internal fun OrderedList(items: List&lt;String&gt;, modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:Lists.kt$@Preview @Composable private fun BulletedList_Preview()</ID>
+    <ID>FunctionNaming:Lists.kt$@PreviewLightDark @Composable private fun OrderedList_Preview()</ID>
+    <ID>FunctionNaming:Loadings.kt$@Composable internal fun FullScreenLoading(modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:Loadings.kt$@PreviewLightDark @Composable private fun FullScreenLoading_Preview()</ID>
+    <ID>FunctionNaming:OfferCounterBanner.kt$@Composable internal fun OfferCounterBanner( discountExpiresAt: LocalDateTime, modifier: Modifier = Modifier, onOfferExpired: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:OfferCounterBanner.kt$@OptIn(ExperimentalTime::class) @PreviewLightDark @Composable private fun OfferCounterBannerPreview()</ID>
+    <ID>FunctionNaming:PricingGraph.kt$@Composable public fun PricingGraph( siteId: String, modifier: Modifier = Modifier, display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET, colors: GraphColors = GraphColorDefaults.colors(), onError: ((String) -&gt; Unit)? = null, onRefreshSuccess: (() -&gt; Unit)? = null, minYAxisPrice: Double? = null, gridLineDotSize: Float = 4f )</ID>
+    <ID>FunctionNaming:PricingGraphContent.kt$@Composable internal fun PricingGraphContent( scheduledPricing: ScheduledPricingUI, chargeSite: ChargeSiteUI, modifier: Modifier = Modifier, colors: GraphColors = GraphColorDefaults.colors(), minYAxisPrice: Double? = null, gridLineDotSize: Float = 4f, onChargeNowClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:PricingGraphContent.kt$@Composable internal fun PricingGraphEmpty( modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:PricingGraphContent.kt$@Composable internal fun PricingGraphError( onRetry: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:PricingGraphContent.kt$@Composable internal fun PricingGraphLoading( modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:ReviewScreen.kt$@Composable internal fun ReviewScreen( viewModel: ReviewViewModel, onDoneClick: () -&gt; Unit, onDismissClick: () -&gt; Unit, onContactSupport: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ReviewScreen.kt$@Composable private fun ReviewScreen_Content( state: ReviewState.Success, onDoneClick: () -&gt; Unit, onDismissClick: () -&gt; Unit, onContactSupport: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ReviewScreen.kt$@Composable private fun ReviewScreen_Error()</ID>
+    <ID>FunctionNaming:ReviewScreen.kt$@Composable private fun ReviewScreen_Loading()</ID>
+    <ID>FunctionNaming:ReviewScreen.kt$@PreviewLightDark @Composable private fun ReviewScreen_Content_Preview()</ID>
+    <ID>FunctionNaming:SearchChargePointInputField.kt$@Composable internal fun SearchChargePointInputField( modifier: Modifier = Modifier, searchInput: String, onSearchInputChange: (String) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:SearchChargePointInputField.kt$@PreviewLightDark @Composable private fun SearchChargePointInputFieldPreview()</ID>
+    <ID>FunctionNaming:SegmentedButtons.kt$@Composable internal fun DaySelector( selectedDay: Int, modifier: Modifier = Modifier, selectedIcon: @Composable () -&gt; Unit = {}, onDaySelected: (Int) -&gt; Unit )</ID>
+    <ID>FunctionNaming:SegmentedButtons.kt$@PreviewLightDark @Composable private fun DaySelector_Preview()</ID>
+    <ID>FunctionNaming:ShortenedEvseBigBadge.kt$@Composable internal fun ShortenedEvseBigBadge( text: String, modifier: Modifier = Modifier, availability: ChargePointAvailability = ChargePointAvailability.AVAILABLE, darkMode: Boolean = isSystemInDarkTheme(), )</ID>
+    <ID>FunctionNaming:ShortenedEvseBigBadge.kt$@PreviewLightDark @Composable private fun LongTextPreview()</ID>
+    <ID>FunctionNaming:ShortenedEvseBigBadge.kt$@PreviewLightDark @Composable private fun OutOfServicePreview()</ID>
+    <ID>FunctionNaming:ShortenedEvseBigBadge.kt$@PreviewLightDark @Composable private fun ShortenedEvseBigBadgePreview()</ID>
+    <ID>FunctionNaming:SimulatorGraph.kt$@Composable internal fun SimulatorGraph(onFinishClicked: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:SiteDetailScreen.kt$@Composable internal fun SiteDetailScreen( viewModel: SiteDetailViewModel, onCloseClick: () -&gt; Unit, onItemClick: (String) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:SiteDetailScreen.kt$@Composable private fun SiteDetailScreen_Content( state: SiteDetailState.Success, onCloseClick: () -&gt; Unit, onOfferExpired: () -&gt; Unit, onChargePointSearchInputChange: (String) -&gt; Unit, onRefreshAvailability: () -&gt; Unit, onItemClick: (String) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:SiteDetailScreen.kt$@Composable private fun SiteDetailScreen_Error()</ID>
+    <ID>FunctionNaming:SiteDetailScreen.kt$@Composable private fun SiteDetailScreen_Loading()</ID>
+    <ID>FunctionNaming:SiteDetailScreen.kt$@Composable private fun SiteDetailTopBar( onCloseClick: () -&gt; Unit, onOfferExpired: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:SiteDetailScreen.kt$@PreviewLightDark @Composable private fun SiteDetailScreen_Content_NoDiscount_Preview()</ID>
+    <ID>FunctionNaming:SiteDetailScreen.kt$@PreviewLightDark @Composable private fun SiteDetailScreen_Content_Preview()</ID>
+    <ID>FunctionNaming:SiteHeader.kt$@Composable internal fun SiteDetailHeader( operatorName: String, address: String?, coordinates: Pair&lt;Double, Double&gt;, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:SiteHeader.kt$@PreviewLightDark @Composable private fun SiteDetailHeader_Preview()</ID>
+    <ID>FunctionNaming:SwipeButton.kt$@Composable private fun SwipeIndicator( modifier: Modifier = Modifier, icon: ImageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight, backgroundColor: Color, tint: Color, )</ID>
+    <ID>FunctionNaming:SwipeButton.kt$@OptIn(ExperimentalFoundationApi::class) @Composable internal fun SwipeButton( text: String, onSwipeText: String? = null, modifier: Modifier = Modifier, backgroundColor: Color = MaterialTheme.colorSchemeExtended.brand, contentColor: Color = MaterialTheme.colorSchemeExtended.onBrand, shouldMoveText: Boolean = true, onSwiped: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:SwipeButton.kt$@Preview @Composable private fun SwipeButtonPreview()</ID>
+    <ID>FunctionNaming:SwipeButton.kt$@Preview @Composable private fun SwipeIndicator_Preview()</ID>
+    <ID>FunctionNaming:SwipeButton2.kt$@Composable internal fun SlideToBookButton( btnText: String, outerBtnBackgroundColor: Color, sliderBtnBackgroundColor: Color, @DrawableRes sliderBtnIcon: Int, sliderPositionPx: Float, onDragUpdated: (Float) -&gt; Unit, onBtnSwipe: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:SwipeButton2.kt$@Composable private fun SliderButton( sliderBtnWidth: Dp, // Width of the button sliderBtnBackgroundColor: Color, // Background color for the thumb @DrawableRes sliderBtnIcon: Int // Icon shown inside the thumb )</ID>
+    <ID>FunctionNaming:Texts.kt$@Composable internal fun CopyLarge( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.primary )</ID>
+    <ID>FunctionNaming:Texts.kt$@Composable internal fun CopyMedium( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.primary, textDecoration: TextDecoration = TextDecoration.None )</ID>
+    <ID>FunctionNaming:Texts.kt$@Composable internal fun CopySmall( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.secondary, textDecoration: TextDecoration = TextDecoration.None )</ID>
+    <ID>FunctionNaming:Texts.kt$@Composable internal fun CopyXLarge( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.primary )</ID>
+    <ID>FunctionNaming:Texts.kt$@Composable internal fun TitleLarge( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.primary )</ID>
+    <ID>FunctionNaming:Texts.kt$@Composable internal fun TitleMedium( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.primary )</ID>
+    <ID>FunctionNaming:Texts.kt$@Composable internal fun TitleSmall( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.primary )</ID>
+    <ID>FunctionNaming:Texts.kt$@Composable internal fun TitleXLarge( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.primary )</ID>
+    <ID>FunctionNaming:Theme.kt$@Composable internal fun ElvahChargeTheme( darkTheme: Boolean = isSystemInDarkTheme(), dynamicColor: Boolean = false, customLightColorScheme: CustomColorScheme? = null, customDarkColorScheme: CustomColorScheme? = null, content: @Composable () -&gt; Unit )</ID>
+    <ID>FunctionNaming:Timer.kt$@Composable internal fun Timer( intervalMillis: Long = 60_000, onTick: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:TopBars.kt$@Composable internal fun BackIcon(onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:TopBars.kt$@Composable internal fun MinifyIcon(onClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:TopBars.kt$@Composable private fun DropdownMenuWithDetails(menuItems: List&lt;MenuItem&gt;)</ID>
+    <ID>FunctionNaming:TopBars.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable internal fun DismissableTopAppBar( title: String, onDismissClick: (() -&gt; Unit)? = null, menuItems: List&lt;MenuItem&gt; = emptyList(), )</ID>
+    <ID>FunctionNaming:TopBars.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable internal fun TopAppBar( title: String, onBackClick: (() -&gt; Unit)? = null, )</ID>
+    <ID>FunctionNaming:TopBars.kt$@Preview @Composable private fun DefaultTopAppBar_Preview()</ID>
+    <ID>FunctionNaming:TopBars.kt$@Preview @Composable private fun TopAppBarWithBack_Preview()</ID>
+    <ID>FunctionNaming:TopBars.kt$@PreviewLightDark @Composable private fun DismissableTopAppBarWithActions_Preview()</ID>
+    <ID>FunctionNaming:TopBars.kt$@PreviewLightDark @Composable private fun DismissableTopAppBar_Preview()</ID>
+    <ID>FunctionNaming:UnderlinedButton.kt$@Composable internal fun UnderlinedButton( text: String, modifier: Modifier = Modifier, onClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:UnderlinedButton.kt$@PreviewLightDark @Composable private fun UnderlinedButtonPreview()</ID>
+    <ID>ImplicitDefaultLocale:EnergyPriceChartBase.kt$String.format("%.2f", data.price)</ID>
+    <ID>ImplicitDefaultLocale:EnergyPriceChartBase.kt$String.format("%.2f", maxPrice)</ID>
+    <ID>ImplicitDefaultLocale:EnergyPriceChartBase.kt$String.format("%.2f", minPrice)</ID>
+    <ID>ImportOrdering:DefaultPaymentsRepositoryTest.kt$import de.elvah.charge.features.adhoc_charging.ChargingSessionPrefs import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore import de.elvah.charge.features.payments.data.remote.api.ChargeSettlementApi import de.elvah.charge.features.payments.data.remote.api.IntegrateApi import de.elvah.charge.features.payments.domain.model.PublishableKey import de.elvah.charge.features.payments.data.remote.model.OrganisationDetailsDto import de.elvah.charge.features.payments.data.remote.model.response.AuthorisationAmount import de.elvah.charge.features.payments.data.remote.model.response.CreatePaymentIntentResponse import de.elvah.charge.features.payments.data.remote.model.response.Data import de.elvah.charge.features.payments.data.remote.model.response.GetPublishableKeyResponse import io.mockk.coEvery import io.mockk.coVerify import io.mockk.every import io.mockk.mockk import kotlinx.coroutines.flow.flowOf import kotlinx.coroutines.test.runTest import org.junit.Assert.assertEquals import org.junit.Assert.assertTrue import org.junit.Assert.fail import org.junit.Before import org.junit.Test</ID>
+    <ID>Indentation:ActiveChargingScreen.kt$ </ID>
+    <ID>Indentation:AdHocChargingGraph.kt$ </ID>
+    <ID>Indentation:AdditionalCostMapper.kt$ </ID>
+    <ID>Indentation:AdditionalCostsCard.kt$ </ID>
+    <ID>Indentation:ChargeBanner.kt$ </ID>
+    <ID>Indentation:ChargePointItem.kt$ </ID>
+    <ID>Indentation:ChargingPointDetailScreen.kt$ </ID>
+    <ID>Indentation:OfferTypeAdapter.kt$OfferTypeAdapter$ </ID>
+    <ID>Indentation:PricingGraphViewModel.kt$PricingGraphViewModel$ </ID>
+    <ID>Indentation:ShortenedEvseBigBadge.kt$ </ID>
+    <ID>Indentation:StartFailsSimulationStrategy.kt$StartFailsSimulationStrategy$ </ID>
+    <ID>Indentation:Timer.kt$ </ID>
+    <ID>LongMethod:ActiveChargingScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable internal fun ActiveCharging_Success( state: ActiveChargingState.Success, onSupportClick: () -&gt; Unit, onStopClick: () -&gt; Unit, onBackClick: () -&gt; Unit, onDismissError: () -&gt; Unit, onHardCloseClick: () -&gt; Unit, )</ID>
+    <ID>LongMethod:AdHocChargingGraph.kt$@Composable internal fun AdHocChargingGraph( siteId: String, onFinishClicked: () -&gt; Unit, onGooglePayClick: (String) -&gt; Unit )</ID>
+    <ID>LongMethod:AdditionalCostsCard.kt$@Composable internal fun AdditionalCostsContent( activationFee: Pricing?, blockingFee: Pricing?, blockingFeeMaxPrice: Pricing?, startsAfterMinutes: Int?, timeSlots: List&lt;BlockingFeeTimeSlot&gt;?, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:BuildSiteDetailSuccessState.kt$BuildSiteDetailSuccessState$operator fun invoke( chargeSite: ChargeSite, pricing: ScheduledPricing, timeSlot: ScheduledPricing.TimeSlot?, searchInput: String, address: String?, ): SiteDetailState.Success</ID>
+    <ID>LongMethod:ChargePointItem.kt$@Composable internal fun ChargePointItem( modifier: Modifier = Modifier, contentPadding: PaddingValues = PaddingValues(), chargePoint: ChargePointItemUI, )</ID>
+    <ID>LongMethod:ChargingPointDetailScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun ChargingPointDetail_Success( state: ChargingPointDetailState.Success, onBackClick: () -&gt; Unit, onPayWithCardAction: () -&gt; Unit, onGooglePayAction: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:ChargingStartScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable internal fun ChargingStart_Success( state: ChargingStartState.Success, onStartCharging: () -&gt; Unit, onCloseBanner: () -&gt; Unit, onDismissError: () -&gt; Unit, )</ID>
+    <ID>LongMethod:EnergyPriceBanner.kt$@OptIn(ExperimentalTime::class) @Composable internal fun EnergyPriceBanner( discountExpiresAt: LocalDateTime?, priceWithLineThrough: Pricing?, priceToHighlight: Pricing, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:EnergyPriceChartBase.kt$@Composable internal fun EnergyPriceLineChart1( data: List&lt;EnergyPriceData&gt;, modifier: Modifier = Modifier, animated: Boolean = true )</ID>
+    <ID>LongMethod:EnergyPriceChartBase.kt$@Composable private fun EnergyPriceChart1( data: List&lt;EnergyPriceData&gt;, modifier: Modifier = Modifier, animated: Boolean = true )</ID>
+    <ID>LongMethod:EnergyPriceLineChart.kt$@Composable internal fun EnergyPriceLineChart( dailyData: List&lt;DailyPricingData&gt;, modifier: Modifier = Modifier, chargeSite: ChargeSiteUI? = null, colors: GraphColors = GraphColorDefaults.colors(), animated: Boolean = true, showVerticalGridLines: Boolean = true, gridLineInterval: Int = DEFAULT_GRID_LINE_INTERVAL, minuteResolution: Int = DEFAULT_MINUTE_RESOLUTION, minYAxisPrice: Double? = null, gridLineDotSize: Float = DEFAULT_GRID_LINE_DOT_SIZE )</ID>
+    <ID>LongMethod:FakeSitesRepository.kt$FakeSitesRepository$private fun createMockScheduledPricing(): ScheduledPricing</ID>
+    <ID>LongMethod:FormatTimeUntil.kt$private fun formatTimeLocalized( context: Context, years: Int, months: Int, days: Int, hours: Int, minutes: Int, seconds: Int, ): Pair&lt;String, Duration?&gt;</ID>
+    <ID>LongMethod:GraphDrawingFunctions.kt$private fun drawStepLineChartPaths(context: StepLineDrawingContext)</ID>
+    <ID>LongMethod:InterruptedChargeSimulationStrategy.kt$InterruptedChargeSimulationStrategy$override suspend fun generateNextSession(context: SimulationContext): ChargingSession?</ID>
+    <ID>LongMethod:PricingGraph.kt$@Composable public fun PricingGraph( siteId: String, modifier: Modifier = Modifier, display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET, colors: GraphColors = GraphColorDefaults.colors(), onError: ((String) -&gt; Unit)? = null, onRefreshSuccess: (() -&gt; Unit)? = null, minYAxisPrice: Double? = null, gridLineDotSize: Float = 4f )</ID>
+    <ID>LongMethod:ReviewScreen.kt$@Composable private fun ReviewScreen_Content( state: ReviewState.Success, onDoneClick: () -&gt; Unit, onDismissClick: () -&gt; Unit, onContactSupport: () -&gt; Unit )</ID>
+    <ID>LongMethod:SearchChargePointInputField.kt$@Composable internal fun SearchChargePointInputField( modifier: Modifier = Modifier, searchInput: String, onSearchInputChange: (String) -&gt; Unit, )</ID>
+    <ID>LongMethod:StopRejectedSimulationStrategy.kt$StopRejectedSimulationStrategy$override suspend fun generateNextSession(context: SimulationContext): ChargingSession?</ID>
+    <ID>LongMethod:SwipeButton.kt$@OptIn(ExperimentalFoundationApi::class) @Composable internal fun SwipeButton( text: String, onSwipeText: String? = null, modifier: Modifier = Modifier, backgroundColor: Color = MaterialTheme.colorSchemeExtended.brand, contentColor: Color = MaterialTheme.colorSchemeExtended.onBrand, shouldMoveText: Boolean = true, onSwiped: () -&gt; Unit, )</ID>
+    <ID>LongMethod:SwipeButton2.kt$@Composable internal fun SlideToBookButton( btnText: String, outerBtnBackgroundColor: Color, sliderBtnBackgroundColor: Color, @DrawableRes sliderBtnIcon: Int, sliderPositionPx: Float, onDragUpdated: (Float) -&gt; Unit, onBtnSwipe: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:ActiveChargingScreen.kt$( state: ActiveChargingState.Success, onSupportClick: () -&gt; Unit, onStopClick: () -&gt; Unit, onBackClick: () -&gt; Unit, onDismissError: () -&gt; Unit, onHardCloseClick: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:AdditionalCostsCard.kt$( activationFee: Pricing?, blockingFee: Pricing?, blockingFeeMaxPrice: Pricing?, startsAfterMinutes: Int?, timeSlots: List&lt;BlockingFeeTimeSlot&gt;?, modifier: Modifier = Modifier, )</ID>
+    <ID>LongParameterList:Banners.kt$( text: String, @DrawableRes icon: Int, modifier: Modifier = Modifier, contentDescription: String? = null, onCloseClick: (() -&gt; Unit)? = null, tint: Color = MaterialTheme.colorSchemeExtended.onSuccess, containerColor: Color = MaterialTheme.colorSchemeExtended.success )</ID>
+    <ID>LongParameterList:BuildSiteDetailSuccessState.kt$BuildSiteDetailSuccessState$( searchInput: String, evseId: String, availability: ChargePointAvailability, pricePerKwh: Pricing, todayPricePerKwh: Pricing, powerType: String?, maxPowerInKW: Float?, )</ID>
+    <ID>LongParameterList:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( private val getPaymentConfiguration: GetPaymentConfiguration, private val initStripeConfig: InitStripeConfig, private val getOrganisationDetails: GetOrganisationDetails, private val storeAdditionalCosts: StoreAdditionalCosts, private val sitesRepository: SitesRepository, private val savedStateHandle: SavedStateHandle, private val config: Config, private val googlePayManager: GooglePayManager, )</ID>
+    <ID>LongParameterList:EnergyPriceChart.kt$( dailyData: List&lt;DailyEnergyData&gt;, modifier: Modifier = Modifier, animated: Boolean = true, showVerticalGridLines: Boolean = true, gridLineInterval: Int = 4, minYAxisPrice: Double? = null, // User-defined minimum Y-axis price gridLineDotSize: Float = 4f // Size of dots in dotted grid lines )</ID>
+    <ID>LongParameterList:EnergyPriceChart.kt$( data: EnergyPriceData, maxPrice: Double, minPrice: Double, progress: Float, showHourLabel: Boolean = true, barColor: Color = MaterialTheme.colorSchemeExtended.brand, modifier: Modifier = Modifier )</ID>
+    <ID>LongParameterList:EnergyPriceChart.kt$( dayData: DailyEnergyData, maxPrice: Double, minPrice: Double, progress: Float, modifier: Modifier = Modifier, showVerticalGridLines: Boolean = true, gridLineInterval: Int = 4, gridLineDotSize: Float = 4f )</ID>
+    <ID>LongParameterList:EnergyPriceLineChart.kt$( dailyData: List&lt;DailyPricingData&gt;, modifier: Modifier = Modifier, chargeSite: ChargeSiteUI? = null, colors: GraphColors = GraphColorDefaults.colors(), animated: Boolean = true, showVerticalGridLines: Boolean = true, gridLineInterval: Int = DEFAULT_GRID_LINE_INTERVAL, minuteResolution: Int = DEFAULT_MINUTE_RESOLUTION, minYAxisPrice: Double? = null, gridLineDotSize: Float = DEFAULT_GRID_LINE_DOT_SIZE )</ID>
+    <ID>LongParameterList:EnergyPriceLineChart.kt$( dayData: DailyPricingData, maxPrice: Double, minPrice: Double, progress: Float, minuteResolution: Int, colors: GraphColors, modifier: Modifier = Modifier, showVerticalGridLines: Boolean = true, gridLineInterval: Int = 4, gridLineDotSize: Float = 4f, isToday: Boolean = false, onSlotClick: (LocalTime) -&gt; Unit )</ID>
+    <ID>LongParameterList:FormatTimeUntil.kt$( context: Context, years: Int, months: Int, days: Int, hours: Int, minutes: Int, seconds: Int, )</ID>
+    <ID>LongParameterList:GraphColorDefaults.kt$GraphColorDefaults$( offerSelectedLine: Color = MaterialTheme.colorSchemeExtended.brand, offerSelectedArea: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.6f), offerUnselectedLine: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.6f), offerUnselectedArea: Color = MaterialTheme.colorSchemeExtended.brand.copy(alpha = 0.3f), regularSelectedLine: Color = Color.Companion.Gray.copy(alpha = 0.8f), regularSelectedArea: Color = Color.Companion.Gray.copy(alpha = 0.6f), regularUnselectedLine: Color = Color.Companion.Gray.copy(alpha = 0.4f), regularUnselectedArea: Color = Color.Companion.Gray.copy(alpha = 0.3f), verticalLine: Color = Color.Companion.Gray.copy(alpha = 0.8f), currentTimeMarker: Color = MaterialTheme.colorScheme.primary )</ID>
+    <ID>LongParameterList:GraphDrawingFunctions.kt$( dayData: DailyPricingData, maxPrice: Double, minPrice: Double, progress: Float, minuteResolution: Int, colors: GraphColors, isToday: Boolean = false )</ID>
+    <ID>LongParameterList:GraphDrawingFunctions.kt$( maxPrice: Double, minPrice: Double, minuteResolution: Int, chartHeight: Float, chartBottom: Float, colors: GraphColors, dayData: DailyPricingData )</ID>
+    <ID>LongParameterList:GraphDrawingFunctions.kt$( paths: DrawingPaths, lastWasOffer: Boolean, lastWasSelected: Boolean, i: Int, stepWidth: Float, lastY: Float )</ID>
+    <ID>LongParameterList:PaymentIntentMapperTest.kt$PaymentIntentMapperTest$( paymentIntentId: String, accountId: String, paymentId: String, clientSecret: String, amountValue: Double, currency: String )</ID>
+    <ID>LongParameterList:PaymentSummaryUI.kt$PaymentSummaryUI$( val evseId: String, val cpoName: String, val address: String, val totalTime: String, val consumedKWh: Double, val cpoLogo: String, val totalCost: Double, )</ID>
+    <ID>LongParameterList:PricingGraph.kt$( siteId: String, modifier: Modifier = Modifier, display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET, colors: GraphColors = GraphColorDefaults.colors(), onError: ((String) -&gt; Unit)? = null, onRefreshSuccess: (() -&gt; Unit)? = null, minYAxisPrice: Double? = null, gridLineDotSize: Float = 4f )</ID>
+    <ID>LongParameterList:PricingGraphContent.kt$( scheduledPricing: ScheduledPricingUI, chargeSite: ChargeSiteUI, modifier: Modifier = Modifier, colors: GraphColors = GraphColorDefaults.colors(), minYAxisPrice: Double? = null, gridLineDotSize: Float = 4f, onChargeNowClick: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:RetrofitFactory.kt$RetrofitFactory$( private val okHttpClient: OkHttpClient, private val httpLoggingInterceptor: HttpLoggingInterceptor, private val apiKeyInterceptor: ApiKeyInterceptor, private val apiVersionInterceptor: ApiVersionInterceptor, private val distinctKeyInterceptor: Interceptor, private val integrateClientInterceptor: IntegrateClientInterceptor, private val moshi: Moshi, )</ID>
+    <ID>LongParameterList:RetrofitModule.kt$( okHttpClient: OkHttpClient, moshi: Moshi, httpLoggingInterceptor: HttpLoggingInterceptor, apiKeyInterceptor: ApiKeyInterceptor, apiVersionInterceptor: ApiVersionInterceptor, integrateClientInterceptor: IntegrateClientInterceptor, distinctKeyInterceptor: Interceptor, )</ID>
+    <ID>LongParameterList:SessionDetailsMapperTest.kt$SessionDetailsMapperTest$( token: String = "test_token", paymentId: String = "test_payment_id", cpoName: String = "Test CPO", privacyUrl: String = "https://example.com/privacy", termsOfConditionUrl: String = "https://example.com/terms", logoUrl: String = "https://example.com/logo.png", email: String? = "test@example.com", whatsapp: String? = "+123456789", phone: String? = "+987654321", agent: String? = "Test Agent", evseId: String = "DE*KDL*E0000040" )</ID>
+    <ID>LongParameterList:SiteDetailScreen.kt$( state: SiteDetailState.Success, onCloseClick: () -&gt; Unit, onOfferExpired: () -&gt; Unit, onChargePointSearchInputChange: (String) -&gt; Unit, onRefreshAvailability: () -&gt; Unit, onItemClick: (String) -&gt; Unit, )</ID>
+    <ID>LongParameterList:SwipeButton.kt$( text: String, onSwipeText: String? = null, modifier: Modifier = Modifier, backgroundColor: Color = MaterialTheme.colorSchemeExtended.brand, contentColor: Color = MaterialTheme.colorSchemeExtended.onBrand, shouldMoveText: Boolean = true, onSwiped: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:SwipeButton2.kt$( btnText: String, outerBtnBackgroundColor: Color, sliderBtnBackgroundColor: Color, @DrawableRes sliderBtnIcon: Int, sliderPositionPx: Float, onDragUpdated: (Float) -&gt; Unit, onBtnSwipe: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:TariffInfoResponse.kt$DataItem$( @param:Json(name = "evseId") val evseId: String, @param:Json(name = "energyTariff") val energyTariff: EnergyTariff, @param:Json(name = "timeTariff") val timeTariff: TimeTariff?, @param:Json(name = "createdAt") val createdAt: String, @param:Json(name = "authorizationAmount") val authorizationAmount: AuthorizationAmount, @param:Json(name = "signedOffer") val signedOffer: String, @param:Json(name = "currency") val currency: String, @param:Json(name = "tariffRuleId") val tariffRuleId: String, @param:Json(name = "baseTariff") val baseTariff: BaseTariff?, @param:Json(name = "expiresAt") val expiresAt: String, )</ID>
+    <ID>LongParameterList:Texts.kt$( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.primary, textDecoration: TextDecoration = TextDecoration.None )</ID>
+    <ID>LongParameterList:Texts.kt$( text: String, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.W400, textAlign: TextAlign = TextAlign.Start, color: Color = MaterialTheme.colorScheme.secondary, textDecoration: TextDecoration = TextDecoration.None )</ID>
+    <ID>MagicNumber:ActiveChargingScreen.kt$10</ID>
+    <ID>MagicNumber:ActiveChargingScreen.kt$12.0</ID>
+    <ID>MagicNumber:ActiveChargingScreen.kt$300</ID>
+    <ID>MagicNumber:Badges.kt$23</ID>
+    <ID>MagicNumber:Banners.kt$3000</ID>
+    <ID>MagicNumber:ChargeBannerSource.kt$ChargeBannerSource$11</ID>
+    <ID>MagicNumber:ChargeBannerSource.kt$ChargeBannerSource$180.0</ID>
+    <ID>MagicNumber:ChargeBannerSource.kt$ChargeBannerSource$90.0</ID>
+    <ID>MagicNumber:ChargePointItem.kt$1.5f</ID>
+    <ID>MagicNumber:ChargingPointDetailScreen.kt$0.42</ID>
+    <ID>MagicNumber:ChargingPointDetailScreen.kt$0.52</ID>
+    <ID>MagicNumber:ChargingSessionState.kt$ChargingState$3</ID>
+    <ID>MagicNumber:ChargingSessionState.kt$StartedState$3</ID>
+    <ID>MagicNumber:ChargingSessionState.kt$StopRejectedState$3</ID>
+    <ID>MagicNumber:ChargingSessionState.kt$StopRequestedState$3</ID>
+    <ID>MagicNumber:ChargingSessionState.kt$StoppedState$3</ID>
+    <ID>MagicNumber:ChargingSessionTemplate.kt$ChargingSessionTemplate$3</ID>
+    <ID>MagicNumber:DailyPricingData.kt$DailyPricingData.Companion$23</ID>
+    <ID>MagicNumber:DailyPricingData.kt$DailyPricingData.Companion$59</ID>
+    <ID>MagicNumber:DefaultSimulationStrategy.kt$DefaultSimulationStrategy$3</ID>
+    <ID>MagicNumber:DefaultSimulationStrategy.kt$DefaultSimulationStrategy$4</ID>
+    <ID>MagicNumber:DistinctKeyInterceptor.kt$32</ID>
+    <ID>MagicNumber:EnergyPriceBanner.kt$50.0</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.02</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.05</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.06</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.07</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.08</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.10</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.12</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.14</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.15</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.16</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.17</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.18</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.19</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.20</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.21</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.22</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.23</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.24</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.25</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.28</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.30</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.35</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.38</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.40</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.42</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.45</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.5</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.50</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.52</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.55</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.58</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.60</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.62</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$0.65</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$10</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$11</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$12</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$13</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$14</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$15</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$16</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$17</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$18</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$19</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$20</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$21</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$22</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$23</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$3</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$4</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$5</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$6</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$7</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$8</ID>
+    <ID>MagicNumber:EnergyPriceChart.kt$9</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.05</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.06</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.07</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.08</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.10</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.12</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.14</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.15</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.16</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.17</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.18</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.19</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.1f</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.20</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.21</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.22</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.23</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.24</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.25</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.28</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.30</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.33</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.35</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.38</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.40</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.42</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.45</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.50</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.52</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.55</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.58</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.5f</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.60</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.62</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.65</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.66</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0.8f</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0xFF4CAF50</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0xFFF44336</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$0xFFFF9800</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$10</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$11</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$12</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$13</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$14</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$15</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$16</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$17</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$18</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$19</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$20</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$21</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$22</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$23</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$3</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$4</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$5</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$6</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$7</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$8</ID>
+    <ID>MagicNumber:EnergyPriceChartBase.kt$9</ID>
+    <ID>MagicNumber:EnergyPriceLineChart.kt$0xFF2196F3</ID>
+    <ID>MagicNumber:EnergyPriceLineChart.kt$0xFF757575</ID>
+    <ID>MagicNumber:EnergyPriceLineChart.kt$0xFF9C27B0</ID>
+    <ID>MagicNumber:EnergyPriceLineChart.kt$0xFFFF5722</ID>
+    <ID>MagicNumber:FakeSitesRepository.kt$FakeSitesRepository$0.2</ID>
+    <ID>MagicNumber:FakeSitesRepository.kt$FakeSitesRepository$0.35</ID>
+    <ID>MagicNumber:FakeSitesRepository.kt$FakeSitesRepository$10.0</ID>
+    <ID>MagicNumber:FakeSitesRepository.kt$FakeSitesRepository$5.0</ID>
+    <ID>MagicNumber:FormatTimeUntil.kt$24</ID>
+    <ID>MagicNumber:FormatTimeUntil.kt$60</ID>
+    <ID>MagicNumber:GraphDrawingFunctions.kt$60</ID>
+    <ID>MagicNumber:InterruptedChargeSimulationStrategy.kt$InterruptedChargeSimulationStrategy$3</ID>
+    <ID>MagicNumber:LineUtils.kt$23</ID>
+    <ID>MagicNumber:LineUtils.kt$59</ID>
+    <ID>MagicNumber:LineUtils.kt$60</ID>
+    <ID>MagicNumber:MockData.kt$MockData$0.12</ID>
+    <ID>MagicNumber:MockData.kt$MockData$0.15</ID>
+    <ID>MagicNumber:MockData.kt$MockData$0.16</ID>
+    <ID>MagicNumber:MockData.kt$MockData$0.18</ID>
+    <ID>MagicNumber:MockData.kt$MockData$0.19</ID>
+    <ID>MagicNumber:MockData.kt$MockData$0.20</ID>
+    <ID>MagicNumber:MockData.kt$MockData$12</ID>
+    <ID>MagicNumber:MockData.kt$MockData$13</ID>
+    <ID>MagicNumber:MockData.kt$MockData$14</ID>
+    <ID>MagicNumber:MockData.kt$MockData$15</ID>
+    <ID>MagicNumber:MockData.kt$MockData$16</ID>
+    <ID>MagicNumber:MockData.kt$MockData$3</ID>
+    <ID>MagicNumber:MockData.kt$MockData$30</ID>
+    <ID>MagicNumber:MockData.kt$MockData$5</ID>
+    <ID>MagicNumber:MockData.kt$MockData$6</ID>
+    <ID>MagicNumber:MockData.kt$MockData$7</ID>
+    <ID>MagicNumber:StartRequestedDelayedSimulationStrategy.kt$StartRequestedDelayedSimulationStrategy$3</ID>
+    <ID>MagicNumber:StartRequestedDelayedSimulationStrategy.kt$StartRequestedDelayedSimulationStrategy$35</ID>
+    <ID>MagicNumber:StartRequestedDelayedSimulationStrategy.kt$StartRequestedDelayedSimulationStrategy$4</ID>
+    <ID>MagicNumber:StartedDelayedSimulationStrategy.kt$StartedDelayedSimulationStrategy$3</ID>
+    <ID>MagicNumber:StartedDelayedSimulationStrategy.kt$StartedDelayedSimulationStrategy$35</ID>
+    <ID>MagicNumber:StartedDelayedSimulationStrategy.kt$StartedDelayedSimulationStrategy$4</ID>
+    <ID>MagicNumber:StopFailsSimulationStrategy.kt$StopFailsSimulationStrategy$3</ID>
+    <ID>MagicNumber:StopRejectedSimulationStrategy.kt$StopRejectedSimulationStrategy$3</ID>
+    <ID>MagicNumber:StopRequestedDelayedSimulationStrategy.kt$StopRequestedDelayedSimulationStrategy$3</ID>
+    <ID>MagicNumber:StopRequestedDelayedSimulationStrategy.kt$StopRequestedDelayedSimulationStrategy$35</ID>
+    <ID>MagicNumber:StopRequestedDelayedSimulationStrategy.kt$StopRequestedDelayedSimulationStrategy$4</ID>
+    <ID>MagicNumber:SwipeButton2.kt$0.8f</ID>
+    <ID>MatchingDeclarationName:MVIViewModel.kt$MVIBaseViewModel&lt;State : Reducer.ViewState, Event : Reducer.ViewEvent, Effect : Reducer.ViewEffect&gt; : ViewModel</ID>
+    <ID>MatchingDeclarationName:PricingGraphIntent.kt$PricingGraphEvent : ViewEvent</ID>
+    <ID>MaxLineLength:ActiveChargingScreen.kt$SessionStatus.START_REJECTED -&gt; "Unfortunately, the charging session could not be started at this charge point. Please try again later or use another charge point."</ID>
+    <ID>MaxLineLength:ActiveChargingScreen.kt$SessionStatus.STOP_REJECTED -&gt; "Please stop charging manually by removing the charging cable first from your car and then from the charging station.\n\nWe will analyze the problem and try to solve it together with the operator of the charging station."</ID>
+    <ID>MaxLineLength:ActiveChargingViewModel.kt$ActiveChargingViewModel$error</ID>
+    <ID>MaxLineLength:Brand.kt$painter = painterResource(if (darkMode) R.drawable.ic_logo_elvah_composed_dark else R.drawable.ic_logo_elvah_composed)</ID>
+    <ID>MaxLineLength:FakeSitesRepository.kt$FakeSitesRepository$override suspend</ID>
+    <ID>MaxLineLength:MVIViewModel.kt$MVIBaseViewModel$internal abstract</ID>
+    <ID>MaxLineLength:NetworkErrorParserTest.kt$NetworkErrorParserTest$"API version too new: API version 2025-10-16.lithium is not supported for this endpoint (removed in: 2025-10-16.lithium)"</ID>
+    <ID>MaxLineLength:NetworkErrorParserTest.kt$NetworkErrorParserTest$"API version too old: API version 2025-04-09.helium is too old for this endpoint (minimum supported: 2025-10-16.lithium)"</ID>
+    <ID>MaxLineLength:NetworkErrorParserTest.kt$NetworkErrorParserTest$"Invalid API version: Invalid API version: 2099-01-01.unknown (valid versions: 2025-04-09.helium, 2025-10-16.lithium)"</ID>
+    <ID>MaxLineLength:TransitionAnimation.kt$internal</ID>
+    <ID>MaximumLineLength:ActiveChargingScreen.kt$ </ID>
+    <ID>MaximumLineLength:ActiveChargingViewModel.kt$ActiveChargingViewModel$ </ID>
+    <ID>MaximumLineLength:Brand.kt$ </ID>
+    <ID>MaximumLineLength:FakeSitesRepository.kt$FakeSitesRepository$ </ID>
+    <ID>MaximumLineLength:MVIViewModel.kt$MVIBaseViewModel$internal</ID>
+    <ID>MaximumLineLength:NetworkErrorParserTest.kt$NetworkErrorParserTest$ </ID>
+    <ID>MaximumLineLength:TransitionAnimation.kt$internal</ID>
+    <ID>MemberNameEqualsClassName:GetActiveChargingSession.kt$GetActiveChargingSession$private val getActiveChargingSession: GetActiveChargingSession by KoinJavaComponent.inject( GetActiveChargingSession::class.java )</ID>
+    <ID>MemberNameEqualsClassName:GetSites.kt$GetSites$private val getSites: GetSitesUseCase by KoinJavaComponent.inject(GetSitesUseCase::class.java)</ID>
+    <ID>MultiLineIfElse:ChargingPointDetailScreen.kt$TextDecoration.None</ID>
+    <ID>MultiLineIfElse:ChargingPointDetailScreen.kt$TextDecoration.Underline</ID>
+    <ID>MultiLineIfElse:EnergyPriceLineChart.kt$null</ID>
+    <ID>MultiLineIfElse:EnergyPriceLineChart.kt$painterResource( R.drawable.ic_no_offer )</ID>
+    <ID>MultiLineIfElse:EnergyPriceLineChart.kt$painterResource(R.drawable.ic_offer)</ID>
+    <ID>NewLineAtEndOfFile:AdHocChargingState.kt$de.elvah.charge.features.adhoc_charging.ui.AdHocChargingState.kt</ID>
+    <ID>NewLineAtEndOfFile:ClearLocalSessionData.kt$de.elvah.charge.features.adhoc_charging.domain.usecase.ClearLocalSessionData.kt</ID>
+    <ID>NewLineAtEndOfFile:GetSessionDetails.kt$de.elvah.charge.features.payments.domain.usecase.GetSessionDetails.kt</ID>
+    <ID>NewLineAtEndOfFile:GetSiteScheduledPricing.kt$de.elvah.charge.features.sites.domain.usecase.GetSiteScheduledPricing.kt</ID>
+    <ID>NewLineAtEndOfFile:GooglePayManager.kt$de.elvah.charge.features.payments.domain.manager.GooglePayManager.kt</ID>
+    <ID>NewLineAtEndOfFile:GooglePayState.kt$de.elvah.charge.features.payments.domain.model.GooglePayState.kt</ID>
+    <ID>NewLineAtEndOfFile:HelpState.kt$de.elvah.charge.features.adhoc_charging.ui.screens.help.HelpState.kt</ID>
+    <ID>NewLineAtEndOfFile:ManagerModule.kt$de.elvah.charge.features.payments.di.ManagerModule.kt</ID>
+    <ID>NewLineAtEndOfFile:NetworkInterceptorRegistryTest.kt$de.elvah.charge.platform.network.discovery.NetworkInterceptorRegistryTest.kt</ID>
+    <ID>NewLineAtEndOfFile:ObserveChargingSession.kt$de.elvah.charge.features.adhoc_charging.domain.usecase.ObserveChargingSession.kt</ID>
+    <ID>NewLineAtEndOfFile:OrganisationDetailsMapper.kt$de.elvah.charge.features.payments.data.mapper.OrganisationDetailsMapper.kt</ID>
+    <ID>NewLineAtEndOfFile:PaymentIntent.kt$de.elvah.charge.features.payments.domain.model.PaymentIntent.kt</ID>
+    <ID>NewLineAtEndOfFile:PaymentIntentMapper.kt$de.elvah.charge.features.payments.data.mapper.PaymentIntentMapper.kt</ID>
+    <ID>NewLineAtEndOfFile:PaymentIntentValues.kt$de.elvah.charge.features.payments.domain.model.PaymentIntentValues.kt</ID>
+    <ID>NewLineAtEndOfFile:PaymentSummary.kt$de.elvah.charge.features.payments.domain.model.PaymentSummary.kt</ID>
+    <ID>NewLineAtEndOfFile:PaymentSummaryMapper.kt$de.elvah.charge.features.payments.data.mapper.PaymentSummaryMapper.kt</ID>
+    <ID>NewLineAtEndOfFile:Reducer.kt$de.elvah.charge.platform.core.mvi.Reducer.kt</ID>
+    <ID>NewLineAtEndOfFile:ReviewState.kt$de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewState.kt</ID>
+    <ID>NewLineAtEndOfFile:SdkLifecycleManager.kt$de.elvah.charge.platform.startup.SdkLifecycleManager.kt</ID>
+    <ID>NewLineAtEndOfFile:SimulatorActivity.kt$de.elvah.charge.platform.simulator.ui.SimulatorActivity.kt</ID>
+    <ID>NewLineAtEndOfFile:StartRequestedDelayedSimulationStrategy.kt$de.elvah.charge.platform.simulator.domain.strategy.StartRequestedDelayedSimulationStrategy.kt</ID>
+    <ID>NewLineAtEndOfFile:StartedDelayedSimulationStrategy.kt$de.elvah.charge.platform.simulator.domain.strategy.StartedDelayedSimulationStrategy.kt</ID>
+    <ID>NewLineAtEndOfFile:StartupModule.kt$de.elvah.charge.platform.startup.di.StartupModule.kt</ID>
+    <ID>NewLineAtEndOfFile:StopRequestedDelayedSimulationStrategy.kt$de.elvah.charge.platform.simulator.domain.strategy.StopRequestedDelayedSimulationStrategy.kt</ID>
+    <ID>NewLineAtEndOfFile:StripeInitializationServiceTest.kt$de.elvah.charge.platform.startup.StripeInitializationServiceTest.kt</ID>
+    <ID>NewLineAtEndOfFile:SupportConfig.kt$de.elvah.charge.features.adhoc_charging.domain.model.SupportConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:TimeCapsule.kt$de.elvah.charge.platform.core.mvi.TimeCapsule.kt</ID>
+    <ID>NoBlankLineBeforeRbrace:ActiveChargingScreen.kt$ </ID>
+    <ID>NoBlankLineBeforeRbrace:ActiveChargingViewModel.kt$ActiveChargingViewModel$ </ID>
+    <ID>NoBlankLineBeforeRbrace:Buttons.kt$ </ID>
+    <ID>NoBlankLineBeforeRbrace:ChargePointList.kt$ </ID>
+    <ID>NoBlankLineBeforeRbrace:ChargingSessionPrefsSerializer.kt$ChargingSessionPrefsSerializer$ </ID>
+    <ID>NoBlankLineBeforeRbrace:ConfigTest.kt$ConfigTest$ </ID>
+    <ID>NoBlankLineBeforeRbrace:DefaultChargingStore.kt$DefaultChargingStore$ </ID>
+    <ID>NoBlankLineBeforeRbrace:DefaultSimulationStrategy.kt$DefaultSimulationStrategy$ </ID>
+    <ID>NoBlankLineBeforeRbrace:Elvah.kt$Elvah$ </ID>
+    <ID>NoBlankLineBeforeRbrace:EnergyPriceLineChart.kt$ </ID>
+    <ID>NoBlankLineBeforeRbrace:FakeChargingRepository.kt$FakeChargingRepository$ </ID>
+    <ID>NoBlankLineBeforeRbrace:FakePaymentsRepository.kt$FakePaymentsRepository$ </ID>
+    <ID>NoBlankLineBeforeRbrace:FakeSitesRepository.kt$FakeSitesRepository$ </ID>
+    <ID>NoBlankLineBeforeRbrace:GetBestSite.kt$GetBestSite$ </ID>
+    <ID>NoBlankLineBeforeRbrace:HelpScreen.kt$ </ID>
+    <ID>NoBlankLineBeforeRbrace:HelpViewModel.kt$HelpViewModel$ </ID>
+    <ID>NoBlankLineBeforeRbrace:PriceExtension.kt$ </ID>
+    <ID>NoBlankLineBeforeRbrace:PricingGraphViewModel.kt$PricingGraphViewModel$ </ID>
+    <ID>NoBlankLineBeforeRbrace:ReviewScreen.kt$ </ID>
+    <ID>NoBlankLineBeforeRbrace:SimulatorModule.kt$ </ID>
+    <ID>NoBlankLineBeforeRbrace:SiteDetailViewModel.kt$SiteDetailViewModel$ </ID>
+    <ID>NoBlankLineBeforeRbrace:StartChargingSession.kt$StartChargingSession$ </ID>
+    <ID>NoBlankLineBeforeRbrace:StopRejectedSimulationStrategy.kt$StopRejectedSimulationStrategy$ </ID>
+    <ID>NoBlankLineBeforeRbrace:SwipeButton.kt$ </ID>
+    <ID>NoBlankLineBeforeRbrace:TimeSlotExtension.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ActiveChargeSessionsDto.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ActiveChargingScreen.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:AdHocChargingActivity.kt$AdHocChargingActivity$ </ID>
+    <ID>NoConsecutiveBlankLines:AdHocChargingApiModule.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ApiListResponse.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:AuthorizeSessionResponse.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:Badges.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:Banners.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:Buttons.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ChargeBanner.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ChargeBannerSource.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ChargeSettlementApi.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ChargeSiteUI.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ChargesPointList.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ChargingApi.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ChargingPointDetailScreen.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$ </ID>
+    <ID>NoConsecutiveBlankLines:ChargingStartScreen.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ClearFilters.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:Colors.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:CustomPreview.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:DealUI.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:DefaultChargingRepository.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:DefaultChargingStore.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:DefaultFiltersRepository.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:DefaultInitStripeConfig.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:DefaultPaymentsRepository.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:Dropdown.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:EitherExtensions.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:EnergyPriceBanner.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:EnergyPriceLineChart.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:EntryPointExtensions.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:Errors.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:FakePaymentsRepository.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:FetchChargingSession.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:FormatTimeUntil.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetActiveChargingSession.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetBestSite.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetFilters.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetOrganisationDetails.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetPaymentConfiguration.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetPaymentSummary.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetPaymentToken.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetSessionDetails.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetSite.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetSites.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:GetSummaryInfo.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:HasActiveChargingSession.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:HelpScreen.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:HelpViewModel.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:HelpViewModel.kt$HelpViewModel$ </ID>
+    <ID>NoConsecutiveBlankLines:IntegrateApi.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:Lists.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:MVIViewModel.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:MVIViewModel.kt$MVIBaseViewModel$ </ID>
+    <ID>NoConsecutiveBlankLines:ObserveChargingSession.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:OfferTypeAdapter.kt$OfferTypeAdapter$ </ID>
+    <ID>NoConsecutiveBlankLines:OkHttpFactory.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:OrganisationDetailsMapper.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:PaymentIntentMapper.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:PaymentSummaryDto.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:PricingGraphViewModel.kt$PricingGraphViewModel$ </ID>
+    <ID>NoConsecutiveBlankLines:ResetSession.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SavedStateHandleExtensions.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:ShortenedEvseBigBadge.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SimulatorFlows.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SimulatorGraph.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SimulatorModule.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SiteDetailScreen.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SiteMapper.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SitesViewModel.kt$SitesViewModel$ </ID>
+    <ID>NoConsecutiveBlankLines:StartChargingSession.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:StopChargingSession.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:SwipeButton.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:TopBars.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:UpdateFilters.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:UpdateSite.kt$ </ID>
+    <ID>NoConsecutiveBlankLines:UseCaseModule.kt$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:ActiveChargingScreen.kt$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:ActiveChargingViewModel.kt$ActiveChargingViewModel$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:AdHocChargingGraph.kt$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:Buttons.kt$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:ChargePointList.kt$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:ChargingStartScreen.kt$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:ReviewScreen.kt$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:SimulatorGraph.kt$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:SiteDetailScreen.kt$ </ID>
+    <ID>NoEmptyFirstLineInMethodBlock:SwipeButton.kt$ </ID>
+    <ID>NoMultipleSpaces:SwipeButton2.kt$ </ID>
+    <ID>NoMultipleSpaces:TimeRange.kt$TimeRange$ </ID>
+    <ID>NoSemicolons:SimulatorFlows.kt$SimulatorFlows.STATUS_MISSING$;</ID>
+    <ID>NoTrailingSpaces:Elvah.kt$Elvah$ </ID>
+    <ID>NoTrailingSpaces:ElvahChargeColors.kt$ElvahChargeColors$ </ID>
+    <ID>NoTrailingSpaces:NetworkStorageInterceptorRegistryTest.kt$NetworkStorageInterceptorRegistryTest$// Since we can't easily mock the actual clear method calls, </ID>
+    <ID>NoTrailingSpaces:Theme.kt$ </ID>
+    <ID>NoUnusedImports:StripeInitializationServiceTest.kt$de.elvah.charge.platform.startup.StripeInitializationServiceTest.kt</ID>
+    <ID>PackageName:ActiveChargeSessionMapper.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageName:ActiveChargeSessionMapperTest.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageName:ActiveChargeSessionsDto.kt$package de.elvah.charge.features.adhoc_charging.data.remote.model.response</ID>
+    <ID>PackageName:ActiveChargingScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging</ID>
+    <ID>PackageName:ActiveChargingSessionUI.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging</ID>
+    <ID>PackageName:ActiveChargingState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging</ID>
+    <ID>PackageName:ActiveChargingViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging</ID>
+    <ID>PackageName:AdHocChargingActivity.kt$package de.elvah.charge.features.adhoc_charging.ui</ID>
+    <ID>PackageName:AdHocChargingApiModule.kt$package de.elvah.charge.features.adhoc_charging.di</ID>
+    <ID>PackageName:AdHocChargingGraph.kt$package de.elvah.charge.features.adhoc_charging.ui</ID>
+    <ID>PackageName:AdHocChargingScreens.kt$package de.elvah.charge.features.adhoc_charging.ui</ID>
+    <ID>PackageName:AdHocChargingState.kt$package de.elvah.charge.features.adhoc_charging.ui</ID>
+    <ID>PackageName:AdditionalCostMapper.kt$package de.elvah.charge.features.adhoc_charging.ui.mapper</ID>
+    <ID>PackageName:AdditionalCostMapperTest.kt$package de.elvah.charge.features.adhoc_charging.ui.mapper</ID>
+    <ID>PackageName:AdditionalCostsBanner.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageName:AdditionalCostsCard.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageName:AdditionalCostsMapper.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageName:AdditionalCostsUI.kt$package de.elvah.charge.features.adhoc_charging.ui.model</ID>
+    <ID>PackageName:AnonymousPaymentIntentResponse.kt$package de.elvah.charge.features.adhoc_charging.data.remote.model.response</ID>
+    <ID>PackageName:BannerVariant.kt$package de.elvah.charge.public_api.banner</ID>
+    <ID>PackageName:BlockingFeeMapper.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageName:BuildSiteDetailSuccessState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state</ID>
+    <ID>PackageName:ChargeBanner.kt$package de.elvah.charge.public_api.banner</ID>
+    <ID>PackageName:ChargeBannerSource.kt$package de.elvah.charge.public_api.banner</ID>
+    <ID>PackageName:ChargePointItem.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist</ID>
+    <ID>PackageName:ChargePointList.kt$package de.elvah.charge.public_api.chargepoints</ID>
+    <ID>PackageName:ChargeSession.kt$package de.elvah.charge.public_api.session.model</ID>
+    <ID>PackageName:ChargesPointList.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist</ID>
+    <ID>PackageName:ChargingApi.kt$package de.elvah.charge.features.adhoc_charging.data.remote.api</ID>
+    <ID>PackageName:ChargingPointDetailEffect.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageName:ChargingPointDetailEvent.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageName:ChargingPointDetailScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageName:ChargingPointDetailState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageName:ChargingPointDetailViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageName:ChargingRepository.kt$package de.elvah.charge.features.adhoc_charging.domain.repository</ID>
+    <ID>PackageName:ChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.model</ID>
+    <ID>PackageName:ChargingSessionDelayBanner.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageName:ChargingSessionDelayBannerTest.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageName:ChargingSessionPrefsSerializer.kt$package de.elvah.charge.features.adhoc_charging.data.local</ID>
+    <ID>PackageName:ChargingStartScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart</ID>
+    <ID>PackageName:ChargingStartState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart</ID>
+    <ID>PackageName:ChargingStartViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart</ID>
+    <ID>PackageName:ChargingStore.kt$package de.elvah.charge.features.adhoc_charging.domain.repository</ID>
+    <ID>PackageName:CircularIconButton.kt$package de.elvah.charge.features.adhoc_charging.ui.components.button</ID>
+    <ID>PackageName:ClearLocalSessionData.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:DefaultChargingRepository.kt$package de.elvah.charge.features.adhoc_charging.data.repository</ID>
+    <ID>PackageName:DefaultChargingRepositoryTest.kt$package de.elvah.charge.features.adhoc_charging.data.repository</ID>
+    <ID>PackageName:DefaultChargingStore.kt$package de.elvah.charge.features.adhoc_charging.data.local</ID>
+    <ID>PackageName:DisplayBehavior.kt$package de.elvah.charge.public_api</ID>
+    <ID>PackageName:EnergyPriceBanner.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageName:FetchChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:GetActiveChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:GetActiveChargingSession.kt$package de.elvah.charge.public_api.session.usecase</ID>
+    <ID>PackageName:GetActiveChargingSessionTest.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:GetSites.kt$package de.elvah.charge.public_api.sites</ID>
+    <ID>PackageName:GraphColorDefaults.kt$package de.elvah.charge.public_api.pricinggraph</ID>
+    <ID>PackageName:GraphColors.kt$package de.elvah.charge.public_api.pricinggraph</ID>
+    <ID>PackageName:HasActiveChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:HelpScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.help</ID>
+    <ID>PackageName:HelpState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.help</ID>
+    <ID>PackageName:HelpViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.help</ID>
+    <ID>PackageName:HelpViewModelTest.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.help</ID>
+    <ID>PackageName:LocalModule.kt$package de.elvah.charge.features.adhoc_charging.di</ID>
+    <ID>PackageName:ObserveChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:OfferCounterBanner.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageName:PaymentIntent.kt$package de.elvah.charge.features.adhoc_charging.domain.model</ID>
+    <ID>PackageName:PaymentSummaryUI.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.review.model</ID>
+    <ID>PackageName:PresentationModule.kt$package de.elvah.charge.features.adhoc_charging.di</ID>
+    <ID>PackageName:PricingGraph.kt$package de.elvah.charge.public_api.pricinggraph</ID>
+    <ID>PackageName:PricingMapper.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageName:ReviewScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.review</ID>
+    <ID>PackageName:ReviewState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.review</ID>
+    <ID>PackageName:ReviewViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.review</ID>
+    <ID>PackageName:SearchChargePointInputField.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist</ID>
+    <ID>PackageName:SessionExceptions.kt$package de.elvah.charge.features.adhoc_charging.data.repository</ID>
+    <ID>PackageName:SessionManager.kt$package de.elvah.charge.public_api.session</ID>
+    <ID>PackageName:ShortenedEvseBigBadge.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageName:SiteDetailScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail</ID>
+    <ID>PackageName:SiteDetailState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail</ID>
+    <ID>PackageName:SiteDetailViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail</ID>
+    <ID>PackageName:SitesManager.kt$package de.elvah.charge.public_api.sites</ID>
+    <ID>PackageName:StartChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:StartChargingSessionTest.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:StopChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:StopChargingSessionTest.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageName:SupportConfig.kt$package de.elvah.charge.features.adhoc_charging.domain.model</ID>
+    <ID>PackageName:UnderlinedButton.kt$package de.elvah.charge.features.adhoc_charging.ui.components.button</ID>
+    <ID>PackageName:UseCaseModule.kt$package de.elvah.charge.features.adhoc_charging.di</ID>
+    <ID>PackageNaming:ActiveChargeSessionMapper.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageNaming:ActiveChargeSessionMapperTest.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageNaming:ActiveChargeSessionsDto.kt$package de.elvah.charge.features.adhoc_charging.data.remote.model.response</ID>
+    <ID>PackageNaming:ActiveChargingScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging</ID>
+    <ID>PackageNaming:ActiveChargingSessionUI.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging</ID>
+    <ID>PackageNaming:ActiveChargingState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging</ID>
+    <ID>PackageNaming:ActiveChargingViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.activecharging</ID>
+    <ID>PackageNaming:AdHocChargingActivity.kt$package de.elvah.charge.features.adhoc_charging.ui</ID>
+    <ID>PackageNaming:AdHocChargingApiModule.kt$package de.elvah.charge.features.adhoc_charging.di</ID>
+    <ID>PackageNaming:AdHocChargingGraph.kt$package de.elvah.charge.features.adhoc_charging.ui</ID>
+    <ID>PackageNaming:AdHocChargingScreens.kt$package de.elvah.charge.features.adhoc_charging.ui</ID>
+    <ID>PackageNaming:AdHocChargingState.kt$package de.elvah.charge.features.adhoc_charging.ui</ID>
+    <ID>PackageNaming:AdditionalCostMapper.kt$package de.elvah.charge.features.adhoc_charging.ui.mapper</ID>
+    <ID>PackageNaming:AdditionalCostMapperTest.kt$package de.elvah.charge.features.adhoc_charging.ui.mapper</ID>
+    <ID>PackageNaming:AdditionalCostsBanner.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageNaming:AdditionalCostsCard.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageNaming:AdditionalCostsMapper.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageNaming:AdditionalCostsUI.kt$package de.elvah.charge.features.adhoc_charging.ui.model</ID>
+    <ID>PackageNaming:AnonymousPaymentIntentResponse.kt$package de.elvah.charge.features.adhoc_charging.data.remote.model.response</ID>
+    <ID>PackageNaming:BannerVariant.kt$package de.elvah.charge.public_api.banner</ID>
+    <ID>PackageNaming:BlockingFeeMapper.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageNaming:BuildSiteDetailSuccessState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.state</ID>
+    <ID>PackageNaming:ChargeBanner.kt$package de.elvah.charge.public_api.banner</ID>
+    <ID>PackageNaming:ChargeBannerSource.kt$package de.elvah.charge.public_api.banner</ID>
+    <ID>PackageNaming:ChargePointItem.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist</ID>
+    <ID>PackageNaming:ChargePointList.kt$package de.elvah.charge.public_api.chargepoints</ID>
+    <ID>PackageNaming:ChargeSession.kt$package de.elvah.charge.public_api.session.model</ID>
+    <ID>PackageNaming:ChargesPointList.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist</ID>
+    <ID>PackageNaming:ChargingApi.kt$package de.elvah.charge.features.adhoc_charging.data.remote.api</ID>
+    <ID>PackageNaming:ChargingPointDetailEffect.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageNaming:ChargingPointDetailEvent.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageNaming:ChargingPointDetailScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageNaming:ChargingPointDetailState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageNaming:ChargingPointDetailViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail</ID>
+    <ID>PackageNaming:ChargingRepository.kt$package de.elvah.charge.features.adhoc_charging.domain.repository</ID>
+    <ID>PackageNaming:ChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.model</ID>
+    <ID>PackageNaming:ChargingSessionDelayBanner.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageNaming:ChargingSessionDelayBannerTest.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageNaming:ChargingSessionPrefsSerializer.kt$package de.elvah.charge.features.adhoc_charging.data.local</ID>
+    <ID>PackageNaming:ChargingStartScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart</ID>
+    <ID>PackageNaming:ChargingStartState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart</ID>
+    <ID>PackageNaming:ChargingStartViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.chargingstart</ID>
+    <ID>PackageNaming:ChargingStore.kt$package de.elvah.charge.features.adhoc_charging.domain.repository</ID>
+    <ID>PackageNaming:CircularIconButton.kt$package de.elvah.charge.features.adhoc_charging.ui.components.button</ID>
+    <ID>PackageNaming:ClearLocalSessionData.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:DefaultChargingRepository.kt$package de.elvah.charge.features.adhoc_charging.data.repository</ID>
+    <ID>PackageNaming:DefaultChargingRepositoryTest.kt$package de.elvah.charge.features.adhoc_charging.data.repository</ID>
+    <ID>PackageNaming:DefaultChargingStore.kt$package de.elvah.charge.features.adhoc_charging.data.local</ID>
+    <ID>PackageNaming:DisplayBehavior.kt$package de.elvah.charge.public_api</ID>
+    <ID>PackageNaming:EnergyPriceBanner.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageNaming:FetchChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:GetActiveChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:GetActiveChargingSession.kt$package de.elvah.charge.public_api.session.usecase</ID>
+    <ID>PackageNaming:GetActiveChargingSessionTest.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:GetSites.kt$package de.elvah.charge.public_api.sites</ID>
+    <ID>PackageNaming:GraphColorDefaults.kt$package de.elvah.charge.public_api.pricinggraph</ID>
+    <ID>PackageNaming:GraphColors.kt$package de.elvah.charge.public_api.pricinggraph</ID>
+    <ID>PackageNaming:HasActiveChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:HelpScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.help</ID>
+    <ID>PackageNaming:HelpState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.help</ID>
+    <ID>PackageNaming:HelpViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.help</ID>
+    <ID>PackageNaming:HelpViewModelTest.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.help</ID>
+    <ID>PackageNaming:LocalModule.kt$package de.elvah.charge.features.adhoc_charging.di</ID>
+    <ID>PackageNaming:ObserveChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:OfferCounterBanner.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageNaming:PaymentIntent.kt$package de.elvah.charge.features.adhoc_charging.domain.model</ID>
+    <ID>PackageNaming:PaymentSummaryUI.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.review.model</ID>
+    <ID>PackageNaming:PresentationModule.kt$package de.elvah.charge.features.adhoc_charging.di</ID>
+    <ID>PackageNaming:PricingGraph.kt$package de.elvah.charge.public_api.pricinggraph</ID>
+    <ID>PackageNaming:PricingMapper.kt$package de.elvah.charge.features.adhoc_charging.data.mapper</ID>
+    <ID>PackageNaming:ReviewScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.review</ID>
+    <ID>PackageNaming:ReviewState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.review</ID>
+    <ID>PackageNaming:ReviewViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.review</ID>
+    <ID>PackageNaming:SearchChargePointInputField.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.chargepointslist</ID>
+    <ID>PackageNaming:SessionExceptions.kt$package de.elvah.charge.features.adhoc_charging.data.repository</ID>
+    <ID>PackageNaming:SessionManager.kt$package de.elvah.charge.public_api.session</ID>
+    <ID>PackageNaming:ShortenedEvseBigBadge.kt$package de.elvah.charge.features.adhoc_charging.ui.components</ID>
+    <ID>PackageNaming:SiteDetailScreen.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail</ID>
+    <ID>PackageNaming:SiteDetailState.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail</ID>
+    <ID>PackageNaming:SiteDetailViewModel.kt$package de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail</ID>
+    <ID>PackageNaming:SitesManager.kt$package de.elvah.charge.public_api.sites</ID>
+    <ID>PackageNaming:StartChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:StartChargingSessionTest.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:StopChargingSession.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:StopChargingSessionTest.kt$package de.elvah.charge.features.adhoc_charging.domain.usecase</ID>
+    <ID>PackageNaming:SupportConfig.kt$package de.elvah.charge.features.adhoc_charging.domain.model</ID>
+    <ID>PackageNaming:UnderlinedButton.kt$package de.elvah.charge.features.adhoc_charging.ui.components.button</ID>
+    <ID>PackageNaming:UseCaseModule.kt$package de.elvah.charge.features.adhoc_charging.di</ID>
+    <ID>ParameterListWrapping:Buttons.kt$( text: String, modifier: Modifier = Modifier, @DrawableRes icon: Int? = null, onClick: () -&gt; Unit, )</ID>
+    <ID>SpacingAroundParens:DefaultFiltersRepository.kt$DefaultFiltersRepository$(</ID>
+    <ID>SpacingAroundParens:GetSessionDetails.kt$GetSessionDetails$(</ID>
+    <ID>SpacingAroundParens:SiteMapper.kt$(</ID>
+    <ID>SwallowedException:ChartDataMapper.kt$e2: Exception</ID>
+    <ID>SwallowedException:NetworkErrorParser.kt$NetworkErrorParser$e: Exception</ID>
+    <ID>ThrowsCount:Config.kt$Config$private fun validateApiKey()</ID>
+    <ID>TooGenericExceptionCaught:ChartDataMapper.kt$e2: Exception</ID>
+    <ID>TooGenericExceptionCaught:EitherCall.kt$EitherCall$throwable: Throwable</ID>
+    <ID>TooGenericExceptionCaught:FakeChargingRepository.kt$FakeChargingRepository$exception: Exception</ID>
+    <ID>TooGenericExceptionCaught:NetworkErrorParser.kt$NetworkErrorParser$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:StripeInitializationService.kt$StripeInitializationService$e: Exception</ID>
+    <ID>TooGenericExceptionThrown:OfferTypeAdapter.kt$OfferTypeAdapter$throw Exception("Unknown offer type for: $json")</ID>
+    <ID>TooManyFunctions:ActiveChargingScreen.kt$de.elvah.charge.features.adhoc_charging.ui.screens.activecharging.ActiveChargingScreen.kt</ID>
+    <ID>TooManyFunctions:ChargeBanner.kt$de.elvah.charge.features.sites.ui.components.ChargeBanner.kt</ID>
+    <ID>TooManyFunctions:ChargingSessionTemplate.kt$ChargingSessionTemplate</ID>
+    <ID>TooManyFunctions:EnergyPriceChart.kt$de.elvah.charge.platform.ui.components.graph.EnergyPriceChart.kt</ID>
+    <ID>TooManyFunctions:EnergyPriceChartBase.kt$de.elvah.charge.platform.ui.components.graph.EnergyPriceChartBase.kt</ID>
+    <ID>TooManyFunctions:EnergyPriceLineChart.kt$de.elvah.charge.platform.ui.components.graph.line.EnergyPriceLineChart.kt</ID>
+    <ID>TooManyFunctions:FakeChargingRepository.kt$FakeChargingRepository : ChargingRepository</ID>
+    <ID>TopLevelPropertyNaming:AdHocChargingScreens.kt$private const val baseRoute = "https://www.elvah.de/"</ID>
+    <ID>TopLevelPropertyNaming:CustomPreview.kt$private const val bigFont = "big font"</ID>
+    <ID>TopLevelPropertyNaming:SimulatorScreens.kt$private const val baseRoute = "https://www.elvah.de/"</ID>
+    <ID>UnusedParameter:ActiveChargingScreen.kt$onRetryClick: (SessionStatus) -&gt; Unit</ID>
+    <ID>UnusedParameter:ActiveChargingScreen.kt$onSupportClick: () -&gt; Unit</ID>
+    <ID>UnusedParameter:ChargePointList.kt$modifier: Modifier = Modifier</ID>
+    <ID>UnusedParameter:ChargingPointDetailScreen.kt$publishableKey: PublishableKey</ID>
+    <ID>UnusedParameter:SimulatorGraph.kt$onFinishClicked: () -&gt; Unit</ID>
+    <ID>UnusedParameter:SiteDetailScreen.kt$onOfferExpired: () -&gt; Unit</ID>
+    <ID>UnusedParameter:SwipeButton2.kt$sliderBtnWidth: Dp</ID>
+    <ID>UnusedPrivateClass:EnergyPriceChartBase.kt$EnergyPriceData1</ID>
+    <ID>UnusedPrivateMember:ActiveChargingScreen.kt$@PreviewLightDark @Composable private fun ActiveCharging_Error_Preview()</ID>
+    <ID>UnusedPrivateMember:ActiveChargingScreen.kt$@PreviewLightDark @Composable private fun ActiveCharging_Success_Preview()</ID>
+    <ID>UnusedPrivateMember:ActiveChargingScreen.kt$@PreviewLightDark @Composable private fun ChargeState_Preview()</ID>
+    <ID>UnusedPrivateMember:AdditionalCostsBanner.kt$@PreviewLightDark @Composable private fun AdditionalCostsBannerPreview()</ID>
+    <ID>UnusedPrivateMember:AdditionalCostsCard.kt$@PreviewLightDark @Composable private fun NoActivationFeePreview()</ID>
+    <ID>UnusedPrivateMember:AdditionalCostsCard.kt$@PreviewLightDark @Composable private fun NoBlockingFeePreview()</ID>
+    <ID>UnusedPrivateMember:AdditionalCostsCard.kt$@PreviewLightDark @FontScalePreview @Composable private fun AdditionalCostsCardPreview()</ID>
+    <ID>UnusedPrivateMember:Badges.kt$@Preview @Composable private fun BrandBadge_Preview()</ID>
+    <ID>UnusedPrivateMember:Badges.kt$@Preview @Composable private fun ChargingBadge_Preview()</ID>
+    <ID>UnusedPrivateMember:Banners.kt$@PreviewLightDark @Composable private fun Banner_Preview()</ID>
+    <ID>UnusedPrivateMember:Banners.kt$@PreviewLightDark @Composable private fun ErrorBanner_Preview()</ID>
+    <ID>UnusedPrivateMember:Brand.kt$@PreviewLightDark @Composable private fun ElvahLogo_Preview()</ID>
+    <ID>UnusedPrivateMember:Buttons.kt$@PreviewLightDark @Composable private fun ButtonTertiary_Preview()</ID>
+    <ID>UnusedPrivateMember:Buttons.kt$@PreviewLightDark @Composable private fun GooglePayButton_Preview()</ID>
+    <ID>UnusedPrivateMember:Buttons.kt$@PreviewLightDark @Composable private fun PrimaryButton_Preview()</ID>
+    <ID>UnusedPrivateMember:Buttons.kt$@PreviewLightDark @Composable private fun SecondaryButton_Preview()</ID>
+    <ID>UnusedPrivateMember:Buttons.kt$@PreviewLightDark @Composable private fun SecondaryButton_WithIcon_Preview()</ID>
+    <ID>UnusedPrivateMember:Cards.kt$@PreviewLightDark @Composable private fun BasicCard_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBannerCollapsed_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBannerContentCollapsed_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBannerContentExpanded_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_ActiveSession_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_Empty_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_Error_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_Loading_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargeBanner.kt$@PreviewLightDark @Composable private fun ChargeBanner_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargePointItem.kt$@PreviewLightDark @Composable private fun ChargePointItemPreview()</ID>
+    <ID>UnusedPrivateMember:ChargePointItem.kt$@PreviewLightDark @Composable private fun OccupiedPreview()</ID>
+    <ID>UnusedPrivateMember:ChargePointItem.kt$@PreviewLightDark @Composable private fun OutOfServicePreview()</ID>
+    <ID>UnusedPrivateMember:ChargesPointList.kt$@PreviewLightDark @Composable private fun ChargePointsListPreview()</ID>
+    <ID>UnusedPrivateMember:ChargesPointList.kt$@PreviewLightDark @Composable private fun EmptyListPreview()</ID>
+    <ID>UnusedPrivateMember:ChargesPointList.kt$@PreviewLightDark @Composable private fun NoSearchResultsPreview()</ID>
+    <ID>UnusedPrivateMember:ChargesPointList.kt$@PreviewLightDark @Composable private fun NoStationsPreview()</ID>
+    <ID>UnusedPrivateMember:ChargingPointDetailScreen.kt$@PreviewLightDark @Composable private fun ChargingPointDetail_Success_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargingSessionDelayBanner.kt$@PreviewLightDark @Composable private fun ChargingSessionDelayBanner_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargingStartScreen.kt$@PreviewLightDark @Composable private fun ChargingPointErrorModal_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargingStartScreen.kt$@PreviewLightDark @Composable private fun ChargingPointLockedModal_Preview()</ID>
+    <ID>UnusedPrivateMember:ChargingStartScreen.kt$@PreviewLightDark @Composable private fun ChargingStart_Success_Preview()</ID>
+    <ID>UnusedPrivateMember:CircularIconButton.kt$@PreviewLightDark @Composable private fun CircularIconButtonPreview()</ID>
+    <ID>UnusedPrivateMember:CustomSimulationStrategy.kt$CustomSimulationStrategy$private fun ChargingSession?.incrementDuration(): ChargingSession?</ID>
+    <ID>UnusedPrivateMember:EnergyPriceBanner.kt$@PreviewLightDark @FontScalePreview @Composable private fun EnergyPriceBannerPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceBanner.kt$@PreviewLightDark @FontScalePreview @Composable private fun WithoutDiscountPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChart.kt$@Preview(showBackground = true) @Composable private fun EnergyPriceChart_Preview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChart.kt$@Preview(showBackground = true, name = "Custom Min Y-Axis Price") @Composable private fun EnergyPriceChartCustomMinYAxisPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChart.kt$@Preview(showBackground = true, name = "Dotted Grid Lines") @Composable private fun EnergyPriceChartDottedGridPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChart.kt$@Preview(showBackground = true, name = "High Price Variation") @Composable private fun EnergyPriceChartHighVariationPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChart.kt$@Preview(showBackground = true, name = "Low Price Variation") @Composable private fun EnergyPriceChartLowVariationPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChartBase.kt$@Composable private fun EnergyPriceChart1( data: List&lt;EnergyPriceData&gt;, modifier: Modifier = Modifier, animated: Boolean = true )</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChartBase.kt$@Preview(showBackground = true) @Composable private fun EnergyPriceChart_Preview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChartBase.kt$@Preview(showBackground = true) @Composable private fun EnergyPriceLineChart_Preview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChartBase.kt$@Preview(showBackground = true, name = "Dark Theme") @Composable private fun EnergyPriceChartDarkPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChartBase.kt$@Preview(showBackground = true, name = "High Price Variation") @Composable private fun EnergyPriceChartHighVariationPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceChartBase.kt$@Preview(showBackground = true, name = "Low Price Variation") @Composable private fun EnergyPriceChartLowVariationPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChartCustomColorsPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChartCustomMinYAxisPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChartDottedGridPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChartHighResPreview()</ID>
+    <ID>UnusedPrivateMember:EnergyPriceLineChart.kt$@PreviewLightDark @Composable private fun EnergyPriceLineChart_Preview()</ID>
+    <ID>UnusedPrivateMember:Errors.kt$@PreviewLightDark @Composable private fun FullScreenError_Preview()</ID>
+    <ID>UnusedPrivateMember:Errors.kt$@PreviewLightDark @Composable private fun FullScreenError_Retry_Preview()</ID>
+    <ID>UnusedPrivateMember:HelpScreen.kt$@Preview @Composable private fun HelpScreen_Content_Preview()</ID>
+    <ID>UnusedPrivateMember:IconButtons.kt$@PreviewLightDark @Composable private fun Chevron_Preview()</ID>
+    <ID>UnusedPrivateMember:Lists.kt$@Preview @Composable private fun BulletedList_Preview()</ID>
+    <ID>UnusedPrivateMember:Lists.kt$@PreviewLightDark @Composable private fun OrderedList_Preview()</ID>
+    <ID>UnusedPrivateMember:Loadings.kt$@PreviewLightDark @Composable private fun FullScreenLoading_Preview()</ID>
+    <ID>UnusedPrivateMember:OfferCounterBanner.kt$@OptIn(ExperimentalTime::class) @PreviewLightDark @Composable private fun OfferCounterBannerPreview()</ID>
+    <ID>UnusedPrivateMember:ReviewScreen.kt$@PreviewLightDark @Composable private fun ReviewScreen_Content_Preview()</ID>
+    <ID>UnusedPrivateMember:SearchChargePointInputField.kt$@PreviewLightDark @Composable private fun SearchChargePointInputFieldPreview()</ID>
+    <ID>UnusedPrivateMember:SegmentedButtons.kt$@PreviewLightDark @Composable private fun DaySelector_Preview()</ID>
+    <ID>UnusedPrivateMember:ShortenedEvseBigBadge.kt$@PreviewLightDark @Composable private fun LongTextPreview()</ID>
+    <ID>UnusedPrivateMember:ShortenedEvseBigBadge.kt$@PreviewLightDark @Composable private fun OutOfServicePreview()</ID>
+    <ID>UnusedPrivateMember:ShortenedEvseBigBadge.kt$@PreviewLightDark @Composable private fun ShortenedEvseBigBadgePreview()</ID>
+    <ID>UnusedPrivateMember:SiteDetailScreen.kt$@PreviewLightDark @Composable private fun SiteDetailScreen_Content_NoDiscount_Preview()</ID>
+    <ID>UnusedPrivateMember:SiteDetailScreen.kt$@PreviewLightDark @Composable private fun SiteDetailScreen_Content_Preview()</ID>
+    <ID>UnusedPrivateMember:SiteHeader.kt$@PreviewLightDark @Composable private fun SiteDetailHeader_Preview()</ID>
+    <ID>UnusedPrivateMember:SwipeButton.kt$@Preview @Composable private fun SwipeButtonPreview()</ID>
+    <ID>UnusedPrivateMember:SwipeButton.kt$@Preview @Composable private fun SwipeIndicator_Preview()</ID>
+    <ID>UnusedPrivateMember:TopBars.kt$@Preview @Composable private fun DefaultTopAppBar_Preview()</ID>
+    <ID>UnusedPrivateMember:TopBars.kt$@Preview @Composable private fun TopAppBarWithBack_Preview()</ID>
+    <ID>UnusedPrivateMember:TopBars.kt$@PreviewLightDark @Composable private fun DismissableTopAppBarWithActions_Preview()</ID>
+    <ID>UnusedPrivateMember:TopBars.kt$@PreviewLightDark @Composable private fun DismissableTopAppBar_Preview()</ID>
+    <ID>UnusedPrivateMember:UnderlinedButton.kt$@PreviewLightDark @Composable private fun UnderlinedButtonPreview()</ID>
+    <ID>UnusedPrivateProperty:ChargingSessionFactory.kt$DefaultChargingSessionFactory.Companion$private const val DEFAULT_STATUS = "auctor"</ID>
+    <ID>UnusedPrivateProperty:CustomSimulationStrategy.kt$CustomSimulationStrategy$private val sessionFactory: ChargingSessionFactory</ID>
+    <ID>UnusedPrivateProperty:FakeSitesRepository.kt$FakeSitesRepository$simulatorFlow: SimulatorFlow</ID>
+    <ID>UnusedPrivateProperty:NetworkStorageInterceptorRegistryTest.kt$NetworkStorageInterceptorRegistryTest$val mockInterceptor1 = mockk&lt;TestStorageInterceptor&gt;(relaxed = true)</ID>
+    <ID>UnusedPrivateProperty:NetworkStorageInterceptorRegistryTest.kt$NetworkStorageInterceptorRegistryTest$val mockInterceptor2 = mockk&lt;TestStorageInterceptor&gt;(relaxed = true)</ID>
+    <ID>UseRequire:Config.kt$Config$throw IllegalArgumentException("API Key error: You are using a production API key")</ID>
+    <ID>UseRequire:Config.kt$Config$throw IllegalArgumentException("API Key error: You are using a test API key")</ID>
+    <ID>UseRequire:Config.kt$Config$throw IllegalArgumentException("API key cannot be empty")</ID>
+    <ID>UseRequire:Config.kt$Config$throw IllegalArgumentException("API key must start with evpk_prod")</ID>
+    <ID>UseRequire:Config.kt$Config$throw IllegalArgumentException("API key must start with evpk_test")</ID>
+    <ID>UseRequire:EitherCallAdapterFactory.kt$EitherCallAdapterFactory$throw IllegalArgumentException( "Either left side must be Throwable but was $errorType" )</ID>
+    <ID>Wrapping:ActiveChargingScreen.kt$-&gt;</ID>
+    <ID>Wrapping:ChargeBanner.kt$(</ID>
+    <ID>Wrapping:ChargeBanner.kt$( site = ChargeBannerRender( id = "id", cpoName = "Deal Title", address = "address", location = Location( lat = 0.0, lng = 0.0 ), campaignEnd = "2025-04-23T10:21:28.405000000Z", originalPrice = 0.50, price = 0.24 ), onDealClick = {} )</ID>
+    <ID>Wrapping:ChargingPointDetailScreen.kt$(</ID>
+    <ID>Wrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$(</ID>
+    <ID>Wrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( ChargingPointDetailEvent.OnPaymentSuccess( it.shortenedEvseId, it.paymentIntentParams.paymentId ), true )</ID>
+    <ID>Wrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( Error( previousState.evseId, event.paymentConfigErrors ), null )</ID>
+    <ID>Wrapping:ChargingPointDetailViewModel.kt$ChargingPointDetailViewModel$( Success( evseId = evseId, shortenedEvseId = chargePointUI?.shortenedEvseId ?: evseId, availability = chargePoint.availability, discountExpiresAt = null, // disabled for now priceWithLineThrough = priceWithLineThrough?.energyPricePerKWh, priceToHighlight = priceToHighlight.energyPricePerKWh, additionalCostsUI = additionalCosts.toUI(), companyName = organisationDetails?.companyName.orEmpty(), termsOfServiceUrl = organisationDetails?.termsOfConditionUrl.orEmpty(), privacyPolicyUrl = organisationDetails?.privacyUrl.orEmpty(), companyLogoUrl = organisationDetails?.logoUrl, paymentIntentParams = event.paymentConfiguration, mocked = config.environment is Environment.Simulator, ), null )</ID>
+    <ID>Wrapping:EitherCallAdapterFactoryTest.kt$EitherCallAdapterFactoryTest$( customScope, Moshi.Builder() .add(com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory()) .build() )</ID>
+    <ID>Wrapping:EitherCallAdapterFactoryTest.kt$EitherCallAdapterFactoryTest$( testScope, Moshi.Builder() .add(KotlinJsonAdapterFactory()) .build() )</ID>
+    <ID>Wrapping:EnergyPriceLineChart.kt$(</ID>
+    <ID>Wrapping:EnergyPriceLineChart.kt$( painter = if (priceOffer != null) painterResource(R.drawable.ic_offer) else painterResource( R.drawable.ic_no_offer ), contentDescription = null, tint = if (priceOffer != null) { color } else { MaterialTheme.colorScheme.secondary } )</ID>
+    <ID>Wrapping:PricingGraphViewModel.kt$PricingGraphViewModel${ /* No retry needed for other states */ }</ID>
+    <ID>Wrapping:TopBars.kt$( title = "TopBar title", onDismissClick = {}, menuItems = listOf( MenuItem( text = "Action 1", leadingIcon = { Icon( imageVector = Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.primary ) }, onClick = {}, tint = MaterialTheme.colorScheme.primary, inMenu = true ), MenuItem( text = "Action 2", leadingIcon = { Icon( imageVector = Icons.Default.Add, contentDescription = "Close", tint = MaterialTheme.colorScheme.primary ) }, onClick = {}, tint = MaterialTheme.colorScheme.primary, inMenu = false ) ) )</ID>
+    <ID>Wrapping:TopBars.kt${ BackIcon(onClick = onBackClick) }</ID>
+  </CurrentIssues>
+</SmellBaseline>
