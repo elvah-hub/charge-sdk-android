@@ -23,6 +23,7 @@ kotlinx-serialization-json = "1.10.0"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxDatetime = "0.7.1-0.6.x-compat"
 ksp = "2.3.5"
+kover = "0.8.0"
 lifecycleRuntimeKtx = "2.10.0"
 material = "1.13.0"
 mockk = "1.14.9"
@@ -109,6 +110,7 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 serializable = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
