@@ -30,8 +30,14 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      # Cache strategy:
+      # - main/develop branches: read and write cache
+      # - feature branches: read-only cache
+      # This prevents cache pollution from feature branches
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
 
       - name: Run unit tests
         run: ./gradlew :charge:test
