@@ -29,3 +29,41 @@ subprojects {
         detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
     }
 }
+
+// Install git hooks
+tasks.register<Copy>("installGitHooks") {
+    group = "git hooks"
+    description = "Installs the pre-commit git hook from scripts/pre-commit"
+
+    from("scripts/pre-commit")
+    into(".git/hooks")
+    fileMode = 0b111101101  // 0755 in octal (rwxr-xr-x)
+
+    doLast {
+        println("✅ Pre-commit hook installed successfully!")
+        println("   The hook will run lint and Detekt checks before each commit.")
+        println("   To bypass in emergencies, use: git commit --no-verify")
+    }
+}
+
+// Automatically install hooks when syncing the project
+tasks.register("setupProject") {
+    group = "git hooks"
+    description = "Sets up the project by installing git hooks"
+    dependsOn("installGitHooks")
+
+    doLast {
+        println("✅ Project setup complete!")
+    }
+}
+
+// Run setup automatically on first build
+gradle.projectsEvaluated {
+    val gitHooksDir = File(rootDir, ".git/hooks")
+    val preCommitHook = File(gitHooksDir, "pre-commit")
+
+    if (!preCommitHook.exists()) {
+        println("⚠️  Git hooks not installed. Run './gradlew installGitHooks' to install them.")
+        println("   Or run './gradlew setupProject' for full project setup.")
+    }
+}
