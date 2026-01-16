@@ -1,110 +1,63 @@
 package de.elvah.charge
 
 import android.content.Context
-import de.elvah.charge.features.adhoc_charging.data.local.DefaultChargingStore
-import de.elvah.charge.features.adhoc_charging.data.repository.DefaultChargingRepository
-import de.elvah.charge.features.adhoc_charging.di.adHocChargingLocalModule
-import de.elvah.charge.features.adhoc_charging.di.adHocChargingUseCasesModule
-import de.elvah.charge.features.adhoc_charging.di.adHocViewModelModule
-import de.elvah.charge.features.adhoc_charging.di.provideChargingApi
-import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingRepository
-import de.elvah.charge.features.adhoc_charging.domain.repository.ChargingStore
-import de.elvah.charge.features.payments.data.repository.DefaultPaymentsRepository
-import de.elvah.charge.features.payments.di.paymentsManagerModule
-import de.elvah.charge.features.payments.di.paymentsUseCaseModule
-import de.elvah.charge.features.payments.di.provideChargeSettlementApi
-import de.elvah.charge.features.payments.di.provideIntegrateApi
-import de.elvah.charge.features.payments.domain.repository.PaymentsRepository
-import de.elvah.charge.features.sites.di.adaptersModule
-import de.elvah.charge.features.sites.di.sitesRepositoriesModule
-import de.elvah.charge.features.sites.di.sitesUseCaseModule
-import de.elvah.charge.features.sites.di.sitesViewModelModule
 import de.elvah.charge.platform.config.Config
-import de.elvah.charge.platform.config.Environment
-import de.elvah.charge.platform.network.ApiUrlBuilder
-import de.elvah.charge.platform.network.okhttp.di.okHttpModule
-import de.elvah.charge.platform.network.retrofit.di.retrofitModule
-import de.elvah.charge.platform.simulator.di.provideSimulatorModule
+import de.elvah.charge.platform.di.ChargeSDKKoin
+import de.elvah.charge.platform.di.sdkGet
 import de.elvah.charge.platform.startup.SdkLifecycleManager
-import de.elvah.charge.platform.startup.di.startupModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.module.Module
 
 public object Elvah {
 
-    private val lifecycleManager: SdkLifecycleManager by inject(SdkLifecycleManager::class.java)
-    private val useCaseModule = module {
-        includes(sitesUseCaseModule, adHocChargingUseCasesModule, paymentsUseCaseModule, paymentsManagerModule)
-    }
+    private var initialized = false
 
-    private val viewModelsModule = module {
-        includes(sitesViewModelModule, adHocViewModelModule)
-    }
-
-    private val repositoriesModule = module {
-        singleOf(::DefaultChargingRepository) { bind<ChargingRepository>() }
-        singleOf(::DefaultPaymentsRepository) { bind<PaymentsRepository>() }
-        singleOf(::DefaultChargingStore) { bind<ChargingStore>() }
-    }
-
-    private fun configModule(config: Config) = module {
-        single { config }
-    }
-
-    private val networkModule = module {
-        includes(adaptersModule)
-
-        singleOf(::ApiUrlBuilder)
-        single { provideChargingApi(get(), get()) }
-        single { provideIntegrateApi(get(), get()) }
-        single { provideChargeSettlementApi(get(), get()) }
-        single { de.elvah.charge.features.sites.di.provideApi(get(), get()) }
-    }
-
-    private val localModule = module {
-        includes(adHocChargingLocalModule)
-    }
-
-    private val emptyModule = module {
-
-    }
-
-    public fun initialize(context: Context, config: Config) {
-        val simulatorModule = if (config.environment is Environment.Simulator) {
-            module {
-                includes(provideSimulatorModule(config.environment.simulatorFlow))
-            }
-        } else {
-            emptyModule
+    /**
+     * Initialize the Elvah SDK.
+     *
+     * @param context Android application context
+     * @param config SDK configuration
+     * @param customModules Optional list of custom Koin modules for dependency injection.
+     *                      Use this to override default SDK implementations.
+     */
+    public fun initialize(
+        context: Context,
+        config: Config,
+        customModules: List<Module> = emptyList()
+    ) {
+        if (initialized) {
+            return
         }
 
-        startKoin {
-            androidLogger()
-            androidContext(context)
-            modules(
-                configModule(config),
-                viewModelsModule,
-                useCaseModule,
-                networkModule,
-                localModule,
-                repositoriesModule,
-                okHttpModule,
-                retrofitModule,
-                sitesRepositoriesModule,
-                simulatorModule,
-                startupModule,
-            )
-        }
-        
+        // Initialize isolated Koin instance
+        ChargeSDKKoin.init(
+            context = context.applicationContext,
+            config = config,
+            externalModules = customModules
+        )
+
+        // Initialize lifecycle manager
+        val lifecycleManager: SdkLifecycleManager = sdkGet()
         lifecycleManager.initialize()
+
+        initialized = true
     }
-    
+
+    /**
+     * Clean up SDK resources.
+     * Call this when the SDK is no longer needed.
+     */
     public fun cleanup() {
+        if (!initialized) {
+            return
+        }
+
+        // Cleanup lifecycle manager
+        val lifecycleManager: SdkLifecycleManager = sdkGet()
         lifecycleManager.cleanup()
+
+        // Close Koin instance
+        ChargeSDKKoin.close()
+
+        initialized = false
     }
 }

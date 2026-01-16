@@ -11,14 +11,14 @@ import de.elvah.charge.features.payments.domain.manager.GooglePayManager
 import de.elvah.charge.features.payments.domain.model.GooglePayState
 import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.config.Environment
+import de.elvah.charge.platform.di.sdkInject
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
-import org.koin.android.ext.android.inject
 
 internal class AdHocChargingActivity : ComponentActivity() {
 
-    private val config: Config by inject()
-    private val googlePayManager: GooglePayManager by inject()
+    private val config: Config by sdkInject()
+    private val googlePayManager: GooglePayManager by sdkInject()
 
     companion object {
         const val ARG_SITE_ID = "siteId"

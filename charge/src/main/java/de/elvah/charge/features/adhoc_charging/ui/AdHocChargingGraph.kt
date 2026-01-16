@@ -19,7 +19,7 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.review.ReviewScreen
 import de.elvah.charge.features.adhoc_charging.ui.screens.sitedetail.SiteDetailScreen
 import de.elvah.charge.platform.ui.animation.slideFromBottom
 import de.elvah.charge.platform.ui.animation.slideToBottom
-import org.koin.androidx.compose.koinViewModel
+import de.elvah.charge.platform.di.sdkViewModel
 
 @Composable
 internal fun AdHocChargingGraph(
@@ -34,7 +34,7 @@ internal fun AdHocChargingGraph(
 
         composable<SiteDetailRoute> {
             SiteDetailScreen(
-                viewModel = koinViewModel(),
+                viewModel = sdkViewModel(),
                 onCloseClick = onFinishClicked,
                 onItemClick = { evseId ->
                     navController.navigate(
@@ -57,7 +57,7 @@ internal fun AdHocChargingGraph(
             popExitTransition = slideToBottom(),
         ) {
             ChargingPointDetailScreen(
-                koinViewModel(), onBackClick = {
+                sdkViewModel(), onBackClick = {
                 navController.navigateUp()
             }, onPaymentSuccess = { shortenedEvseId, paymentId ->
                 navController.navigate(
@@ -72,7 +72,7 @@ internal fun AdHocChargingGraph(
         }
 
         composable<ChargingStartRoute> {
-            ChargingStartScreen(koinViewModel()) {
+            ChargingStartScreen(sdkViewModel()) {
                 navController.navigate(ActiveChargingRoute)
             }
         }
@@ -83,7 +83,7 @@ internal fun AdHocChargingGraph(
             )
         ) {
             ActiveChargingScreen(
-                viewModel = koinViewModel(),
+                viewModel = sdkViewModel(),
                 onSupportClick = {
                     navController.navigate(HelpAndSupportRoute)
                 }, onStopClick = {
@@ -93,13 +93,13 @@ internal fun AdHocChargingGraph(
         }
 
         composable<HelpAndSupportRoute> {
-            HelpAndSupportScreen(koinViewModel()) {
+            HelpAndSupportScreen(sdkViewModel()) {
                 navController.navigateUp()
             }
         }
         composable<ReviewRoute> {
             ReviewScreen(
-                viewModel = koinViewModel(),
+                viewModel = sdkViewModel(),
                 onDoneClick = onFinishClicked,
                 onDismissClick = onFinishClicked,
                 onContactSupport = {

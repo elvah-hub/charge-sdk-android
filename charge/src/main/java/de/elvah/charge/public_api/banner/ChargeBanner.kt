@@ -18,8 +18,8 @@ import de.elvah.charge.platform.config.Config
 import de.elvah.charge.platform.ui.theme.ElvahChargeTheme
 import de.elvah.charge.platform.ui.theme.shouldUseDarkColors
 import de.elvah.charge.public_api.DisplayBehavior
-import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
+import de.elvah.charge.platform.di.sdkGet
+import de.elvah.charge.platform.di.sdkViewModel
 
 
 @Composable
@@ -28,8 +28,8 @@ public fun ChargeBanner(
     display: DisplayBehavior = DisplayBehavior.WHEN_SOURCE_SET,
     variant: BannerVariant = BannerVariant.DEFAULT,
 ) {
-    val sitesViewModel: SitesViewModel = koinViewModel()
-    val config: Config = koinInject()
+    val sitesViewModel: SitesViewModel = sdkViewModel()
+    val config: Config = sdkGet()
 
     val state by sitesViewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
