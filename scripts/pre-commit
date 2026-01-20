@@ -32,7 +32,7 @@ CHECKS_FAILED=0
 # Run Detekt on changed files
 if [ -n "$KOTLIN_FILES" ]; then
     echo "📋 Running Detekt on changed files..."
-    if ./gradlew detekt --quiet 2>&1 | grep -q "Analysis failed"; then
+    if ./gradlew detekt | grep -q "Analysis failed"; then
         echo -e "${RED}❌ Detekt found issues${NC}"
         echo ""
         echo "Run './gradlew detekt' to see details"
