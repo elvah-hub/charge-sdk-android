@@ -138,13 +138,13 @@ The workflow uses **parallel job execution** for faster feedback:
    ┌───────┐       ┌──────────┐   ┌──────┐     ┌─────────┐
    │ build │       │   lint   │   │detekt│     │         │
    └───┬───┘       └──────────┘   └──────┘     │         │
-       │                                         │         │
-       ▼                                         │         │
-   ┌───────┐                                    │         │
-   │ test  │────────────────────────────────────┘         │
-   └───────┘                                               │
-                                                           │
-                All jobs complete ─────────────────────────┘
+       │                                       │         │
+       ▼                                       │         │
+   ┌───────┐                                   │         │
+   │ test  │───────────────────────────────────┘         │
+   └───────┘                                             │
+                                                         │
+                All jobs complete ───────────────────────┘
 ```
 
 **Job Details:**
@@ -410,29 +410,29 @@ Developer writes code
 │         GitHub Actions Triggered          │
 ├───────────────────────────────────────────┤
 │                                           │
-│  ┌─────────────────────────────────┐    │
-│  │  CI Workflow (ci.yml)           │    │
-│  │  ├─ Validate                    │    │
-│  │  ├─ Build (parallel)            │    │
-│  │  ├─ Test                        │    │
-│  │  ├─ Lint (parallel)             │    │
-│  │  └─ Detekt (parallel)           │    │
-│  └─────────────────────────────────┘    │
+│  ┌─────────────────────────────────┐      │
+│  │  CI Workflow (ci.yml)           │      │
+│  │  ├─ Validate                    │      │
+│  │  ├─ Build (parallel)            │      │
+│  │  ├─ Test                        │      │
+│  │  ├─ Lint (parallel)             │      │
+│  │  └─ Detekt (parallel)           │      │
+│  └─────────────────────────────────┘      │
 │                                           │
-│  ┌─────────────────────────────────┐    │
-│  │  Test Coverage (test-coverage)   │    │
-│  │  ├─ Run tests                   │    │
-│  │  ├─ Generate coverage           │    │
-│  │  ├─ Upload to Codecov           │    │
-│  │  └─ Comment on PR               │    │
-│  └─────────────────────────────────┘    │
+│  ┌─────────────────────────────────┐      │
+│  │  Test Coverage (test-coverage)  │      │
+│  │  ├─ Run tests                   │      │
+│  │  ├─ Generate coverage           │      │
+│  │  ├─ Upload to Codecov           │      │
+│  │  └─ Comment on PR               │      │
+│  └─────────────────────────────────┘      │
 │                                           │
-│  ┌─────────────────────────────────┐    │
-│  │  Dependency Review (PRs only)    │    │
-│  │  ├─ Scan vulnerabilities        │    │
-│  │  ├─ Check licenses              │    │
-│  │  └─ Comment on PR               │    │
-│  └─────────────────────────────────┘    │
+│  ┌─────────────────────────────────┐      │
+│  │  Dependency Review (PRs only)   │      │
+│  │  ├─ Scan vulnerabilities        │      │
+│  │  ├─ Check licenses              │      │
+│  │  └─ Comment on PR               │      │
+│  └─────────────────────────────────┘      │
 │                                           │
 └───────────────────────────────────────────┘
          │
