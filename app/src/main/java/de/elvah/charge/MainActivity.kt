@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private var chargeBannerSource: ChargeBannerSource = ChargeBannerSource()
+
     private var getSites: GetSites = GetSites()
 
     override fun onCreate(savedInstanceState: Bundle?) {
