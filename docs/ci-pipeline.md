@@ -296,7 +296,7 @@ Detekt analyzes Kotlin code for quality issues.
 
 #### Configuration
 
-Location: `detekt.yml`
+Location: `/codequality/detekt/detekt.yml`
 
 **Key Rules:**
 
