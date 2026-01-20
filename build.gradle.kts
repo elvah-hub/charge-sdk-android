@@ -27,6 +27,9 @@ subprojects {
 
     dependencies {
         detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
+        detektPlugins("io.gitlab.arturbosch.detekt:detekt-rules-libraries:1.23.8")
+        detektPlugins("io.gitlab.arturbosch.detekt:detekt-rules-ruleauthors:1.23.8")
+        detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.1")
     }
 }
 
