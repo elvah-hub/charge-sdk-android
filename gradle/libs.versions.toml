@@ -38,7 +38,7 @@ version-catalog-linter = "1.1.0"
 protobuf = "0.9.6"
 preference = "1.2.1"
 fragmentCompose = "1.8.9"
-materialIconsExtended = "1.6.8"
+materialIconsExtended = "1.7.8"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
