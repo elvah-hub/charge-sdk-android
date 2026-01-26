@@ -12,6 +12,7 @@ The elvah Charge SDK helps you integrate EV charging into your app. With just a 
     - [Charge Banner](#charge-banner)
     - [Data Sources](#data-sources)
     - [Customization](#customization)
+    - [Payment Methods](#payment-methods)
 3. [Simulator](#simulator)
 4. [Glossary](#glossary)
 5. [FAQ](#faq)
@@ -181,6 +182,22 @@ The `ChargeBanner` view comes in two variants: `default` and `compact`. You can 
 ```kotlin
 ChargeBanner(variant = BannerVariant.COMPACT)
 ```
+
+### Payment Methods
+
+The SDK supports multiple payment methods for charging sessions:
+
+- **Credit/Debit Cards**: Standard card payments through Stripe
+- **Google Pay**: Quick and secure payments using Google Pay (when available on the device)
+
+Payment method availability is automatically detected based on the device capabilities and the SDK environment configuration. The SDK handles the complete payment flow, including:
+
+- Environment-aware configuration (Test/Production modes)
+- Automatic country code detection based on device locale
+- Graceful handling when certain payment methods are unavailable
+- Secure payment processing through Stripe
+
+No additional configuration is required - payment methods are automatically enabled based on your SDK initialization settings.
 
 ## Simulator
 
