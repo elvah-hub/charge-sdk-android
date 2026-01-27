@@ -162,6 +162,7 @@ private fun ChargingPointDetail_Success(
             ) {
                 ChargingPointDetailActions(
                     paymentConfig = state.paymentConfig,
+                    isGooglePayAvailable = state.isGooglePayAvailable,
                     onGooglePayClick = onGooglePayAction,
                     onPayWithCardClick = onPayWithCardAction,
                     publishableKey = state.paymentIntentParams.publishableKey,
@@ -343,6 +344,7 @@ private fun ChargingPointDetailTopBar(
 @Composable
 private fun ChargingPointDetailActions(
     paymentConfig: PaymentConfig,
+    isGooglePayAvailable: Boolean,
     modifier: Modifier = Modifier,
     onPayWithCardClick: () -> Unit,
     onGooglePayClick: () -> Unit,
@@ -353,7 +355,7 @@ private fun ChargingPointDetailActions(
         verticalArrangement = Arrangement.spacedBy(14.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (paymentConfig.googlePayEnabled) {
+        if (paymentConfig.googlePayEnabled && isGooglePayAvailable) {
             GooglePayButton(
                 onClick = onGooglePayClick,
                 modifier = Modifier.fillMaxWidth()
@@ -398,6 +400,7 @@ private fun ChargingPointDetail_Success_Preview() {
                 paymentIntentParams = MockData.paymentConfiguration,
                 paymentConfig = de.elvah.charge.platform.config.PaymentConfig(),
                 environment = de.elvah.charge.platform.config.Environment.Int,
+                isGooglePayAvailable = true,
             ),
             onBackClick = {},
             onPayWithCardAction = {},

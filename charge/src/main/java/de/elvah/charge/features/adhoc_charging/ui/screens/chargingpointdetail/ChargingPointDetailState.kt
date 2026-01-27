@@ -35,5 +35,6 @@ internal sealed class ChargingPointDetailState(
         val paymentConfig: PaymentConfig,
         val environment: Environment,
         val mocked: Boolean = false,
+        val isGooglePayAvailable: Boolean = false,
     ) : ChargingPointDetailState(evseId)
 }

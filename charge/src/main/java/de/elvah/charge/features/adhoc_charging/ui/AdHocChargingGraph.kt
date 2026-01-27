@@ -55,9 +55,11 @@ internal fun AdHocChargingGraph(
             popExitTransition = slideToBottom(),
         ) {
             ChargingPointDetailScreen(
-                sdkViewModel(), onBackClick = {
+                chargingPointDetailViewModel = sdkViewModel(),
+                onBackClick = {
                     navController.navigateUp()
-                }, onPaymentSuccess = { shortenedEvseId, paymentId ->
+                },
+                onPaymentSuccess = { shortenedEvseId, paymentId ->
                     navController.navigate(
                         ChargingStartRoute(
                             shortenedEvseId = shortenedEvseId,
