@@ -16,4 +16,6 @@ internal sealed class ChargingPointDetailEvent : Reducer.ViewEvent {
         ChargingPointDetailEvent()
 
     data class OnError(val paymentConfigErrors: PaymentConfigErrors) : ChargingPointDetailEvent()
+
+    data class OnGooglePayAvailabilityChanged(val isAvailable: Boolean) : ChargingPointDetailEvent()
 }

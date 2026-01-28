@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stripe.android.googlepaylauncher.GooglePayEnvironment
 import com.stripe.android.googlepaylauncher.GooglePayLauncher
 import de.elvah.charge.features.payments.domain.manager.GooglePayManager
@@ -26,7 +28,6 @@ internal class AdHocChargingActivity : ComponentActivity() {
 
     private lateinit var googlePayLauncher: GooglePayLauncher
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,6 +36,8 @@ internal class AdHocChargingActivity : ComponentActivity() {
         initializeGooglePayLauncher()
 
         setContent {
+            val googlePayState by googlePayManager.state.collectAsStateWithLifecycle()
+
             ElvahChargeTheme(
                 darkTheme = shouldUseDarkColors(config.darkTheme),
                 customLightColorScheme = config.customLightColorScheme,
@@ -44,8 +47,10 @@ internal class AdHocChargingActivity : ComponentActivity() {
                     siteId = siteId,
                     onFinishClicked = { finish() },
                     onGooglePayClick = { clientSecret ->
-                        googlePayManager.setProcessingState()
-                        googlePayLauncher.presentForPaymentIntent(clientSecret)
+                        if (googlePayState !is de.elvah.charge.features.payments.domain.model.GooglePayState.Unavailable){
+                            googlePayManager.setProcessingState()
+                            googlePayLauncher.presentForPaymentIntent(clientSecret)
+                        }
                     }
                 )
             }
@@ -66,7 +71,7 @@ internal class AdHocChargingActivity : ComponentActivity() {
             ),
             readyCallback = { isReady ->
                 Log.i("GooglePayLauncher", "Google Pay is ready: $isReady")
-                // Google Pay is ready
+                googlePayManager.setGooglePayAvailable(isReady)
             },
             resultCallback = ::onGooglePayResult
         )

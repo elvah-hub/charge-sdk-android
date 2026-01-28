@@ -7,18 +7,40 @@ import kotlinx.coroutines.flow.asStateFlow
 
 internal class GooglePayManager {
 
-    private val _paymentState = MutableStateFlow<GooglePayState>(GooglePayState.Idle)
-    val paymentState: StateFlow<GooglePayState> = _paymentState.asStateFlow()
+    private val _state = MutableStateFlow<GooglePayState>(GooglePayState.Unavailable)
+    val state: StateFlow<GooglePayState> = _state.asStateFlow()
+
+    fun setGooglePayAvailable(isAvailable: Boolean) {
+        _state.value = if (isAvailable) {
+            // Transition to Idle when becoming available, unless already in a different state
+            if (_state.value is GooglePayState.Unavailable) {
+                GooglePayState.Idle
+            } else {
+                _state.value // Preserve current state if already available
+            }
+        } else {
+            GooglePayState.Unavailable
+        }
+    }
 
     fun processPaymentResult(result: GooglePayState) {
-        _paymentState.value = result
+        // Only process payment results if Google Pay is available
+        if (_state.value !is GooglePayState.Unavailable) {
+            _state.value = result
+        }
     }
 
     fun setProcessingState() {
-        _paymentState.value = GooglePayState.Processing
+        // Only set processing if Google Pay is available
+        if (_state.value !is GooglePayState.Unavailable) {
+            _state.value = GooglePayState.Processing
+        }
     }
 
     fun resetPaymentState() {
-        _paymentState.value = GooglePayState.Idle
+        // Reset to Idle only if Google Pay is available
+        if (_state.value !is GooglePayState.Unavailable) {
+            _state.value = GooglePayState.Idle
+        }
     }
 }

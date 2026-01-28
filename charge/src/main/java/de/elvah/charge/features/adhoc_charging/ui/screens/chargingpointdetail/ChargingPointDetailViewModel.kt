@@ -13,9 +13,12 @@ import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.Ch
 import de.elvah.charge.features.adhoc_charging.ui.screens.chargingpointdetail.ChargingPointDetailState.Success
 import de.elvah.charge.features.payments.domain.manager.GooglePayManager
 import de.elvah.charge.features.payments.domain.model.GooglePayState
+import de.elvah.charge.features.payments.domain.model.isAvailable
 import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.GetOrganisationDetails
+import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfigSettings
 import de.elvah.charge.features.payments.domain.usecase.GetPaymentConfiguration
+import de.elvah.charge.features.payments.domain.usecase.ObserveGooglePayState
 import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors
 import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors.NoOfferFound
 import de.elvah.charge.features.payments.domain.usecase.StoreAdditionalCosts
@@ -33,6 +36,7 @@ import kotlinx.coroutines.runBlocking
 
 internal class ChargingPointDetailViewModel(
     private val getPaymentConfiguration: GetPaymentConfiguration,
+    private val getPaymentConfigSettings: GetPaymentConfigSettings,
     private val initStripeConfig: InitStripeConfig,
     private val getOrganisationDetails: GetOrganisationDetails,
     private val storeAdditionalCosts: StoreAdditionalCosts,
@@ -40,6 +44,7 @@ internal class ChargingPointDetailViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val config: Config,
     private val googlePayManager: GooglePayManager,
+    private val observeGooglePayState: ObserveGooglePayState,
 ) : MVIBaseViewModel<ChargingPointDetailState, ChargingPointDetailEvent, ChargingPointDetailEffect>(
     initialState = Loading(savedStateHandle.toRoute<ChargingPointDetailRoute>().evseId),
     reducer = Reducer { previousState, event ->
@@ -119,7 +124,10 @@ internal class ChargingPointDetailViewModel(
                                     privacyPolicyUrl = organisationDetails?.privacyUrl.orEmpty(),
                                     companyLogoUrl = organisationDetails?.logoUrl,
                                     paymentIntentParams = event.paymentConfiguration,
+                                    paymentConfig = getPaymentConfigSettings(),
+                                    environment = config.environment,
                                     mocked = config.environment is Environment.Simulator,
+                                    isGooglePayAvailable = googlePayManager.state.value.isAvailable,
                                 ), null
                             )
                         })
@@ -140,6 +148,15 @@ internal class ChargingPointDetailViewModel(
                     ), null
                 )
             }
+
+            is ChargingPointDetailEvent.OnGooglePayAvailabilityChanged -> when (previousState) {
+                is Loading -> Result(Loading(evseId), null)
+                is Error -> Result(Error(evseId, previousState.paymentConfigErrors), null)
+                is Success -> Result(
+                    previousState.copy(isGooglePayAvailable = event.isAvailable),
+                    null
+                )
+            }
         }
     }
 ) {
@@ -150,10 +167,20 @@ internal class ChargingPointDetailViewModel(
         }
 
         viewModelScope.launch {
-            googlePayManager.paymentState.collect { googlePayState ->
+            observeGooglePayState().collect { googlePayState ->
+                // Update UI state with Google Pay availability
+                (state.value as? Success)?.let { currentState ->
+                    val isAvailable = googlePayState.isAvailable
+                    if (currentState.isGooglePayAvailable != isAvailable) {
+                        sendEvent(
+                            ChargingPointDetailEvent.OnGooglePayAvailabilityChanged(isAvailable)
+                        )
+                    }
+                }
+
+                // Handle payment state changes
                 when (googlePayState) {
                     is GooglePayState.Success -> {
-
                         (state.value as? Success)?.let {
                             sendEvent(
                                 ChargingPointDetailEvent.OnPaymentSuccess(
@@ -180,6 +207,7 @@ internal class ChargingPointDetailViewModel(
                         // Handle Google Pay cancellation here if needed in the future
                     }
 
+                    GooglePayState.Unavailable,
                     GooglePayState.Idle,
                     GooglePayState.Processing -> {
                         // No action needed for these states

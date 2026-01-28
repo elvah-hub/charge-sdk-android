@@ -8,6 +8,7 @@ public class Config(
     public val darkTheme: Boolean? = null,
     public val customLightColorScheme: CustomColorScheme? = null,
     public val customDarkColorScheme: CustomColorScheme? = null,
+    public val paymentConfig: PaymentConfig = PaymentConfig(),
     environment: Environment? = null,
 ) {
     public val environment: Environment = environment ?: detectEnvironmentFromApiKey(apiKey)

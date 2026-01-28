@@ -5,6 +5,8 @@ import de.elvah.charge.features.payments.domain.model.PaymentConfiguration
 import de.elvah.charge.features.payments.domain.usecase.PaymentConfigErrors
 import de.elvah.charge.features.sites.domain.model.ChargePointAvailability
 import de.elvah.charge.features.sites.domain.model.Pricing
+import de.elvah.charge.platform.config.Environment
+import de.elvah.charge.platform.config.PaymentConfig
 import de.elvah.charge.platform.core.mvi.Reducer
 import kotlinx.datetime.LocalDateTime
 
@@ -30,6 +32,9 @@ internal sealed class ChargingPointDetailState(
         val privacyPolicyUrl: String,
         val companyLogoUrl: String?,
         val paymentIntentParams: PaymentConfiguration,
+        val paymentConfig: PaymentConfig,
+        val environment: Environment,
         val mocked: Boolean = false,
+        val isGooglePayAvailable: Boolean = false,
     ) : ChargingPointDetailState(evseId)
 }
