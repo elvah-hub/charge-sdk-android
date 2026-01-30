@@ -2,7 +2,7 @@
 composePayButton = "1.2.0"
 sdk = "0.4.0"
 sdkApiVersion = "2025-10-16.lithium"
-activityCompose = "1.12.2"
+activityCompose = "1.12.3"
 agp = "8.13.2"
 appcompat = "1.7.1"
 arrow = "2.2.1.1"
