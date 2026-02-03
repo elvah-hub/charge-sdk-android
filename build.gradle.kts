@@ -40,7 +40,6 @@ tasks.register<Copy>("installGitHooks") {
 
     from("scripts/pre-commit")
     into(".git/hooks")
-    fileMode = 0b111101101  // 0755 in octal (rwxr-xr-x)
 
     doLast {
         println("✅ Pre-commit hook installed successfully!")
