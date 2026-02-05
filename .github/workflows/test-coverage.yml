@@ -1,0 +1,92 @@
+name: Test Coverage
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  contents: read           # Read repository contents
+  pull-requests: write     # Write PR comments
+  checks: write            # Write check runs
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      # Cache strategy:
+      # - main/develop branches: read and write cache
+      # - feature branches: read-only cache
+      # This prevents cache pollution from feature branches
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
+
+      - name: Run unit tests
+        run: ./gradlew :charge:test
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-coverage
+          path: |
+            charge/build/test-results/test*/*.xml
+            charge/build/reports/tests/
+          retention-days: 14
+
+      - name: Generate Kover coverage report
+        run: ./gradlew :charge:koverXmlReport
+
+      - name: Generate Kover HTML coverage report
+        run: ./gradlew :charge:koverHtmlReport
+
+          #- name: Upload coverage reports to Codecov
+          #  uses: codecov/codecov-action@v4
+          #  with:
+          #     file: ./charge/build/reports/kover/xml/report.xml
+          #     flags: unittests
+          #     name: codecov-umbrella
+          #  fail_ci_if_error: true
+        #  token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Add coverage PR comment
+        uses: madrapps/jacoco-report@v1.6.1
+        if: github.event_name == 'pull_request'
+        with:
+          paths: |
+            ${{ github.workspace }}/charge/build/reports/kover/xml/report.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 70
+          min-coverage-changed-files: 80
+          title: 'Code Coverage Report'
+          update-comment: true
+
+      - name: Upload HTML coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: charge/build/reports/kover/html/
+          retention-days: 30
+
+      - name: Coverage Summary
+        run: |
+          echo "## Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage report has been generated and uploaded as an artifact." >> $GITHUB_STEP_SUMMARY
+          echo "Check the 'coverage-report' artifact for detailed HTML coverage report." >> $GITHUB_STEP_SUMMARY
