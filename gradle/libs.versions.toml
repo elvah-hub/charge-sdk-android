@@ -1,5 +1,7 @@
 [versions]
 composePayButton = "1.2.0"
+detektRulesLibraries = "1.23.8"
+detektRulesRuleauthors = "1.23.8"
 sdk = "0.4.0"
 sdkApiVersion = "2025-10-16.lithium"
 activityCompose = "1.12.4"
@@ -12,6 +14,7 @@ coilCompose = "3.3.0"
 composeBom = "2026.02.00"
 coreKtx = "1.17.0"
 datastore = "1.2.0"
+detekt = "1.23.7"
 espressoCore = "3.7.0"
 google-services = "4.4.4"
 jetbrainsKotlinJvm = "2.3.10"
@@ -23,6 +26,7 @@ kotlinx-serialization-json = "1.10.0"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxDatetime = "0.7.1-0.6.x-compat"
 ksp = "2.3.5"
+kover = "0.9.4"
 lifecycleRuntimeKtx = "2.10.0"
 material = "1.13.0"
 mockk = "1.14.9"
@@ -67,6 +71,9 @@ coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "
 coil3-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 compose-pay-button = { module = "com.google.pay.button:compose-pay-button", version.ref = "composePayButton" }
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit2" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+detekt-rules-libraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detektRulesLibraries" }
+detekt-rules-ruleauthors = { module = "io.gitlab.arturbosch.detekt:detekt-rules-ruleauthors", version.ref = "detektRulesRuleauthors" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 koin-androidx-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", version.ref = "koinAndroidxComposeNavigation" }
@@ -105,10 +112,12 @@ networking = [
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 serializable = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
