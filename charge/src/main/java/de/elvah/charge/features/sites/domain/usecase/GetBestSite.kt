@@ -49,7 +49,7 @@ internal class GetBestSite(
         return this.filter { site ->
             site.evses.any {
                 it.offer.campaignEndsAt?.let { campaignEndsAt ->
-                    Instant.parse(campaignEndsAt) > Clock.System.now()
+                    runCatching { Instant.parse(campaignEndsAt) > Clock.System.now() }.getOrElse { false }
                 } ?: false
             }
         }
